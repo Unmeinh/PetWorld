@@ -2,7 +2,7 @@ import {Image, Pressable, StyleSheet, Text, View} from 'react-native';
 import React, {useRef, useState} from 'react';
 import PagerView from 'react-native-pager-view';
 
-export default function Screen1() {
+export default function OrboadScreen({navigation}) {
   const ref = useRef();
   const pinkColor = '#F582AE';
   const blueColor = '#001858';
@@ -16,7 +16,7 @@ export default function Screen1() {
             source={require('../../assets/image/weel.png')}
           />
           <Image
-            style={{position: 'absolute', right: 0,top:0}}
+            style={{position: 'absolute', right: 0, top: 0}}
             source={require('../../assets/image/weel-red-1.png')}
           />
           <Image source={require('../../assets/image/imagescreen1.png')} />
@@ -51,16 +51,16 @@ export default function Screen1() {
           </View>
         </View>
         <View style={[styles.page]} key="2">
-        <Image
-            style={{position: 'absolute', left: 0,top:0}}
+          <Image
+            style={{position: 'absolute', left: 0, top: 0}}
             source={require('../../assets/image/weel-red-2.png')}
           />
-           <Image
-            style={{position: 'absolute', bottom:-50,left:20}}
+          <Image
+            style={{position: 'absolute', bottom: -50, left: 20}}
             source={require('../../assets/image/pone.png')}
           />
           <Image
-            style={{position: 'absolute', right:0,bottom:140}}
+            style={{position: 'absolute', right: 0, bottom: 140}}
             source={require('../../assets/image/weel-1.png')}
           />
           <Image source={require('../../assets/image/imagescreen2.png')} />
@@ -104,16 +104,16 @@ export default function Screen1() {
           </View>
         </View>
         <View style={styles.page} key="3">
-        <Image
-            style={{position: 'absolute', left:0,bottom:140}}
+          <Image
+            style={{position: 'absolute', left: 0, bottom: 140}}
             source={require('../../assets/image/weel-2.png')}
           />
           <Image
-            style={{position: 'absolute', right:-100,top:0}}
+            style={{position: 'absolute', right: -100, top: 0}}
             source={require('../../assets/image/pone.png')}
           />
           <Image
-            style={{position: 'absolute', right:0,bottom:0}}
+            style={{position: 'absolute', right: 0, bottom: 0}}
             source={require('../../assets/image/weel-red-3.png')}
           />
           <Image source={require('../../assets/image/imagescreen3.png')} />
@@ -125,7 +125,7 @@ export default function Screen1() {
 
           <View style={styles.buttonView}>
             <Pressable
-              onPress={() => ref.current?.setPage(1)}
+              onPress={() => navigation.navigate('LoginScreen')}
               style={[
                 styles.button,
                 {
