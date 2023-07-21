@@ -8,6 +8,10 @@ export default function LoginScreen({navigation}) {
         title="Go to Register"
         onPress={() => navigation.navigate('RegisterScreen')}
       />
+       <Button
+        title="Go to HomeScreen"
+        onPress={() => navigation.navigate('HomeScreen')}
+      />
     </View>
   );
 }
