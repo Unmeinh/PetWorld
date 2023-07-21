@@ -1,10 +1,12 @@
 import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
-import StackScreen from './src/navigation/StackScreen'
 
-export default function App() {
+export default function HomeScreen() {
   return (
-    <StackScreen/>
+    <View>
+      <Text>HomeScreen</Text>
+    </View>
   )
 }
+
 const styles = StyleSheet.create({})
