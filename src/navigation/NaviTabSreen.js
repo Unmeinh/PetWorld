@@ -27,7 +27,7 @@ const TabButton = (props) => {
 
     useEffect(() => {
         if (focused) { // 0.3: { scale: .7 }, 0.5: { scale: .3 }, 0.8: { scale: .7 },
-            viewRef.current.animate({ 0: { scale: 0 }, 1: { scale: 1 } });
+            viewRef.current.animate({ 0: { scale: 0, }, 1: { scale: 1 } });
             textViewRef.current.animate({ 0: { scale: 0 }, 1: { scale: 1 } });
         } else {
             viewRef.current.animate({ 0: { scale: 1, }, 1: { scale: 0, } });
@@ -42,12 +42,12 @@ const TabButton = (props) => {
             style={[styles.container, { flex: focused ? 1 : 0.5 }]}>
             <View>
                 <Animatable.View
-                    ref={viewRef}
+                    ref={viewRef} duration={250}
                     style={[StyleSheet.absoluteFillObject, { backgroundColor: item.color, borderRadius: 16 }]} />
                 <View style={[styles.btn, { backgroundColor: focused ? null : item.alphaClr }]}>
                     <FontAwesome5 name={item.icon} color={focused ? '#001858' : '#656565'} size={17} />
                     <Animatable.View
-                        ref={textViewRef}>
+                        ref={textViewRef} duration={250}> 
                         {focused && <Text style={{
                             color: '#001858', paddingLeft: 7,
                             fontSize: 17, fontFamily: 'ProductSans'
