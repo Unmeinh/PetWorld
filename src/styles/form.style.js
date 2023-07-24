@@ -105,6 +105,29 @@ export default StyleSheet.create({
         elevation: 5,
     },
 
+    textInputSelect: {
+        marginTop: 7,
+        marginLeft: 15,
+        width: WindowWidth - 100,
+        color: darkBlue,
+        fontSize: 17,
+        fontFamily: 'ProductSans',
+        backgroundColor: lightBrown,
+        borderRadius: 10,
+        borderWidth: 1,
+        borderColor: 'rgba(0, 0, 0, 0.50)',
+        paddingLeft: 20, paddingRight: 15,
+        paddingTop: 9, paddingBottom: 9,
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+        elevation: 5,
+    },
+
     textInputPass: {
         marginTop: 7,
         color: darkBlue,
@@ -176,5 +199,25 @@ export default StyleSheet.create({
         borderColor: lighBlue,
         borderWidth: 1,
         borderRadius: 30,
-    }
+    },
+
+    titleLarge: {
+        fontSize: 27,
+        fontWeight: '700',
+        color: darkBlue,
+        fontFamily: 'ProductSans',
+        marginTop: 10
+    },
+
+    textDetail: {
+        fontSize: 17,
+        color: 'rgba(0, 24, 88, 0.69)',
+        fontFamily: 'ProductSans',
+        margin: 10
+    },
+
+    isSelectOption: {
+        position: 'absolute',
+        top: 7, left: 8
+    },
 });

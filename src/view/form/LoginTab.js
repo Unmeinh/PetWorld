@@ -60,10 +60,10 @@ export default function LoginTab(route) {
         if (checkValidate(newUser) == false) {
             ToastAndroid.show("Đăng nhập thất bại!", ToastAndroid.SHORT);
             return;
-        } 
+        }
 
         ToastAndroid.show("Đăng nhập thành công!", ToastAndroid.SHORT);
-        route.nav.navigate('HomeScreen');
+        route.nav.navigate('NaviTabSreen');
     }
 
     return (
@@ -138,9 +138,13 @@ export default function LoginTab(route) {
                                 color: '#001858',
                             }, styles.titleInput]}>Ghi nhớ tôi?</Text>
                         </View>
-                        <Text style={[{
-                            color: '#001858', textDecorationLine: 'underline'
-                        }, styles.titleInput]}>Quên mật khẩu?</Text>
+                        <TouchableHighlight onPress={() => { route.nav.navigate('ForgetPassword') }}
+                            activeOpacity={0.5} underlayColor="#00185830" style={{ marginTop:15 }}>
+                            <Text style={{
+                                color: '#001858', textDecorationLine: 'underline',
+                                fontSize: 15, fontFamily: 'ProductSans',
+                            }}>Quên mật khẩu?</Text>
+                        </TouchableHighlight>
                     </View>
 
                     <TouchableHighlight style={styles.buttonConfirm}
