@@ -216,8 +216,31 @@ export default StyleSheet.create({
         margin: 10
     },
 
+    textDetailRed: {
+        fontSize: 17,
+        fontFamily: 'ProductSans',
+        margin: 10,
+        color: '#EB4335',
+        marginLeft: 0,
+        fontWeight: '700'
+    },
+
     isSelectOption: {
         position: 'absolute',
         top: 7, left: 8
     },
+
+    inputOTP: {
+        fontSize: 35,
+        fontFamily: 'ProductSans',
+        color: darkBlue,
+        fontWeight: '700',
+        letterSpacing: 35,
+        width: '100%',
+    },
+
+    underlineOTP: {
+        backgroundColor: '#000',
+        height: 1, width: '13.5%'
+    }
 });

@@ -1,6 +1,9 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import React, { useEffect, useRef } from 'react'
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import {
+    StyleSheet, Text,
+    TouchableOpacity, View,
+} from 'react-native'
 import * as Animatable from 'react-native-animatable';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import HomeScreen from '../view/home/HomeScreen';
@@ -8,6 +11,7 @@ import BlogScreen from '../view/blog/BlogScreen';
 import ChatScreen from '../view/chat/ChatScreen';
 import NotifyScreen from '../view/notify/NotifyScreen';
 import AccountScreen from '../view/account/AccountScreen';
+import { Image } from 'react-native';
 
 const TabArr = [
     { route: 'Home', label: 'Home', icon: 'home', component: HomeScreen, color: '#8BD3DD', alphaClr: '#F3D2C1' },
@@ -47,7 +51,7 @@ const TabButton = (props) => {
                 <View style={[styles.btn, { backgroundColor: focused ? null : item.alphaClr }]}>
                     <FontAwesome5 name={item.icon} color={focused ? '#001858' : '#656565'} size={17} />
                     <Animatable.View
-                        ref={textViewRef} duration={250}> 
+                        ref={textViewRef} duration={250}>
                         {focused && <Text style={{
                             color: '#001858', paddingLeft: 7,
                             fontSize: 17, fontFamily: 'ProductSans'
@@ -61,31 +65,37 @@ const TabButton = (props) => {
 
 export default function NaviTabScreen() {
     return (
-        <Tab.Navigator
-            screenOptions={{
-                headerShown: false,
-                tabBarStyle: {
-                    backgroundColor: '#F3D2C1',
-                    height: 60,
-                    position: 'absolute',
-                    marginLeft: 10, marginRight: 10,
-                    paddingHorizontal: 1,
-                    bottom: 15,
-                    borderRadius: 15
-                }
-            }}
-        >
-            {TabArr.map((item, index) => {
-                return (
-                    <Tab.Screen key={index} name={item.route} component={item.component}
-                        options={{
-                            tabBarShowLabel: false,
-                            tabBarButton: (props) => <TabButton {...props} item={item} />
-                        }}
-                    />
-                )
-            })}
-        </Tab.Navigator>
+        <View style={{ flex: 1 }}>
+            <Tab.Navigator
+                screenOptions={{
+                    headerShown: false,
+                    tabBarStyle: {
+                        backgroundColor: '#F3D2C1',
+                        height: 60,
+                        position: 'absolute',
+                        marginLeft: 10, marginRight: 10,
+                        paddingHorizontal: 1,
+                        bottom: 15,
+                        borderRadius: 15
+                    }
+                }} >
+                {TabArr.map((item, index) => {
+                    return (
+                        <Tab.Screen key={index} name={item.route} component={item.component}
+                            options={{
+                                tabBarShowLabel: false,
+                                tabBarButton: (props) => <TabButton {...props} item={item} />
+                            }}
+                        />
+                    )
+                })}
+            </Tab.Navigator>
+            <TouchableOpacity style={styles.floatingAI}>
+                <Image style={styles.floatingPaw}
+                    source={require('../assets/image/pawAI.png')} />
+            </TouchableOpacity>
+        </View>
+
     )
 }
 
@@ -101,5 +111,25 @@ const styles = StyleSheet.create({
         padding: 10,
         paddingHorizontal: 15,
         borderRadius: 15,
-    }
+    },
+
+    floatingPaw: {
+        width: 35,
+        height: 42,
+        transform: [{ rotate: '35deg' }],
+        marginBottom: 2, marginLeft: 7
+    },
+
+    floatingAI: {
+        position: 'absolute',
+        bottom: 90, right: 20,
+        backgroundColor: '#8BD3DD',
+        width: 65, height: 65,
+        borderRadius: 35,
+        justifyContent: "flex-end",
+        overflow: 'hidden',
+        elevation: 10,
+        shadowColor: "#001858",
+    },
+
 })
