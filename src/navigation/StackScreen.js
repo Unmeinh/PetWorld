@@ -6,6 +6,7 @@ import OrboadScreen from '../view/orboardscreen/OrboadScreen';
 import LoginScreen from '../view/form/LoginScreen';
 import ForgetPassword from '../view/form/ForgetPassword';
 import NaviTabSreen from './NaviTabSreen';
+import SearchFilters from '../view/search/SearchFilters';
 const Stack = createStackNavigator();
 
 export default function StackScreen() {
@@ -19,6 +20,7 @@ export default function StackScreen() {
         <Stack.Screen name="LoginScreen" component={LoginScreen} />
         <Stack.Screen name="NaviTabSreen" component={NaviTabSreen} />
         <Stack.Screen name="ForgetPassword" component={ForgetPassword} />
+        <Stack.Screen name="SearchFilters" component={SearchFilters} />
       </Stack.Navigator>
     </NavigationContainer>
   );
