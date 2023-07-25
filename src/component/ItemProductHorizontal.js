@@ -6,12 +6,12 @@ const rateShow = rate => {
   let result = [];
   if(rate){
     for (let i = 0; i < rate; i++) {
-      result.push(<Icon name="star" color="#FFC20F" size={12} />);
+      result.push(<Icon name="star" color="#FFC20F" size={14} />);
     }
   }
   return result
 };
-export default function ItemPetHorizontal({item}) {
+export default function ItemProductHorizontal({item}) {
   return (
     <View
       style={{
@@ -24,7 +24,7 @@ export default function ItemPetHorizontal({item}) {
         borderBottomLeftRadius: 10,
       }}>
       <Image
-        source={item.imagePet}
+        source={item.imageProduct}
         style={{
           width: '100%',
           height: 90,
@@ -39,12 +39,12 @@ export default function ItemPetHorizontal({item}) {
             fontSize: 14,
             color: '#001858',
           }}>
-          {item.namePet}
+          {item.nameProduct}
         </Text>
         <Text style={{flexDirection:'row'}}>
         {rateShow(item.rate)}
         </Text>
-        <Text style={{fontFamily:'ProductSansBold',color:'#F582AE',fontSize:14}}>{item.pricePet.toLocaleString('vi-VN')}đ</Text>
+        <Text style={{fontFamily:'ProductSansBold',color:'#F582AE',fontSize:14}}>{item.priceProduct.toLocaleString('vi-VN')}đ</Text>
       </View>
     </View>
   );
