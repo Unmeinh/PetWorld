@@ -6,7 +6,6 @@ const rateShow = rate => {
   let result = [];
   if(rate){
     for (let i = 0; i < rate; i++) {
-      console.log("Đã chạy vào đây2");
       result.push(<Icon name="star" color="#FFC20F" size={14} />);
     }
   }

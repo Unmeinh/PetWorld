@@ -1,4 +1,12 @@
-import {ScrollView, StyleSheet, Text, TextInput, View} from 'react-native';
+import {
+  Image,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+} from 'react-native';
 import React, {useState} from 'react';
 import styles from '../../styles/temp.style';
 import {SafeAreaView} from 'react-navigation';
@@ -8,12 +16,16 @@ import {makeMutable} from 'react-native-reanimated';
 import Category from '../../data/category';
 import CategoryList from '../../component/CategoryList';
 import dataCategory from '../../data/category';
-import dataPet from '../../data/listpet'
+import dataPet from '../../data/listpet';
 import ListPetHorizontal from '../../component/ListPetHorizontal';
+import {Svg} from 'react-native-svg';
+import PetChatSuport from '../../component/PetChatSuport';
 export default function HomeScreen() {
+  
   const [countCart, setCountCart] = useState(0);
   return (
-    <ScrollView>
+    <View>
+       <ScrollView>
       <SafeAreaView>
         <View style={{alignItems: 'flex-end', marginTop: 10, marginEnd: 20}}>
           <Icon name="cart-outline" color="#F582AE" size={30} />
@@ -87,7 +99,7 @@ export default function HomeScreen() {
             fontSize: 20,
             color: '#001858',
           }}>
-         Thú cưng mới
+          Thú cưng mới
         </Text>
         <Text
           style={{
@@ -99,8 +111,8 @@ export default function HomeScreen() {
           Xem tất cả
         </Text>
       </View>
-      <ListPetHorizontal data={dataPet}/>
-           {/* listproductnew */}
+      <ListPetHorizontal data={dataPet} />
+      {/* listproductnew */}
       <View
         style={{
           marginTop: 20,
@@ -114,7 +126,7 @@ export default function HomeScreen() {
             fontSize: 20,
             color: '#001858',
           }}>
-         Sản phẩm mới
+          Sản phẩm mới
         </Text>
         <Text
           style={{
@@ -126,9 +138,11 @@ export default function HomeScreen() {
           Xem tất cả
         </Text>
       </View>
-      <View style={{marginBottom:20}}>
-      <ListPetHorizontal data={dataPet}/>
+      <View style={{marginBottom: 20}}>
+        <ListPetHorizontal data={dataPet} />
       </View>
     </ScrollView>
+    <PetChatSuport/>
+    </View>
   );
 }
