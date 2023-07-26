@@ -18,7 +18,7 @@ export default function StackScreen() {
         <Stack.Screen name="OrboadScreen" component={OrboadScreen} />
         <Stack.Screen name="LoginScreen" component={LoginScreen} />
         <Stack.Screen name="NaviTabSreen" component={NaviTabSreen} />
-        <Stack.Screen name='ForgetPassword' component={ForgetPassword} />
+        <Stack.Screen name="ForgetPassword" component={ForgetPassword} />
         <Stack.Screen name="SearchFilters" component={SearchFilters} />
       </Stack.Navigator>
     </NavigationContainer>
