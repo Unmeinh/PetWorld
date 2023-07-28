@@ -7,7 +7,7 @@ import {
 } from 'react-native'
 import React, { useState } from 'react'
 import styles from '../../styles/form.style';
-import HeaderTitle from '../../navigation/HeaderTitle';
+import HeaderTitle from '../../component/header/HeaderTitle';
 import Entypo from 'react-native-vector-icons/Entypo';
 
 export default function ChangePassword({ navigation }) {

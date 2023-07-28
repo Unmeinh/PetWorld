@@ -7,7 +7,7 @@ import {
 } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import styles from '../../styles/form.style';
-import HeaderTitle from '../../navigation/HeaderTitle';
+import HeaderTitle from '../../component/header/HeaderTitle';
 
 var censorCharacters = ['*', '**', '***', '****', '*****'];
 
