@@ -7,6 +7,7 @@ import LoginScreen from '../view/form/LoginScreen';
 import ForgetPassword from '../view/form/ForgetPassword';
 import NaviTabSreen from './NaviTabSreen';
 import SearchFilters from '../view/search/SearchFilters';
+import ListProductScreen from '../view/shopping/ListProductScreen';
 const Stack = createStackNavigator();
 
 export default function StackScreen() {
@@ -21,6 +22,7 @@ export default function StackScreen() {
         <Stack.Screen name="NaviTabSreen" component={NaviTabSreen} />
         <Stack.Screen name="ForgetPassword" component={ForgetPassword} />
         <Stack.Screen name="SearchFilters" component={SearchFilters} />
+        <Stack.Screen name="ListProductScreen" component={ListProductScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
