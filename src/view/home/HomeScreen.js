@@ -19,16 +19,19 @@ import CategoryList from '../../component/CategoryList';
 import dataCategory from '../../data/category';
 import dataPet from '../../data/listpet';
 import ListPetHorizontal from '../../component/ListPetHorizontal';
-import PetChatSuport from '../../component/PetChatSuport';
+import PetAISupport from '../../component/PetAISupport';
 import { listPetSelector ,listProductSelector} from '../../redux/selector';
 import ListProductHorizontal from '../../component/ListProductHorizotal';
-export default function HomeScreen({navigation}) {
+
+export default function HomeScreen({scrollRef, onScrollView, navigation}) {
   const [countCart, setCountCart] = useState(0);
   const listPet = useSelector(listPetSelector)
   const listProduct = useSelector(listProductSelector)
+
   return (
     <View>
-      <ScrollView>
+      <ScrollView ref={scrollRef}
+        onScroll={onScrollView}>
         <SafeAreaView>
           <View style={{alignItems: 'flex-end', marginTop: 10, marginEnd: 20}}>
             <Icon name="cart-outline" color="#F582AE" size={30} />
@@ -145,7 +148,6 @@ export default function HomeScreen({navigation}) {
           <ListProductHorizontal data={listProduct} />
         </View>
       </ScrollView>
-      <PetChatSuport />
     </View>
   );
 }

@@ -1,8 +1,9 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import React, { useEffect, useRef } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import {
     StyleSheet, Text,
     TouchableOpacity, View,
+    Image, Animated
 } from 'react-native'
 import * as Animatable from 'react-native-animatable';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
@@ -11,7 +12,7 @@ import BlogScreen from '../view/blog/BlogScreen';
 import ChatScreen from '../view/chat/ChatScreen';
 import NotifyScreen from '../view/notify/NotifyScreen';
 import AccountScreen from '../view/account/AccountScreen';
-import { Image } from 'react-native';
+import PetAISupport from '../component/PetAISupport';
 
 const TabArr = [
     { route: 'Home', label: 'Home', icon: 'home', component: HomeScreen, color: '#8BD3DD', alphaClr: '#F3D2C1' },
@@ -24,6 +25,7 @@ const TabArr = [
 const Tab = createBottomTabNavigator();
 
 const TabButton = (props) => {
+    //animated navigation
     const { item, onPress, accessibilityState } = props;
     const focused = accessibilityState.selected;
     const viewRef = useRef(null);
@@ -63,7 +65,54 @@ const TabButton = (props) => {
     )
 }
 
-export default function NaviTabScreen() {
+export default function NaviTabScreen({navigation}) {
+    //animated AI
+    const [offset, setoffset] = useState(0);
+    const scrollRef = useRef(null);
+    const startValue = useRef(new Animated.Value(90)).current;
+    const duration = 150;
+
+    const onScrollView = (event) => {
+        const currentOffset = event.nativeEvent.contentOffset.y;
+        const dif = currentOffset - (offset || 0);
+
+        if (Math.abs(dif) < 3) {
+            console.log('unclear');
+        } else if (dif < 0) {
+            console.log('up');
+            Animated.timing(startValue, {
+                toValue: 0,
+                duration: duration,
+                useNativeDriver: true,
+            }).start();
+        } else {
+            console.log('down');
+            Animated.timing(startValue, {
+                toValue: 90,
+                duration: duration,
+                useNativeDriver: true,
+            }).start();
+        }
+
+        setoffset(currentOffset);
+    };
+
+    function animatedOnFocus() {
+        Animated.timing(startValue, {
+            toValue: 0,
+            duration: 750,
+            useNativeDriver: true,
+        }).start();
+    }
+
+    React.useEffect(() => {
+        const unsub = navigation.addListener('focus', () => {
+            animatedOnFocus();
+        });
+
+        return unsub;
+    }, [navigation]);
+
     return (
         <View style={{ flex: 1 }}>
             <Tab.Navigator
@@ -76,12 +125,17 @@ export default function NaviTabScreen() {
                         marginLeft: 10, marginRight: 10,
                         paddingHorizontal: 1,
                         bottom: 15,
-                        borderRadius: 15
+                        borderRadius: 15,
+                        transform: [
+                            {
+                                translateY: startValue,
+                            },],
                     }
                 }} >
                 {TabArr.map((item, index) => {
                     return (
-                        <Tab.Screen key={index} name={item.route} component={item.component}
+                        <Tab.Screen key={index} name={item.route}
+                            children={() => <item.component onScrollView={onScrollView} scrollRef={scrollRef} />}
                             options={{
                                 tabBarShowLabel: false,
                                 tabBarButton: (props) => <TabButton {...props} item={item} />
@@ -90,10 +144,15 @@ export default function NaviTabScreen() {
                     )
                 })}
             </Tab.Navigator>
-            <TouchableOpacity style={styles.floatingAI}>
-                <Image style={styles.floatingPaw}
-                    source={require('../assets/image/pawAI.png')} />
-            </TouchableOpacity>
+
+            <Animated.View style={{
+                transform: [
+                    {
+                        translateX: startValue,
+                    },],
+            }}>
+                <PetAISupport />
+            </Animated.View>
         </View>
 
     )
@@ -112,24 +171,4 @@ const styles = StyleSheet.create({
         paddingHorizontal: 15,
         borderRadius: 15,
     },
-
-    floatingPaw: {
-        width: 35,
-        height: 42,
-        transform: [{ rotate: '35deg' }],
-        marginBottom: 2, marginLeft: 7
-    },
-
-    floatingAI: {
-        position: 'absolute',
-        bottom: 90, right: 20,
-        backgroundColor: '#8BD3DD',
-        width: 65, height: 65,
-        borderRadius: 35,
-        justifyContent: "flex-end",
-        overflow: 'hidden',
-        elevation: 10,
-        shadowColor: "#001858",
-    },
-
 })
