@@ -1,8 +1,7 @@
 import {StyleSheet, Text, View, TouchableOpacity} from 'react-native';
 import React from 'react';
 
-export default function ItemSearch({item}) {
-  console.log(item);
+export default function ItemSearch({item}) {  
   const name = item.namePet === undefined ? item?.nameProduct: item?.namePet
   return (
     <View>
