@@ -14,7 +14,7 @@ export default StyleSheet.create({
         flex: 1,
     },
 
-    viewNewPost: {
+    viewInfoHead: {
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
@@ -60,7 +60,7 @@ export default StyleSheet.create({
         justifyContent: 'space-between',
         marginRight: 15,
     },
-    
+
     viewBelowPost: {
         margin: 15,
     },
@@ -103,4 +103,154 @@ export default StyleSheet.create({
         color: 'rgba(0, 0, 0, 0.50)',
     },
 
+    //New Post
+    viewRowCenter: {
+        flexDirection: 'row',
+        alignItems: 'center'
+    },
+
+    viewRowCenterBetween: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between'
+    },
+
+    buttonUpload: {
+        padding: 5,
+        paddingHorizontal: 17,
+        borderRadius: 7,
+        backgroundColor: pinkLotus,
+    },
+
+    textButtonUpload: {
+        fontSize: 17,
+        fontFamily: 'ProductSans',
+        color: yellowWhite
+    },
+
+    viewContent: {
+        width: '100%',
+        backgroundColor: '#FEF6E4',
+        minHeight: WindowHeight - (WindowHeight * 50 / 100)
+    },
+
+    textContentNewPost: {
+        width: '100%',
+        marginBottom: 10,
+        fontSize: 17,
+        lineHeight: 22,
+        paddingHorizontal: 20,
+        color: darkBlue,
+        fontFamily: 'ProductSans'
+    },
+
+    imageContent: {
+        // flex: 1,
+        // aspectRatio: 1.35,
+        // resizeMode: 'contain',
+        //  Cho Image bình thường, ImageBG thì để resize ra ngoài
+    },
+
+    viewButtonIC: {
+        flexDirection: 'row',
+        position: 'absolute',
+        right: 10
+    },
+
+    buttonImageContent: {
+        backgroundColor: '#fff',
+        width: 27, height: 27,
+        borderRadius: 30 / 2,
+        borderColor: '#000',
+        borderWidth: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginLeft: 10
+    },
+
+    iconImageContent: {
+        width: 19,
+        height: 19
+    },
+
+    navBelow: {
+        backgroundColor: lightBrown,
+        position: 'absolute',
+        top: WindowHeight - 55,
+        marginTop: 5,
+        width: WindowWidth,
+        borderTopWidth: 1,
+        borderColor: '#999898',
+        height: 50,
+        flexDirection: 'row',
+        justifyContent: 'space-around'
+    },
+
+    lineNavBelow: {
+        width: 1,
+        height: '100%',
+        backgroundColor: '#999898',
+        position: 'absolute',
+        left: WindowWidth / 2
+    },
+
+    imageInNavBelow: {
+        height: 35, width: 35,
+        marginRight: 15
+    },
+
+    fontInNavBelow: {
+        height: 30, width: 30,
+        marginRight: 15
+    },
+
+    textInNavBelow: {
+        fontSize: 17,
+        color: darkBlue,
+        fontFamily: 'ProductSans',
+        marginLeft: 5
+    },
+
+    backgroundModal: {
+        width: "100%",
+        flex: 1,
+        alignItems: "center",
+        justifyContent: 'center',
+        backgroundColor: "rgba(0, 0, 0, 0.5)",
+    },
+
+    viewDialog: {
+        width: '80%',
+        height: '80%',
+        backgroundColor: '#fff',
+        borderRadius: 5
+    },
+
+    buttonBackDialog: {
+        position: 'absolute',
+        top: 13, left: 10
+    },
+
+    titleDialog: {
+        fontSize: 23,
+        fontWeight: '500',
+        marginTop: 10
+    },
+
+    scrollViewDialog: {
+        flex: 1,
+        width: '100%',
+        marginTop: 15,
+    },
+
+    viewItemFont: {
+        borderColor: '#000',
+        borderBottomWidth: 1,
+        paddingTop: 10, paddingBottom: 10,
+        paddingLeft: 20, paddingRight: 20
+    },
+
+    textItemFont: {
+        fontSize: 27
+    },
 });
