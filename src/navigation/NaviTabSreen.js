@@ -135,7 +135,7 @@ export default function NaviTabScreen({navigation}) {
                 {TabArr.map((item, index) => {
                     return (
                         <Tab.Screen key={index} name={item.route}
-                            children={() => <item.component onScrollView={onScrollView} scrollRef={scrollRef} />}
+                            children={() => <item.component onScrollView={onScrollView} scrollRef={scrollRef} navigation={navigation}/>}
                             options={{
                                 tabBarShowLabel: false,
                                 tabBarButton: (props) => <TabButton {...props} item={item} />
