@@ -9,7 +9,7 @@ import SearchFilters from '../view/search/SearchFilters';
 import ForgetPassword from '../view/form/ForgetPassword';
 import ConfirmOTP from '../view/form/ConfirmOTP';
 import ChangePassword from '../view/form/ChangePassword';
-import ListProductScreen from '../view/shopping/ListProductScreen';
+
 const Stack = createStackNavigator();
 
 export default function StackScreen() {
@@ -26,7 +26,7 @@ export default function StackScreen() {
         <Stack.Screen name="ForgetPassword" component={ForgetPassword} />
         <Stack.Screen name="ConfirmOTP" component={ConfirmOTP} />
         <Stack.Screen name="ChangePassword" component={ChangePassword} />
-        <Stack.Screen name="ListProductScreen" component={ListProductScreen} />
+     
       </Stack.Navigator>
     </NavigationContainer>
   );
