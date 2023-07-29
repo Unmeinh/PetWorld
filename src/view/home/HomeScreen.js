@@ -15,37 +15,13 @@ import Slider from '../../component/Slider';
 import {makeMutable} from 'react-native-reanimated';
 import {useSelector} from 'react-redux';
 import CategoryList from '../../component/CategoryList';
-import ListPetHorizontal from '../../component/ListPetHorizontal';
 
-
-
-
-
-
-
-
-
-
-
-import PetChatSuport from '../../component/PetChatSuport';
-
-
-
-
-
-import { listPetSelector ,listProductSelector,categorySelector} from '../../redux/selector';
 import ListProductHorizontal from '../../component/ListProductHorizotal';
 export default function HomeScreen({navigation}) {
   const [countCart, setCountCart] = useState(0);
   const listPet = useSelector(listPetSelector)
   const listProduct = useSelector(listProductSelector)
 
-
-
-
-
-
-  const listCategory = useSelector(categorySelector)
   return (
     <View>
       <ScrollView>
