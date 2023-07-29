@@ -23,7 +23,7 @@ import PetAISupport from '../../component/PetAISupport';
 import { listPetSelector ,listProductSelector} from '../../redux/selector';
 import ListProductHorizontal from '../../component/ListProductHorizotal';
 
-export default function HomeScreen({scrollRef, onScrollView, navigation}) {
+export default function HomeScreen({scrollRef, onScrollView, navigation }) {
   const [countCart, setCountCart] = useState(0);
   const listPet = useSelector(listPetSelector)
   const listProduct = useSelector(listProductSelector)
