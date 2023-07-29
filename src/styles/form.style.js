@@ -206,7 +206,7 @@ export default StyleSheet.create({
         fontWeight: '700',
         color: darkBlue,
         fontFamily: 'ProductSans',
-        marginTop: 10
+        marginTop: 5
     },
 
     textDetail: {
