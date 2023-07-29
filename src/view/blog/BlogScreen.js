@@ -11,7 +11,7 @@ import AutoHeightImage from 'react-native-auto-height-image';
 import blogs from  '../../data/blog';
 import Entypo from 'react-native-vector-icons/Entypo';
 
-export default function BlogScreen({ scrollRef, onScrollView, infoLogin, nav }) {
+export default function BlogScreen({ scrollRef, onScrollView, infoLogin, navigation }) {
   const [arr_blog, setarr_blog] = useState(blogs);
   const [isSelected, setisSelected] = useState(false);
   const [myInfo, setmyInfo] = useState(infoLogin);
@@ -19,7 +19,6 @@ export default function BlogScreen({ scrollRef, onScrollView, infoLogin, nav }) 
   const [srcAvatar, setsrcAvatar] = useState({ uri: String(blogs[0].idUser.avatarUser) });
 
   function OpenAccount() {
-
   }
 
   function OpenNewPost() {
@@ -65,7 +64,7 @@ export default function BlogScreen({ scrollRef, onScrollView, infoLogin, nav }) 
                   (arr_blog.length > 0)
                     ?
                     arr_blog.map((blog, index, arr) => {
-                      return <ItemBlog blog={blog} key={index} nav={nav}
+                      return <ItemBlog blog={blog} key={index} navigation={navigation}
                         info={myInfo} openAcc={OpenAccount} isRefresh={isRefresh} />
                     })
                     :
