@@ -5670,7 +5670,7 @@ react-native-auto-height-image@^3.2.4:
   integrity sha512-PTVzLuYY4Q5IDAk0QmnSNK12VnUPlt+ZiEJUlo5JUiHverR5Lg386iHK7D2bVkTNo7SCahIPlWzdSuX5Col3XQ==
   dependencies:
     prop-types "^15.7.2"
-    
+
 react-native-gesture-handler@^2.12.0:
   version "2.12.0"
   resolved "https://registry.yarnpkg.com/react-native-gesture-handler/-/react-native-gesture-handler-2.12.0.tgz#59ca9d97e4c71f70b9c258f14a1a081f4c689976"
@@ -5681,7 +5681,6 @@ react-native-gesture-handler@^2.12.0:
     invariant "^2.2.4"
     lodash "^4.17.21"
     prop-types "^15.7.2"
-
 react-native-linear-gradient@^2.7.3:
   version "2.7.3"
   resolved "https://registry.npmjs.org/react-native-linear-gradient/-/react-native-linear-gradient-2.7.3.tgz"
