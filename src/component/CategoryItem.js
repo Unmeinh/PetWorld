@@ -1,9 +1,16 @@
-import {Image, StyleSheet, Text, View} from 'react-native';
+import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import React from 'react';
-
-export default function CategoryItem({item}) {
+import {useDispatch} from 'react-redux';
+import { selectIdCategoryAction } from '../redux/action';
+export default function CategoryItem({item, navigation}) {
+  const dispatch = useDispatch()
   return (
-    <View style={{marginRight: 20}}>
+    <TouchableOpacity
+      onPress={() => {
+        dispatch(selectIdCategoryAction(item.id))
+        navigation.navigate('ListProductScreen')
+      }}
+      style={{marginRight: 20}}>
       <View
         style={{
           width: 70,
@@ -27,6 +34,6 @@ export default function CategoryItem({item}) {
           {item.nameCategory}
         </Text>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 }

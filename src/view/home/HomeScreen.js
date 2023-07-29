@@ -13,14 +13,13 @@ import {SafeAreaView} from 'react-navigation';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Slider from '../../component/Slider';
 import {makeMutable} from 'react-native-reanimated';
-import Category from '../../data/category';
 import {useSelector} from 'react-redux';
-import CategoryList from '../../component/CategoryList';
 import dataCategory from '../../data/category';
 import dataPet from '../../data/listpet';
 import ListPetHorizontal from '../../component/ListPetHorizontal';
 import PetAISupport from '../../component/PetAISupport';
 import { listPetSelector ,listProductSelector} from '../../redux/selector';
+import CategoryList from '../../component/CategoryList';
 import ListProductHorizontal from '../../component/ListProductHorizotal';
 
 export default function HomeScreen({scrollRef, onScrollView, navigation}) {
@@ -89,7 +88,7 @@ export default function HomeScreen({scrollRef, onScrollView, navigation}) {
             }}>
             Sản phẩm chính
           </Text>
-          <CategoryList data={dataCategory} />
+          <CategoryList data={listCategory} navigation={navigation} />
         </View>
         {/* listpetnew */}
         <View

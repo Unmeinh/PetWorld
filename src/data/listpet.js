@@ -4,6 +4,8 @@ export default [
     namePet: 'Chó doggy',
     imagePet: require('../assets/image/pet/anh-1.jpg'),
     pricePet: 2000000,
+    nameShop: 'Đào hoàn shop',
+    discount: 20,
     rate: 5,
   },
   {
@@ -11,6 +13,8 @@ export default [
     namePet: 'Mèo bbii',
     imagePet: require('../assets/image/pet/anh-2.jpg'),
     pricePet: 1000000,
+    nameShop: 'Linh Wibu shop',
+    discount: 20,
     rate: 4,
   },
   {
@@ -18,6 +22,8 @@ export default [
     namePet: 'Chó oxi',
     imagePet: require('../assets/image/pet/anh-3.jpg'),
     pricePet: 2000000,
+    nameShop: 'Đào hoàn shop',
+    discount: 20,
     rate: 5,
   },
   {
@@ -25,6 +31,7 @@ export default [
     namePet: 'Chó kagi',
     imagePet: require('../assets/image/pet/anh-4.jpg'),
     pricePet: 1000000,
+    nameShop: 'Văn Quý shop',
     rate: 4,
   },
   {
@@ -32,6 +39,8 @@ export default [
     namePet: 'Mèo dusty',
     imagePet: require('../assets/image/pet/anh-5.jpg'),
     pricePet: 2000000,
+    nameShop: 'Đào hoàn shop',
+    discount: 20,
     rate: 5,
   },
   {
@@ -39,6 +48,8 @@ export default [
     namePet: 'Mèo mun',
     imagePet: require('../assets/image/pet/anh-6.jpg'),
     pricePet: 2000000,
+    nameShop: 'Đào hoàn shop',
+    discount: 20,
     rate: 5,
   },
 ];
