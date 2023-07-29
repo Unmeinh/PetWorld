@@ -1,6 +1,10 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import React, { useEffect, useRef } from 'react'
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import React, { useState, useEffect, useRef } from 'react'
+import {
+    StyleSheet, Text,
+    TouchableOpacity, View,
+    Image, Animated
+} from 'react-native'
 import * as Animatable from 'react-native-animatable';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import HomeScreen from '../view/home/HomeScreen';
@@ -8,6 +12,7 @@ import BlogScreen from '../view/blog/BlogScreen';
 import ChatScreen from '../view/chat/ChatScreen';
 import NotifyScreen from '../view/notify/NotifyScreen';
 import AccountScreen from '../view/account/AccountScreen';
+import PetAISupport from '../component/PetAISupport';
 
 const TabArr = [
     { route: 'Home', label: 'Home', icon: 'home', component: HomeScreen, color: '#8BD3DD', alphaClr: '#F3D2C1' },
@@ -20,6 +25,7 @@ const TabArr = [
 const Tab = createBottomTabNavigator();
 
 const TabButton = (props) => {
+    //animated navigation
     const { item, onPress, accessibilityState } = props;
     const focused = accessibilityState.selected;
     const viewRef = useRef(null);
@@ -47,7 +53,7 @@ const TabButton = (props) => {
                 <View style={[styles.btn, { backgroundColor: focused ? null : item.alphaClr }]}>
                     <FontAwesome5 name={item.icon} color={focused ? '#001858' : '#656565'} size={17} />
                     <Animatable.View
-                        ref={textViewRef} duration={250}> 
+                        ref={textViewRef} duration={250}>
                         {focused && <Text style={{
                             color: '#001858', paddingLeft: 7,
                             fontSize: 17, fontFamily: 'ProductSans'
@@ -59,33 +65,96 @@ const TabButton = (props) => {
     )
 }
 
-export default function NaviTabScreen() {
+export default function NaviTabScreen({navigation}) {
+    //animated AI
+    const [offset, setoffset] = useState(0);
+    const scrollRef = useRef(null);
+    const startValue = useRef(new Animated.Value(90)).current;
+    const duration = 150;
+
+    const onScrollView = (event) => {
+        const currentOffset = event.nativeEvent.contentOffset.y;
+        const dif = currentOffset - (offset || 0);
+
+        if (Math.abs(dif) < 3) {
+            console.log('unclear');
+        } else if (dif < 0) {
+            console.log('up');
+            Animated.timing(startValue, {
+                toValue: 0,
+                duration: duration,
+                useNativeDriver: true,
+            }).start();
+        } else {
+            console.log('down');
+            Animated.timing(startValue, {
+                toValue: 90,
+                duration: duration,
+                useNativeDriver: true,
+            }).start();
+        }
+
+        setoffset(currentOffset);
+    };
+
+    function animatedOnFocus() {
+        Animated.timing(startValue, {
+            toValue: 0,
+            duration: 750,
+            useNativeDriver: true,
+        }).start();
+    }
+
+    React.useEffect(() => {
+        const unsub = navigation.addListener('focus', () => {
+            animatedOnFocus();
+        });
+
+        return unsub;
+    }, [navigation]);
+
     return (
-        <Tab.Navigator
-            screenOptions={{
-                headerShown: false,
-                tabBarStyle: {
-                    backgroundColor: '#F3D2C1',
-                    height: 60,
-                    position: 'absolute',
-                    marginLeft: 10, marginRight: 10,
-                    paddingHorizontal: 1,
-                    bottom: 15,
-                    borderRadius: 15
-                }
-            }}
-        >
-            {TabArr.map((item, index) => {
-                return (
-                    <Tab.Screen key={index} name={item.route} component={item.component}
-                        options={{
-                            tabBarShowLabel: false,
-                            tabBarButton: (props) => <TabButton {...props} item={item} />
-                        }}
-                    />
-                )
-            })}
-        </Tab.Navigator>
+        <View style={{ flex: 1 }}>
+            <Tab.Navigator
+                screenOptions={{
+                    headerShown: false,
+                    tabBarStyle: {
+                        backgroundColor: '#F3D2C1',
+                        height: 60,
+                        position: 'absolute',
+                        marginLeft: 10, marginRight: 10,
+                        paddingHorizontal: 1,
+                        bottom: 15,
+                        borderRadius: 15,
+                        transform: [
+                            {
+                                translateY: startValue,
+                            },],
+                    }
+                }} >
+                {TabArr.map((item, index) => {
+                    return (
+                        <Tab.Screen key={index} name={item.route}
+                            children={() => <item.component onScrollView={onScrollView} scrollRef={scrollRef} />}
+                            options={{
+                                tabBarShowLabel: false,
+                                tabBarButton: (props) => <TabButton {...props} item={item} />
+                            }}
+                        />
+                    )
+                })}
+            </Tab.Navigator>
+
+            <Animated.View style={{
+                transform: [
+                    {
+                        translateX: startValue,
+                    },],
+            }}>
+                <PetAISupport />
+            </Animated.View>
+        </View>
+
     )
 }
 
@@ -101,5 +170,5 @@ const styles = StyleSheet.create({
         padding: 10,
         paddingHorizontal: 15,
         borderRadius: 15,
-    }
+    },
 })

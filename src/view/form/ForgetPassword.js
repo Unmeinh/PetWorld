@@ -7,7 +7,7 @@ import {
 } from 'react-native'
 import React, { useState } from 'react'
 import styles from '../../styles/form.style';
-import HeaderTitle from '../../navigation/HeaderTitle';
+import HeaderTitle from '../../component/header/HeaderTitle';
 import Feather from 'react-native-vector-icons/Feather';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
@@ -48,6 +48,11 @@ export default function ForgetPassword({ navigation }) {
     var regEmail = /^(\w+@[a-zA-Z]+\.[a-zA-Z]{2,})$/;
     var regPhone = /^(\+\d{10,})$/;
 
+    if (isSelectPhone == false && isSelectEmail == false) {
+      ToastAndroid.show('Phương thức xác minh chưa được chọn!', ToastAndroid.SHORT);
+      return;
+    }
+
     if (!('+' + inputPhoneNumber).match(regPhone) && isSelectPhone == true) {
       ToastAndroid.show('Số điện thoại chưa đúng định dạng!', ToastAndroid.SHORT);
       return;
@@ -59,11 +64,16 @@ export default function ForgetPassword({ navigation }) {
     }
 
     ToastAndroid.show('Tiếp tục', ToastAndroid.SHORT);
+    if (isSelectPhone == true) {
+      navigation.navigate('ConfirmOTP', { typeVerify: 'phoneNumber', valueVerify: inputPhoneNumber });
+    } else {
+      navigation.navigate('ConfirmOTP', { typeVerify: 'email', valueVerify: inputEmail });
+    }
   }
 
   return (
     <View style={{ backgroundColor: '#FEF6E4', flex: 1 }}>
-      <HeaderTitle nav={navigation} titleHeader={'Quên mật khẩu'} colorHeader={'#FEF6E4'}/>
+      <HeaderTitle nav={navigation} titleHeader={'Quên mật khẩu'} colorHeader={'#FEF6E4'} />
       <View style={styles.container}>
         <Text style={styles.titleLarge}>
           Thay đổi mật khẩu
