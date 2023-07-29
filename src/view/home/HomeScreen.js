@@ -14,23 +14,18 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import Slider from '../../component/Slider';
 import {makeMutable} from 'react-native-reanimated';
 import {useSelector} from 'react-redux';
-import dataCategory from '../../data/category';
-import dataPet from '../../data/listpet';
-import ListPetHorizontal from '../../component/ListPetHorizontal';
-import PetAISupport from '../../component/PetAISupport';
-import { listPetSelector ,listProductSelector} from '../../redux/selector';
 import CategoryList from '../../component/CategoryList';
+import ListPetHorizontal from '../../component/ListPetHorizontal';
+import { listPetSelector ,listProductSelector,categorySelector} from '../../redux/selector';
 import ListProductHorizontal from '../../component/ListProductHorizotal';
-
-export default function HomeScreen({scrollRef, onScrollView, navigation}) {
+export default function HomeScreen({navigation}) {
   const [countCart, setCountCart] = useState(0);
   const listPet = useSelector(listPetSelector)
   const listProduct = useSelector(listProductSelector)
-
+  const listCategory = useSelector(categorySelector)
   return (
     <View>
-      <ScrollView ref={scrollRef}
-        onScroll={onScrollView}>
+      <ScrollView>
         <SafeAreaView>
           <View style={{alignItems: 'flex-end', marginTop: 10, marginEnd: 20}}>
             <Icon name="cart-outline" color="#F582AE" size={30} />
