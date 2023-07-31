@@ -3,12 +3,12 @@ import React from 'react';
 import Icon from 'react-native-vector-icons/Ionicons';
 import FilterSelector from '../../component/filters/filterSelector';
 import ListProductVertical from '../../component/ListProduct/ListProductVertical';
-import { useSelector } from 'react-redux';
-import { categoryIdSelector } from '../../redux/selector';
-//import FiltersAll from '../../component/bottomsheet/filters/FiltersAll';
+import {useSelector} from 'react-redux';
+import {categoryIdSelector} from '../../redux/selector';
+import FiltersAll from '../../component/bottomsheet/filters/FiltersAll';
 export default function ListProductScreen({navigation}) {
-  const list = useSelector(categoryIdSelector)
-  
+  const list = useSelector(categoryIdSelector);
+
   return (
     <View style={{backgroundColor: '#FEF6E4', flex: 1}}>
       <View
@@ -36,14 +36,19 @@ export default function ListProductScreen({navigation}) {
         </TouchableOpacity>
       </View>
       {/* fillter */}
-        <View>
+      <View>
         <FilterSelector />
-        </View>
+      </View>
       {/* showlisst */}
-      <View style={{height: 6, backgroundColor: '#ccc', opacity: 0.5,
-      marginTop:10}} />
-      <ListProductVertical data={list}/>
-      {/* <FiltersAll/> */}
+      <View
+        style={{
+          height: 6,
+          backgroundColor: '#ccc',
+          opacity: 0.5,
+          marginTop: 10,
+        }}
+      />
+      <ListProductVertical data={list} />
     </View>
   );
 }

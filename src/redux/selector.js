@@ -33,3 +33,4 @@ export const categoryIdSelector = createSelector(
     }
   },
 );
+export const filterAll = state => state.searchFilter.filterProduct
