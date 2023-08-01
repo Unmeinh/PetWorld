@@ -2,12 +2,13 @@ import {
     Animated,
     Dimensions,
     FlatList, View,
+    Image
 } from 'react-native';
 import React, { useRef, useState } from 'react';
 import AutoHeightImage from 'react-native-auto-height-image';
 import PanigationBlog from './PanigationBlog';
 
-export default function BlogImageSlider({ array }) {
+export default function BlogImageSlider({ array, aspectRatio }) {
     const [index, setindex] = useState(0);
     const scrollx = useRef(new Animated.Value(0)).current;
 
@@ -40,7 +41,7 @@ export default function BlogImageSlider({ array }) {
 
         return (
             <View style={{ width: Dimensions.get('window').width }}>
-                <AutoHeightImage source={{ uri: String(item) }} width={Dimensions.get('window').width}/>
+                <Image source={{ uri: String(item) }} style={{ width: Dimensions.get('window').width, aspectRatio: aspectRatio }} />
             </View>
         );
     }

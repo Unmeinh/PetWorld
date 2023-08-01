@@ -1163,6 +1163,11 @@
     "@babel/helper-validator-identifier" "^7.22.5"
     to-fast-properties "^2.0.0"
 
+"@baronha/react-native-multiple-image-picker@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@baronha/react-native-multiple-image-picker/-/react-native-multiple-image-picker-1.0.0.tgz#047b3069cec6fd62fe97bfdc3c678d51c9be2ef3"
+  integrity sha512-ayOm4H7sLV4lThLUHWgIT6LO9ljro1yv7WUDsKKKU1shMjWQM4SfeGP4VOLLUqQXJC13YN9RdtpzkpVk4Ahg4w==
+
 "@bcoe/v8-coverage@^0.2.3":
   version "0.2.3"
   resolved "https://registry.npmjs.org/@bcoe/v8-coverage/-/v8-coverage-0.2.3.tgz"
@@ -5671,6 +5676,11 @@ react-native-gesture-handler@^2.12.0:
     invariant "^2.2.4"
     lodash "^4.17.21"
     prop-types "^15.7.2"
+
+react-native-image-picker@^5.6.0:
+  version "5.6.0"
+  resolved "https://registry.yarnpkg.com/react-native-image-picker/-/react-native-image-picker-5.6.0.tgz#e7b6637dc5296cddb486106b711eb4eedabd083d"
+  integrity sha512-QHHb0qw3VXDedllrfS6SjxNG1SubnjUjIR2OH1HVbjv/IRVa3v4fI1MHbQaSNXlGopT9kL9jcnh7tbcX1z74Vg==
 
 react-native-linear-gradient@^2.7.3:
   version "2.7.3"
