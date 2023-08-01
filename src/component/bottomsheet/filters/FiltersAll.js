@@ -1,12 +1,10 @@
-import { StyleSheet, Text, View } from 'react-native'
-import React from 'react'
-
+import {Dimensions, StyleSheet, Text, View} from 'react-native';
+import React from 'react';
+const {height} = Dimensions.get('window');
 export default function FiltersAll() {
   return (
-    <View>
-      <Text>FiltersAll</Text>
-    </View>
-  )
+    <View><Text>Modal</Text></View>
+  );
 }
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({});
