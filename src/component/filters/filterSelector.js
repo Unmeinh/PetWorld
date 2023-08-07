@@ -13,6 +13,9 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import Modal from 'react-native-modal';
 import {useSelector} from 'react-redux';
 import {filterAll} from '../../redux/selector';
+import FiltersBy from '../bottomsheet/filters/FiltersBy';
+import FiltersOrder from '../bottomsheet/filters/FillterOrder';
+import FiltersPrice from '../bottomsheet/filters/FilterPrice';
 const {width, height} = Dimensions.get('window');
 export default function FilterSelector() {
   const [selectFilterBy, setSelectFilterBy] = useState(false);
@@ -20,51 +23,38 @@ export default function FilterSelector() {
   const [selectPercent, setSelectPercent] = useState(false);
   const [selectPrice, setSelectPrice] = useState(false);
   const [isVisibleModal, setIsVisibleModal] = useState(false);
-  const listFilter = useSelector(filterAll);
+  const [modalId, setModalId] = useState(0);
 
+  const {filterBy, filterOrder, filterByPrice} = useSelector(filterAll);
   const getColor = isSelected => (isSelected ? '#F3D2C1' : '#CCCCCC');
   const getIconName = (isSelected, iconName) =>
     isSelected ? iconName : `${iconName}-outline`;
   const getIconColor = isSelected => (isSelected ? '#BB7308' : '#000000');
 
-  const Item = ({item, onPress, icon, textColor}) => (
-    <View>
-      <TouchableOpacity onPress={onPress} style={{flexDirection: 'row',paddingTop:10,paddingBottom:10}}>
-      <IconMeterial name={item.icon} size={24} color="#F582AE"></IconMeterial>
-      <Text
-        style={[
-          styles.title,
-          {color: textColor, flexGrow: 1, marginLeft: 10, fontSize: 16,fontFamily:'ProductSans'},
-        ]}>
-        {item.name}
-      </Text>
-      <IconMeterial name={icon} size={24} color="#F582AE" />
-    </TouchableOpacity>
-    <View
-      style={{width:width,height:1,backgroundColor:'#ccc',opacity:0.5}}></View>
-    </View>
-  );
-  const showModalFiltersAll = () => {
-    setSelectFilterBy(!selectFilterBy);
+  const handleModal = id => {
+    if (id == 0) {
+      setSelectFilterBy(!selectFilterBy);
+    } else if (id == 1) {
+      setSelectFilter(!selectFilter);
+    } else if (id == 2) {
+      setSelectPrice(!selectPrice);
+    }
+    setModalId(id);
     setIsVisibleModal(!isVisibleModal);
   };
-  const [selectedId, setSelectedId] = useState();
-
-  const renderItem = ({item}) => {
-    const icon =
-      item.id === selectedId
-        ? 'checkbox-blank-circle'
-        : 'checkbox-blank-circle-outline';
-    const color = item.id === selectedId ? '#001858' : '#8e888f';
-
-    return (
-      <Item
-        item={item}
-        onPress={() => setSelectedId(item.id)}
-        icon={icon}
-        textColor={color}
-      />
-    );
+  const modalSelect = id => {
+    console.log(modalId);
+    if (id == 0) {
+      return [
+        <FiltersBy data={filterBy} />,
+        <FiltersOrder data={filterOrder} />,
+        <FiltersPrice data={filterByPrice} />,
+      ];
+    } else if (id == 1) {
+      return <FiltersBy data={filterBy} />;
+    } else if (id == 2) {
+      return <FiltersPrice data={filterByPrice} />;
+    }
   };
   return (
     <View>
@@ -77,7 +67,7 @@ export default function FilterSelector() {
         }}>
         <TouchableOpacity
           onPress={() => {
-            showModalFiltersAll();
+            handleModal(0);
           }}
           style={{
             borderRadius: 16,
@@ -95,7 +85,7 @@ export default function FilterSelector() {
         </TouchableOpacity>
         <TouchableOpacity
           onPress={() => {
-            setSelectFilter(!selectFilter);
+            handleModal(1);
           }}
           style={{
             borderRadius: 16,
@@ -151,7 +141,7 @@ export default function FilterSelector() {
         </TouchableOpacity>
         <TouchableOpacity
           onPress={() => {
-            setSelectPrice(!selectPrice);
+            handleModal(2);
           }}
           style={{
             borderRadius: 16,
@@ -180,7 +170,7 @@ export default function FilterSelector() {
         animationInTiming={800}
         isVisible={isVisibleModal}
         onBackButtonPress={() => {
-          showModalFiltersAll();
+          setIsVisibleModal(!isVisibleModal);
         }}>
         <View
           style={{
@@ -197,28 +187,34 @@ export default function FilterSelector() {
           <View style={{marginLeft: 16, marginTop: 16, marginRight: 16}}>
             <TouchableOpacity
               onPress={() => {
-                showModalFiltersAll();
+                handleModal(modalId);
+                console.log(modalId);
               }}>
-              <Icon name="close" size={26} color="#ccc" />
+              <Icon name="close" size={26} color="#999793" />
             </TouchableOpacity>
-            <Text
-              style={{
-                marginTop: 10,
-                fontFamily: 'ProductSansBold',
-                fontSize: 18,
-                color: '#ccc',
-                marginBottom: 12,
-              }}>
-              Lọc theo
-            </Text>
-            <FlatList
-              data={listFilter.filterBy}
-              renderItem={renderItem}
-              keyExtractor={item => item.id}
-              extraData={selectedId}
-            />
+            {modalSelect(modalId)}
           </View>
         </View>
+        <TouchableOpacity
+          style={{
+            width: '100%',
+            height: 50,
+            backgroundColor: '#F582AE',
+            justifyContent: 'center',
+            alignItems: 'center',
+            position: 'absolute',
+            bottom: 0,
+            borderRadius: 3,
+          }}>
+          <Text
+            style={{
+              fontFamily: 'ProductSansBold',
+              fontSize: 16,
+              color: '#001858',
+            }}>
+            Xác nhận
+          </Text>
+        </TouchableOpacity>
       </Modal>
     </View>
   );
