@@ -17,18 +17,18 @@ import ListComment from '../../component/modals/ListComment';
 
 export default function ItemBlog(row) {
     const [blog, setblog] = useState(row.blog);
+    var user = blog.idUser;
     const [isShowComment, setisShowComment] = useState(false);
     const [isShowMoreContent, setisShowMoreContent] = useState(false);
     const [isCollapsedContent, setisCollapsedContent] = useState(true);
+    const [srcAvatar, setsrcAvatar] = useState({ uri: String(user.avatarUser) });
     const [isLove, setisLove] = useState(false);
-    var user = blog.idUser;
+    Moment.locale('en');
 
     const onTextLayout = useCallback(e => {
         setisShowMoreContent(e.nativeEvent.lines.length > 1);
     }, []);
 
-    const [srcAvatar, setsrcAvatar] = useState({ uri: String(user.avatarUser) });
-    Moment.locale('en');
 
     function onReacting() {
         if (isLove) {
@@ -113,7 +113,7 @@ export default function ItemBlog(row) {
                                 ?
                                 <Text style={styles.textContent} numberOfLines={1}
                                     onTextLayout={onTextLayout} ellipsizeMode='clip'>
-                                    <Text style={[styles.textContent, { fontWeight: 'bold' }]}>{user.fullName} {" "}</Text>
+                                    <Text style={[styles.textContent, { fontWeight: 'bold' }]}>{user.fullName}{" "}</Text>
                                     {blog.contentBlog}
                                 </Text>
                                 :
@@ -124,7 +124,7 @@ export default function ItemBlog(row) {
                                             <View>
                                                 <Text style={[styles.textContent, { fontFamily: String(blog.contentFont) }]} numberOfLines={1}
                                                     onTextLayout={onTextLayout} ellipsizeMode='clip'>
-                                                    <Text style={styles.textBlogger}>{user.fullName} {" "}</Text>
+                                                    <Text style={styles.textBlogger}>{user.fullName}{" "}</Text>
                                                     {blog.contentBlog}
                                                 </Text>
                                                 <Text style={[styles.textContent]}>
@@ -139,7 +139,7 @@ export default function ItemBlog(row) {
                                             :
                                             <View>
                                                 <Text style={[styles.textContent, { fontFamily: String(blog.contentFont) }]}>
-                                                    <Text style={styles.textBlogger}>{user.fullName} {" "}</Text>
+                                                    <Text style={styles.textBlogger}>{user.fullName}{" "}</Text>
                                                     {blog.contentBlog}
                                                 </Text>
                                                 <TouchableOpacity>
@@ -164,7 +164,7 @@ export default function ItemBlog(row) {
 
                 <View style={{ backgroundColor: 'rgba(0, 0, 0, 0.20)', height: 1 }}></View>
             </View>
-            <ListComment isShow={isShowComment} comments={blog.comments} callBack={() => setisShowComment(false)}/>
+            <ListComment isShow={isShowComment} blog={blog} callBack={() => setisShowComment(false)}/>
         </View>
     )
 }

@@ -20,8 +20,6 @@ const ListComment = (route) => {
     const [srcAvatar, setsrcAvatar] = useState({ uri: String(route.blog.idUser.avatarUser) });
     const [isLove, setisLove] = useState(false);
     const [isFollow, setisFollow] = useState(false);
-    const [inputComment, setinputComment] = useState('');
-    const [heightIC, setheightIC] = useState(0);
     const inputCommentRef = useRef();
 
     function onReacting() {
@@ -50,13 +48,22 @@ const ListComment = (route) => {
             animationOut={'slideOutDown'}
             animationOutTiming={350}
             animationInTiming={350}
+            avoidKeyboard
             isVisible={route.isShow}
             onBackButtonPress={() => {
                 route.callBack();
             }}>
             <View style={styles.backgroundModal}>
                 <View style={styles.viewDialog}>
-                    <KeyboardAvoidingView behavior="padding" style={styles.viewTop}>
+                    <KeyboardAvoidingView
+                        enabled
+                        behavior='padding'
+                        keyboardVerticalOffset={
+                            Platform.select({
+                                ios: () => 0,
+                                android: () => -200
+                            })()
+                        }>
                         <View style={styles.viewInfo}>
                             <View style={{ flexDirection: 'row', alignItems: "center" }}>
                                 <TouchableOpacity onPress={OpenAccount} activeOpacity={0.5}>
@@ -102,51 +109,48 @@ const ListComment = (route) => {
                             </View>
                         </ScrollView>
                     </KeyboardAvoidingView>
-                </View>
-            </View>
-            <View style={styles.viewWriteComment}>
-                <View style={{ paddingHorizontal: 5, marginBottom: 10 }}>
-                    <View style={styles.viewTopWriteComment}>
-                        <View style={{ flexDirection: 'row' }}>
-                            <View style={styles.viewRowInteract}>
-                                <View>
-                                    {
-                                        (isLove)
-                                            ? <TouchableOpacity style={styles.iconInteract} onPress={onReacting}>
-                                                <Ionicons name="heart" size={27} color={'#f00'} />
-                                            </TouchableOpacity>
-                                            :
-                                            <TouchableOpacity style={styles.iconInteract} onPress={onReacting}>
-                                                <Ionicons name="heart-outline" size={27} color={'#001858'} />
-                                            </TouchableOpacity>
-                                    }
-                                </View>
-                            </View>
 
-                            <TouchableOpacity style={styles.iconInteract} onPress={() => inputCommentRef.current.focus()}>
-                                <Ionicons name="chatbubble-outline" size={25} color={'#001858'} />
+                    <View style={styles.viewWriteComment}>
+                        <View style={{ paddingHorizontal: 5, marginBottom: 10 }}>
+                            <View style={styles.viewTopWriteComment}>
+                                <View style={{ flexDirection: 'row' }}>
+                                    <View style={styles.viewRowInteract}>
+                                        <View>
+                                            {
+                                                (isLove)
+                                                    ? <TouchableOpacity style={styles.iconInteract} onPress={onReacting}>
+                                                        <Ionicons name="heart" size={27} color={'#f00'} />
+                                                    </TouchableOpacity>
+                                                    :
+                                                    <TouchableOpacity style={styles.iconInteract} onPress={onReacting}>
+                                                        <Ionicons name="heart-outline" size={27} color={'#001858'} />
+                                                    </TouchableOpacity>
+                                            }
+                                        </View>
+                                    </View>
+
+                                    <TouchableOpacity style={styles.iconInteract} onPress={() => inputCommentRef.current.focus()}>
+                                        <Ionicons name="chatbubble-outline" size={25} color={'#001858'} />
+                                    </TouchableOpacity>
+                                </View>
+                                <TouchableOpacity style={styles.iconInteract}>
+                                    <AntDesign name="sharealt" size={25} color={'#001858'} />
+                                </TouchableOpacity>
+                            </View>
+                            <View style={{ flexDirection: 'row', alignItems: 'flex-end', paddingHorizontal: 5 }}>
+                                <Text style={styles.textInteract}>{blog.interacts.length} lượt thích</Text>
+                                <Text style={styles.textInteractComment}>{"• "}{blog.createdAt}</Text>
+                            </View>
+                        </View>
+                        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+                            <TextInput placeholder="Bạn thấy sao về bài viết này?"
+                                style={styles.inputComment} ref={inputCommentRef} 
+                                multiline = {true} />
+                            <TouchableOpacity style={styles.buttonSend}>
+                                <Feather name="send" size={19} color={'#001858'} style={{ transform: [{ rotate: '45deg' }], marginRight: 3 }} />
                             </TouchableOpacity>
                         </View>
-                        <TouchableOpacity style={styles.iconInteract}>
-                            <AntDesign name="sharealt" size={25} color={'#001858'} />
-                        </TouchableOpacity>
                     </View>
-                    <View style={{ flexDirection: 'row', alignItems: 'flex-end', paddingHorizontal: 5 }}>
-                        <Text style={styles.textInteract}>{blog.interacts.length} lượt thích</Text>
-                        <Text style={styles.textInteractComment}>{"• "}{blog.createdAt}</Text>
-                    </View>
-                </View>
-                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-                    <TextInput placeholder="Bạn thấy sao về bài viết này?"
-                        style={styles.inputComment} ref={inputCommentRef}
-                        multiline={true} onChangeText={(input) => setinputComment(input)}
-                        onContentSizeChange={(event) =>
-                            setheightIC(event.nativeEvent.contentSize.height)
-                        }
-                        value={inputComment} />
-                    <TouchableOpacity style={styles.buttonSend}>
-                        <Feather name="send" size={19} color={'#001858'} style={{ transform: [{ rotate: '45deg' }], marginRight: 3 }} />
-                    </TouchableOpacity>
                 </View>
             </View>
         </Modal>
