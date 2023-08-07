@@ -28,9 +28,9 @@ export default function HomeScreen({scrollRef, onScrollView, navigation}) {
   const [countCart, setCountCart] = useState(0);
   const listPet = useSelector(listPetSelector);
   const listProduct = useSelector(listProductSelector);
-  const listCategory = useSelector(categorySelector);
+  const listCategory = useSelector(categorySelector); 
   const colorLoader = ['#f0e8d8', '#dbdbdb', '#f0e8d8'];
-  const [isLoader, setIsLoader] = useState(true);
+  const [isLoader, setIsLoader] = useState(() =>true);
   useEffect(() => {
     setTimeout(() => {
       setIsLoader(false);

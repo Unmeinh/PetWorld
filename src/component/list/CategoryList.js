@@ -6,7 +6,7 @@ import {createShimmerPlaceholder} from 'react-native-shimmer-placeholder';
 import listfakeloader from '../../data/listfakeloader';
 
 const ShimerPlaceHolder = createShimmerPlaceholder(LinearGradient);
-export default function CategoryList({data, isLoader}) {
+function CategoryList({data, isLoader}) {
   const colorLoader = ['#f0e8d8', '#dbdbdb', '#f0e8d8'];
   return (
     <View style={{marginTop: 16}}>
@@ -34,7 +34,7 @@ export default function CategoryList({data, isLoader}) {
             <FlatList
               horizontal
               scrollEnabled={false}
-              keyExtractor={item => console.log(item.id)}
+              keyExtractor={(item) => item.id}
               data={data}
               renderItem={({item}) => <CategoryItem item={item} />}
             />,
@@ -59,3 +59,5 @@ const styles = StyleSheet.create({
     ,marginTop:20
   },
 });
+
+export default React.memo(CategoryList)

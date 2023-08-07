@@ -77,16 +77,13 @@ export default function NaviTabScreen({navigation}) {
         const dif = currentOffset - (offset || 0);
 
         if (Math.abs(dif) < 3) {
-            console.log('unclear');
         } else if (dif < 0) {
-            console.log('up');
             Animated.timing(startValue, {
                 toValue: 0,
                 duration: duration,
                 useNativeDriver: true,
             }).start();
         } else {
-            console.log('down');
             Animated.timing(startValue, {
                 toValue: 90,
                 duration: duration,

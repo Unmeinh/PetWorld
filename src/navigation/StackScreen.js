@@ -10,6 +10,8 @@ import ForgetPassword from '../view/form/ForgetPassword';
 import ConfirmOTP from '../view/form/ConfirmOTP';
 import ChangePassword from '../view/form/ChangePassword';
 import ListProductScreen from '../view/shopping/ListProductScreen';
+import NewPost from '../view/blog/NewBlog';
+import DetailProduct from '../view/shopping/DetailProduct'
 const Stack = createStackNavigator();
 
 export default function StackScreen() {
@@ -17,7 +19,7 @@ export default function StackScreen() {
     <NavigationContainer>
       <Stack.Navigator
         screenOptions={() => ({headerShown: false})}
-        initialRouteName="SlashScreen">
+        initialRouteName="OrboadScreen">
         <Stack.Screen name="SlashScreen" component={SlashScreen} />
         <Stack.Screen name="OrboadScreen" component={OrboadScreen} />
         <Stack.Screen name="LoginScreen" component={LoginScreen} />
@@ -27,6 +29,8 @@ export default function StackScreen() {
         <Stack.Screen name="ConfirmOTP" component={ConfirmOTP} />
         <Stack.Screen name="ChangePassword" component={ChangePassword} />
         <Stack.Screen name="ListProductScreen" component={ListProductScreen} />
+        <Stack.Screen name="NewPost" component={NewPost} />
+        <Stack.Screen name="DetailProduct" component={DetailProduct} />
       </Stack.Navigator>
     </NavigationContainer>
   );

@@ -22,7 +22,7 @@ export default function BlogScreen({ scrollRef, onScrollView, infoLogin, navigat
   }
 
   function OpenNewPost() {
-
+    navigation.navigate('NewPost');
   }
 
   function PickingImage() {
@@ -34,7 +34,7 @@ export default function BlogScreen({ scrollRef, onScrollView, infoLogin, navigat
       <ScrollView style={{ width: '100%' }} ref={scrollRef}
         onScroll={onScrollView}>
         <View style={styles.container}>
-          <View style={styles.viewNewPost}>
+          <View style={styles.viewInfoHead}>
             <View style={{ flexDirection: 'row', alignItems: "center" }}>
               <TouchableOpacity onPress={OpenAccount} activeOpacity={0.5}>
                 <Image source={srcAvatar} onError={() => setsrcAvatar(require('../../assets/image/error.png'))}

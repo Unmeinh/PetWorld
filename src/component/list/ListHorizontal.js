@@ -6,7 +6,7 @@ import {createShimmerPlaceholder} from 'react-native-shimmer-placeholder';
 import listfakeloader from '../../data/listfakeloader';
 
 const ShimerPlaceHolder = createShimmerPlaceholder(LinearGradient);
-export default function ListHorizontal({data, title, isLoader}) {
+function ListHorizontal({data, title, isLoader}) {
   const colorLoader = ['#f0e8d8', '#dbdbdb', '#f0e8d8'];
   console.log('Chạy vào đây');
   return (
@@ -84,3 +84,4 @@ const styles = StyleSheet.create({
     marginLeft: 20,
   },
 });
+export default React.memo(ListHorizontal)
