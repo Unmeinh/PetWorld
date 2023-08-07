@@ -10,3 +10,9 @@ export const selectIdCategoryAction = id => {
     payload: id,
   };
 };
+export const selectIdProductAction = id => {
+  return {
+    type: 'filter/idProduct',
+    payload: id,
+  };
+};

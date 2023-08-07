@@ -5,12 +5,11 @@ import FilterSelector from '../../component/filters/filterSelector';
 import ListProductVertical from '../../component/ListProduct/ListProductVertical';
 import {useSelector} from 'react-redux';
 import {categoryIdSelector} from '../../redux/selector';
-import FiltersAll from '../../component/bottomsheet/filters/FiltersAll';
 export default function ListProductScreen({navigation}) {
   const list = useSelector(categoryIdSelector);
 
   return (
-    <View style={{backgroundColor: '#FEF6E4', flex: 1}}>
+    <View style={{backgroundColor:"#FEF6E4"}}>
       <View
         style={{
           marginTop: 20,
@@ -48,7 +47,8 @@ export default function ListProductScreen({navigation}) {
           marginTop: 10,
         }}
       />
-      <ListProductVertical data={list} />
+      <ListProductVertical data={list} navigation={navigation}/>
+    
     </View>
   );
 }

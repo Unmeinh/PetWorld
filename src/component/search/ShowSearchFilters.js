@@ -7,7 +7,9 @@ export default function ShowSearchFilters({data}) {
     <View style={{marginLeft:18,marginRight:18}}>
       <FlatList
         data={data}
-        renderItem={({item}) => <ItemSearch item={item} />}
+        keyExtractor={(item) => item.id}
+        renderItem={({item}) => <ItemSearch item={item} />
+        }
       />
     </View>
   )

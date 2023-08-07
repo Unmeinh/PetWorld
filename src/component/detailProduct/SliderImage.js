@@ -1,12 +1,12 @@
-import { Animated, FlatList, StyleSheet, Text, View } from 'react-native';
-import React, { useRef, useState } from 'react';
-import Slides from '../data/slideshow';
-import SilderItem from './SilderItem';
-import Panigation from './Panigation';
+import {Animated, FlatList, StyleSheet, Text, View} from 'react-native';
+import React, {useRef, useState} from 'react';
+import PanigationImage from './PanigationImage';
+import ImageSliderItem from './ItemSliderImage';
 
-export default function Slider() {
+export default function SliderImage({data}) {
   const [index, setindex] = useState(0);
   const scrollx = useRef(new Animated.Value(0)).current;
+  const flatListRef = useRef(null);
   const handerOnScroll = event => {
     Animated.event(
       [
@@ -24,28 +24,38 @@ export default function Slider() {
     )(event);
   };
 
-  const handleOnViewItemChange = useRef(({ viewableItems }) => {
+  const handleOnViewItemChange = useRef(({viewableItems}) => {
     setindex(viewableItems[0].index);
   }).current;
+  const handlePanigationPress = selectedIndex => {
+    setindex(selectedIndex);
+    flatListRef.current.scrollToIndex({index: selectedIndex, animated: true});
+  };
 
   const viewabilityConfig = useRef({
     itemVisiblePercentThreshold: 50,
   }).current;
 
   return (
-    <View style={{ height: 220 }}>
+    <View style={{height: 320}}>
       <FlatList
+        ref={flatListRef}
         horizontal
         pagingEnabled
         onScroll={handerOnScroll}
         snapToAlignment="center"
         showsHorizontalScrollIndicator={false}
-        data={Slides}
-        renderItem={({ item }) => <SilderItem item={item} />}
+        data={data}
+        renderItem={({item}) => <ImageSliderItem item={item} />}
         onViewableItemsChanged={handleOnViewItemChange}
         viewabilityConfig={viewabilityConfig}
       />
-      <Panigation data={Slides} scrollx={scrollx} index={index} />
+      <PanigationImage
+        data={data}
+        scrollx={scrollx}
+        index={index}
+        onPress={handlePanigationPress}
+      />
     </View>
   );
 }
