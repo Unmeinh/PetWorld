@@ -7,7 +7,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import {createShimmerPlaceholder} from 'react-native-shimmer-placeholder';
 import slideshow from '../../data/slideshow';
 const ShimerPlaceHolder = createShimmerPlaceholder(LinearGradient);
-export default function Slider({isLoader}) {
+ function Slider({isLoader}) {
   const [index, setindex] = useState(0);
   const scrollx = useRef(new Animated.Value(0)).current;
   const colorLoader = ['#f0e8d8', '#dbdbdb', '#f0e8d8'];
@@ -60,4 +60,4 @@ export default function Slider({isLoader}) {
   );
 }
 
-const styles = StyleSheet.create({});
+export default React.memo(Slider)
