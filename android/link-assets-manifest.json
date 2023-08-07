@@ -2,6 +2,38 @@
   "migIndex": 1,
   "data": [
     {
+      "path": "src/assets/fonts/Aclonica.ttf",
+      "sha1": "0d7cc41b70279ef88a36c38989c36aea1cabbb42"
+    },
+    {
+      "path": "src/assets/fonts/Arialn.ttf",
+      "sha1": "64f6c2438da82137c60843a966c67c0378d01c64"
+    },
+    {
+      "path": "src/assets/fonts/Garii.ttf",
+      "sha1": "5f769ee0727984884d7addde3648b66427aea712"
+    },
+    {
+      "path": "src/assets/fonts/GothamMedium.otf",
+      "sha1": "e01b9d2c901bfc2ca5bf3383eb51c0c9746a6ca4"
+    },
+    {
+      "path": "src/assets/fonts/LazyFox.otf",
+      "sha1": "62405268e449d42f764b9638445668fc2eb9aeb1"
+    },
+    {
+      "path": "src/assets/fonts/MBFSpaceHabitat.otf",
+      "sha1": "780d94e6714a0efc7c1239a941dca884de7d72c3"
+    },
+    {
+      "path": "src/assets/fonts/MightyWings.otf",
+      "sha1": "a7789751663ea2451558f42dc214e228f78c9e28"
+    },
+    {
+      "path": "src/assets/fonts/OPPOSans.otf",
+      "sha1": "5e7d9df4c96087e9fd306bfe1a6dd74b237a66af"
+    },
+    {
       "path": "src/assets/fonts/ProductSans.otf",
       "sha1": "fb81ea8bf1d6d7193d9c7c1555b4da95dc79c52c"
     },
@@ -18,8 +50,20 @@
       "sha1": "17b6a2d46cbefe802e79837325593572eacff6b0"
     },
     {
-      "path": "src/assets/fonts/ProductSansRegular.otf",
-      "sha1": "fb81ea8bf1d6d7193d9c7c1555b4da95dc79c52c"
+      "path": "src/assets/fonts/RobotoRegular.ttf",
+      "sha1": "824b5480c977a8166e177e5357d13164ccc45f47"
+    },
+    {
+      "path": "src/assets/fonts/Sinistre.otf",
+      "sha1": "3d58c66cd68dc467f86263b58a78b1c0d3f83c02"
+    },
+    {
+      "path": "src/assets/fonts/TikTokSans.otf",
+      "sha1": "b7b39ae93dd5b952a47cb424562116cb5a78de6a"
+    },
+    {
+      "path": "src/assets/fonts/WorkSans.otf",
+      "sha1": "52a33d1a0dfe8f2b12c2858536438f1446c22d20"
     }
   ]
 }

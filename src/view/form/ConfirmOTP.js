@@ -5,9 +5,10 @@ import {
     TouchableOpacity,
     TextInput
 } from 'react-native'
-import React, { useState, useEffect } from 'react'
+import React, { useState, useRef } from 'react'
 import styles from '../../styles/form.style';
 import HeaderTitle from '../../component/header/HeaderTitle';
+import OTPItem from '../../component/OTPItem';
 
 var censorCharacters = ['*', '**', '***', '****', '*****'];
 
@@ -17,19 +18,16 @@ export default function ConfirmOTP({ route, navigation }) {
     const [inputValueVerify, setinputValueVerify] = useState(route.params.valueVerify);
     const [phoneNumberDisplay, setphoneNumberDisplay] = useState('');
     const [emailDisplay, setemailDisplay] = useState('');
-
-    function onInputOTP(input) {
-        var otp = input.replace(/\D/g, '');
-        if (otp.length <= 6) {
-            setinputOTP(otp);
-        }
-    }
+    const OTPRef = useRef();
 
     function onSendAgain() {
         ToastAndroid.show(inputValueVerify, ToastAndroid.SHORT);
     }
 
     function onContinue() {
+        var otp = OTPRef.current.getOTP();
+        console.log(otp);
+        
         if (inputOTP == '') {
             ToastAndroid.show('Mã xác minh chưa được nhập!', ToastAndroid.SHORT);
             return;
@@ -38,11 +36,15 @@ export default function ConfirmOTP({ route, navigation }) {
         if (inputOTP.length < 6) {
             ToastAndroid.show('Mã xác minh phải dài 6 số!', ToastAndroid.SHORT);
             return;
-        } 
+        }
 
         ToastAndroid.show(inputOTP, ToastAndroid.SHORT);
         ToastAndroid.show('Tiếp tục', ToastAndroid.SHORT);
         navigation.navigate('ChangePassword');
+    }
+
+    function onSetOTP(input) {
+        setinputOTP(input);
     }
 
     React.useEffect(() => {
@@ -94,17 +96,7 @@ export default function ConfirmOTP({ route, navigation }) {
                 </View>
 
                 <View style={{ marginTop: 25 }}>
-                    <TextInput style={styles.inputOTP} value={inputOTP}
-                        onChangeText={(input) => (onInputOTP(input))} 
-                        keyboardType='number-pad'/>
-                    <View style={{ flexDirection: 'row', justifyContent: 'space-around' }}>
-                        <View style={styles.underlineOTP}></View>
-                        <View style={styles.underlineOTP}></View>
-                        <View style={styles.underlineOTP}></View>
-                        <View style={styles.underlineOTP}></View>
-                        <View style={styles.underlineOTP}></View>
-                        <View style={styles.underlineOTP}></View>
-                    </View>
+                    <OTPItem ref={OTPRef}/>
                 </View>
 
                 <TouchableHighlight style={[styles.buttonConfirm, { marginTop: 75 }]}
