@@ -14,7 +14,7 @@ export default function PanigationBlog({ data, scrollx, index }) {
         })
         const backgroundColor = scrollx.interpolate({
           inputRange,
-          outputRange: ["#00000035", "#fff", "#00000035"],
+          outputRange: ["#00185850", "#FEF6E4", "#00185850"],
           extrapolate: 'clamp',
         })
         return <Animated.View key={idx.toString()} style={[styles.dot, { width: dotWidth, backgroundColor },
@@ -27,7 +27,7 @@ export default function PanigationBlog({ data, scrollx, index }) {
 const styles = StyleSheet.create({
   container: {
     position: "absolute",
-    bottom: 3,
+    bottom: 4.5,
     flexDirection: "row",
     width: "100%",
     alignItems: "center",

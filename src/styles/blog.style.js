@@ -18,7 +18,8 @@ export default StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
-        padding: 15
+        padding: 15, marginBottom: 3,
+        backgroundColor: yellowWhite,
     },
 
     imageAvatar: {
@@ -86,8 +87,15 @@ export default StyleSheet.create({
 
     textContent: {
         fontSize: 16,
-        fontFamily: 'ProductSans',
         color: darkBlue,
+        fontFamily: 'ProductSans'
+    },
+
+    textBlogger: {
+        fontSize: 16,
+        color: darkBlue,
+        fontWeight: 'bold',
+        fontFamily: 'ProductSans'
     },
 
     textTime: {
@@ -117,7 +125,7 @@ export default StyleSheet.create({
 
     buttonUpload: {
         padding: 5,
-        paddingHorizontal: 17,
+        paddingHorizontal: 20,
         borderRadius: 7,
         backgroundColor: pinkLotus,
     },
@@ -228,13 +236,14 @@ export default StyleSheet.create({
 
     buttonBackDialog: {
         position: 'absolute',
-        top: 13, left: 10
+        top: 15, left: 10
     },
 
     titleDialog: {
         fontSize: 23,
         fontWeight: '500',
-        marginTop: 10
+        marginTop: 10,
+        color: darkBlue
     },
 
     scrollViewDialog: {
@@ -245,12 +254,13 @@ export default StyleSheet.create({
 
     viewItemFont: {
         borderColor: '#000',
-        borderBottomWidth: 1,
-        paddingTop: 10, paddingBottom: 10,
-        paddingLeft: 20, paddingRight: 20
+        borderBottomWidth: 0.5,
+        paddingVertical: 10,
+        paddingHorizontal: 20,
     },
 
     textItemFont: {
-        fontSize: 27
+        fontSize: 19,
+        color: darkBlue
     },
 });
