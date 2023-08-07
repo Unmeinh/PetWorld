@@ -10,15 +10,15 @@ import React from 'react';
 import Icon from 'react-native-vector-icons/AntDesign';
 import {useSelector} from 'react-redux';
 import {selectFilterIdSelector} from '../../redux/selector';
-export default function ItemProductVertical({item}) {
+export default function ItemProductVertical({item, navigation,disPatchIdProduct}) {
   const idCategory = useSelector(selectFilterIdSelector);
   const priceDiscount = (price, discount) => {
     if (discount > 0) {
       return (
         <Text style={styles.price}>
-          {price.toLocaleString('vi-VN') + 'đ'}{' '}
+          {(price-(price * discount) / 100).toLocaleString('vi-VN') + 'đ'}{' '}
           <Text style={styles.discount}>
-            {((price * discount) / 100 + price).toLocaleString('vi-VN') + 'đ'}
+            {price.toLocaleString('vi-VN') + 'đ'}
           </Text>
         </Text>
       );
@@ -47,7 +47,9 @@ export default function ItemProductVertical({item}) {
       <TouchableHighlight
         activeOpacity={0.7}
         underlayColor="#00185830"
-        onPress={() => console.log('đsdsds')}>
+        onPress={() => {
+          disPatchIdProduct(item.id)
+          navigation.navigate('DetailProduct')}}>
         <View
           style={{
             marginLeft: 20,
@@ -58,7 +60,7 @@ export default function ItemProductVertical({item}) {
           }}>
           <View>
             <Image
-              source={idCategory === 1?item?.imagePet:item?.imageProduct}
+              source={idCategory === 1 ? item?.imagePet[0] : item?.imageProduct[0]}
               style={{width: 90, height: 90, borderRadius: 10}}
             />
           </View>
