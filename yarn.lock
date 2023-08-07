@@ -5715,6 +5715,11 @@ react-native-screens@^3.22.1:
     react-freeze "^1.0.0"
     warn-once "^0.1.0"
 
+react-native-shimmer-placeholder@^2.0.9:
+  version "2.0.9"
+  resolved "https://registry.yarnpkg.com/react-native-shimmer-placeholder/-/react-native-shimmer-placeholder-2.0.9.tgz#0096932289bd9ec5747cd4f1c9d15f91ba02157a"
+  integrity sha512-s2pfAAO6uaybREYM2KcaxP3c2XlZvLfHfzmhMlGEoOhSKaoM92KpA1Hx0BeC75yilkliJuowqO/hFzvLB0h7hg==
+
 react-native-svg@^13.10.0:
   version "13.10.0"
   resolved "https://registry.npmjs.org/react-native-svg/-/react-native-svg-13.10.0.tgz"
