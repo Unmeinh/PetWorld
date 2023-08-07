@@ -22,6 +22,8 @@
     "react-native-animated-pagination-dots": "^0.1.73",
     "react-native-auto-height-image": "^3.2.4",
     "react-native-gesture-handler": "^2.12.0",
+    "react-native-image-picker": "^5.6.0",
+    "react-native-keyboard-aware-scroll-view": "^0.9.5",
     "react-native-linear-gradient": "^2.8.1",
     "react-native-modal": "^13.0.1",
     "react-native-pager-view": "^6.2.0",
