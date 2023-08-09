@@ -34,7 +34,7 @@ export default function BlogScreen({ scrollRef, onScrollView, infoLogin, navigat
       <ScrollView style={{ width: '100%' }} ref={scrollRef}
         onScroll={onScrollView}>
         <View style={styles.container}>
-          <View style={styles.viewInfoHead}>
+          <View style={[styles.viewInfoHead, { shadowColor: '#000', elevation: 3}]}>
             <View style={{ flexDirection: 'row', alignItems: "center" }}>
               <TouchableOpacity onPress={OpenAccount} activeOpacity={0.5}>
                 <Image source={srcAvatar} onError={() => setsrcAvatar(require('../../assets/image/error.png'))}
@@ -49,7 +49,6 @@ export default function BlogScreen({ scrollRef, onScrollView, infoLogin, navigat
               <Entypo name='folder-images' size={27} color={'#001858'} />
             </TouchableHighlight>
           </View>
-          <View style={{ backgroundColor: '#D9D9D9', height: 3 }} />
           {
             (isSelected == true)
               ?
@@ -76,7 +75,6 @@ export default function BlogScreen({ scrollRef, onScrollView, infoLogin, navigat
                 }
               </ScrollView>
           }
-
         </View>
       </ScrollView>
     </SafeAreaView>

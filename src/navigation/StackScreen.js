@@ -30,6 +30,7 @@ export default function StackScreen() {
         <Stack.Screen name="ChangePassword" component={ChangePassword} />
         <Stack.Screen name="ListProductScreen" component={ListProductScreen} />
         <Stack.Screen name="NewPost" component={NewPost} />
+        <Stack.Screen name="DetailProduct" component={DetailProduct} />
       </Stack.Navigator>
     </NavigationContainer>
   );

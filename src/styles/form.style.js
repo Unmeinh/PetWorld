@@ -13,8 +13,7 @@ export default StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: yellowWhite,
-        paddingLeft: 30,
-        paddingRight: 30
+        paddingHorizontal: 30,
     },
 
     pawBottomLeft: {
@@ -235,8 +234,12 @@ export default StyleSheet.create({
         fontFamily: 'ProductSans',
         color: darkBlue,
         fontWeight: '700',
-        letterSpacing: 35,
-        width: '100%',
+        
+        // letterSpacing: 35,
+        // width: '95%',
+        // paddingLeft: 0,
+        // marginLeft: 0
+        width: '13.5%',
     },
 
     underlineOTP: {

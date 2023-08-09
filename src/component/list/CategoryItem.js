@@ -1,16 +1,18 @@
 import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import React from 'react';
 import {useDispatch} from 'react-redux';
-import { selectIdCategoryAction } from '../redux/action';
-export default function CategoryItem({item, navigation}) {
+import { selectIdCategoryAction } from '../../redux/action';
+import { useNavigation } from '@react-navigation/native';
+export default function CategoryItem({item}) {
   const dispatch = useDispatch()
+  const navigation = useNavigation()
   return (
     <TouchableOpacity
       onPress={() => {
         dispatch(selectIdCategoryAction(item.id))
         navigation.navigate('ListProductScreen')
       }}
-      style={{marginRight: 20}}>
+      style={{marginLeft:20}}>
       <View
         style={{
           width: 70,
