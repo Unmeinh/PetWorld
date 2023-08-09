@@ -6,32 +6,39 @@ import {
   Text,
   TextInput,
   View,
+  Dimensions,
 } from 'react-native';
-import React, {useState} from 'react';
-import styles from '../../styles/temp.style';
+import React, {useEffect, useState} from 'react';
 import {SafeAreaView} from 'react-navigation';
 import Icon from 'react-native-vector-icons/Ionicons';
-import Slider from '../../component/Slider';
 import {makeMutable} from 'react-native-reanimated';
-import Category from '../../data/category';
 import {useSelector} from 'react-redux';
-import CategoryList from '../../component/CategoryList';
-import dataCategory from '../../data/category';
-import dataPet from '../../data/listpet';
-import ListPetHorizontal from '../../component/ListPetHorizontal';
-import PetAISupport from '../../component/PetAISupport';
-import { listPetSelector ,listProductSelector} from '../../redux/selector';
-import ListProductHorizontal from '../../component/ListProductHorizotal';
-
+import {
+  listPetSelector,
+  listProductSelector,
+  categorySelector,
+} from '../../redux/selector';
+import LinearGradient from 'react-native-linear-gradient';
+import {createShimmerPlaceholder} from 'react-native-shimmer-placeholder';
+import Slider from '../../component/slideshow/Slider';
+import CategoryList from '../../component/list/CategoryList';
+import ListHorizontal from '../../component/list/ListHorizontal';
+const ShimerPlaceHolder = createShimmerPlaceholder(LinearGradient);
 export default function HomeScreen({scrollRef, onScrollView, navigation}) {
   const [countCart, setCountCart] = useState(0);
-  const listPet = useSelector(listPetSelector)
-  const listProduct = useSelector(listProductSelector)
-
+  const listPet = useSelector(listPetSelector);
+  const listProduct = useSelector(listProductSelector);
+  const listCategory = useSelector(categorySelector); 
+  const colorLoader = ['#f0e8d8', '#dbdbdb', '#f0e8d8'];
+  const [isLoader, setIsLoader] = useState(() =>true);
+  useEffect(() => {
+    setTimeout(() => {
+      setIsLoader(false);
+    }, 3000);
+  }, []);
   return (
-    <View>
-      <ScrollView ref={scrollRef}
-        onScroll={onScrollView}>
+    <>
+      <ScrollView ref={scrollRef} onScroll={onScrollView} style={{backgroundColor:"#FEF6E4"}}>
         <SafeAreaView>
           <View style={{alignItems: 'flex-end', marginTop: 10, marginEnd: 20}}>
             <Icon name="cart-outline" color="#F582AE" size={30} />
@@ -51,103 +58,58 @@ export default function HomeScreen({scrollRef, onScrollView, navigation}) {
             </View>
           </View>
         </SafeAreaView>
-        <Pressable
-          onPress={()=>navigation.navigate('SearchFilters')}
-          style={{
-            height: 40,
-            backgroundColor: '#DBDBDB',
-            opacity: 0.5,
-            borderRadius: 17,
-            marginTop: 17,
-            flexDirection: 'row',
-            justifyContent: 'center',
-            alignItems: 'center',
-            marginLeft: 20,
-            marginRight: 20,
-            marginBottom: 20,
-          }}>
-          <Icon
-            name="search"
-            color="#656565"
-            size={24}
-            style={{marginLeft: 10}}
-          />
 
-          <Text
-            style={{flexGrow: 1}}
-            >Tìm kiếm</Text>
-        </Pressable>
+        {isLoader ? (
+          <View style={styles.margin20}>
+            <ShimerPlaceHolder
+              shimmerStyle={styles.styleLoader}
+              shimmerColors={colorLoader}
+            />
+          </View>
+        ) : (
+          <Pressable
+            onPress={() => navigation.navigate('SearchFilters')}
+            style={styles.search}>
+            <Icon
+              name="search"
+              color="#656565"
+              size={24}
+              style={{marginLeft: 10}}
+            />
+
+            <Text style={{flexGrow: 1}}>Tìm kiếm</Text>
+          </Pressable>
+        )}
         {/* slideshow */}
-        <Slider />
+        <Slider isLoader={isLoader} />
         {/* category */}
-        <View style={{marginLeft: 20, marginRight: 20, marginTop: 20}}>
-          <Text
-            style={{
-              fontFamily: 'ProductSansBold',
-              fontSize: 20,
-              color: '#001858',
-            }}>
-            Sản phẩm chính
-          </Text>
-          <CategoryList data={dataCategory} />
-        </View>
+
+          <CategoryList data={listCategory} isLoader={isLoader}/>
         {/* listpetnew */}
-        <View
-          style={{
-            marginTop: 20,
-            marginLeft: 20,
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-          }}>
-          <Text
-            style={{
-              fontFamily: 'ProductSansBold',
-              fontSize: 20,
-              color: '#001858',
-            }}>
-            Thú cưng mới
-          </Text>
-          <Text
-            style={{
-              marginRight: 20,
-              fontSize: 14,
-              fontFamily: 'ProductSansBold',
-              color: '#F252AE',
-            }}>
-            Xem tất cả
-          </Text>
-        </View>
-        <ListPetHorizontal data={listPet} />
+        <ListHorizontal data={listPet} title="Thú cưng mới" isLoader={isLoader} />
         {/* listproductnew */}
-        <View
-          style={{
-            marginTop: 20,
-            marginLeft: 20,
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-          }}>
-          <Text
-            style={{
-              fontFamily: 'ProductSansBold',
-              fontSize: 20,
-              color: '#001858',
-            }}>
-            Sản phẩm mới
-          </Text>
-          <Text
-            style={{
-              marginRight: 20,
-              fontSize: 14,
-              fontFamily: 'ProductSansBold',
-              color: '#F252AE',
-            }}>
-            Xem tất cả
-          </Text>
-        </View>
-        <View style={{marginBottom: 20}}>
-          <ListProductHorizontal data={listProduct} />
-        </View>
+        <ListHorizontal data={listProduct} title="Sản phẩm mới" isLoader={isLoader}/>
+       
       </ScrollView>
-    </View>
+    </>
   );
 }
+const styles = StyleSheet.create({
+  search: {
+    height: 40,
+    backgroundColor: '#DBDBDB',
+    opacity: 0.5,
+    borderRadius: 17,
+    marginTop: 17,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginLeft: 20,
+    marginRight: 20,
+    marginBottom: 20,
+  },
+  margin20: {
+    margin: 20,
+  },
+  styleLoader: {width: '100%', height: 40, borderRadius: 17},
+});
