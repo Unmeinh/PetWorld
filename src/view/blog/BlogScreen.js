@@ -9,7 +9,7 @@ import styles from '../../styles/blog.style';
 import ItemBlog from '../../component/items/ItemBlog';
 import ItemBlogLoader from '../../component/items/ItemBlogLoader';
 import AutoHeightImage from 'react-native-auto-height-image';
-import blogs from '../../data/blog';
+import { useNavigation } from '@react-navigation/native';
 import LinearGradient from 'react-native-linear-gradient';
 import Entypo from 'react-native-vector-icons/Entypo';
 import { useSelector, useDispatch } from "react-redux";
@@ -18,10 +18,11 @@ import { createShimmerPlaceholder } from 'react-native-shimmer-placeholder';
 
 const ShimerPlaceHolder = createShimmerPlaceholder(LinearGradient);
 
-const BlogScreen = ({ scrollRef, onScrollView, navigation }) => {
+const BlogScreen = ({ scrollRef, onScrollView }) => {
+  const navigation = useNavigation();
   const dispatch = useDispatch();
+  const getUser = useSelector((state) => state.infoLogin);
   const [arr_blog, setarr_blog] = useState(useSelector((state) => state.listBlog));
-  const [isSelected, setisSelected] = useState(false);
   const [userLogin, setuserLogin] = useState(useSelector((state) => state.infoLogin));
   const [isRefresh, setisRefresh] = useState(true);
   const colorLoader = ['#f0e8d8', '#dbdbdb', '#f0e8d8'];
@@ -31,19 +32,28 @@ const BlogScreen = ({ scrollRef, onScrollView, navigation }) => {
 
   useEffect(() => {
     if (isLoader) {
-      dispatch(getInfoLogin('001'));
       setTimeout(() => {
         setisLoader(false);
       }, 5000);
-    } 
+    }
   }, [isLoader]);
 
   useEffect(() => {
-    console.log(userLogin);
-    if (userLogin != undefined && userLogin != {}) {
-      setsrcAvatar({ uri: String(userLogin.avatarUser) });
+    console.log(getUser);
+    if (getUser != undefined && getUser != {}) {
+      setuserLogin(getUser);
+      setsrcAvatar({ uri: String(getUser.avatarUser) });
     }
-  }, [userLogin]);
+  }, [getUser]);
+
+  React.useEffect(() => {
+    const unsub = navigation.addListener('focus', () => {
+      dispatch(getInfoLogin('001'));
+      setisLoader(true);
+    });
+
+    return unsub;
+  }, [navigation]);
 
   function OpenAccount() {
   }
