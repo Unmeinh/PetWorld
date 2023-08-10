@@ -1,20 +1,23 @@
 import {
   Text, View,
   ScrollView,
-  Dimensions,
+  Dimensions
 } from 'react-native'
-import React, { useRef, useState, useEffect } from 'react'
+import React from 'react'
 import styles from '../../styles/temp.style';
-import HeaderTitle from '../../component/header/HeaderTitle';
-import HeaderNotify from '../notify/HeaderNotify'
-import { Image } from 'react-native-animatable';
-import TabLayout from './TabLayout';
 
-export default function NotifyScreen(navigation ) {
+export default function NotifyScreen({ scrollRef, onScrollView }) {
   return (
-    <View style={{ backgroundColor: 'rgba(254, 246, 228, 0.90)', flex: 1}}>
-      <HeaderNotify nav={navigation} titleHeader="Notify Screen" colorHeader="#FF0000" />
-      <TabLayout />
+    <View style={{ backgroundColor: '#FEF6E4', flex: 1 }}>
+      <ScrollView ref={scrollRef}
+        onScroll={onScrollView} style={{ height: '100%', width: '100%' }}>
+        <View style={{ justifyContent: 'center', alignItems: 'center', height: Dimensions.get('window').height}}>
+          <Text style={{ fontSize: 50, color: '#001858', fontFamily: 'ProductSans' }}>Notify</Text>
+        </View>
+        <View style={{ justifyContent: 'center', alignItems: 'center', height: Dimensions.get('window').height}}>
+          <Text style={{ fontSize: 50, color: '#001858', fontFamily: 'ProductSans' }}>Screen</Text>
+        </View>
+      </ScrollView>
     </View>
   )
 }

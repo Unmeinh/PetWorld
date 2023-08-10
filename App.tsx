@@ -1,8 +1,8 @@
-import { StyleSheet, Text, View } from 'react-native'
-import React from 'react'
-import StackScreen from './src/navigation/StackScreen'
-import { Provider } from 'react-redux'
-import store from './src/redux/store'
+import { StyleSheet, Text, View } from 'react-native';
+import React from 'react';
+import StackScreen from './src/navigation/StackScreen';
+import { Provider } from 'react-redux';
+import store from './src/redux/store';
 
 export default function App() {
   return (
@@ -11,4 +11,3 @@ export default function App() {
     </Provider>
   )
 }
-const styles = StyleSheet.create({})

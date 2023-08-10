@@ -3,11 +3,11 @@ import {
     View, TouchableOpacity,
     Image,
 } from "react-native";
-import React, { useState, useCallback } from "react";
+import React, { useState, memo } from "react";
 import styles from "../../styles/comment.style";
 import Ionicons from "react-native-vector-icons/Ionicons";
 
-export default function ItemComment(row) {
+const ItemComment = (row) => {
     var comment = row.item;
     var user = comment.idUser;
     const [avatarUser, setavatarUser] = useState({ uri: String(user.avatarUser) })
@@ -28,7 +28,7 @@ export default function ItemComment(row) {
     return (
         <View style={styles.viewComment}>
             <TouchableOpacity onPress={OpenAccount} activeOpacity={0.5}>
-                <Image source={avatarUser} onError={() => setavatarUser(require('../../assets/image/error.png'))}
+                <Image source={avatarUser} onError={() => setavatarUser(require('../../assets/images/error.png'))}
                     style={styles.avatarComment} />
             </TouchableOpacity>
             <View style={styles.viewContent}>
@@ -58,3 +58,5 @@ export default function ItemComment(row) {
         </View>
     )
 }
+
+export default memo(ItemComment);

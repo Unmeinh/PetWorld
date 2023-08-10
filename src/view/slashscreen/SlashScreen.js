@@ -1,10 +1,8 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, StyleSheet, Dimensions, Image, Animated, Easing } from 'react-native';
 import * as Animatable from 'react-native-animatable';
-import { useNavigation } from '@react-navigation/native';
-import OrboadScreen from '../orboardscreen/OrboadScreen';
 
-export default function SplashScreen() {
+export default function SplashScreen({ navigation }) {
   const logoSize = 150; 
   const screenHeight = Dimensions.get('screen').height;
   const screenWidth = Dimensions.get('screen').width;
@@ -16,57 +14,71 @@ export default function SplashScreen() {
   const nameImageWidth = screenWidth * 0.7; 
   const nameImageHeight = (nameImageWidth * logoSize) / logoSize; 
 
-  const footPrintContainerWidth = 24;
-  const stepDistance = 3.7;
-  const totalSteps = Math.ceil(screenWidth / (footPrintContainerWidth + stepDistance));
+  const dauchanContainerWidth = 24;
+  const stepDistance = 3.7; // Khoảng cách giữa các bước chân
+  const totalSteps = Math.ceil(screenWidth / (dauchanContainerWidth + stepDistance)); // Tổng số bước chân cần di chuyển
 
-  const stepAnimation = useRef(new Animated.Value(0)).current;
-  const [footPrintPositions, setFootPrintPositions] = useState([]);
+  const stepAnimation = new Animated.Value(0);
+  const [dauchanPositions, setDauchanPositions] = useState([]);
   const [logoVisible, setLogoVisible] = useState(true);
   const [nameVisible, setNameVisible] = useState(false);
-  const isEffectRunning = useRef(false); // Thêm biến ref
-
-  const navigation = useNavigation();
 
   useEffect(() => {
-    const moveFootPrint = () => {
+    const moveDauchan = () => {
       Animated.timing(stepAnimation, {
         toValue: totalSteps,
-        duration: 100,
+        duration: 200, 
         easing: Easing.linear,
         useNativeDriver: true,
       }).start(({ finished }) => {
+
         if (finished) {
-          setFootPrintPositions([...footPrintPositions, footPrintPositions.length]);
+          setDauchanPositions([...dauchanPositions, dauchanPositions.length]);
         }
       });
     };
 
-    const hideLogoAndShowName = () => {
+    const hideLogo = () => {
       setTimeout(() => {
         setLogoVisible(false);
-        setNameVisible(true);
-        setTimeout(() => {
-          navigateToOrboadScreen();
-          isEffectRunning.current = false; // Đánh dấu là đã chạy xong
-        }, 1000);
-      }, 3000);
+        showName();
+      }, 2000);    
     };
 
-    // Kiểm tra xem useEffect() đã chạy hay chưa
-    if (!isEffectRunning.current) {
-      moveFootPrint();
-      hideLogoAndShowName();
-      isEffectRunning.current = true; // Đánh dấu là đang chạy
-    }
+    const showName = () => {
+      setTimeout(() => {
+        setNameVisible(true);
+      }, 300); // Hiển thị phần nameImageContainer sau khi logo biến mất 0.5 giây
+    };
+
+    moveDauchan();
+    hideLogo();
 
     return () => {
       stepAnimation.stopAnimation();
     };
-  }, [footPrintPositions]);
+  }, [dauchanPositions]);
 
-  const navigateToOrboadScreen = () => {
-    navigation.navigate('OrboadScreen'); 
+  const dauchanContainerStyles = {
+    position: 'absolute',
+    bottom: screenHeight * 0.4, 
+    transform: [
+      {
+        rotate: '90deg', 
+      },
+      {
+        translateX: stepAnimation.interpolate({
+          inputRange: [0, totalSteps],
+          outputRange: [0, totalSteps * (dauchanContainerWidth + stepDistance)], 
+        }),
+      },
+      {
+        scaleX: stepAnimation.interpolate({
+          inputRange: [0, totalSteps],
+          outputRange: [1, -1], // Thay đổi tỷ lệ kích thước theo chiều ngang để tạo hiệu ứng đối xứng
+        }),
+      },
+    ],
   };
 
   return (
@@ -78,7 +90,7 @@ export default function SplashScreen() {
             to: { scale: 1 },
           }}
           duration={3000}
-          source={require('../../assets/image/logoApp/logo.png')}
+          source={require('../../assets/images/logoApp/logo.png')}
           style={[
             styles.logo,
             { width: logoSize, height: logoSize, bottom: bottomPosition },
@@ -88,18 +100,18 @@ export default function SplashScreen() {
       {nameVisible && (
         <Animatable.View animation="fadeIn" duration={1000} style={[styles.nameImageContainer, { bottom: nameBottomPosition }]}>
           <Image
-            source={require('../../assets/image/logoApp/name.png')}
+            source={require('../../assets/images/logoApp/name.png')}
             style={{ width: nameImageWidth, height: nameImageHeight }}
             resizeMode="contain"
           />
         </Animatable.View>
       )}
-      {footPrintPositions.map((position, index) => (
-        <View key={position} style={[styles.footPrintContainer, { left: position * (footPrintContainerWidth + stepDistance) }]}>
+      {dauchanPositions.map((position, index) => (
+        <View key={position} style={[styles.dauchanContainer, { left: position * (dauchanContainerWidth + stepDistance) }]}>
           <Image
-            source={require('../../assets/image/logoApp/footPrint.png')}
+            source={require('../../assets/images/logoApp/dauchan.png')}
             style={[
-              styles.footPrintImage,
+              styles.dauchanImage,
               {
                 bottom: index % 2 === 0 ? bottomPosition1 : bottomPosition2,
               },
@@ -124,11 +136,11 @@ const styles = StyleSheet.create({
   nameImageContainer: {
     position: 'absolute',
   },
-  footPrintContainer: {
+  dauchanContainer: {
     position: 'absolute',
     bottom: 0,
   },
-  footPrintImage: {
+  dauchanImage: {
     width: 24,
     height: 24,
   },
