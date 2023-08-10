@@ -30,10 +30,10 @@ export default function HomeScreen({scrollRef, onScrollView, navigation}) {
   const listProduct = useSelector(listProductSelector);
   const listCategory = useSelector(categorySelector); 
   const colorLoader = ['#f0e8d8', '#dbdbdb', '#f0e8d8'];
-  const [isLoader, setIsLoader] = useState(() =>true);
+  const [isLoader, setisLoader] = useState(() =>true);
   useEffect(() => {
     setTimeout(() => {
-      setIsLoader(false);
+      setisLoader(false);
     }, 3000);
   }, []);
   return (

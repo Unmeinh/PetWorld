@@ -67,7 +67,7 @@ const ListComment = (route) => {
                         <View style={styles.viewInfo}>
                             <View style={{ flexDirection: 'row', alignItems: "center" }}>
                                 <TouchableOpacity onPress={OpenAccount} activeOpacity={0.5}>
-                                    <Image source={srcAvatar} onError={() => setsrcAvatar(require('../../assets/image/error.png'))}
+                                    <Image source={srcAvatar} onError={() => setsrcAvatar(require('../../assets/images/error.png'))}
                                         style={styles.imageAvatar} />
                                 </TouchableOpacity>
                                 <TouchableHighlight underlayColor={'rgba(0, 0, 0, 0.2)'} activeOpacity={0.5}>
@@ -89,7 +89,7 @@ const ListComment = (route) => {
                             <View>
                                 <View style={styles.viewComment}>
                                     <TouchableOpacity onPress={OpenAccount} activeOpacity={0.5}>
-                                        <Image source={srcAvatar} onError={() => setavatarUser(require('../../assets/image/error.png'))}
+                                        <Image source={srcAvatar} onError={() => setavatarUser(require('../../assets/images/error.png'))}
                                             style={styles.avatarComment} />
                                     </TouchableOpacity>
                                     <View style={styles.viewContent}>

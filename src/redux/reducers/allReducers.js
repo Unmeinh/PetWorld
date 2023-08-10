@@ -4,12 +4,19 @@ import listProductReducer from "./product/ProductReducer";
 import searchFilterReducer from "./filters/FiltersReducer";
 import categoryReducer from "./category/category";
 import listShopReducer from "./shop/ShopReducer";
+import listBlogReducer from "./blog/ListBlogReducer";
+import listCommentReducer from "./comment/ListCommentReducer";
+import loginReducer from "./user/LoginReducer";
 
 const rootReducer = combineReducers({
     listPet: listPetReducer,
     listProduct: listProductReducer,
     searchFilter: searchFilterReducer,
     category: categoryReducer,
-    listShop: listShopReducer
-})
-export default rootReducer
+    listShop: listShopReducer,
+    listBlog: listBlogReducer,
+    listComment: listCommentReducer,
+    infoLogin: loginReducer,
+});
+
+export default rootReducer;
