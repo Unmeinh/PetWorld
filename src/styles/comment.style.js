@@ -101,8 +101,10 @@ export default StyleSheet.create({
 
     iconInteractComment: {
         height: 17,
+        width: 17,
         alignItems: 'center',
-        alignContent: 'center'
+        alignContent: 'center',
+        borderRadius: 15
     },
 
     textInteractComment: {
@@ -133,6 +135,7 @@ export default StyleSheet.create({
     
     iconInteract: {
         height: 30,
+        width: 30,
         alignItems: 'center',
         alignContent: 'center'
     },

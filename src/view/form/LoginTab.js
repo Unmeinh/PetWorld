@@ -10,8 +10,11 @@ import styles from '../../styles/form.style';
 import Entypo from 'react-native-vector-icons/Entypo';
 import Feather from 'react-native-vector-icons/Feather';
 import LinearGradient from 'react-native-linear-gradient';
+import { useNavigation } from '@react-navigation/native';
+import client from '../../api/axios.config';
 
 export default function LoginTab(route) {
+    const navigation = useNavigation();
     const [passToggle, setpassToggle] = useState(true);
     const [rememberMe, setrememberMe] = useState(false);
     const [inputUsername, setinputUsername] = useState("");
@@ -62,16 +65,67 @@ export default function LoginTab(route) {
             return;
         }
 
-        ToastAndroid.show("Đăng nhập thành công!", ToastAndroid.SHORT);
-        route.nav.navigate('NaviTabSreen');
+        var formdata = new FormData();
+        formdata.append("userName", newUser.userName);
+        formdata.append("passWord", newUser.passWord);
+        var url_api = 'https://192.168.191.4:3000/api/user/login';
+
+        // axios.post(url_api, formdata)
+        //     .then(function (response) {
+        //         console.log(response);
+        //     })
+        //     .catch(function (error) {
+        //         console.log(error);
+        //     })
+        //     .finally(function () {
+        //     });
+
+        // client.post('/user/login', {
+        //     body: newUser
+        // }).then((response) => {
+        //     if (response.status == 200) {
+        //         if (response.success == true) {
+        //             ToastAndroid.show(response.message, ToastAndroid.SHORT);
+        //             navigation.goBack();
+        //         }
+        //     } else {
+        //         ToastAndroid.show(response.message, ToastAndroid.SHORT);
+        //     }
+        // }).catch((e) => e);
+
+        // fetch(url_api, {
+        //     method: 'POST',
+        //     headers: {
+        //         Accept: 'application/json',
+        //         'content-type': 'application/json',
+        //     },
+        //     body: newUser
+        // })
+        //     .then(async (res) => {
+        //         const json = await res.json();
+        //         if (res.status == 200) {
+        //             if (json.success == true) {
+        //                 ToastAndroid.show(json.message, ToastAndroid.SHORT);
+        //                 // route.nav.navigate('NaviTabSreen');
+        //                 navigation.navigate('NaviTabSreen');
+        //             }
+        //         } else {
+        //             ToastAndroid.show(json.message, ToastAndroid.SHORT);
+        //         }
+        //     })
+        //     .catch((e) => {
+        //         console.log(e);
+        //     });
+
+            navigation.navigate('NaviTabSreen');
     }
 
     return (
         <View style={styles.container}>
             <Image style={{ position: 'absolute', right: 0 }}
-                source={require('../../assets/image/form/topRightPaw.png')} />
+                source={require('../../assets/images/form/topRightPaw.png')} />
             <Image style={styles.pawBottomLeft}
-                source={require('../../assets/image/form/bottomLeftPaw.png')} />
+                source={require('../../assets/images/form/bottomLeftPaw.png')} />
             <View style={{ marginTop: 75 }}>
                 <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                     <Text style={styles.textEnable}>Đăng nhập</Text>
@@ -139,7 +193,7 @@ export default function LoginTab(route) {
                             }, styles.titleInput]}>Ghi nhớ tôi?</Text>
                         </View>
                         <TouchableHighlight onPress={() => { route.nav.navigate('ForgetPassword') }}
-                            activeOpacity={0.5} underlayColor="#00185830" style={{ marginTop:15 }}>
+                            activeOpacity={0.5} underlayColor="#00185830" style={{ marginTop: 15 }}>
                             <Text style={{
                                 color: '#001858', textDecorationLine: 'underline',
                                 fontSize: 15, fontFamily: 'ProductSans',
@@ -166,15 +220,15 @@ export default function LoginTab(route) {
                     <View style={{ width: '100%', marginTop: 25, alignItems: 'center' }}>
                         <View style={{ flexDirection: 'row' }}>
                             <TouchableOpacity style={styles.borderIcon}>
-                                <Image source={require('../../assets/image/form/google.png')} style={{ height: 30, width: 30 }} />
+                                <Image source={require('../../assets/images/form/google.png')} style={{ height: 30, width: 30 }} />
                             </TouchableOpacity>
 
                             <TouchableOpacity style={[styles.borderIcon, { marginLeft: 15, marginRight: 15 }]}>
-                                <Image source={require('../../assets/image/form/facebook.png')} style={{ height: 30, width: 30 }} />
+                                <Image source={require('../../assets/images/form/facebook.png')} style={{ height: 30, width: 30 }} />
                             </TouchableOpacity>
 
                             <TouchableOpacity style={styles.borderIcon}>
-                                <Image source={require('../../assets/image/form/twitter.png')} style={{ height: 30, width: 30 }} />
+                                <Image source={require('../../assets/images/form/twitter.png')} style={{ height: 30, width: 30 }} />
                             </TouchableOpacity>
                         </View>
                     </View>
