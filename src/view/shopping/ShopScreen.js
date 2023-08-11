@@ -26,7 +26,7 @@ export default function ShopScreen({navigation, route}) {
             <Icon name="search" size={26} color="#001858" />
             <Text>Tìm kiếm trong cửa hàng</Text>
           </Pressable>
-          <Fontisto name="move-h-a" size={26} color="#001858" />
+          <Icon name="cart-outline" size={26} color="#001858" />
         </SafeAreaView>
         <View style={styles.tagShop}>
           <Image source={data.avatar} style={styles.image} />
