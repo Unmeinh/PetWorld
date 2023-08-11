@@ -90,7 +90,7 @@ export default function SplashScreen({ navigation }) {
             to: { scale: 1 },
           }}
           duration={3000}
-          source={require('../../assets/image/logoApp/logo.png')}
+          source={require('../../assets/images/logoApp/logo.png')}
           style={[
             styles.logo,
             { width: logoSize, height: logoSize, bottom: bottomPosition },
@@ -100,7 +100,7 @@ export default function SplashScreen({ navigation }) {
       {nameVisible && (
         <Animatable.View animation="fadeIn" duration={1000} style={[styles.nameImageContainer, { bottom: nameBottomPosition }]}>
           <Image
-            source={require('../../assets/image/logoApp/name.png')}
+            source={require('../../assets/images/logoApp/name.png')}
             style={{ width: nameImageWidth, height: nameImageHeight }}
             resizeMode="contain"
           />
@@ -109,7 +109,7 @@ export default function SplashScreen({ navigation }) {
       {dauchanPositions.map((position, index) => (
         <View key={position} style={[styles.dauchanContainer, { left: position * (dauchanContainerWidth + stepDistance) }]}>
           <Image
-            source={require('../../assets/image/logoApp/dauchan.png')}
+            source={require('../../assets/images/logoApp/dauchan.png')}
             style={[
               styles.dauchanImage,
               {

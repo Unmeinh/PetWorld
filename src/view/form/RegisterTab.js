@@ -7,6 +7,8 @@ import {
 import React, { useState } from 'react';
 import styles from '../../styles/form.style';
 import Entypo from 'react-native-vector-icons/Entypo';
+import axios, { isCancel, AxiosError } from 'axios';
+import client from '../../api/axios.config';
 
 export default function RegisterTab(route) {
     const [passToggle, setpassToggle] = useState(true);
@@ -64,7 +66,7 @@ export default function RegisterTab(route) {
         return true;
     }
 
-    function onSignUp() {
+    async function onSignUp() {
         var phoneNUM = inputPhoneNumber.replace(/\D/g, '');
         setinputPhoneNumber(phoneNUM);
         var newUser = {
@@ -73,20 +75,68 @@ export default function RegisterTab(route) {
             passWord: inputPassword
         }
 
-        if (checkValidate(newUser) == false) {
-            // return;
-            ToastAndroid.show("Đăng ký thất bại!", ToastAndroid.SHORT)
-        } else {
-            ToastAndroid.show("Đăng ký thành công!", ToastAndroid.SHORT)
-        }
+        // let res = await axios.post("/api/save_rate", formdata);
+
+        checkValidate(newUser);
+        var formdata = new FormData();
+        formdata.append("userName", newUser.userName);
+        formdata.append("phoneNumber", newUser.phoneNumber);
+        formdata.append("passWord", newUser.passWord);
+        var url_api = 'http://192.168.191.13:3000/api/user/regist';
+
+        client.post('user/regist', {
+            body: JSON.stringify(newUser)
+        }).then((response) => {
+            if (response.status == 201) {
+                if (response.success == true) {
+                    ToastAndroid.show(response.message, ToastAndroid.SHORT);
+                    navigation.goBack();
+                }
+            } else {
+                ToastAndroid.show(response.message, ToastAndroid.SHORT);
+            }
+        });
+
+        // await axios.post(url_api, formdata)
+        //     .then(function (response) {
+        //         console.log(response);
+        //     })
+        //     .catch(function (error) {
+        //         console.log(error);
+        //     })
+        //     .finally(function () {
+        //     });
+
+        // fetch(url_api, {
+        //     method: 'POST',
+        //     headers: {
+        //         Accept: 'application/json',
+        //         'content-type': 'application/json',
+        //     },
+        //     body: JSON.stringify(newUser)
+        // })
+        //     .then(async (res) => {
+        //         const json = await res.json();
+        //         if (res.status == 201) {
+        //             if (json.success == true) {
+        //                 ToastAndroid.show(json.message, ToastAndroid.SHORT);
+        //                 navigation.goBack();
+        //             }
+        //         } else {
+        //             ToastAndroid.show(json.message, ToastAndroid.SHORT);
+        //         }
+        //     })
+        //     .catch((e) => {
+        //         console.log(e);
+        //     });
     }
 
     return (
         <View style={styles.container}>
             <Image style={{ position: 'absolute' }}
-                source={require('../../assets/image/form/topLeftPaw.png')} />
+                source={require('../../assets/images/form/topLeftPaw.png')} />
             <Image style={styles.pawBottomRight}
-                source={require('../../assets/image/form/bottomRightPaw.png')} />
+                source={require('../../assets/images/form/bottomRightPaw.png')} />
             <View style={{ marginTop: 75 }}>
                 <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                     <TouchableHighlight

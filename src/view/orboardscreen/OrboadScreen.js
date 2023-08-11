@@ -57,15 +57,15 @@ export default function OrboadScreen({navigation}) {
         <View style={styles.page} key="1">
           <Image
             style={{position: 'absolute', left: 0}}
-            source={require('../../assets/image/weel.png')}
+            source={require('../../assets/images/weel.png')}
           />
           <Image
             style={{position: 'absolute', right: 0, top: 0}}
-            source={require('../../assets/image/weel-red-1.png')}
+            source={require('../../assets/images/weel-red-1.png')}
           />
           <Image
             style={{marginTop: 90}}
-            source={require('../../assets/image/imagescreen1.png')}
+            source={require('../../assets/images/imagescreen1.png')}
           />
           <Text style={[styles.title, {marginTop: 60}]}>
             Chào mừng bạn đến với thế giới dành cho{' '}
@@ -92,7 +92,7 @@ export default function OrboadScreen({navigation}) {
               </Text>
               <Image
                 style={{position: 'absolute', right: 0}}
-                source={require('../../assets/image/icon_paw.png')}
+                source={require('../../assets/images/icon_paw.png')}
               />
             </Pressable>
           </View>
@@ -100,17 +100,17 @@ export default function OrboadScreen({navigation}) {
         <View style={[styles.page]} key="2">
           <Image
             style={{position: 'absolute', left: 0, top: 0}}
-            source={require('../../assets/image/weel-red-2.png')}
+            source={require('../../assets/images/weel-red-2.png')}
           />
           <Image
             style={{position: 'absolute', bottom: -50, left: 20}}
-            source={require('../../assets/image/pone.png')}
+            source={require('../../assets/images/pone.png')}
           />
           <Image
             style={{position: 'absolute', right: 0, bottom: 140}}
-            source={require('../../assets/image/weel-1.png')}
+            source={require('../../assets/images/weel-1.png')}
           />
-          <Image source={require('../../assets/image/imagescreen2.png')} />
+          <Image source={require('../../assets/images/imagescreen2.png')} />
           <Text style={styles.title}>
             Khám phá nguồn cung cấp đồ pet
             <Text style={{color: pinkColor}}> đa dạng </Text>
@@ -145,7 +145,7 @@ export default function OrboadScreen({navigation}) {
               </Text>
               <Image
                 style={{position: 'absolute', right: 0, top: -2}}
-                source={require('../../assets/image/icon_paw.png')}
+                source={require('../../assets/images/icon_paw.png')}
               />
             </Pressable>
           </View>
@@ -153,19 +153,19 @@ export default function OrboadScreen({navigation}) {
         <View style={[styles.page]} key="3">
           <Image
             style={{position: 'absolute', left: 0, bottom: 140}}
-            source={require('../../assets/image/weel-2.png')}
+            source={require('../../assets/images/weel-2.png')}
           />
           <Image
             style={{position: 'absolute', right: -100, top: 0}}
-            source={require('../../assets/image/pone.png')}
+            source={require('../../assets/images/pone.png')}
           />
           <Image
             style={{position: 'absolute', right: 0, bottom: 0}}
-            source={require('../../assets/image/weel-red-3.png')}
+            source={require('../../assets/images/weel-red-3.png')}
           />
           <Image
             style={{marginTop: 90}}
-            source={require('../../assets/image/imagescreen3.png')}
+            source={require('../../assets/images/imagescreen3.png')}
           />
           <Text style={styles.title}>
             Hãy bắt đầu chúng tôi sẽ cho bạn thấy một{' '}
@@ -194,7 +194,7 @@ export default function OrboadScreen({navigation}) {
               </Text>
               <Image
                 style={{position: 'absolute', right: 0}}
-                source={require('../../assets/image/icon_paw.png')}
+                source={require('../../assets/images/icon_paw.png')}
               />
             </Pressable>
           </View>

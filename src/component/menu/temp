@@ -1,0 +1,26 @@
+<Modal
+        animationIn={'fadeIn'}
+        animationOut={'fadeOut'}
+        animationOutTiming={350}
+        animationInTiming={350}
+        isVisible={isShowMore}
+        backdropOpacity={0}
+        onBackButtonPress={() => {
+            callBack();
+        }}>
+            <TouchableOpacity activeOpacity={1} style={{ flex: 1 }} onPress={() => { callBack() }} >
+                <View style={styles.viewModalMore}>
+                    {
+                        arr_OptionName.map((item, index, arr) => {
+                            return <TouchableHighlight style={styles.viewModalItemMore}
+                                    underlayColor={'#ebedeb'} activeOpacity={0.5}
+                                    onPress={() => {
+                                        arr_OptionFunction[index];
+                                    }}>
+                                    <Text style={}></Text>
+                                </TouchableHighlight>
+                        })
+                    }
+                </View>
+            </TouchableOpacity>
+        </Modal>
