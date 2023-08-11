@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { TouchableOpacity, Text, View, Image, StyleSheet } from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import SettingNotify from './SettingNotify';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 import { Modal } from 'react-native';
 
@@ -46,10 +47,17 @@ export default function HeaderNotify({ nav, titleHeader, colorHeader }) {
       </Text>
       <View style={{ flexDirection: 'row', alignItems: 'center', marginLeft: 10 }}>
         <TouchableOpacity onPress={toggleModal}>
-          <Image source={require('../../assets/image/iconHeader/double_check.png')} style={{ marginRight: 5 }} />
+          <Ionicons name='checkmark-done'
+            size={24}
+            color={'#001858'}
+          style={{ marginRight: 5 }} />
+
         </TouchableOpacity>
         <TouchableOpacity onPress={navigateToSettingNotify}>
-        <Image source={require('../../assets/image/iconHeader/setting.png')} style={{ marginLeft: 5 }} />
+        <Ionicons name='settings-outline'
+            size={24}
+            color={'#001858'}
+         style={{ marginLeft: 5 }} />
       </TouchableOpacity>
       </View>
 
