@@ -5747,13 +5747,8 @@ react-native-keyboard-aware-scroll-view@^0.9.5:
 
 react-native-linear-gradient@^2.8.1:
   version "2.8.1"
-  resolved "https://registry.yarnpkg.com/react-native-linear-gradient/-/react-native-linear-gradient-2.8.1.tgz#e4284f3cb1ba403b8c03364f7569f0c9e4101862"
-  integrity sha512-934R4Bnjo7mYT38W9ypS1Dq/YW6TgyGdkHg+w72HNxN0ZDKG1GqAnZ6XlicMUYJDh7ViiJAKN8eOF3Ho0N4J0Q==
-
-react-native-material-menu@^2.0.0:
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/react-native-material-menu/-/react-native-material-menu-2.0.0.tgz#139f407a52fbc0d47e5351d50ac769e05812da5c"
-  integrity sha512-SmO9PLE3E469EPbVWZqvdu6JGPPZIm7YjqDcWs2PPoY0k7w2V9tFo3BmmLXNzNZDCVCAi+PPSsL7h/5WkfHcSg==
+  resolved "https://registry.npmjs.org/react-native-linear-gradient/-/react-native-linear-gradient-2.8.1.tgz"
+  integrity sha512-iyJszlZ1Ech2c+2qV+isMvvJKyoctR9ashDkhJg1/cuSF0vQaeLV1FAYTT3qW9doxChJGxVAFfYoxotH0yi3Iw==
 
 react-native-modal@^13.0.1:
   version "13.0.1"
@@ -5787,6 +5782,11 @@ react-native-screens@^3.22.1:
   dependencies:
     react-freeze "^1.0.0"
     warn-once "^0.1.0"
+
+react-native-shared-element@^0.8.8:
+  version "0.8.8"
+  resolved "https://registry.yarnpkg.com/react-native-shared-element/-/react-native-shared-element-0.8.8.tgz#1a86ff54d7a96e22d270254d3e642869c7cb3ff3"
+  integrity sha512-ZjnsI9IXckzX5CFl2lbVX8Izn93zBfYw6knUtW41NZ/HAPVq6wlFuSxAhvFNJ4HRZ3FX6b8gUMDYuUfX7djj0A==
 
 react-native-shimmer-placeholder@^2.0.9:
   version "2.0.9"
@@ -5855,6 +5855,13 @@ react-native@0.72.1:
     whatwg-fetch "^3.0.0"
     ws "^6.2.2"
     yargs "^17.6.2"
+
+react-navigation-shared-element@^3.1.3:
+  version "3.1.3"
+  resolved "https://registry.yarnpkg.com/react-navigation-shared-element/-/react-navigation-shared-element-3.1.3.tgz#c75084ca8cab09063297a39ff1110de0dc732aab"
+  integrity sha512-U1BZp7dEdcTNHggfkq3WEBlJeg4HwFhFdj7a0i0Uql/7mg2IHQg/bZaqM2jQvJITkABge6Hz5fZixIF8jyzpkg==
+  dependencies:
+    hoist-non-react-statics "^3.3.2"
 
 react-navigation@^4.4.4:
   version "4.4.4"

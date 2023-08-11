@@ -5,7 +5,7 @@ export const searchFilterSelector = state => state.searchFilter.search;
 export const selectFilterIdSelector = state => state.searchFilter.idCategory;
 export const selectFilterIdProduct = state => state.searchFilter.idProduct;
 export const categorySelector = state => state.category;
-export const listShopSelector = state => state.listShop
+export const listShopSelector = state => state.listShop;
 export const listFilterSelector = createSelector(
   listPetSelector,
   searchFilterSelector,
@@ -47,4 +47,12 @@ export const productSelector = createSelector(
   },
 );
 
-
+export const shopOftheProductSelector = createSelector(
+  listShopSelector,
+  productSelector,
+  (shops, idProduct) => {
+    if (idProduct !== 'undefined') {
+      return shops.find(p => p.id === idProduct.idShop);
+    }
+  },
+);

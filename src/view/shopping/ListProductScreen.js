@@ -7,7 +7,6 @@ import {useSelector} from 'react-redux';
 import {categoryIdSelector} from '../../redux/selector';
 export default function ListProductScreen({navigation}) {
   const list = useSelector(categoryIdSelector);
-
   return (
     <View style={{backgroundColor:"#FEF6E4"}}>
       <View
@@ -47,8 +46,7 @@ export default function ListProductScreen({navigation}) {
           marginTop: 10,
         }}
       />
-      <ListProductVertical data={list} navigation={navigation}/>
-    
+      <ListProductVertical data={list}/>
     </View>
   );
 }

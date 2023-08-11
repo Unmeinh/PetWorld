@@ -8,7 +8,6 @@ import listfakeloader from '../../data/listfakeloader';
 const ShimerPlaceHolder = createShimmerPlaceholder(LinearGradient);
 function ListHorizontal({data, title, isLoader}) {
   const colorLoader = ['#f0e8d8', '#dbdbdb', '#f0e8d8'];
-  console.log('Chạy vào đây');
   return (
     <View style={{marginTop: 18}}>
       <View style={styles.title}>
