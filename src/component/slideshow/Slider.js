@@ -29,7 +29,7 @@ const ShimerPlaceHolder = createShimmerPlaceholder(LinearGradient);
   };
 
   const handleOnViewItemChange = useRef(({viewableItems}) => {
-    setindex(viewableItems[0].index);
+    setindex(viewableItems[0]?.index);
   }).current;
 
   const viewabilityConfig = useRef({
@@ -60,4 +60,4 @@ const ShimerPlaceHolder = createShimmerPlaceholder(LinearGradient);
   );
 }
 
-export default React.memo(Slider)
+export default Slider

@@ -30,7 +30,7 @@ export default function BlogImageSlider({ array, aspectRatio }) {
     };
 
     const handleOnViewItemChange = useRef(({ viewableItems }) => {
-        setindex(viewableItems[0].index);
+        setindex(viewableItems[0]?.index);
     }).current;
 
     const viewabilityConfig = useRef({
