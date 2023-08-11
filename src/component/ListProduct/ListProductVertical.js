@@ -3,21 +3,19 @@ import React from 'react';
 import ItemProductVertical from './ItemProductVertical';
 import {useDispatch} from 'react-redux';
 import {selectIdProductAction} from '../../redux/action';
-export default function ListProductVertical({data, navigation}) {
+export default function ListProductVertical({data}) {
   const dispatch = useDispatch();
   return (
-    <>
       <FlatList
         data={data}
+        keyExtractor={(item) => item.id}
         renderItem={({item}) => (
           <ItemProductVertical
             item={item}
-            navigation={navigation}
             disPatchIdProduct={id => dispatch(selectIdProductAction(id))}
           />
         )}
       />
-    </>
   );
 }
 

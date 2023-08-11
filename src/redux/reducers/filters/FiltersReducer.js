@@ -24,7 +24,6 @@ const initState = {
   idProduct: '',
 };
 const searchFilterReducer = (state = initState, action) => {
-  console.log(state, action);
   switch (action.type) {
     case 'filter/searchFilterChanged':
       return {

@@ -11,8 +11,10 @@ import ConfirmOTP from '../view/form/ConfirmOTP';
 import ChangePassword from '../view/form/ChangePassword';
 import ListProductScreen from '../view/shopping/ListProductScreen';
 import NewPost from '../view/blog/NewBlog';
-import DetailProduct from '../view/shopping/DetailProduct'
-const Stack = createStackNavigator();
+import DetailProduct from '../view/shopping/DetailProduct';
+import {createSharedElementStackNavigator} from 'react-navigation-shared-element';
+import ShopScreen from '../view/shopping/ShopScreen';
+const Stack = createSharedElementStackNavigator();
 
 export default function StackScreen() {
   return (
@@ -30,7 +32,37 @@ export default function StackScreen() {
         <Stack.Screen name="ChangePassword" component={ChangePassword} />
         <Stack.Screen name="ListProductScreen" component={ListProductScreen} />
         <Stack.Screen name="NewPost" component={NewPost} />
-        <Stack.Screen name="DetailProduct" component={DetailProduct} />
+        <Stack.Screen
+          name="DetailProduct"
+          component={DetailProduct}
+          options={{
+            gestureEnabled: true,
+            transitionSpec: {
+              open: {animation: 'timing', config: {duration: 300}},
+              close: {animation: 'timing', config: {duration: 300}},
+            },
+            cardStyleInterpolator: ({current: {progress}}) => {
+              return {
+                cardStyle: {
+                  opacity: progress,
+                },
+              };
+            },
+          }}
+          sharedElements={route => {
+            const {id} = route.params.item;
+            const objAni = (feild,animation ='fade-in',resize = 'clip') => {
+              return   {
+                id: `item.${id}.${feild}`,
+                animation: animation,
+                resize: resize,
+              }
+            };
+            return [objAni('image'),objAni('name'),objAni('price'),objAni('rate')];
+          }}
+        />
+        <Stack.Screen name="ShopScreen" component={ShopScreen} />
+
       </Stack.Navigator>
     </NavigationContainer>
   );

@@ -10,21 +10,33 @@ import React from 'react';
 import Icon from 'react-native-vector-icons/AntDesign';
 import {useSelector} from 'react-redux';
 import {selectFilterIdSelector} from '../../redux/selector';
-export default function ItemProductVertical({item, navigation,disPatchIdProduct}) {
+import {SharedElement}  from 'react-navigation-shared-element';
+import { useNavigation } from '@react-navigation/native';
+export default function ItemProductVertical({
+  item,
+  disPatchIdProduct,
+}) {
+  const navigation = useNavigation();
   const idCategory = useSelector(selectFilterIdSelector);
   const priceDiscount = (price, discount) => {
     if (discount > 0) {
       return (
-        <Text style={styles.price}>
-          {(price-(price * discount) / 100).toLocaleString('vi-VN') + 'đ'}{' '}
-          <Text style={styles.discount}>
-            {price.toLocaleString('vi-VN') + 'đ'}
+        <SharedElement id={`item.${item.id}.price`}>
+          <Text style={styles.price}>
+            {(price - (price * discount) / 100).toLocaleString('vi-VN') + 'đ'}{' '}
+            <Text style={styles.discount}>
+              {price.toLocaleString('vi-VN') + 'đ'}
+            </Text>
           </Text>
-        </Text>
+        </SharedElement>
       );
     } else {
       return (
-        <Text style={styles.price}>{price.toLocaleString('vi-VN') + 'đ'}</Text>
+        <SharedElement id={`item.${item.id}.price`}>
+          <Text style={styles.price}>
+            {price.toLocaleString('vi-VN') + 'đ'}
+          </Text>
+        </SharedElement>
       );
     }
   };
@@ -48,8 +60,9 @@ export default function ItemProductVertical({item, navigation,disPatchIdProduct}
         activeOpacity={0.7}
         underlayColor="#00185830"
         onPress={() => {
-          disPatchIdProduct(item.id)
-          navigation.navigate('DetailProduct')}}>
+          disPatchIdProduct(item.id);
+          navigation.navigate('DetailProduct', {item});
+        }}>
         <View
           style={{
             marginLeft: 20,
@@ -58,23 +71,27 @@ export default function ItemProductVertical({item, navigation,disPatchIdProduct}
             marginBottom: 20,
             flexDirection: 'row',
           }}>
-          <View>
+          <SharedElement id={`item.${item.id}.image`}>
             <Image
-              source={idCategory === 1 ? item?.imagePet[0] : item?.imageProduct[0]}
+              source={
+                idCategory === 1 ? item?.imagePet[0] : item?.imageProduct[0]
+              }
               style={{width: 90, height: 90, borderRadius: 10}}
             />
-          </View>
+          </SharedElement>
           <View style={{marginLeft: 12}}>
             {discountShow(item?.discount)}
-            <Text
-              style={{
-                fontFamily: 'ProductSansBold',
-                fontSize: 16,
-                color: '#001858',
-                marginTop: 6,
-              }}>
-              {idCategory === 1 ? item?.namePet : item?.nameProduct}
-            </Text>
+            <SharedElement id={`item.${item.id}.name`}>
+              <Text
+                style={{
+                  fontFamily: 'ProductSansBold',
+                  fontSize: 16,
+                  color: '#001858',
+                  marginTop: 6,
+                }}>
+                {idCategory === 1 ? item?.namePet : item?.nameProduct}
+              </Text>
+            </SharedElement>
             <View
               style={{
                 flexDirection: 'row',
@@ -114,7 +131,9 @@ export default function ItemProductVertical({item, navigation,disPatchIdProduct}
                 }}
               />
               <Icon name="star" size={14} color="#FFC20F" />
+              <SharedElement id={`item.${item.id}.name`}>
               <Text style={{flexGrow: 1}}>{item?.rate}</Text>
+              </SharedElement>
             </View>
             <View>
               {priceDiscount(

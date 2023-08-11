@@ -43,7 +43,6 @@ export default function FilterSelector() {
     setIsVisibleModal(!isVisibleModal);
   };
   const modalSelect = id => {
-    console.log(modalId);
     if (id == 0) {
       return [
         <FiltersBy data={filterBy} />,
@@ -188,7 +187,6 @@ export default function FilterSelector() {
             <TouchableOpacity
               onPress={() => {
                 handleModal(modalId);
-                console.log(modalId);
               }}>
               <Icon name="close" size={26} color="#999793" />
             </TouchableOpacity>

@@ -1,4 +1,4 @@
-export default [
+[
     {
       id: 'b9j3k7m1',
       nameProduct: 'Len',
@@ -63,4 +63,4 @@ export default [
        discount: 30
     },
   ];
-  
+

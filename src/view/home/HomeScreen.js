@@ -23,6 +23,7 @@ import {createShimmerPlaceholder} from 'react-native-shimmer-placeholder';
 import Slider from '../../component/slideshow/Slider';
 import CategoryList from '../../component/list/CategoryList';
 import ListHorizontal from '../../component/list/ListHorizontal';
+
 const ShimerPlaceHolder = createShimmerPlaceholder(LinearGradient);
 export default function HomeScreen({scrollRef, onScrollView, navigation}) {
   const [countCart, setCountCart] = useState(0);
@@ -84,7 +85,7 @@ export default function HomeScreen({scrollRef, onScrollView, navigation}) {
         <Slider isLoader={isLoader} />
         {/* category */}
 
-          <CategoryList data={listCategory} isLoader={isLoader}/>
+        <CategoryList data={listCategory} isLoader={isLoader}/>
         {/* listpetnew */}
         <ListHorizontal data={listPet} title="Thú cưng mới" isLoader={isLoader} />
         {/* listproductnew */}
