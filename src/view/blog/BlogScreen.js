@@ -14,6 +14,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import Entypo from 'react-native-vector-icons/Entypo';
 import { useSelector, useDispatch } from "react-redux";
 import { getInfoLogin } from '../../redux/actions/userAction';
+import { RefreshControl } from "react-native-gesture-handler";
 import { createShimmerPlaceholder } from 'react-native-shimmer-placeholder';
 
 const ShimerPlaceHolder = createShimmerPlaceholder(LinearGradient);
@@ -21,10 +22,9 @@ const ShimerPlaceHolder = createShimmerPlaceholder(LinearGradient);
 const BlogScreen = ({ scrollRef, onScrollView }) => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
-  const getUser = useSelector((state) => state.infoLogin);
-  const [arr_blog, setarr_blog] = useState(useSelector((state) => state.listBlog));
-  const [userLogin, setuserLogin] = useState(useSelector((state) => state.infoLogin));
-  const [isRefresh, setisRefresh] = useState(true);
+  const userLogin = useSelector((state) => state.infoLogin);
+  const arr_blog = useSelector((state) => state.listBlog);
+  const [isRefreshing, setisRefreshing] = useState(false);
   const colorLoader = ['#f0e8d8', '#dbdbdb', '#f0e8d8'];
   const [srcAvatar, setsrcAvatar] = useState(require('../../assets/images/error.png'));
   const [isLoader, setisLoader] = useState(true);
@@ -39,17 +39,18 @@ const BlogScreen = ({ scrollRef, onScrollView }) => {
   }, [isLoader]);
 
   useEffect(() => {
-    console.log(getUser);
-    if (getUser != undefined && getUser != {}) {
-      setuserLogin(getUser);
-      setsrcAvatar({ uri: String(getUser.avatarUser) });
+    console.log(userLogin);
+    if (userLogin != undefined && userLogin != {}) {
+      setsrcAvatar({ uri: String(userLogin.avatarUser) });
     }
-  }, [getUser]);
+  }, [userLogin]);
 
   React.useEffect(() => {
     const unsub = navigation.addListener('focus', () => {
       dispatch(getInfoLogin('001'));
-      setisLoader(true);
+      // setisLoader(true);
+
+      // return unsub.remove();
     });
 
     return unsub;
@@ -65,6 +66,13 @@ const BlogScreen = ({ scrollRef, onScrollView }) => {
   function PickingImage() {
 
   }
+
+  const ReloadData = React.useCallback(() => {
+    setisRefreshing(true);
+    setTimeout(() => {
+      setisRefreshing(false);
+    }, 2000);
+  }, []);
 
   return (
     <SafeAreaView style={{ backgroundColor: '#FEF6E4', flex: 1 }}>
@@ -122,9 +130,12 @@ const BlogScreen = ({ scrollRef, onScrollView }) => {
                     ?
                     <FlatList data={arr_blog} scrollEnabled={false}
                       renderItem={({ item, index }) => <ItemBlog key={item._id} blog={item} navigation={navigation}
-                        info={userLogin} openAcc={OpenAccount} isRefresh={isRefresh} />}
+                        info={userLogin} openAcc={OpenAccount} />}
                       showsVerticalScrollIndicator={false}
-                      keyExtractor={(item, index) => index.toString()} />
+                      keyExtractor={(item, index) => index.toString()}
+                      refreshControl={
+                        <RefreshControl refreshing={isRefreshing} onRefresh={ReloadData} progressViewOffset={0} />
+                      } />
                     :
                     <View style={styles.viewOther}>
                       {/* <AutoHeightImage source={require('../../assets/images/no_post.png')}

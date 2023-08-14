@@ -3,7 +3,7 @@
         animationOut={'fadeOut'}
         animationOutTiming={350}
         animationInTiming={350}
-        isVisible={isShowMore}
+        isVisible={isShow}
         backdropOpacity={0}
         onBackButtonPress={() => {
             callBack();

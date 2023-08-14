@@ -15,12 +15,14 @@ import Moment from 'moment';
 import BlogImageSlider from "../slider/BlogImageSlider";
 import ListComment from '../../component/modals/ListComment';
 import MenuContext from "../menu/MenuContext";
+import ViewAccountModal from "../modals/ViewAccountModal";
 
-export default function ItemBlog(row) {
+const ItemBlog = (row) => {
     const [blog, setblog] = useState(row.blog);
     var user = blog.idUser;
     const [isShowComment, setisShowComment] = useState(false);
     const [isShowMenu, setisShowMenu] = useState(false);
+    const [isShowAccount, setisShowAccount] = useState(false);
     const [isShowMoreContent, setisShowMoreContent] = useState(false);
     const [isCollapsedContent, setisCollapsedContent] = useState(true);
     const [srcAvatar, setsrcAvatar] = useState({ uri: String(user.avatarUser) });
@@ -43,7 +45,7 @@ export default function ItemBlog(row) {
     }
 
     function OpenAccount() {
-
+        setisShowAccount(true);
     }
 
     function getMyID() {
@@ -84,7 +86,8 @@ export default function ItemBlog(row) {
                             <Image source={srcAvatar} onError={() => setsrcAvatar(require('../../assets/images/error.png'))}
                                 style={styles.imageAvatar} />
                         </TouchableOpacity>
-                        <TouchableHighlight underlayColor={'rgba(0, 0, 0, 0.2)'} activeOpacity={0.5}>
+                        <TouchableHighlight underlayColor={'rgba(0, 0, 0, 0.2)'} activeOpacity={0.5}
+                            onPress={OpenAccount}>
                             <Text style={styles.textName}>{user.fullName}</Text>
                         </TouchableHighlight>
                     </View>
@@ -205,9 +208,16 @@ export default function ItemBlog(row) {
             }
             {
                 (isShowMenu)
-                    ? <MenuContext isShowMore={isShowMenu} arr_OptionName={menuNames} arr_OptionFunction={menuFunctions} callBack={() => setisShowMenu(false)} />
+                    ? <MenuContext isShow={isShowMenu} arr_OptionName={menuNames} arr_OptionFunction={menuFunctions} callBack={() => setisShowMenu(false)} />
+                    : ""
+            }
+            {
+                (isShowAccount)
+                    ? <ViewAccountModal isShow={isShowAccount} info={user} callBack={() => setisShowAccount(false)} />
                     : ""
             }
         </View>
     )
 }
+
+export default React.memo(ItemBlog);
