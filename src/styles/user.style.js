@@ -31,7 +31,7 @@ export default StyleSheet.create({
         alignItems: 'center',
         borderRadius: 5
     },
-    
+
     modalUserAvatar: {
         width: 75, height: 75,
         borderRadius: 50
@@ -45,7 +45,7 @@ export default StyleSheet.create({
         marginVertical: 7
     },
 
-    
+
     buttonFLModal: {
         borderRadius: 10,
         paddingVertical: 7,
@@ -111,5 +111,102 @@ export default StyleSheet.create({
         fontSize: 14,
         fontFamily: 'ProductSans',
         marginLeft: 10
-    }
+    },
+
+    //Page
+    containerPage: {
+        flex: 1,
+        backgroundColor: yellowWhite
+    },
+
+    headerPage: {
+        backgroundColor: yellowWhite,
+        shadowColor: "#000",
+        elevation: 5,
+    },
+
+    headerCollapse: {
+        flexDirection: 'row',
+        padding: 20,
+        alignItems: 'center',
+        justifyContent: 'space-between'
+    },
+
+    headerExtend: {
+        paddingLeft: 25,
+        paddingRight: 15
+    },
+
+    pageUserAvatar: {
+        width: 85, height: 85,
+        borderRadius: 50
+    },
+
+    pageTextName: {
+        width: WindowWidth - 145,
+        fontSize: 20,
+        color: darkBlue,
+        fontFamily: 'ProductSans',
+        fontWeight: 'bold',
+    },
+
+    viewButtonHeader: {
+        position: 'absolute',
+        right: 0,
+        bottom: 0,
+        flexDirection: 'row'
+    },
+
+    buttonHeader: {
+        paddingHorizontal: 13,
+        paddingVertical: 6,
+        borderRadius: 12,
+        borderWidth: 0.5,
+        borderColor: 'rgba(0, 24, 88, 0.55)',
+        marginLeft: 10,
+        backgroundColor: yellowWhite,
+        shadowColor: "#000",
+        elevation: 9,
+    },
+
+    textButtonHeader: {
+        fontSize: 11,
+        color: darkBlue,
+        fontFamily: 'ProductSans',
+        fontWeight: 'bold',
+    },
+
+    viewRowAroundPage: {
+        width: '100%',
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'flex-start',
+        paddingHorizontal: 20,
+        marginTop: 15
+    },
+    
+    textCountPage: {
+        color: darkBlue,
+        fontSize: 18,
+        fontWeight: '700',
+        fontFamily: 'ProductSans',
+    },
+
+    detailCountPage: {
+        color: 'rgba(0, 0, 0, 0.65)',
+        fontSize: 11,
+        fontFamily: 'ProductSans',
+    },
+    
+    textDescPage: {
+        width: '100%',
+        color: darkBlue,
+        fontSize: 14,
+        fontFamily: 'ProductSans',
+        marginTop: 15,
+        marginBottom: 20,
+        paddingHorizontal: 20,
+        textAlign: 'left'
+    },
+
 });

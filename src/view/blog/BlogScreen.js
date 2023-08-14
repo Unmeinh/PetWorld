@@ -57,6 +57,7 @@ const BlogScreen = ({ scrollRef, onScrollView }) => {
   }, [navigation]);
 
   function OpenAccount() {
+    navigation.navigate('MyPage');
   }
 
   function OpenNewPost() {

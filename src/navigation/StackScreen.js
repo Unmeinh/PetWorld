@@ -12,8 +12,10 @@ import ChangePassword from '../view/form/ChangePassword';
 import ListProductScreen from '../view/shopping/ListProductScreen';
 import NewPost from '../view/blog/NewBlog';
 import DetailProduct from '../view/shopping/DetailProduct';
-import {createSharedElementStackNavigator} from 'react-navigation-shared-element';
 import ShopScreen from '../view/shopping/ShopScreen';
+import MyPage from '../view/blog/MyPage';
+import ViewPage from '../view/blog/ViewPage';
+import {createSharedElementStackNavigator} from 'react-navigation-shared-element';
 const Stack = createSharedElementStackNavigator();
 
 export default function StackScreen() {
@@ -21,7 +23,7 @@ export default function StackScreen() {
     <NavigationContainer>
       <Stack.Navigator
         screenOptions={() => ({headerShown: false})}
-        initialRouteName="OrboadScreen">
+        initialRouteName="MyPage">
         <Stack.Screen name="SlashScreen" component={SlashScreen} />
         <Stack.Screen name="OrboadScreen" component={OrboadScreen} />
         <Stack.Screen name="LoginScreen" component={LoginScreen} />
@@ -62,7 +64,8 @@ export default function StackScreen() {
           }}
         />
         <Stack.Screen name="ShopScreen" component={ShopScreen} />
-
+        <Stack.Screen name="MyPage" component={MyPage} />
+        <Stack.Screen name="ViewPage" component={ViewPage} />
       </Stack.Navigator>
     </NavigationContainer>
   );
