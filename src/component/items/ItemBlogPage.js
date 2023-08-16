@@ -13,12 +13,12 @@ import Feather from 'react-native-vector-icons/Feather';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Moment from 'moment';
 import BlogImageSlider from "../slider/BlogImageSlider";
-import ListComment from '../../component/modals/ListComment';
+import ListComment from '../modals/ListComment';
 import MenuContext from "../menu/MenuContext";
 import ViewAccountModal from "../modals/ViewAccountModal";
 
-const ItemBlog = (row) => {
-    var blog = row.blog;
+const ItemBlogPage = (row) => {
+    const [blog, setblog] = useState(row.blog);
     var user = blog.idUser;
     const [isShowComment, setisShowComment] = useState(false);
     const [isShowMenu, setisShowMenu] = useState(false);
@@ -45,7 +45,6 @@ const ItemBlog = (row) => {
     }
 
     function OpenAccount() {
-        setisShowAccount(true);
     }
 
     function getMyID() {
@@ -220,4 +219,4 @@ const ItemBlog = (row) => {
     )
 }
 
-export default React.memo(ItemBlog);
+export default React.memo(ItemBlogPage);

@@ -1,5 +1,5 @@
 import {
-    Text, Pressable,
+    Text, Pressable, TextInput,
     View, TouchableOpacity,
     TouchableHighlight, Image,
     FlatList, ScrollView,
@@ -11,7 +11,6 @@ import styles from "../../styles/comment.style";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Feather from 'react-native-vector-icons/Feather';
-import { TextInput } from "react-native-gesture-handler";
 import ItemComment from "../items/ItemComment";
 import ItemCommentLoader from "../items/ItemCommentLoader";
 import LinearGradient from 'react-native-linear-gradient';

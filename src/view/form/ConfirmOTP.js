@@ -63,6 +63,9 @@ export default function ConfirmOTP({ route, navigation }) {
                     setemailDisplay(emailCensored);
                 }
             }
+        return () => {
+                unsub.remove();
+              };
         });
 
         return unsub;

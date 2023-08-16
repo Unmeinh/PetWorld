@@ -7,8 +7,8 @@ export default function HeaderTitle({ nav, titleHeader, colorHeader }) {
   return (
     <View style={{
       backgroundColor: String(colorHeader),
-      padding: 20, flexDirection: 'row',
-      paddingBottom: 15, marginBottom: 15,
+      paddingHorizontal: 20, flexDirection: 'row',
+      paddingVertical: 13, marginBottom: 15,
       alignItems: 'center',
       shadowColor: "#000",
       elevation: 5,
@@ -16,7 +16,7 @@ export default function HeaderTitle({ nav, titleHeader, colorHeader }) {
       <TouchableOpacity onPress={() => { nav.goBack() }}>
         <AntDesign name='arrowleft' size={30} color={'#001858'} />
       </TouchableOpacity>
-      <Text style={{ fontSize: 20, color: '#001858', fontFamily: 'ProductSans', fontWeight: 'bold', marginLeft: 20 }}>
+      <Text style={{ fontSize: 18, color: '#001858', fontFamily: 'ProductSans', fontWeight: 'bold', marginLeft: 20 }}>
         {titleHeader}
       </Text>
     </View>
