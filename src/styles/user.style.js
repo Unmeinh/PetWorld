@@ -116,7 +116,7 @@ export default StyleSheet.create({
     //Page
     containerPage: {
         flex: 1,
-        backgroundColor: yellowWhite
+        backgroundColor: yellowWhite,
     },
 
     headerPage: {
@@ -127,14 +127,21 @@ export default StyleSheet.create({
 
     headerCollapse: {
         flexDirection: 'row',
-        padding: 20,
+        paddingHorizontal: 20,
+        paddingVertical: 13,
         alignItems: 'center',
-        justifyContent: 'space-between'
+        justifyContent: 'space-between',
+        backgroundColor: yellowWhite,
+        width: '100%',
+        position: 'absolute',
+        zIndex: 100
     },
 
     headerExtend: {
         paddingLeft: 25,
-        paddingRight: 15
+        paddingRight: 15,
+        marginTop: 2,
+        backgroundColor: yellowWhite
     },
 
     pageUserAvatar: {
@@ -184,7 +191,7 @@ export default StyleSheet.create({
         paddingHorizontal: 20,
         marginTop: 15
     },
-    
+
     textCountPage: {
         color: darkBlue,
         fontSize: 18,
@@ -197,16 +204,50 @@ export default StyleSheet.create({
         fontSize: 11,
         fontFamily: 'ProductSans',
     },
-    
+
     textDescPage: {
         width: '100%',
         color: darkBlue,
         fontSize: 14,
         fontFamily: 'ProductSans',
-        marginTop: 15,
-        marginBottom: 20,
+        marginVertical: 15,
         paddingHorizontal: 20,
         textAlign: 'left'
+    },
+
+    textTabBar: {
+        fontSize: 16,
+        fontFamily: 'ProductSans',
+    },
+
+    //Item User Follow
+    followerTextName: {
+        width: WindowWidth - 90,
+        fontSize: 17,
+        color: darkBlue,
+        fontFamily: 'ProductSans',
+        fontWeight: '700',
+    },
+
+    textFollowerLocation: {
+        color: 'rgba(0, 0, 0, 0.70)',
+        marginLeft: 7,
+        marginTop: 4,
+        fontFamily: 'ProductSans',
+        fontSize: 13,
+        width: WindowWidth - 235,
+    },
+
+    buttonFollow: {
+        paddingHorizontal: 11,
+        paddingVertical: 5,
+        borderRadius: 12,
+        borderWidth: 0.5,
+        borderColor: 'rgba(0, 24, 88, 0.55)',
+        marginLeft: 10,
+        backgroundColor: yellowWhite,
+        shadowColor: "#000",
+        elevation: 9,
     },
 
 });

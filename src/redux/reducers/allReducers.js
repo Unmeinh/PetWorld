@@ -6,7 +6,7 @@ import categoryReducer from "./category/category";
 import listShopReducer from "./shop/ShopReducer";
 import listBlogReducer from "./blog/ListBlogReducer";
 import listCommentReducer from "./comment/ListCommentReducer";
-import loginReducer from "./user/LoginReducer";
+import userReducer from "./user/UserReducer";
 
 const rootReducer = combineReducers({
     listPet: listPetReducer,
@@ -16,7 +16,7 @@ const rootReducer = combineReducers({
     listShop: listShopReducer,
     listBlog: listBlogReducer,
     listComment: listCommentReducer,
-    infoLogin: loginReducer,
+    listUser: userReducer,
 });
 
 export default rootReducer;

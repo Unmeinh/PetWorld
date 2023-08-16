@@ -11,7 +11,6 @@ const MenuContext = ({ isShow, callBack, arr_OptionName, arr_OptionFunction }) =
 
     const onLayout = (event) => {
         const { x, y, height, width } = event.nativeEvent.layout;
-        console.log(x);
         var l = Dimensions.get('window').width - (width + 7);
         setleftMenu(l);
     }

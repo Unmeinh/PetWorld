@@ -13,7 +13,8 @@ import { useNavigation } from '@react-navigation/native';
 import LinearGradient from 'react-native-linear-gradient';
 import Entypo from 'react-native-vector-icons/Entypo';
 import { useSelector, useDispatch } from "react-redux";
-import { getInfoLogin } from '../../redux/actions/userAction';
+import { selectUserByID } from '../../redux/selectors/userSelector';
+import { selectInfoLogin } from '../../redux/actions/userAction';
 import { RefreshControl } from "react-native-gesture-handler";
 import { createShimmerPlaceholder } from 'react-native-shimmer-placeholder';
 
@@ -22,7 +23,7 @@ const ShimerPlaceHolder = createShimmerPlaceholder(LinearGradient);
 const BlogScreen = ({ scrollRef, onScrollView }) => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
-  const userLogin = useSelector((state) => state.infoLogin);
+  const infoLogin = useSelector(selectUserByID);
   const arr_blog = useSelector((state) => state.listBlog);
   const [isRefreshing, setisRefreshing] = useState(false);
   const colorLoader = ['#f0e8d8', '#dbdbdb', '#f0e8d8'];
@@ -34,23 +35,17 @@ const BlogScreen = ({ scrollRef, onScrollView }) => {
     if (isLoader) {
       setTimeout(() => {
         setisLoader(false);
+        setsrcAvatar({ uri: String(infoLogin.avatarUser) });
       }, 5000);
     }
   }, [isLoader]);
 
-  useEffect(() => {
-    console.log(userLogin);
-    if (userLogin != undefined && userLogin != {}) {
-      setsrcAvatar({ uri: String(userLogin.avatarUser) });
-    }
-  }, [userLogin]);
-
   React.useEffect(() => {
     const unsub = navigation.addListener('focus', () => {
-      dispatch(getInfoLogin('001'));
-      // setisLoader(true);
-
-      // return unsub.remove();
+      dispatch(selectInfoLogin('001'));
+      return () => {
+        unsub.remove();
+      };
     });
 
     return unsub;
@@ -131,7 +126,7 @@ const BlogScreen = ({ scrollRef, onScrollView }) => {
                     ?
                     <FlatList data={arr_blog} scrollEnabled={false}
                       renderItem={({ item, index }) => <ItemBlog key={item._id} blog={item} navigation={navigation}
-                        info={userLogin} openAcc={OpenAccount} />}
+                        info={infoLogin} openAcc={OpenAccount} />}
                       showsVerticalScrollIndicator={false}
                       keyExtractor={(item, index) => index.toString()}
                       refreshControl={

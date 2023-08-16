@@ -1,17 +1,21 @@
-import React, { useState, useEffect, memo } from 'react';
+import React, { useState, useEffect, useRef, memo } from 'react';
 import {
     Text, Image,
     SafeAreaView,
     ScrollView,
     View, Animated,
     TouchableOpacity,
-    TouchableHighlight
 } from 'react-native';
 import styles from '../../styles/user.style';
+import { CollapsibleTabs } from 'react-native-collapsible-tabs';
+import { TabInfo, TabBlog } from './TabItemPage';
 import { useNavigation } from '@react-navigation/native';
 import { useSelector, useDispatch } from "react-redux";
-import { getInfoLogin } from '../../redux/actions/userAction';
+import { selectUserByID } from '../../redux/selectors/userSelector';
+import { selectInfoLogin } from '../../redux/actions/userAction';
 import { RefreshControl } from "react-native-gesture-handler";
+import ItemBlogLoader from '../../component/items/ItemBlogLoader';
+import MenuContext from '../../component/menu/MenuContext';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Entypo from 'react-native-vector-icons/Entypo';
 import LinearGradient from 'react-native-linear-gradient';
@@ -22,215 +26,194 @@ const ShimerPlaceHolder = createShimmerPlaceholder(LinearGradient);
 const MyPage = () => {
     const navigation = useNavigation();
     const dispatch = useDispatch();
-    const userLogin = useSelector((state) => state.infoLogin);
-    const arr_blog = useSelector((state) => state.listBlog);
+    const infoLogin = useSelector(selectUserByID);
     const [blogCount, setblogCount] = useState(0);
     const [followingCount, setfollowingCount] = useState(0);
     const [followerCount, setfollowerCount] = useState(0);
-    const [isFollowing, setisFollowing] = useState(false);
     const [srcAvatar, setsrcAvatar] = useState(require('../../assets/images/error.png'));
     const [isLoader, setisLoader] = useState(true);
     const [isRefreshing, setisRefreshing] = useState(false);
-    const colorLoader = ['#f0e8d8', '#dbdbdb', '#f0e8d8'];
-
-    //Header
-    let AnimatedHeaderValue = new Animated.Value(0);
-    const [headerCollapseHeight, setheaderCollapseHeight] = useState(0);
-    const [headerExtendHeight, setheaderExtendHeight] = useState(0);
     const [isHeaderCollapse, setisHeaderCollapse] = useState(false);
-    const dummyData = [
-        'Text',
-        'Input',
-        'Button',
-        'Card',
-        'CheckBox',
-        'Divider',
-        'Header',
-        'List Item',
-        'Pricing',
-        'Rating',
-        'Search Bar',
-        'Slider',
-        'Tile',
-        'Icon',
-        'Avatar',
-    ];
-
-    const animateHeaderHeight =
-        AnimatedHeaderValue.interpolate({
-            inputRange: [0, headerExtendHeight],
-            outputRange: [headerExtendHeight, headerCollapseHeight],
-            extrapolate: 'clamp',
-        });
-
-
-    const onLayoutHeaderCollapse = (event) => {
-        if (headerCollapseHeight <= 0) {
-            const { x, y, height, width } = event.nativeEvent.layout;
-            setheaderCollapseHeight(height);
-        }
-    }
-
-    const onLayoutHeaderExtend = (event) => {
-        if (headerExtendHeight <= 0) {
-            const { x, y, height, width } = event.nativeEvent.layout;
-            setheaderExtendHeight(height);
-        }
-    }
-
-    const onLayoutHeader = (event) => {
-        const { x, y, height, width } = event.nativeEvent.layout;
-        if (height == headerCollapseHeight) {
-            setisHeaderCollapse(true);
-        } else {
-            if (isHeaderCollapse) {
-                setisHeaderCollapse(false);
-            }
-        }
-    }
+    const [isShowMenu, setisShowMenu] = useState(false);
+    const colorLoader = ['#f0e8d8', '#dbdbdb', '#f0e8d8'];
+    const menuNames = ["Chỉnh sửa thông tin", "Đổi ảnh đại diện"];
+    const menuFunctions = [];
 
     //Use effect    
     useEffect(() => {
         if (isLoader) {
             setTimeout(() => {
                 setisLoader(false);
+                setsrcAvatar({ uri: String(infoLogin.avatarUser) });
             }, 5000);
         }
     }, [isLoader]);
 
-    useEffect(() => {
-        console.log(userLogin);
-        if (userLogin != undefined && userLogin != {}) {
-            setsrcAvatar({ uri: String(userLogin.avatarUser) });
-        }
-    }, [userLogin]);
-
     React.useEffect(() => {
         const unsub = navigation.addListener('focus', () => {
-            dispatch(getInfoLogin('001'));
+            dispatch(selectInfoLogin('001'));
             // setisLoader(true);
 
             // return navigation.remove();
+            return () => {
+                unsub.remove();
+            };
         });
 
         return unsub;
     }, [navigation]);
 
-    return (
-        <SafeAreaView style={styles.containerPage}>
-            <View style={styles.containerPage}>
-                <Animated.View
-                    style={[
-                        styles.headerPage,
-                        {
-                            height: animateHeaderHeight,
-                            overflow: 'hidden'
-                        },
-                    ]} onLayout={onLayoutHeader}>
-                    <View onLayout={onLayoutHeaderExtend}>
-                        <View style={styles.headerCollapse} onLayout={onLayoutHeaderCollapse}>
-                            <View style={{ flexDirection: 'row' }}>
-                                <TouchableOpacity onPress={() => { navigation.goBack() }}>
-                                    <AntDesign name='arrowleft' size={30} color={'#001858'} />
-                                </TouchableOpacity>
-                                {
-                                    (isHeaderCollapse)
-                                        ? <Text style={[styles.pageTextName, { marginLeft: 20 }]}>
-                                            {userLogin.fullName}
-                                        </Text>
-                                        : ""
-                                }
+    const HeaderView = () => {
+        function OpenListFollow(type) {
+            navigation.navigate('ListFollow', { idUser: infoLogin._id, typeFollow: type })
+        }
+
+        return (
+            <View style={styles.headerExtend}>
+                {
+                    (isLoader)
+                        ? <View>
+                            <View style={{ flexDirection: 'row', width: '100%', }}>
+                                <ShimerPlaceHolder
+                                    shimmerColors={colorLoader}
+                                    shimmerStyle={styles.pageUserAvatar} />
+                                <ShimerPlaceHolder
+                                    shimmerColors={colorLoader}
+                                    shimmerStyle={{ width: '35%', height: 20, marginLeft: 20, borderRadius: 5 }} />
                             </View>
-                            <TouchableOpacity onPress={() => { navigation.goBack() }}>
-                                <Entypo name='dots-three-vertical' size={25} color={'#001858'} />
-                            </TouchableOpacity>
+                            <View style={styles.viewRowAroundPage}>
+                                <View style={{ alignItems: 'center' }}>
+                                    <ShimerPlaceHolder
+                                        shimmerColors={colorLoader}
+                                        shimmerStyle={{ width: 15, height: 15, borderRadius: 5, marginBottom: 5 }} />
+                                    <ShimerPlaceHolder
+                                        shimmerColors={colorLoader}
+                                        shimmerStyle={{ width: 50, height: 10, borderRadius: 5 }} />
+                                </View>
+                                <View style={{ alignItems: 'center' }}>
+                                    <ShimerPlaceHolder
+                                        shimmerColors={colorLoader}
+                                        shimmerStyle={{ width: 15, height: 15, borderRadius: 5, marginBottom: 5 }} />
+                                    <ShimerPlaceHolder
+                                        shimmerColors={colorLoader}
+                                        shimmerStyle={{ width: 70, height: 10, borderRadius: 5 }} />
+                                </View>
+                                <View style={{ alignItems: 'center' }}>
+                                    <ShimerPlaceHolder
+                                        shimmerColors={colorLoader}
+                                        shimmerStyle={{ width: 15, height: 15, borderRadius: 5, marginBottom: 5 }} />
+                                    <ShimerPlaceHolder
+                                        shimmerColors={colorLoader}
+                                        shimmerStyle={{ width: 70, height: 10, borderRadius: 5 }} />
+                                </View>
+                            </View>
+                            <ShimerPlaceHolder
+                                shimmerColors={colorLoader}
+                                shimmerStyle={{ width: '50%', borderRadius: 5, marginVertical: 15, marginHorizontal: 20 }} />
                         </View>
-                        <View style={styles.headerExtend}>
+                        : <View>
                             <View style={{ flexDirection: 'row', width: '100%', }}>
                                 <Image source={srcAvatar} style={styles.pageUserAvatar}
                                     onError={() => setsrcAvatar(require('../../assets/images/error.png'))} />
                                 <Text style={[styles.pageTextName, { marginLeft: 20 }]}
-                                    numberOfLines={2}>{userLogin.fullName}</Text>
-                                <View style={styles.viewButtonHeader}>
-                                    <TouchableHighlight style={styles.buttonHeader}>
-                                        <Text style={styles.textButtonHeader}>Nhắn tin</Text>
-                                    </TouchableHighlight>
-                                    {
-                                        (isFollowing)
-                                            ? <TouchableHighlight style={styles.buttonHeader}>
-                                                <Text style={styles.textButtonHeader}>Đang theo dõi</Text>
-                                            </TouchableHighlight>
-                                            : <TouchableHighlight style={styles.buttonHeader}>
-                                                <Text style={styles.textButtonHeader}>Theo dõi</Text>
-                                            </TouchableHighlight>
-                                    }
-                                </View>
+                                    numberOfLines={2}>{infoLogin.fullName}</Text>
                             </View>
                             <View style={styles.viewRowAroundPage}>
                                 <View style={{ alignItems: 'center' }}>
                                     <Text style={styles.textCountPage}>{blogCount}</Text>
                                     <Text style={styles.detailCountPage}>Bài viết</Text>
                                 </View>
-                                <View style={{ alignItems: 'center' }}>
+                                <TouchableOpacity style={{ alignItems: 'center' }}
+                                    onPress={() => OpenListFollow('following')}>
                                     <Text style={styles.textCountPage}>{followingCount}</Text>
                                     <Text style={styles.detailCountPage}>Đang theo dõi</Text>
-                                </View>
-                                <View style={{ alignItems: 'center' }}>
+                                </TouchableOpacity>
+                                <TouchableOpacity style={{ alignItems: 'center' }}
+                                    onPress={() => OpenListFollow('follower')}>
                                     <Text style={styles.textCountPage}>{followerCount}</Text>
                                     <Text style={styles.detailCountPage}>Người theo dõi</Text>
-                                </View>
+                                </TouchableOpacity>
                             </View>
                             <Text style={styles.textDescPage}>
                                 {
-                                    (userLogin.description != undefined)
+                                    (infoLogin.description != undefined)
                                         ? infoUser.description
                                         : "Chưa có giới thiệu"
                                 }
                             </Text>
                         </View>
+                }
+            </View>
+        )
+    }
+
+    return (
+        <SafeAreaView style={styles.containerPage}>
+            <View style={styles.containerPage}>
+                <View style={styles.headerCollapse}>
+                    <View style={{ flexDirection: 'row' }}>
+                        <TouchableOpacity onPress={() => { navigation.goBack() }}>
+                            <AntDesign name='arrowleft' size={30} color={'#001858'} />
+                        </TouchableOpacity>
+                        {
+                            (isHeaderCollapse)
+                                ? <Text style={[styles.pageTextName, { marginLeft: 20 }]} numberOfLines={1}>
+                                    {infoLogin.fullName}
+                                </Text>
+                                : ""
+                        }
                     </View>
-                </Animated.View>
-                <ScrollView
-                    scrollEventThrottle={15}
-                    onScroll={Animated.event(
-                        [{
-                            nativeEvent: {
-                                contentOffset: { y: AnimatedHeaderValue }
-                            }
-                        }],
-                        { useNativeDriver: false }
-                    )}>
-                    {dummyData.map((item, index) => (
-                        <Text style={{
-                            textAlign: 'center',
-                            color: '#000',
-                            fontSize: 18,
-                            padding: 20,
-                        }} key={index}>
-                            {item}
-                        </Text>
-                    ))}
-                    {dummyData.map((item, index) => (
-                        <Text style={{
-                            textAlign: 'center',
-                            color: '#000',
-                            fontSize: 18,
-                            padding: 20,
-                        }} key={index}>
-                            {item}
-                        </Text>
-                    ))}
-                    {dummyData.map((item, index) => (
-                        <Text style={{
-                            textAlign: 'center',
-                            color: '#000',
-                            fontSize: 18,
-                            padding: 20,
-                        }} key={index}>
-                            {item}
-                        </Text>
-                    ))}
-                </ScrollView>
+                    <TouchableOpacity onPress={() => { setisShowMenu(true) }}>
+                        <Entypo name='dots-three-vertical' size={25} color={'#001858'} />
+                    </TouchableOpacity>
+                </View>
+                <View style={{ flex: 1, marginTop: 55 }}>
+                    <CollapsibleTabs
+                        collapsibleContent={(<HeaderView />)}
+                        barColor="#FEF6E4"
+                        activeTextColor="#001858"
+                        inactiveTextColor="rgba(0, 24, 88, 0.50)"
+                        indicatorColor="#F582AE"
+                        textStyle={styles.textTabBar}
+                        activeTextStyle={{ fontWeight: 'bold' }}
+                        uppercase={false}
+                        showsVerticalScrollIndicator={true}
+                        tabs={[{
+                            label: 'Blog',
+                            showsVerticalScrollIndicator: true,
+                            component: (
+                                <View >
+                                    <View style={{ height: 1, width: '100%', backgroundColor: '#FEF6E4', shadowColor: '#000', elevation: 3, zIndex: 100, marginBottom: 10 }} />
+                                    <ScrollView>
+                                        {
+                                            (isLoader)
+                                                ? <View>
+                                                    <ItemBlogLoader />
+                                                    <ItemBlogLoader />
+                                                </View>
+                                                : <TabBlog user={infoLogin} isLoader={isLoader} />
+                                        }
+                                    </ScrollView>
+                                </View>
+                            )
+                        }, {
+                            label: 'Info',
+                            component: (
+                                <View style={{ flex: 1 }}>
+                                    <View style={{ height: 1, width: '100%', backgroundColor: '#FEF6E4', shadowColor: '#000', elevation: 3, zIndex: 100, marginBottom: 15 }} />
+                                    <ScrollView>
+                                        <TabInfo user={infoLogin} isLoader={isLoader} />
+                                    </ScrollView>
+                                </View>
+                            )
+                        }]}
+                    />
+                </View>
+                {
+                    (isShowMenu)
+                        ? <MenuContext isShow={isShowMenu} arr_OptionName={menuNames} arr_OptionFunction={menuFunctions} callBack={() => setisShowMenu(false)} />
+                        : ""
+                }
             </View>
         </SafeAreaView>
     );
