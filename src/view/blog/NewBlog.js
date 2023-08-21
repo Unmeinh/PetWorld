@@ -7,7 +7,7 @@ import {
     Dimensions, ToastAndroid,
     FlatList
 } from 'react-native';
-import React, { useState, useCallback } from "react";
+import React, { useState, useEffect } from "react";
 import styles from '../../styles/blog.style';
 
 import AutoHeightImage from 'react-native-auto-height-image';
@@ -18,17 +18,19 @@ import * as ImagePicker from 'react-native-image-picker';
 import { openPicker } from '@baronha/react-native-multiple-image-picker';
 import Feather from 'react-native-vector-icons/Feather';
 import { useSelector, useDispatch } from 'react-redux';
-import { getInfoLogin } from '../../redux/actions/userAction';
+import { selectUserByID } from '../../redux/selectors/userSelector';
+import { selectInfoLogin } from '../../redux/actions/userAction';
 
 const NewPost = ({ route, navigation }) => {
     const dispatch = useDispatch();
-    const [userLogin, setuserLogin] = useState(useSelector((state) => state.infoLogin));
+    const infoLogin = useSelector(selectUserByID);
     const [arr_Image, setarr_Image] = useState([]);
     const [aspectRatio, setaspectRatio] = useState(1 / 1);
     const [srcAvatar, setsrcAvatar] = useState(require('../../assets/images/error.png'));
     const [inputContent, setinputContent] = useState("");
     const [inputFont, setinputFont] = useState("Default");
     const [isShowModal, setisShowModal] = useState(false);
+    const [isLoader, setisLoader] = useState(true);
 
     function CheckValidate(newPost) {
         if (newPost.idNguoiDung == undefined) {
@@ -130,18 +132,23 @@ const NewPost = ({ route, navigation }) => {
 
     React.useEffect(() => {
         const unsub = navigation.addListener('focus', () => {
-            dispatch(getInfoLogin('001'));
+            dispatch(selectInfoLogin('001'));
+            return () => {
+                unsub.remove();
+            };
         });
 
         return unsub;
     }, [navigation]);
 
-    React.useEffect(() => {
-        console.log(userLogin);
-        if (userLogin != undefined && userLogin != {}) {
-            setsrcAvatar({ uri: String(userLogin.avatarUser) });
+    useEffect(() => {
+        if (isLoader) {
+            setTimeout(() => {
+                setisLoader(false);
+                setsrcAvatar({ uri: String(infoLogin.avatarUser) });
+            }, 5000);
         }
-    }, [userLogin]);
+    }, [isLoader]);
 
     return (
         <View style={{ flex: 1, backgroundColor: '#FEF6E4' }}>
@@ -150,7 +157,7 @@ const NewPost = ({ route, navigation }) => {
                 <View style={styles.viewRowCenter}>
                     <Image source={srcAvatar} onError={() => setsrcAvatar(require('../../assets/images/error.png'))}
                         style={styles.imageAvatar} />
-                    <Text style={styles.textName}>{userLogin.fullName}</Text>
+                    <Text style={styles.textName}>{infoLogin.fullName}</Text>
                 </View>
                 <TouchableHighlight style={styles.buttonUpload}
                     activeOpacity={0.5} underlayColor="#DC749C"

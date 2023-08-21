@@ -105,6 +105,9 @@ export default function NaviTabScreen({navigation}) {
     React.useEffect(() => {
         const unsub = navigation.addListener('focus', () => {
             animatedOnFocus();
+        return () => {
+                unsub.remove();
+              };
         });
 
         return unsub;

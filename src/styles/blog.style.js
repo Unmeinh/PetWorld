@@ -45,7 +45,9 @@ export default StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
-        padding: 15
+        paddingTop: 15,
+        paddingHorizontal: 15,
+        paddingBottom: 15
     },
 
     textName: {
