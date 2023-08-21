@@ -22,6 +22,10 @@ import ListAddress from '../view/account/ListAddress';
 import AddNewAddress from '../view/account/AddNewAddress';
 import ChatScreen from '../view/chat/ChatScreen';
 
+import InfoManager from '../view/blog/InfoManager';
+import EditInfo from '../view/blog/EditInfo';
+import AppointmentScreen from '../view/appointment/AppointmentScreen';
+import DetailAppointment from '../view/appointment/DetailAppointment';
 import { createSharedElementStackNavigator } from 'react-navigation-shared-element';
 const Stack = createSharedElementStackNavigator();
 
@@ -79,6 +83,10 @@ export default function StackScreen() {
         <Stack.Screen name="ListAddress" component={ListAddress} />
         <Stack.Screen name="AddNewAddress" component={AddNewAddress} />
         <Stack.Screen name="ChatScreen" component={ChatScreen} />
+        <Stack.Screen name="InfoManager" component={InfoManager} />
+        <Stack.Screen name="EditInfo" component={EditInfo} />
+        <Stack.Screen name="AppointmentScreen" component={AppointmentScreen} />
+        <Stack.Screen name="DetailAppointment" component={DetailAppointment} />
       </Stack.Navigator>
     </NavigationContainer>
   );
