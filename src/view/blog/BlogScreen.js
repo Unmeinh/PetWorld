@@ -36,38 +36,20 @@ const BlogScreen = ({scrollRef, onScrollView}) => {
     require('../../assets/images/error.png'),
   );
   const [isLoader, setisLoader] = useState(() => true);
-  useEffect(() => {
-    if (isLoader) {
-      setTimeout(() => {
-        setisLoader(false);
-      }, 5000);
-    }
-  }, [isLoader]);
-
-  useEffect(() => {
-    console.log(getUser);
-    if (getUser != undefined && getUser != {}) {
-      setuserLogin(getUser);
-      setsrcAvatar({uri: String(getUser.avatarUser)});
-    }
-  }, [getUser]);
-
   React.useEffect(() => {
-    const unsub = navigation.addListener(
-      'focus',
-      () => {
-        dispatch(getInfoLogin('001'));
-        return () => {
-          unsub.remove();
-        };
-      },
-      [],
-    );
+    const unsub = navigation.addListener('focus', () => {
+      dispatch(selectInfoLogin('001'));
+      return () => {
+        unsub.remove();
+      };
+    });
 
     return unsub;
   }, [navigation]);
 
-  function OpenAccount() {}
+  function OpenAccount() {
+    navigation.navigate('MyPage');
+  }
 
   function OpenNewPost() {
     navigation.navigate('NewPost');
