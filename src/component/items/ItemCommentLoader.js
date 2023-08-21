@@ -8,28 +8,28 @@ import styles from "../../styles/comment.style";
 import LinearGradient from 'react-native-linear-gradient';
 import { createShimmerPlaceholder } from 'react-native-shimmer-placeholder';
 
-const ShimerPlaceHolder = createShimmerPlaceholder(LinearGradient);
+const ShimmerPlaceHolder = createShimmerPlaceholder(LinearGradient);
 
 export default function ItemCommentLoader(row) {
     const colorLoader = ['#f0e8d8', '#dbdbdb', '#f0e8d8'];
 
     return (
         <View style={styles.viewComment}>
-            <ShimerPlaceHolder
+            <ShimmerPlaceHolder
                 shimmerStyle={styles.avatarComment}
                 shimmerColors={colorLoader}
             />
             <View style={styles.viewContent}>
-                <ShimerPlaceHolder
+                <ShimmerPlaceHolder
                     shimmerStyle={styles.contentComment}
                     shimmerColors={colorLoader}
                 />
                 <View style={{ flexDirection: 'row' }}>
                     <View style={styles.viewRowInteract}>
-                        <ShimerPlaceHolder
+                        <ShimmerPlaceHolder
                             shimmerStyle={styles.iconInteractComment}
                             shimmerColors={colorLoader} />
-                        <ShimerPlaceHolder
+                        <ShimmerPlaceHolder
                             shimmerStyle={styles.textInteractComment}
                             shimmerColors={colorLoader} />
                     </View>

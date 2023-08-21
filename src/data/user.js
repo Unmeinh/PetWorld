@@ -4,6 +4,7 @@ export default [
     fullName: 'Misaki.',
     avatarUser:
       'https://cdn.donmai.us/original/e4/63/__misaki_blue_archive_drawn_by_treerootbeard__e4639965dfcb8ad02a1548a16fdc2e29.png',
+    description: "Vanitas vanitatum et omnia vanitas",
     followers: [],
     followings: ["002"]
   },

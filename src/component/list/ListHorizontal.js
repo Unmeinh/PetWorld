@@ -6,7 +6,7 @@ import {createShimmerPlaceholder} from 'react-native-shimmer-placeholder';
 import listfakeloader from '../../data/listfakeloader';
 import { useDispatch } from 'react-redux';
 
-const ShimerPlaceHolder = createShimmerPlaceholder(LinearGradient);
+const ShimmerPlaceHolder = createShimmerPlaceholder(LinearGradient);
 function ListHorizontal({data, title, isLoader}) {
   const colorLoader = ['#f0e8d8', '#dbdbdb', '#f0e8d8'];
   const dispatch = useDispatch();
@@ -15,11 +15,11 @@ function ListHorizontal({data, title, isLoader}) {
       <View style={styles.title}>
         {isLoader
           ? [
-              <ShimerPlaceHolder
+              <ShimmerPlaceHolder
                 shimmerColors={colorLoader}
                 shimmerStyle={styles.loaderText}
               />,
-              <ShimerPlaceHolder
+              <ShimmerPlaceHolder
                 shimmerColors={colorLoader}
                 shimmerStyle={styles.loaderText}
               />,
@@ -35,7 +35,7 @@ function ListHorizontal({data, title, isLoader}) {
           showsHorizontalScrollIndicator={false}
           data={listfakeloader}
           renderItem={() => (
-            <ShimerPlaceHolder
+            <ShimmerPlaceHolder
               shimmerColors={colorLoader}
               shimmerStyle={styles.loaderItem}
             />

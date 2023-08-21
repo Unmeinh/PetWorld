@@ -18,7 +18,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { selectCommentByID } from "../../redux/actions/commentAction";
 import { createShimmerPlaceholder } from 'react-native-shimmer-placeholder';
 
-const ShimerPlaceHolder = createShimmerPlaceholder(LinearGradient);
+const ShimmerPlaceHolder = createShimmerPlaceholder(LinearGradient);
 
 const ListComment = (route) => {
     const dispatch = useDispatch();
@@ -104,17 +104,17 @@ const ListComment = (route) => {
                             {
                                 (isLoader)
                                     ? [<View style={{ flexDirection: 'row', alignItems: "center" }}>
-                                        <ShimerPlaceHolder
+                                        <ShimmerPlaceHolder
                                             shimmerStyle={styles.imageAvatar}
                                             shimmerColors={colorLoader}
                                         />
-                                        <ShimerPlaceHolder
+                                        <ShimmerPlaceHolder
                                             shimmerStyle={[styles.textName, { width: "50%", }]}
                                             shimmerColors={colorLoader}
                                         />
                                     </View>,
 
-                                    <ShimerPlaceHolder
+                                    <ShimmerPlaceHolder
                                         shimmerStyle={[styles.textFollow, { width: "25%", }]}
                                         shimmerColors={colorLoader}
                                     />]
@@ -187,23 +187,23 @@ const ListComment = (route) => {
                             <View style={[styles.viewTopWriteComment, { marginBottom: 5, }]}>
                                 <View style={{ flexDirection: 'row' }}>
                                     <View style={styles.viewRowInteract}>
-                                        <ShimerPlaceHolder
+                                        <ShimmerPlaceHolder
                                             shimmerStyle={[styles.iconInteract, { borderRadius: 15 }]}
                                             shimmerColors={colorLoader}
                                         />
                                     </View>
 
-                                    <ShimerPlaceHolder
+                                    <ShimmerPlaceHolder
                                         shimmerStyle={[styles.iconInteract, { borderRadius: 15 }]}
                                         shimmerColors={colorLoader}
                                     />
                                 </View>
-                                <ShimerPlaceHolder
+                                <ShimmerPlaceHolder
                                     shimmerStyle={[styles.iconInteract, { borderRadius: 15 }]}
                                     shimmerColors={colorLoader}
                                 />
                             </View>
-                            <ShimerPlaceHolder
+                            <ShimmerPlaceHolder
                                 shimmerStyle={[styles.textInteract, { borderRadius: 15 }]}
                                 shimmerColors={colorLoader}
                             />
@@ -245,11 +245,11 @@ const ListComment = (route) => {
                         (isLoader)
                             ?
                             [
-                                <ShimerPlaceHolder
+                                <ShimmerPlaceHolder
                                     shimmerStyle={[styles.inputComment, { height: 40 }]}
                                     shimmerColors={colorLoader}
                                 />,
-                                <ShimerPlaceHolder
+                                <ShimmerPlaceHolder
                                     shimmerStyle={styles.buttonSend}
                                     shimmerColors={colorLoader}
                                 />

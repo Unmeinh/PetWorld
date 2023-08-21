@@ -1,0 +1,13 @@
+1. Lỗi inputRange khi mở cả 2 màn MyPage-ViewPage.
+Nguồn: react-native-snap-carousel
+Cách gỡ 1: https://github.com/dohooo/react-native-reanimated-carousel
+2. Proptypes log cảnh báo
+Nguồn: react-native-snap-carousel
+Cách gỡ 1: comment dòng log ở trong node-modules
+3. Khi navigate trùng màn hình hiện có sẽ không có điều hướng
+Hướng gỡ 1: Tìm cách mở thêm màn hình mới giống như Android Studio,
+https://reactnavigation.org/docs/2.x/stack-actions/#reset
+Cách gỡ 1: https://github.com/aksonov/react-native-router-flux
+Cách gỡ 2: https://stackoverflow.com/questions/58354787/stacknavigatior-navigating-to-a-screen-which-is-already-in-stack
+4. Màn hình cũ vẫn chạy trong background
+Cách gỡ 1: https://stackoverflow.com/questions/66412508/how-can-i-quit-definetively-a-screen-when-navigating-to-another-one-in-react-nat

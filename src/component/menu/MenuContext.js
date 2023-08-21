@@ -24,7 +24,7 @@ const MenuContext = ({ isShow, callBack, arr_OptionName, arr_OptionFunction }) =
                 {
                     arr_OptionName.map((item, index, arr) => {
                         return <MenuItem onPress={() => {
-                            arr_OptionFunction[index];
+                            arr_OptionFunction[index]();
                         }} textStyle={styles.textModalItem}
                             style={styles.viewModalItemMore} key={index}>
                             {item}

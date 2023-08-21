@@ -8,7 +8,7 @@ import {
     TouchableHighlight
 } from 'react-native';
 import styles from '../../styles/user.style';
-import { CollapsibleTabs } from 'react-native-collapsible-tabs';
+import { CollapsibleTabs } from '../../component/layout/indexCollapsibleTab';
 import { TabInfo, TabBlog } from './TabItemPage';
 import { useNavigation } from '@react-navigation/native';
 import { useSelector, useDispatch } from "react-redux";
@@ -22,7 +22,7 @@ import Entypo from 'react-native-vector-icons/Entypo';
 import LinearGradient from 'react-native-linear-gradient';
 import { createShimmerPlaceholder } from 'react-native-shimmer-placeholder';
 
-const ShimerPlaceHolder = createShimmerPlaceholder(LinearGradient);
+const ShimmerPlaceHolder = createShimmerPlaceholder(LinearGradient);
 
 const ViewPage = ({route}) => {
     const navigation = useNavigation();
@@ -90,48 +90,48 @@ const ViewPage = ({route}) => {
                     (isLoader)
                         ? <View>
                             <View style={{ flexDirection: 'row', width: '100%', }}>
-                                <ShimerPlaceHolder
+                                <ShimmerPlaceHolder
                                     shimmerColors={colorLoader}
                                     shimmerStyle={styles.pageUserAvatar} />
-                                <ShimerPlaceHolder
+                                <ShimmerPlaceHolder
                                     shimmerColors={colorLoader}
                                     shimmerStyle={{ width: '35%', height: 20, marginLeft: 20, borderRadius: 5 }} />
                                 <View style={styles.viewButtonHeader}>
-                                    <ShimerPlaceHolder
+                                    <ShimmerPlaceHolder
                                         shimmerColors={colorLoader}
                                         shimmerStyle={{ width: 75, height: 30, borderRadius: 12 }} />
-                                    <ShimerPlaceHolder
+                                    <ShimmerPlaceHolder
                                         shimmerColors={colorLoader}
                                         shimmerStyle={{ width: 75, height: 30, borderRadius: 12, marginLeft: 10 }} />
                                 </View>
                             </View>
                             <View style={styles.viewRowAroundPage}>
                                 <View style={{ alignItems: 'center' }}>
-                                    <ShimerPlaceHolder
+                                    <ShimmerPlaceHolder
                                         shimmerColors={colorLoader}
                                         shimmerStyle={{ width: 15, height: 15, borderRadius: 5, marginBottom: 5 }} />
-                                    <ShimerPlaceHolder
+                                    <ShimmerPlaceHolder
                                         shimmerColors={colorLoader}
                                         shimmerStyle={{ width: 50, height: 10, borderRadius: 5 }} />
                                 </View>
                                 <View style={{ alignItems: 'center' }}>
-                                    <ShimerPlaceHolder
+                                    <ShimmerPlaceHolder
                                         shimmerColors={colorLoader}
                                         shimmerStyle={{ width: 15, height: 15, borderRadius: 5, marginBottom: 5 }} />
-                                    <ShimerPlaceHolder
+                                    <ShimmerPlaceHolder
                                         shimmerColors={colorLoader}
                                         shimmerStyle={{ width: 70, height: 10, borderRadius: 5 }} />
                                 </View>
                                 <View style={{ alignItems: 'center' }}>
-                                    <ShimerPlaceHolder
+                                    <ShimmerPlaceHolder
                                         shimmerColors={colorLoader}
                                         shimmerStyle={{ width: 15, height: 15, borderRadius: 5, marginBottom: 5 }} />
-                                    <ShimerPlaceHolder
+                                    <ShimmerPlaceHolder
                                         shimmerColors={colorLoader}
                                         shimmerStyle={{ width: 70, height: 10, borderRadius: 5 }} />
                                 </View>
                             </View>
-                            <ShimerPlaceHolder
+                            <ShimmerPlaceHolder
                                 shimmerColors={colorLoader}
                                 shimmerStyle={{ width: '50%', borderRadius: 5, marginVertical: 15, marginHorizontal: 20 }} />
                         </View>
@@ -201,7 +201,7 @@ const ViewPage = ({route}) => {
                 <View style={styles.headerCollapse}>
                     <View style={{ flexDirection: 'row' }}>
                         <TouchableOpacity onPress={() => { navigation.goBack() }}>
-                            <AntDesign name='arrowleft' size={30} color={'#001858'} />
+                            <AntDesign name='arrowleft' size={25} color={'#001858'} />
                         </TouchableOpacity>
                         {
                             (isHeaderCollapse)
@@ -212,7 +212,7 @@ const ViewPage = ({route}) => {
                         }
                     </View>
                     <TouchableOpacity onPress={() => { setisShowMenu(true) }}>
-                        <Entypo name='dots-three-vertical' size={25} color={'#001858'} />
+                        <Entypo name='dots-three-vertical' size={20} color={'#001858'} />
                     </TouchableOpacity>
                 </View>
                 <View style={{ flex: 1, marginTop: 55 }}>

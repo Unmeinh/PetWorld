@@ -12,7 +12,7 @@ import BlogScreen from '../view/blog/BlogScreen';
 import ChatScreen from '../view/chat/ChatScreen';
 import NotifyScreen from '../view/notify/NotifyScreen';
 import AccountScreen from '../view/account/AccountScreen';
-import PetAISupport from '../component/PetAISupport';
+import PetAISupport from '../component/layout/PetAISupport';
 
 const TabArr = [
     { route: 'Home', label: 'Home', icon: 'home', component: HomeScreen, color: '#8BD3DD', alphaClr: '#F3D2C1' },

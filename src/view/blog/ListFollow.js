@@ -19,7 +19,7 @@ import { RefreshControl } from "react-native-gesture-handler";
 import ViewAccountModal from "../../component/modals/ViewAccountModal";
 import { createShimmerPlaceholder } from 'react-native-shimmer-placeholder';
 
-const ShimerPlaceHolder = createShimmerPlaceholder(LinearGradient);
+const ShimmerPlaceHolder = createShimmerPlaceholder(LinearGradient);
 
 import temp from '../../data/user';
 const ListFollow = ({ route }) => {
@@ -141,19 +141,19 @@ const ListFollow = ({ route }) => {
         return (
             <View style={{ paddingHorizontal: 10, paddingVertical: 10 }}>
                 <View style={{ flexDirection: 'row' }}>
-                    <ShimerPlaceHolder
+                    <ShimmerPlaceHolder
                         shimmerColors={colorLoader}
                         shimmerStyle={{ height: 50, width: 50, borderRadius: 50 }} />
                     <View style={{ marginLeft: 7 }}>
-                        <ShimerPlaceHolder
+                        <ShimmerPlaceHolder
                             shimmerColors={colorLoader}
                             shimmerStyle={{ fontSize: 17, width: '50%', borderRadius: 5 }} />
                         <View style={{ width: Dimensions.get('window').width - 80, }}>
                             <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 7 }}>
-                                <ShimerPlaceHolder
+                                <ShimmerPlaceHolder
                                     shimmerColors={colorLoader}
                                     shimmerStyle={{ marginLeft: 3, fontSize: 15, width: '40%', borderRadius: 5 }} />
-                                <ShimerPlaceHolder
+                                <ShimmerPlaceHolder
                                     shimmerColors={colorLoader}
                                     shimmerStyle={{ width: 90, height: 25, borderRadius: 12 }} />
                             </View>
@@ -171,7 +171,7 @@ const ListFollow = ({ route }) => {
                     ? <HeaderTitle nav={navigation} titleHeader={"Danh sách người theo dõi"} colorHeader={"#FEF6E4"} />
                     : <HeaderTitle nav={navigation} titleHeader={"Danh sách đang theo dõi"} colorHeader={"#FEF6E4"} />
             }
-            <View style={styles.container}>
+            <View style={{flex: 1, paddingTop: 15}}>
                 {
                     (isLoader)
                         ?

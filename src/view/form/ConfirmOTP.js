@@ -8,7 +8,7 @@ import {
 import React, { useState, useRef } from 'react'
 import styles from '../../styles/form.style';
 import HeaderTitle from '../../component/header/HeaderTitle';
-import OTPItem from '../../component/OTPItem';
+import OTPItem from '../../component/form/OTPItem';
 
 var censorCharacters = ['*', '**', '***', '****', '*****'];
 

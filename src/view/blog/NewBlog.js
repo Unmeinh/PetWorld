@@ -153,7 +153,7 @@ const NewPost = ({ route, navigation }) => {
     return (
         <View style={{ flex: 1, backgroundColor: '#FEF6E4' }}>
             <HeaderTitle nav={navigation} titleHeader={'Bài viết mới'} colorHeader={'#FEF6E4'} />
-            <View style={[styles.viewInfoHead, { paddingTop: 0 }]}>
+            <View style={[styles.viewInfoHead, { paddingTop: 15 }]}>
                 <View style={styles.viewRowCenter}>
                     <Image source={srcAvatar} onError={() => setsrcAvatar(require('../../assets/images/error.png'))}
                         style={styles.imageAvatar} />
