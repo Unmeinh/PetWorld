@@ -68,13 +68,13 @@ export default function SearchFilters({navigation}) {
           renderItem={({item}) => {
             return (
               <View style={styles.loaderContainer}>
-                <ShimmerPlaceHolder
+                <ShimerPlaceHolder
                   style={styles.loader}
                   shimmerColors={[
                     '#f0e8d8',
                     '#dbdbdb',
                     '#f0e8d8',
-                  ]}></ShimmerPlaceHolder>
+                  ]}></ShimerPlaceHolder>
               </View>
             );
           }}
