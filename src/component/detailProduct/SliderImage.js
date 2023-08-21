@@ -25,7 +25,7 @@ export default function SliderImage({data}) {
   };
 
   const handleOnViewItemChange = useRef(({viewableItems}) => {
-    setIndex(viewableItems[0].index);
+    setIndex(viewableItems[0]?.index);
   }).current;
   const handlePanigationPress = selectedIndex => {
     setIndex(selectedIndex);

@@ -6,13 +6,14 @@ import {
 } from 'react-native';
 import React, { useEffect, useRef, useState } from 'react';
 import AntDesign from 'react-native-vector-icons/AntDesign';
+import { useNavigation } from '@react-navigation/native';
 
 export default function PetAISupport() {
   const [offset, setoffset] = useState(0);
   const scrollRef = useRef(null);
   const fadeValue = useRef(new Animated.Value(1)).current;
   const duration = 150;
-
+  const navigation = useNavigation()
   function animatedFaded() {
     Animated.timing(fadeValue, {
       toValue: 0,
@@ -23,7 +24,7 @@ export default function PetAISupport() {
 
   return (
     <Animated.View style={{opacity: fadeValue}}>
-      <TouchableOpacity style={styles.floatingAI}>
+      <TouchableOpacity style={styles.floatingAI} onPress={()=>navigation.navigate('ChatScreen')}>
         <Image style={styles.floatingPaw}
           source={require('../assets/images/pawAI.png')} />
       </TouchableOpacity>

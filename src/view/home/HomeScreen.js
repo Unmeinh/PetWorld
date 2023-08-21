@@ -41,7 +41,9 @@ export default function HomeScreen({scrollRef, onScrollView, navigation}) {
     <>
       <ScrollView ref={scrollRef} onScroll={onScrollView} style={{backgroundColor:"#FEF6E4"}}>
         <SafeAreaView>
-          <View style={{alignItems: 'flex-end', marginTop: 10, marginEnd: 20}}>
+          <Pressable 
+          onPress={()=>navigation.navigate('CartScreen')}
+          style={{alignItems: 'flex-end', marginTop: 10, marginEnd: 20}}>
             <Icon name="cart-outline" color="#F582AE" size={30} />
             <View
               style={{
@@ -57,7 +59,7 @@ export default function HomeScreen({scrollRef, onScrollView, navigation}) {
                 {countCart}
               </Text>
             </View>
-          </View>
+          </Pressable>
         </SafeAreaView>
 
         {isLoader ? (

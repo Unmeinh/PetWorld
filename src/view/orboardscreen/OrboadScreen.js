@@ -21,7 +21,7 @@ const SCREEN_KEY = [
     key: '3',
   },
 ];
-const width = Dimensions.get('window').width;
+const {height,width} = Dimensions.get('window');
 const AnimatedPagerView = Animated.createAnimatedComponent(PagerView);
 export default function OrboadScreen({navigation}) {
   const pinkColor = '#F582AE';
@@ -228,7 +228,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     justifyContent: 'center',
     alignSelf: 'center',
-    bottom: (width * 50) / 100,
+    bottom: (height * 25) / 100,
   },
   viewPager: {
     flex: 1,
