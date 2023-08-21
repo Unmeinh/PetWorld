@@ -6,12 +6,54 @@ import {
   View,
   TouchableOpacity,
   Image,
+  useWindowDimensions,
 } from 'react-native';
 import React from 'react';
 import Icon from 'react-native-vector-icons/Ionicons';
-import Fontisto from 'react-native-vector-icons/Fontisto';
+import {TabView, SceneMap, TabBar} from 'react-native-tab-view';
+import GridProduct from '../../component/ListProduct/GridProduct';
+import {useSelector} from 'react-redux'
+import { listPetSelector, listProductSelector } from '../../redux/selector';
+
 export default function ShopScreen({navigation, route}) {
   const data = route.params.data;
+  const layout = useWindowDimensions();
+  const listProduct = useSelector(listProductSelector)
+  const listPet = useSelector(listPetSelector)
+  const [index, setIndex] = React.useState(0);
+  const [routes] = React.useState([
+    {key: 'pet', title: 'Thú cưng'},
+    {key: 'product', title: 'Sản Phẩm'},
+  ]);
+  const renderScene = ({route}) => {
+    switch (route.key) {
+      case 'pet':
+        return <GridProduct data={listPet} />;
+      case 'product':
+        return <GridProduct data={listProduct}/>;
+        default: return null
+    }
+  };
+  const renderTabBar = props => {
+    return (
+      <TabBar
+        {...props}
+        pressColor="transparent"
+        indicatorStyle={{backgroundColor: '#F582AE'}}
+        style={{backgroundColor: '#FEF6E4'}}
+        renderLabel={({route, focused, color}) => (
+          <Text
+            style={{
+              color: focused ? '#001858' : '#858383',
+              fontSize: 16,
+              fontFamily: 'ProductSans',
+            }}>
+            {route.title}
+          </Text>
+        )}
+      />
+    );
+  };
   return (
     <>
       <View style={styles.container}>
@@ -22,11 +64,17 @@ export default function ShopScreen({navigation, route}) {
             }}>
             <Icon name="arrow-back" size={26} color="#001858" />
           </Pressable>
-          <Pressable style={styles.headerSearch}>
+          <Pressable style={styles.headerSearch} onPress={() =>{
+            navigation.navigate('SearchFilters');
+          }}>
             <Icon name="search" size={26} color="#001858" />
             <Text>Tìm kiếm trong cửa hàng</Text>
           </Pressable>
+          <Pressable onPress={()=>{
+            navigation.navigate('CartScreen');
+          }}>
           <Icon name="cart-outline" size={26} color="#001858" />
+          </Pressable>
         </SafeAreaView>
         <View style={styles.tagShop}>
           <Image source={data.avatar} style={styles.image} />
@@ -49,6 +97,12 @@ export default function ShopScreen({navigation, route}) {
             <Text style={styles.textButton}>Trò chuyện</Text>
           </Pressable>
         </View>
+        <TabView
+          navigationState={{index, routes}}
+          renderScene={renderScene}
+          onIndexChange={setIndex}
+          renderTabBar={renderTabBar}
+        />
       </View>
     </>
   );

@@ -8,7 +8,7 @@ export default function ListProductVertical({data}) {
   return (
       <FlatList
         data={data}
-        keyExtractor={(item) => item.id}
+        keyExtractor={item => item.id}
         renderItem={({item}) => (
           <ItemProductVertical
             item={item}
@@ -16,6 +16,7 @@ export default function ListProductVertical({data}) {
           />
         )}
       />
+
   );
 }
 
