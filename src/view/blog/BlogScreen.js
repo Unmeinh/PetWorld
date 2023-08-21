@@ -17,23 +17,20 @@ import AutoHeightImage from 'react-native-auto-height-image';
 import {useNavigation} from '@react-navigation/native';
 import LinearGradient from 'react-native-linear-gradient';
 import Entypo from 'react-native-vector-icons/Entypo';
-import {useSelector, useDispatch} from 'react-redux';
-import {getInfoLogin} from '../../redux/actions/userAction';
-import {createShimmerPlaceholder} from 'react-native-shimmer-placeholder';
+import { useSelector, useDispatch } from "react-redux";
+import { selectUserByID } from '../../redux/selectors/userSelector';
+import { selectInfoLogin } from '../../redux/actions/userAction';
+import { RefreshControl } from "react-native-gesture-handler";
+import { createShimmerPlaceholder } from 'react-native-shimmer-placeholder';
 
 const ShimerPlaceHolder = createShimmerPlaceholder(LinearGradient);
 
 const BlogScreen = ({scrollRef, onScrollView}) => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
-  const getUser = useSelector(state => state.infoLogin);
-  const [arr_blog, setarr_blog] = useState(
-    useSelector(state => state.listBlog),
-  );
-  const [userLogin, setuserLogin] = useState(
-    useSelector(state => state.infoLogin),
-  );
-  const [isRefresh, setisRefresh] = useState(true);
+  const infoLogin = useSelector(selectUserByID);
+  const arr_blog = useSelector((state) => state.listBlog);
+  const [isRefreshing, setisRefreshing] = useState(false);
   const colorLoader = ['#f0e8d8', '#dbdbdb', '#f0e8d8'];
   const [srcAvatar, setsrcAvatar] = useState(
     require('../../assets/images/error.png'),
