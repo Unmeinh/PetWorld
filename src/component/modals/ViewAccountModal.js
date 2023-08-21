@@ -13,7 +13,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import LinearGradient from 'react-native-linear-gradient';
 import { createShimmerPlaceholder } from 'react-native-shimmer-placeholder';
 
-const ShimerPlaceHolder = createShimmerPlaceholder(LinearGradient);
+const ShimmerPlaceHolder = createShimmerPlaceholder(LinearGradient);
 
 const ViewAccountModal = (route) => {
     const navigation = useNavigation();
@@ -131,59 +131,59 @@ const ViewAccountModal = (route) => {
     const ModalLoader = () => {
         return (
             <View style={styles.modalUser}>
-                <ShimerPlaceHolder
+                <ShimmerPlaceHolder
                     shimmerColors={colorLoader}
                     shimmerStyle={styles.modalUserAvatar} />
-                <ShimerPlaceHolder
+                <ShimmerPlaceHolder
                     shimmerColors={colorLoader}
                     shimmerStyle={[styles.modalUserName, { width: '30%', borderRadius: 5 }]} />
-                <ShimerPlaceHolder
+                <ShimmerPlaceHolder
                     shimmerColors={colorLoader}
                     shimmerStyle={{ width: '25%', height: 25, marginBottom: 13, borderRadius: 10 }} />
                 <View style={styles.viewRowAroundModal}>
                     <View style={{ alignItems: 'center' }}>
-                        <ShimerPlaceHolder
+                        <ShimmerPlaceHolder
                             shimmerColors={colorLoader}
                             shimmerStyle={{ width: 13, height: 13, borderRadius: 5, marginBottom: 5 }} />
-                        <ShimerPlaceHolder
+                        <ShimmerPlaceHolder
                             shimmerColors={colorLoader}
                             shimmerStyle={{ width: 40, height: 9, borderRadius: 5 }} />
                     </View>
                     <View style={{ alignItems: 'center' }}>
-                        <ShimerPlaceHolder
+                        <ShimmerPlaceHolder
                             shimmerColors={colorLoader}
                             shimmerStyle={{ width: 13, height: 13, borderRadius: 5, marginBottom: 5 }} />
-                        <ShimerPlaceHolder
+                        <ShimmerPlaceHolder
                             shimmerColors={colorLoader}
                             shimmerStyle={{ width: 60, height: 9, borderRadius: 5 }} />
                     </View>
                     <View style={{ alignItems: 'center' }}>
-                        <ShimerPlaceHolder
+                        <ShimmerPlaceHolder
                             shimmerColors={colorLoader}
                             shimmerStyle={{ width: 13, height: 13, borderRadius: 5, marginBottom: 5 }} />
-                        <ShimerPlaceHolder
+                        <ShimmerPlaceHolder
                             shimmerColors={colorLoader}
                             shimmerStyle={{ width: 60, height: 9, borderRadius: 5 }} />
                     </View>
                 </View>
                 <View style={{ width: '100%', alignItems: 'flex-start' }}>
-                    <ShimerPlaceHolder
+                    <ShimmerPlaceHolder
                         shimmerColors={colorLoader}
                         shimmerStyle={{ width: '50%', borderRadius: 5, marginTop: 15, marginBottom: 7, marginHorizontal: 20 }} />
                 </View>
                 <View style={styles.viewOptionModal} >
-                    <ShimerPlaceHolder
+                    <ShimmerPlaceHolder
                         shimmerColors={colorLoader}
                         shimmerStyle={{ width: 17, height: 17, borderRadius: 5 }} />
-                    <ShimerPlaceHolder
+                    <ShimmerPlaceHolder
                         shimmerColors={colorLoader}
                         shimmerStyle={{ width: '35%', borderRadius: 5, marginLeft: 15 }} />
                 </View>
                 <View style={styles.viewOptionModal}>
-                    <ShimerPlaceHolder
+                    <ShimmerPlaceHolder
                         shimmerColors={colorLoader}
                         shimmerStyle={{ width: 17, height: 17, borderRadius: 5 }} />
-                    <ShimerPlaceHolder
+                    <ShimmerPlaceHolder
                         shimmerColors={colorLoader}
                         shimmerStyle={{ width: '35%', borderRadius: 5, marginLeft: 15 }} />
                 </View>

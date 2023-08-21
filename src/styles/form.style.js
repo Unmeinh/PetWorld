@@ -14,6 +14,7 @@ export default StyleSheet.create({
         flex: 1,
         backgroundColor: yellowWhite,
         paddingHorizontal: 30,
+        paddingTop: 15
     },
 
     pawBottomLeft: {

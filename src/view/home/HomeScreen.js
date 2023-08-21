@@ -24,7 +24,7 @@ import Slider from '../../component/slideshow/Slider';
 import CategoryList from '../../component/list/CategoryList';
 import ListHorizontal from '../../component/list/ListHorizontal';
 
-const ShimerPlaceHolder = createShimmerPlaceholder(LinearGradient);
+const ShimmerPlaceHolder = createShimmerPlaceholder(LinearGradient);
 export default function HomeScreen({scrollRef, onScrollView, navigation}) {
   const [countCart, setCountCart] = useState(0);
   const listPet = useSelector(listPetSelector);
@@ -62,7 +62,7 @@ export default function HomeScreen({scrollRef, onScrollView, navigation}) {
 
         {isLoader ? (
           <View style={styles.margin20}>
-            <ShimerPlaceHolder
+            <ShimmerPlaceHolder
               shimmerStyle={styles.styleLoader}
               shimmerColors={colorLoader}
             />

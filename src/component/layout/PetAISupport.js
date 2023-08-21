@@ -25,7 +25,7 @@ export default function PetAISupport() {
     <Animated.View style={{opacity: fadeValue}}>
       <TouchableOpacity style={styles.floatingAI}>
         <Image style={styles.floatingPaw}
-          source={require('../assets/images/pawAI.png')} />
+          source={require('../../assets/images/pawAI.png')} />
       </TouchableOpacity>
       <TouchableOpacity style={styles.floatingAIClose} onPress={animatedFaded}>
         <AntDesign name='close' color={'#000'} />

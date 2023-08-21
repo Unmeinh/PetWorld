@@ -5,14 +5,14 @@ import LinearGradient from 'react-native-linear-gradient';
 import {createShimmerPlaceholder} from 'react-native-shimmer-placeholder';
 import listfakeloader from '../../data/listfakeloader';
 
-const ShimerPlaceHolder = createShimmerPlaceholder(LinearGradient);
+const ShimmerPlaceHolder = createShimmerPlaceholder(LinearGradient);
 function CategoryList({data, isLoader}) {
   const colorLoader = ['#f0e8d8', '#dbdbdb', '#f0e8d8'];
   return (
     <View style={{marginTop: 16}}>
       {isLoader
         ? [
-            <ShimerPlaceHolder
+            <ShimmerPlaceHolder
               shimmerColors={colorLoader}
               shimmerStyle={{borderRadius: 9,marginLeft:20}}
             />,
@@ -22,7 +22,7 @@ function CategoryList({data, isLoader}) {
               showsHorizontalScrollIndicator={false}
               data={listfakeloader}
               renderItem={({item}) => (
-                <ShimerPlaceHolder
+                <ShimmerPlaceHolder
                   shimmerColors={colorLoader}
                   shimmerStyle={styles.loader}
                 />

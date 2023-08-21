@@ -3,7 +3,7 @@ import {
     TextInput
 } from 'react-native'
 import React, { useState, useRef, useImperativeHandle, forwardRef } from 'react'
-import styles from '../styles/form.style';
+import styles from '../../styles/form.style';
 
 const OTPItem = (props, ref) => {
     const [inputOTP1, setinputOTP1] = useState('');

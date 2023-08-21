@@ -16,6 +16,10 @@ import ShopScreen from '../view/shopping/ShopScreen';
 import MyPage from '../view/blog/MyPage';
 import ViewPage from '../view/blog/ViewPage';
 import ListFollow from '../view/blog/ListFollow';
+import InfoManager from '../view/blog/InfoManager';
+import EditInfo from '../view/blog/EditInfo';
+import AppointmentScreen from '../view/appointment/AppointmentScreen';
+import DetailAppointment from '../view/appointment/DetailAppointment';
 import { createSharedElementStackNavigator } from 'react-navigation-shared-element';
 const Stack = createSharedElementStackNavigator();
 
@@ -68,6 +72,10 @@ export default function StackScreen() {
         <Stack.Screen name="MyPage" component={MyPage} />
         <Stack.Screen name="ViewPage" component={ViewPage} />
         <Stack.Screen name="ListFollow" component={ListFollow} />
+        <Stack.Screen name="InfoManager" component={InfoManager} />
+        <Stack.Screen name="EditInfo" component={EditInfo} />
+        <Stack.Screen name="AppointmentScreen" component={AppointmentScreen} />
+        <Stack.Screen name="DetailAppointment" component={DetailAppointment} />
       </Stack.Navigator>
     </NavigationContainer>
   );
