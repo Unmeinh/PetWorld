@@ -16,12 +16,6 @@ import ShopScreen from '../view/shopping/ShopScreen';
 import MyPage from '../view/blog/MyPage';
 import ViewPage from '../view/blog/ViewPage';
 import ListFollow from '../view/blog/ListFollow';
-import CartScreen from '../view/shopping/CartScreen';
-import SummaryBill from '../view/shopping/SummaryBill';
-import ListAddress from '../view/account/ListAddress';
-import AddNewAddress from '../view/account/AddNewAddress';
-import ChatScreen from '../view/chat/ChatScreen';
-
 import InfoManager from '../view/blog/InfoManager';
 import EditInfo from '../view/blog/EditInfo';
 import AppointmentScreen from '../view/appointment/AppointmentScreen';
@@ -78,11 +72,6 @@ export default function StackScreen() {
         <Stack.Screen name="MyPage" component={MyPage} />
         <Stack.Screen name="ViewPage" component={ViewPage} />
         <Stack.Screen name="ListFollow" component={ListFollow} />
-        <Stack.Screen name="CartScreen" component={CartScreen} />
-        <Stack.Screen name="SummaryBill" component={SummaryBill} />
-        <Stack.Screen name="ListAddress" component={ListAddress} />
-        <Stack.Screen name="AddNewAddress" component={AddNewAddress} />
-        <Stack.Screen name="ChatScreen" component={ChatScreen} />
         <Stack.Screen name="InfoManager" component={InfoManager} />
         <Stack.Screen name="EditInfo" component={EditInfo} />
         <Stack.Screen name="AppointmentScreen" component={AppointmentScreen} />

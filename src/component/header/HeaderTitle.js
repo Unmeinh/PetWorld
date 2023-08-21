@@ -15,7 +15,7 @@ export default function HeaderTitle({ nav, titleHeader, colorHeader }) {
       shadowColor: "#000",
       elevation: 5,
     }}>
-      <TouchableOpacity onPress={() => { nav.goBack() }}>
+      <TouchableOpacity onPress={() =>  nav.goBack() }>
         <AntDesign name='arrowleft' size={25} color={'#001858'} />
       </TouchableOpacity>
       <Text style={{ fontSize: 18, color: '#001858', fontFamily: 'ProductSans', fontWeight: 'bold', marginLeft: 20 }}>
