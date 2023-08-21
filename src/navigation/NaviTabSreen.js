@@ -3,7 +3,7 @@ import React, { useState, useEffect, useRef } from 'react'
 import {
     StyleSheet, Text,
     TouchableOpacity, View,
-    Image, Animated
+    Image, Animated,Alert
 } from 'react-native'
 import * as Animatable from 'react-native-animatable';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
@@ -112,7 +112,6 @@ export default function NaviTabScreen({navigation}) {
 
         return unsub;
     }, [navigation]);
-
     return (
         <View style={{ flex: 1 }}>
             <Tab.Navigator

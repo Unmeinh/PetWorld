@@ -32,10 +32,10 @@ function CategoryList({data, isLoader}) {
         : [
             <Text style={styles.title}>Sản phẩm chính</Text>,
             <FlatList
+              data={data}
               horizontal
               scrollEnabled={false}
               keyExtractor={(item) => item.id}
-              data={data}
               renderItem={({item}) => <CategoryItem item={item} />}
             />,
           ]}

@@ -1,23 +1,59 @@
-import {
-  Text, View,
-  ScrollView,
-  Dimensions
-} from 'react-native'
-import React from 'react'
-import styles from '../../styles/temp.style';
+import React, {useState, useCallback, useEffect} from 'react';
+import {GiftedChat} from 'react-native-gifted-chat';
+import {SafeAreaView} from 'react-native-safe-area-context';
+export default function ChatScreen() {
+  const [messages, setMessages] = useState([]);
+  const keyApiChatGPT = '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'
+  useEffect(() => {
+    setMessages([
+      {
+        _id: 1,
+        text: 'Hello developer',
+        createdAt: new Date(),
+        user: {
+          _id: 2,
+          name: 'React Native',
+          avatar: 'https://placeimg.com/140/140/any',
+        },
+      },
+    ]);
+    callApi("Hello")
+  }, []);
 
-export default function ChatScreen({ scrollRef, onScrollView }) {
+  const onSend = useCallback((messages = []) => {
+    setMessages(previousMessages =>
+      GiftedChat.append(previousMessages, messages),
+    );
+  }, []);
+  
+  const callApi = async () => {
+    const res = await fetch('https://api.openai.com/v1/completions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${keyApiChatGPT}`,
+      },
+      body: JSON.stringify({
+        "model": "text-davinci-003",
+        "prompt": "Say this is a test",
+        "max_tokens": 7,
+        "temperature": 0
+      })
+    });
+    const data =  await res.json()
+    if(data){
+      console.log("Data",data);
+    }
+  };
   return (
-    <View style={{ backgroundColor: '#FEF6E4', flex: 1 }}>
-      <ScrollView ref={scrollRef}
-        onScroll={onScrollView} style={{ height: '100%', width: '100%' }}>
-        <View style={{ justifyContent: 'center', alignItems: 'center', height: Dimensions.get('window').height}}>
-          <Text style={{ fontSize: 50, color: '#001858', fontFamily: 'ProductSans' }}>Chat</Text>
-        </View>
-        <View style={{ justifyContent: 'center', alignItems: 'center', height: Dimensions.get('window').height}}>
-          <Text style={{ fontSize: 50, color: '#001858', fontFamily: 'ProductSans' }}>Screen</Text>
-        </View>
-      </ScrollView>
-    </View>
-  )
+    <SafeAreaView style={{flex: 1}}>
+      <GiftedChat
+        messages={messages}
+        onSend={messages => onSend(messages)}
+        user={{
+          _id: 1,
+        }}
+      />
+    </SafeAreaView>
+  );
 }

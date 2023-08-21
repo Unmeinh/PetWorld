@@ -1,10 +1,9 @@
 import dataProduct from '../../../data/listproduct'
+import { createSlice } from '@reduxjs/toolkit'
 const initState = dataProduct
-const listProductReducer = (state  = initState,action) =>{
-    switch(action.type){
-        default:
-             return state;
-    }
-}
-
-export default listProductReducer
+const listPetSlice = createSlice({
+    name:'listPet',
+    initialState:initState,
+    reducers:{}
+})
+export default listPetSlice.reducer

@@ -40,19 +40,14 @@ export const filterAll = state => state.searchFilter.filterProduct;
 export const productSelector = createSelector(
   selectFilterIdProduct,
   listPetSelector,
-  listProductSelector,
-  (id, pets, products) => {
+  listProductSelector,listShopSelector,
+  (id, pets, products,shops) => {
     const list = [...pets, ...products];
-    return list.find(p => p.id === id);
+    const product =  list.find(p => p.id === id);
+    const shop =  shops.find(p => p.id === product.idShop)
+    return [product,shop]
   },
 );
 
-export const shopOftheProductSelector = createSelector(
-  listShopSelector,
-  productSelector,
-  (shops, idProduct) => {
-    if (idProduct !== 'undefined') {
-      return shops.find(p => p.id === idProduct.idShop);
-    }
-  },
-);
+export const listCartSelector = state => state.listCart
+

@@ -12,20 +12,20 @@ import {
   listProductSelector,
   productSelector,
   selectFilterIdSelector,
-  shopOftheProductSelector,
+  
 } from '../../redux/selector';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import SliderImage from '../../component/detailProduct/SliderImage';
 import Icon from 'react-native-vector-icons/Ionicons';
-import AntDesign from 'react-native-vector-icons/AntDesign';
 import {SharedElement} from 'react-navigation-shared-element';
 import ShopTag from '../../component/shop/ShopTag';
 import ListHorizontal from '../../component/list/ListHorizontal';
+import { addCart } from '../../redux/reducers/shop/CartReduces';
 const {width} = Dimensions.get('screen');
 
 function DetailProduct({navigation}) {
-  const product = useSelector(productSelector);
-  const shop = useSelector(shopOftheProductSelector);
+  const dispatch = useDispatch()
+  const [product,shop] = useSelector(productSelector);
   const listProduct = useSelector(listProductSelector);
   const category = useSelector(selectFilterIdSelector);
   const [like, setLike] = useState(false);
@@ -51,11 +51,9 @@ function DetailProduct({navigation}) {
       );
     }
   };
-
   const slideAnimation = useRef(new Animated.Value(0)).current;
   const opacityAnimation = useRef(new Animated.Value(0)).current;
   const scrollY = useRef(new Animated.Value(0)).current;
-
   const HEADER_MAX_HEIGHT = 60;
   const headerBackgroundColor = scrollY.interpolate({
     inputRange: [0, HEADER_MAX_HEIGHT],
@@ -103,6 +101,11 @@ function DetailProduct({navigation}) {
     }
   }, [isVisible]);
 
+  const handleAddCart = (idProduct,idUser,mount) =>{
+    dispatch(addCart({
+        idProduct,idUser,mount,createAt: Date.now()
+      }))
+  }
   return (
     <>
       <Animated.View
@@ -115,14 +118,13 @@ function DetailProduct({navigation}) {
         ]}>
         <TouchableOpacity
           onPress={() => {
-            navigation.goBack();
+            navigation.pop();
             setIsVisible(!isVisible);
           }}
           style={[styles.iconBack, {backgroundColor: headerIconBackground}]}>
           <AnimatedIcon name="arrow-back" size={24} color={headerIcon} />
         </TouchableOpacity>
         <TouchableOpacity
-          
           style={[styles.iconBack, {backgroundColor: headerIconBackground}]}>
           <AnimatedIcon name="cart-outline" size={24} color={headerIcon} />
         </TouchableOpacity>
@@ -140,7 +142,7 @@ function DetailProduct({navigation}) {
           </SharedElement>
         </View>
         <View style={styles.content}>
-          <SharedElement id={`item.${product.id}.price`}>
+          
             <Text
               style={{
                 fontFamily: 'ProductSansBold',
@@ -154,7 +156,7 @@ function DetailProduct({navigation}) {
                 )}
               </SharedElement>
             </Text>
-          </SharedElement>
+          
           <View
             style={{
               flexDirection: 'row',
@@ -238,8 +240,9 @@ function DetailProduct({navigation}) {
                 flexDirection: 'column',
               }}>
               <Text style={styles.lineHeight}>
-                Tên thú cưng: {product.namePet + '\n'}Giống: Lai Mĩ{'\n'}Tuổi:
-                18 tháng
+                Tên thú cưng:{' '}
+                {product.namePet ? product.namePet : product.nameProduct + '\n'}
+                Giống: Lai Mĩ{'\n'}Tuổi: 18 tháng
               </Text>
               {showDes ? (
                 <Text style={styles.lineHeight}>
@@ -311,6 +314,8 @@ function DetailProduct({navigation}) {
           </TouchableOpacity>
         ) : (
           <TouchableOpacity
+            onPress={()=> handleAddCart(product.id,'1234',6)}
+            
             style={[
               styles.buttonBooking,
               styles.buttonSheet,

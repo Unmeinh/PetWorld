@@ -1,8 +1,8 @@
-import data from '../../../data/category'
-const initState = data;
-const categoryReducer = (state = initState,action) =>{
-    switch(action.type){
-        default: return state;
-    }
-}
-export default categoryReducer
+import data from '../../../data/category';
+import {createSlice} from '@reduxjs/toolkit';
+const categorySlice = createSlice({
+  name: 'category',
+  initialState: data,
+  reducers: {},
+});
+export default categorySlice.reducer;

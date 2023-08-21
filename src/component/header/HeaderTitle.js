@@ -14,6 +14,7 @@ export default function HeaderTitle({ nav, titleHeader, colorHeader }) {
       alignItems: 'center',
       shadowColor: "#000",
       elevation: 5,
+      
     }}>
       <TouchableOpacity onPress={() =>  nav.goBack() }>
         <AntDesign name='arrowleft' size={25} color={'#001858'} />

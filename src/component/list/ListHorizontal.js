@@ -1,13 +1,15 @@
-import {StyleSheet, Text, View, FlatList} from 'react-native';
+import {StyleSheet, Text, View, FlatList, Pressable} from 'react-native';
 import React from 'react';
 import ItemHorizontal from './ItemHorizontal';
 import LinearGradient from 'react-native-linear-gradient';
 import {createShimmerPlaceholder} from 'react-native-shimmer-placeholder';
 import listfakeloader from '../../data/listfakeloader';
+import { useDispatch } from 'react-redux';
 
 const ShimmerPlaceHolder = createShimmerPlaceholder(LinearGradient);
 function ListHorizontal({data, title, isLoader}) {
   const colorLoader = ['#f0e8d8', '#dbdbdb', '#f0e8d8'];
+  const dispatch = useDispatch();
   return (
     <View style={{marginTop: 18}}>
       <View style={styles.title}>
@@ -44,8 +46,12 @@ function ListHorizontal({data, title, isLoader}) {
           horizontal
           showsHorizontalScrollIndicator={false}
           data={data}
-          renderItem={({item}) => <ItemHorizontal item={item} />}
-          keyExtractor={({id}) => id.toString()}
+          keyExtractor={item => item.id}
+          renderItem={({item}) => (
+            <Pressable onPress={() => dispatch(selectIdProductAction(item.id))}>
+              <ItemHorizontal item={item} />
+            </Pressable>
+          )}
         />
       )}
     </View>
@@ -83,4 +89,4 @@ const styles = StyleSheet.create({
     marginLeft: 20,
   },
 });
-export default React.memo(ListHorizontal)
+export default React.memo(ListHorizontal);
