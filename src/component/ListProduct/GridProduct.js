@@ -4,6 +4,7 @@ import {FlatGrid} from 'react-native-super-grid';
 import {useDispatch} from 'react-redux';
 import {selectIdProductAction} from '../../redux/action';
 import { useNavigation } from '@react-navigation/native';
+import { idProduct } from '../../redux/reducers/filters/filtersReducer';
 function GridProduct({data}) {
   const dispatch = useDispatch();
   const navigation = useNavigation();
@@ -35,7 +36,7 @@ function GridProduct({data}) {
       renderItem={({item}) => (
         <Pressable
           style={styles.itemContainer}
-          onPress={() => {dispatch(selectIdProductAction(item.id))
+          onPress={() => {dispatch(idProduct(item.id))
             navigation.navigate('DetailProduct',{item})}}>
           <Image source={item.avatar} style={styles.image} />
           <View style={styles.content}>

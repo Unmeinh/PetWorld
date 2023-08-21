@@ -1,8 +1,8 @@
-import data from '../../../data/listshop.js'
-const initState = data
-const listShopReducer  = (state = initState,action) =>{
-    switch(action.type){
-        default: return state
-    }
-} 
-export default listShopReducer
+import data from '../../../data/listshop.js';
+import {createSlice} from '@reduxjs/toolkit';
+const listShopSlice = createSlice({
+  name: 'listShop',
+  initialState: data,
+  reducers: {},
+});
+export default listShopSlice.reducer

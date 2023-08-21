@@ -12,16 +12,15 @@ import {
   listProductSelector,
   productSelector,
   selectFilterIdSelector,
-  shopOftheProductSelector,
+  
 } from '../../redux/selector';
 import {useDispatch, useSelector} from 'react-redux';
 import SliderImage from '../../component/detailProduct/SliderImage';
 import Icon from 'react-native-vector-icons/Ionicons';
-import AntDesign from 'react-native-vector-icons/AntDesign';
 import {SharedElement} from 'react-navigation-shared-element';
 import ShopTag from '../../component/shop/ShopTag';
 import ListHorizontal from '../../component/list/ListHorizontal';
-import { addCartAction } from '../../redux/action';
+import { addCart } from '../../redux/reducers/shop/CartReduces';
 const {width} = Dimensions.get('screen');
 
 function DetailProduct({navigation}) {
@@ -103,7 +102,7 @@ function DetailProduct({navigation}) {
   }, [isVisible]);
 
   const handleAddCart = (idProduct,idUser,mount) =>{
-    dispatch(addCartAction({
+    dispatch(addCart({
         idProduct,idUser,mount,createAt: Date.now()
       }))
   }

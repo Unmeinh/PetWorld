@@ -3,9 +3,10 @@ import React, {useEffect, useState} from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useDispatch} from 'react-redux';
 import {minusProductAction, plusProductAction} from '../../redux/action';
+import {minusProduct, plusProduct} from '../../redux/reducers/shop/CartReduces';
 export default function ItemListCart({data, isSelect}) {
   const dispatch = useDispatch();
-  const [selectChild, setSelectChild] = useState(isSelect)
+  const [selectChild, setSelectChild] = useState(isSelect);
   const iconSelect = selectChild
     ? 'checkbox-marked-circle'
     : 'checkbox-blank-circle-outline';
@@ -31,7 +32,12 @@ export default function ItemListCart({data, isSelect}) {
   }, [isSelect]);
   return (
     <View style={styles.container}>
-      <Icon name={iconSelect} size={24} color={'#F582AE'} onPress={() => setSelectChild(!selectChild)} />
+      <Icon
+        name={iconSelect}
+        size={24}
+        color={'#F582AE'}
+        onPress={() => setSelectChild(!selectChild)}
+      />
       <Image source={data.avatar ? data.avatar : null} style={styles.image} />
       <View style={styles.content}>
         <Text style={styles.nameProduct}>{data.nameProduct}</Text>
@@ -40,8 +46,11 @@ export default function ItemListCart({data, isSelect}) {
       <View style={styles.boxCount}>
         <View style={styles.icon}>
           <Text>
-            <Icon name="minus" size={16} color={'#001858'}
-                    onPress={() => dispatch(minusProductAction(data.id))}
+            <Icon
+              name="minus"
+              size={16}
+              color={'#001858'}
+              onPress={() => dispatch(minusProduct(data.id))}
             />
           </Text>
         </View>
@@ -54,7 +63,7 @@ export default function ItemListCart({data, isSelect}) {
               name="plus"
               size={16}
               color={'#001858'}
-              onPress={() => dispatch(plusProductAction(data.id))}
+              onPress={() => dispatch(plusProduct(data.id))}
             />
           </Text>
         </View>

@@ -5,6 +5,7 @@ import {useNavigation} from '@react-navigation/native';
 import {useDispatch} from 'react-redux';
 import {selectIdProductAction} from '../../redux/action';
 import {SharedElement} from 'react-navigation-shared-element';
+import { idProduct } from '../../redux/reducers/filters/filtersReducer';
 export default function ItemHorizontal({item}) {
   const navigation = useNavigation();
   const dispatch = useDispatch();
@@ -37,7 +38,7 @@ export default function ItemHorizontal({item}) {
   return (
     <Pressable
       onPress={() => {
-        dispatch(selectIdProductAction(item.id));
+        dispatch(idProduct(item.id));
         navigation.navigate('DetailProduct', {item});
       }}
       style={{

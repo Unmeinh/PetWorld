@@ -1,10 +1,10 @@
 import dataPet from '../../../data/listpet'
-const initState = dataPet
-const listPetReducer = (state  = initState,action) =>{
-    switch(action.type){
-        default:
-             return state;
-    }
-}
+import { createSlice } from '@reduxjs/toolkit';
+const listPetSlice = createSlice({
+    name:'listpet',
+    initialState:dataPet,
+    reducers:{}
+})
 
-export default listPetReducer
+
+export default listPetSlice.reducer

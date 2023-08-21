@@ -1,4 +1,5 @@
-const initState = {
+import {createSlice} from '@reduxjs/toolkit';
+const initialState = {
   search: '',
   idCategory: 0,
   filterProduct: {
@@ -23,25 +24,22 @@ const initState = {
   },
   idProduct: '',
 };
-const searchFilterReducer = (state = initState, action) => {
-  switch (action.type) {
-    case 'filter/searchFilterChanged':
-      return {
-        ...state,
-        search: action.payload,
-      };
-    case 'filter/selectIdCategory':
-      return {
-        ...state,
-        idCategory: action.payload,
-      };
-    case 'filter/idProduct':
-      return {
-        ...state,
-        idProduct: action.payload,
-      };
-    default:
-      return state;
-  }
-};
-export default searchFilterReducer;
+const filtersReducer =  createSlice({
+  name: 'filters',
+  initialState,
+  reducers: {
+    searchFilterChanged: (state, action) => {
+      state.search = action.payload;
+    },
+    selectIdCategory: (state, action) => {
+      state.idCategory = action.payload;
+    },
+    idProduct: (state, action) => {
+      state.idProduct = action.payload;
+    },
+  },
+});
+
+export const {searchFilterChanged,selectIdCategory,idProduct} = filtersReducer.actions
+export default filtersReducer.reducer
+

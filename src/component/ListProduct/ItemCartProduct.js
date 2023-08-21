@@ -5,8 +5,8 @@ import {useSelector} from 'react-redux';
 import {listShopSelector} from '../../redux/selector';
 import {Image} from 'react-native-animatable';
 import ItemListCart from '../shop/ItemListCart';
-import {selectItemCart} from '../../redux/action';
 import {useDispatch} from 'react-redux';
+import { selectItem } from '../../redux/reducers/shop/CartReduces';
 export default function ItemCartProduct({result}) {
   const shops = useSelector(listShopSelector);
   const dispatch = useDispatch();
@@ -28,7 +28,7 @@ export default function ItemCartProduct({result}) {
           color={'#F582AE'}
           onPress={() => {
             setIsSelect(!isSelect);
-            dispatch(selectItemCart(result.products));
+            dispatch(selectItem(result.products));
           }}
         />
         {shop.avatar ? (
@@ -40,6 +40,7 @@ export default function ItemCartProduct({result}) {
       </View>
       <FlatList
         data={result.products}
+        scrollEnabled={false}
         keyExtractor={item => item.id}
         renderItem={({item}) => (
           <ItemListCart data={item} isSelect={isSelect} />

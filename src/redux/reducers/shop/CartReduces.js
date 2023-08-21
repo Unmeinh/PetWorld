@@ -1,4 +1,6 @@
-const initState = [
+import { createSlice } from '@reduxjs/toolkit';
+
+const initialState = [
   {
     idProduct: 'f3n2p1s7',
     idUser: '123',
@@ -21,43 +23,39 @@ const initState = [
     isSelect: false,
   },
 ];
-const listCartReducer = (state = initState, action) => {
-  switch (action.type) {
-    case 'cart/addCart':
-      return [...initState, action.payload];
-    case 'cart/plusProduct':
-      return state.map(cart => {
-        if (cart.idProduct === action.payload) {
-          if (cart.amount < 99) return {...cart, amount: cart.amount + 1};
-          else return cart;
+
+const cartSlice = createSlice({
+  name: 'cart',
+  initialState,
+  reducers: {
+    addCart: (state, action) => {
+      state.push(action.payload);
+    },
+    plusProduct: (state, action) => {
+      const cart = state.find(item => item.idProduct === action.payload);
+      if (cart && cart.amount < 99) {
+        cart.amount++;
+      }
+    },
+    minusProduct: (state, action) => {
+      const index = state.findIndex(item => item.idProduct === action.payload);
+      if (index !== -1) {
+        if (state[index].amount > 1) {
+          state[index].amount--;
         } else {
-          return cart;
+          state.splice(index, 1);
         }
-      });
-    case 'cart/minusProduct':
-      return state.map((cart, index) => {
-        if (cart.idProduct === action.payload) {
-          if (cart.amount > 1) {
-            return {...cart, amount: cart.amount - 1};
-          } else {
-            return state.splice(index, 1);
-          }
-        } else {
-          return cart;
-        }
-      });
-    case 'cart/selectItem':
+      }
+    },
+    selectItem: (state, action) => {
       const selectedIds = action.payload.map(itemAction => itemAction.id);
-      const updatedState = state.map(item => {
-        if (selectedIds.includes(item.id)) {
-          return {...item, isSelect: true};
-        } else {
-          return {...item, isSelect: false};
-        }
+      state.forEach(item => {
+        item.isSelect = selectedIds.includes(item.idProduct);
       });
-      return updatedState;
-    default:
-      return state;
-  }
-};
-export default listCartReducer;
+    },
+  },
+});
+
+export const { addCart, plusProduct, minusProduct, selectItem } = cartSlice.actions;
+
+export default cartSlice.reducer;
