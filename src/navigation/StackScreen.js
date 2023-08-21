@@ -61,6 +61,7 @@ export default function StackScreen() {
             return [objAni('image'),objAni('name'),objAni('price'),objAni('rate')];
           }}
         />
+        
       </Stack.Navigator>
     </NavigationContainer>
   );
