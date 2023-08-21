@@ -15,7 +15,6 @@ import {
   listProductSelector,
   listShopSelector,
 } from '../../redux/selector';
-import ItemCartProduct from '../../component/ListProduct/ItemCartProduct';
 import useCart from '../../hooks/useCart';
 import ListCart from '../../component/list/ListCart';
 const {width} = Dimensions.get('screen');

@@ -1,10 +1,11 @@
 import { useCallback } from "react";
 
-export default (result,products) => {
+const useCart = (results, products) => {
   const groupProductsByShop = {};
+
   const listCartCallBack = useCallback(() => {
-    result.forEach(result => {
-      const {idProduct, amount} = result;
+    results.forEach(result => {
+      const { idProduct, amount } = result;
       const product = products.find(product => product.id === idProduct);
       if (product) {
         const idShop = product.idShop;
@@ -14,11 +15,15 @@ export default (result,products) => {
             products: [],
           };
         }
-        product.amount = amount;
-        groupProductsByShop[idShop].products.push(product);
+        const productWithAmount = { ...product, amount };
+        groupProductsByShop[idShop].products.push(productWithAmount);
       }
     });
+
     return Object.values(groupProductsByShop);
-  }, [result]);
-  return listCartCallBack
+  }, [results, products]);
+
+  return listCartCallBack;
 };
+
+export default useCart;
