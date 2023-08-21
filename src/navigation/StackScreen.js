@@ -14,11 +14,6 @@ import NewPost from '../view/blog/NewBlog';
 import DetailProduct from '../view/shopping/DetailProduct';
 import {createSharedElementStackNavigator} from 'react-navigation-shared-element';
 import ShopScreen from '../view/shopping/ShopScreen';
-import CartScreen from '../view/shopping/CartScreen';
-import SummaryBill from '../view/shopping/SummaryBill';
-import ListAddress from '../view/account/ListAddress';
-import AddNewAddress from '../view/account/AddNewAddress';
-import ChatScreen from '../view/chat/ChatScreen';
 const Stack = createSharedElementStackNavigator();
 
 export default function StackScreen() {
@@ -57,7 +52,6 @@ export default function StackScreen() {
           sharedElements={route => {
             const {id} = route.params.item;
             const objAni = (feild,animation ='fade-in',resize = 'clip') => {
-           
               return   {
                 id: `item.${id}.${feild}`,
                 animation: animation,
@@ -67,12 +61,7 @@ export default function StackScreen() {
             return [objAni('image'),objAni('name'),objAni('price'),objAni('rate')];
           }}
         />
-        <Stack.Screen name="ShopScreen" component={ShopScreen} />
-        <Stack.Screen name="CartScreen" component={CartScreen} />
-        <Stack.Screen name="SummaryBill" component={SummaryBill} />
-        <Stack.Screen name="ListAddress" component={ListAddress} />
-        <Stack.Screen name="AddNewAddress" component={AddNewAddress} />
-        <Stack.Screen name="ChatScreen" component={ChatScreen} />
+ 
       </Stack.Navigator>
     </NavigationContainer>
   );
