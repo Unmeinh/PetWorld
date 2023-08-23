@@ -92,7 +92,7 @@ export default function SummaryBill({navigation}) {
       <ScrollView style={{marginTop: -15}} scrollEnabled={true}>
         <UserTag data={data} />
         <FlatList
-          data={resultCart()}
+          data={resultCart}
           scrollEnabled={false}
           keyExtractor={item => item.idShop}
           renderItem={({item}) => <ItemCartSummary result={item} />}

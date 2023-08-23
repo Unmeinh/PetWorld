@@ -2,7 +2,6 @@ import { useCallback } from "react";
 
 const useCart = (results, products) => {
   const groupProductsByShop = {};
-
   const listCartCallBack = useCallback(() => {
     results.forEach(result => {
       const { idProduct, amount } = result;
@@ -23,7 +22,7 @@ const useCart = (results, products) => {
     return Object.values(groupProductsByShop);
   }, [results, products]);
 
-  return listCartCallBack;
+  return listCartCallBack();
 };
 
 export default useCart;
