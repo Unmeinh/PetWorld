@@ -11,7 +11,10 @@ import Entypo from 'react-native-vector-icons/Entypo';
 import Feather from 'react-native-vector-icons/Feather';
 import LinearGradient from 'react-native-linear-gradient';
 import { useNavigation } from '@react-navigation/native';
-import client from '../../api/axios.config';
+import axios, { isCancel, AxiosError } from 'axios';
+import axiosConfig from '../../api/axios.config';
+import Toast from 'react-native-toast-message';
+import { ToastLayout } from '../../component/layout/ToastLayout';
 
 export default function LoginTab(route) {
     const navigation = useNavigation();
@@ -61,63 +64,46 @@ export default function LoginTab(route) {
         }
 
         if (checkValidate(newUser) == false) {
-            ToastAndroid.show("Đăng nhập thất bại!", ToastAndroid.SHORT);
+            // ToastAndroid.show("Đăng nhập thất bại!", ToastAndroid.SHORT);
             return;
         }
 
         var formdata = new FormData();
         formdata.append("userName", newUser.userName);
         formdata.append("passWord", newUser.passWord);
-        var url_api = 'https://192.168.191.4:3000/api/user/login';
 
-        // axios.post(url_api, formdata)
-        //     .then(function (response) {
-        //         console.log(response);
-        //     })
-        //     .catch(function (error) {
-        //         console.log(error);
-        //     })
-        //     .finally(function () {
-        //     });
-
-        // client.post('/user/login', {
-        //     body: newUser
-        // }).then((response) => {
-        //     if (response.status == 200) {
-        //         if (response.success == true) {
-        //             ToastAndroid.show(response.message, ToastAndroid.SHORT);
-        //             navigation.goBack();
-        //         }
-        //     } else {
-        //         ToastAndroid.show(response.message, ToastAndroid.SHORT);
-        //     }
-        // }).catch((e) => e);
-
-        // fetch(url_api, {
-        //     method: 'POST',
-        //     headers: {
-        //         Accept: 'application/json',
-        //         'content-type': 'application/json',
-        //     },
-        //     body: newUser
-        // })
-        //     .then(async (res) => {
-        //         const json = await res.json();
-        //         if (res.status == 200) {
-        //             if (json.success == true) {
-        //                 ToastAndroid.show(json.message, ToastAndroid.SHORT);
-        //                 // route.nav.navigate('NaviTabSreen');
-        //                 navigation.navigate('NaviTabSreen');
-        //             }
-        //         } else {
-        //             ToastAndroid.show(json.message, ToastAndroid.SHORT);
-        //         }
-        //     })
-        //     .catch((e) => {
-        //         console.log(e);
-        //     });
-
-            navigation.navigate('NaviTabSreen');
+        axiosConfig.post('user/login', newUser)
+            .then((response) => {
+                if (response.status == 200) {
+                    var data = response.data;
+                    if (data.success) {
+                        Toast.show({
+                            type: 'success',
+                            position: 'top',
+                            text1: String(data.message),
+                            bottomOffset: 20
+                        });
+                    }
+                } else {
+                    var data = response.data;
+                    Toast.show({
+                        type: 'error',
+                        position: 'top',
+                        text1: String(data.message),
+                        bottomOffset: 20
+                    });
+                }
+            })
+            .catch((e) => {
+                // var data = response.data;
+                console.log(e);
+                Toast.show({
+                    type: 'error',
+                    position: 'top',
+                    text1: String(e),
+                    bottomOffset: 20
+                });
+            });
     }
 
     return (
@@ -234,6 +220,7 @@ export default function LoginTab(route) {
                     </View>
                 </View>
             </View>
+            <ToastLayout />
         </View>
     );
 }

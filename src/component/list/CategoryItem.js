@@ -2,7 +2,7 @@ import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import React from 'react';
 import {useDispatch} from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
-import { selectIdCategory } from '../../redux/reducers/filters/filtersReducer';
+import { selectIdCategory } from '../../redux/reducers/filters/FiltersReducer';
 export default function CategoryItem({item}) {
   const dispatch = useDispatch()
   const navigation = useNavigation()

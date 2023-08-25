@@ -16,7 +16,7 @@ import ShowSearchFilters from '../../component/search/ShowSearchFilters';
 import LinearGradient from 'react-native-linear-gradient';
 import {createShimmerPlaceholder} from 'react-native-shimmer-placeholder';
 import listfakeloader from '../../data/listfakeloader';
-import { searchFilterChanged } from '../../redux/reducers/filters/filtersReducer';
+import { searchFilterChanged } from '../../redux/reducers/filters/FiltersReducer';
 const ShimmerPlaceHolder = createShimmerPlaceholder(LinearGradient);
 
 export default function SearchFilters({navigation}) {

@@ -231,15 +231,15 @@ export default StyleSheet.create({
     },
 
     inputOTP: {
-        fontSize: 35,
+        fontSize: 30,
         fontFamily: 'ProductSans',
         color: darkBlue,
         fontWeight: '700',
-        
         // letterSpacing: 35,
         // width: '95%',
         // paddingLeft: 0,
         // marginLeft: 0
+        height: 60,
         width: '13.5%',
     },
 
