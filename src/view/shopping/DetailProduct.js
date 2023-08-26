@@ -6,13 +6,13 @@ import {
   TouchableOpacity,
   Dimensions,
   Animated,
+  Pressable,
 } from 'react-native';
 import React, {useEffect, useRef, useState} from 'react';
 import {
   listProductSelector,
   productSelector,
   selectFilterIdSelector,
-  
 } from '../../redux/selector';
 import {useDispatch, useSelector} from 'react-redux';
 import SliderImage from '../../component/detailProduct/SliderImage';
@@ -20,12 +20,12 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import {SharedElement} from 'react-navigation-shared-element';
 import ShopTag from '../../component/shop/ShopTag';
 import ListHorizontal from '../../component/list/ListHorizontal';
-import { addCart } from '../../redux/reducers/shop/CartReduces';
+import {addCart} from '../../redux/reducers/shop/CartReduces';
 const {width} = Dimensions.get('screen');
 
 function DetailProduct({navigation}) {
-  const dispatch = useDispatch()
-  const [product,shop] = useSelector(productSelector);
+  const dispatch = useDispatch();
+  const [product, shop] = useSelector(productSelector);
   const listProduct = useSelector(listProductSelector);
   const category = useSelector(selectFilterIdSelector);
   const [like, setLike] = useState(false);
@@ -33,6 +33,7 @@ function DetailProduct({navigation}) {
   const [isVisible, setIsVisible] = useState(true);
   const listImage = product.imagePet ? product.imagePet : product.imageProduct;
   const AnimatedIcon = Animated.createAnimatedComponent(Icon);
+  const AnimatedPressible = Animated.createAnimatedComponent(Pressable)
   const handleLike = like ? 'heart' : 'heart-outline';
   const iconDes = showDes ? 'chevron-up-outline' : 'chevron-down-outline';
   const priceDiscount = (price, discount) => {
@@ -72,40 +73,40 @@ function DetailProduct({navigation}) {
     extrapolate: 'clamp',
   });
   useEffect(() => {
-    if (isVisible) {
-      Animated.parallel([
-        Animated.timing(slideAnimation, {
-          toValue: 1,
-          duration: 500,
-          useNativeDriver: true,
-        }),
-        Animated.timing(opacityAnimation, {
-          toValue: 1,
-          duration: 500,
-          useNativeDriver: true,
-        }),
-      ]).start();
-    } else {
-      Animated.parallel([
-        Animated.timing(slideAnimation, {
-          toValue: 0,
-          duration: 500,
-          useNativeDriver: true,
-        }),
-        Animated.timing(opacityAnimation, {
-          toValue: 0,
-          duration: 500,
-          useNativeDriver: true,
-        }),
-      ]).start();
-    }
+    const slideAnimationAni = Animated.timing(slideAnimation, {
+      toValue: isVisible ? 1 : 0,
+      duration: 500,
+      useNativeDriver: true,
+    });
+  
+    const opacityAnimationAni = Animated.timing(opacityAnimation, {
+      toValue: isVisible ? 1 : 0,
+      duration: 500,
+      useNativeDriver: true,
+    });
+  
+    const animation = Animated.parallel([slideAnimationAni, opacityAnimationAni]);
+    animation.start();
+  
+    return () => {
+      animation.stop();
+      slideAnimation.setValue(0);
+      opacityAnimation.setValue(0);
+    };
+    
+    
   }, [isVisible]);
 
-  const handleAddCart = (idProduct,idUser,mount) =>{
-    dispatch(addCart({
-        idProduct,idUser,mount,createAt: Date.now()
-      }))
-  }
+  const handleAddCart = (idProduct, idUser, mount) => {
+    dispatch(
+      addCart({
+        idProduct,
+        idUser,
+        mount,
+        createAt: Date.now(),
+      }),
+    );
+  };
   return (
     <>
       <Animated.View
@@ -116,18 +117,21 @@ function DetailProduct({navigation}) {
             backgroundColor: headerBackgroundColor,
           },
         ]}>
-        <TouchableOpacity
+        <AnimatedPressible
           onPress={() => {
             navigation.pop();
             setIsVisible(!isVisible);
           }}
           style={[styles.iconBack, {backgroundColor: headerIconBackground}]}>
           <AnimatedIcon name="arrow-back" size={24} color={headerIcon} />
-        </TouchableOpacity>
-        <TouchableOpacity
+        </AnimatedPressible>
+        <AnimatedPressible
+          onPress={() => {
+            navigation.navigate('CartScreen');
+          }}
           style={[styles.iconBack, {backgroundColor: headerIconBackground}]}>
           <AnimatedIcon name="cart-outline" size={24} color={headerIcon} />
-        </TouchableOpacity>
+        </AnimatedPressible>
       </Animated.View>
       <ScrollView
         style={{flex: 1, backgroundColor: '#FEF6E4'}}
@@ -142,21 +146,20 @@ function DetailProduct({navigation}) {
           </SharedElement>
         </View>
         <View style={styles.content}>
-          
-            <Text
-              style={{
-                fontFamily: 'ProductSansBold',
-                fontSize: 20,
-                color: '#F582AE',
-              }}>
-              <SharedElement id={`item.${product.id}.price`}>
-                {priceDiscount(
-                  product.pricePet ? product.pricePet : product.priceProduct,
-                  product.discount,
-                )}
-              </SharedElement>
-            </Text>
-          
+          <Text
+            style={{
+              fontFamily: 'ProductSansBold',
+              fontSize: 20,
+              color: '#F582AE',
+            }}>
+            <SharedElement id={`item.${product.id}.price`}>
+              {priceDiscount(
+                product.pricePet ? product.pricePet : product.priceProduct,
+                product.discount,
+              )}
+            </SharedElement>
+          </Text>
+
           <View
             style={{
               flexDirection: 'row',
@@ -314,8 +317,7 @@ function DetailProduct({navigation}) {
           </TouchableOpacity>
         ) : (
           <TouchableOpacity
-            onPress={()=> handleAddCart(product.id,'1234',6)}
-            
+            onPress={() => handleAddCart(product.id, '1234', 6)}
             style={[
               styles.buttonBooking,
               styles.buttonSheet,
