@@ -91,7 +91,9 @@ export default function HomeScreen({scrollRef, onScrollView, navigation}) {
         {/* listpetnew */}
         <ListHorizontal data={listPet} title="Thú cưng mới" isLoader={isLoader} />
         {/* listproductnew */}
+        <View style={{marginBottom:20}}>
         <ListHorizontal data={listProduct} title="Sản phẩm mới" isLoader={isLoader}/>
+        </View>
        
       </ScrollView>
     </>
