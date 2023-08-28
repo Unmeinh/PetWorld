@@ -15,8 +15,6 @@ import DetailProduct from '../view/shopping/DetailProduct';
 import NotifyScreen from '../view/notify/NotifyScreen';
 import SettingNotify from '../view/notify/SettingNotify';
 import AccountScreen from '../view/account/AccountScreen';
-import HeaderBlog from '../component/header/HeaderAccount';
-import HeaderTitleAccount from '../component/header/HeaderTitleAccount'; 
 import InformationAccount from '../view/account/InformationAccount';
 import Information from '../view/account/Information';
 import NumberPhone from '../view/account/Numberphone';
@@ -31,7 +29,7 @@ export default function StackScreen() {
     <NavigationContainer>
       <Stack.Navigator
         screenOptions={() => ({ headerShown: false })}
-        initialRouteName="AccountScreen">
+        initialRouteName="SlashScreen">
         <Stack.Screen name="SlashScreen" component={SlashScreen} />
         <Stack.Screen name="OrboadScreen" component={OrboadScreen} />
         <Stack.Screen name="LoginScreen" component={LoginScreen} />
