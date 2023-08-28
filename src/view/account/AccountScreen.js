@@ -5,12 +5,19 @@ import {
 } from 'react-native'
 import React from 'react'
 import styles from '../../styles/temp.style';
-import HeaderTitle from '../notify/HeaderSetting';
 
-export default function SettingNotify(navigation) {
+export default function AccountScreen({ scrollRef, onScrollView }) {
   return (
     <View style={{ backgroundColor: '#FEF6E4', flex: 1 }}>
-     <HeaderTitle nav={navigation} titleHeader="Notify Setting"/>
+      <ScrollView ref={scrollRef}
+        onScroll={onScrollView} style={{ height: '100%', width: '100%' }}>
+        <View style={{ justifyContent: 'center', alignItems: 'center', height: Dimensions.get('window').height}}>
+          <Text style={{ fontSize: 50, color: '#001858', fontFamily: 'ProductSans' }}>Account</Text>
+        </View>
+        <View style={{ justifyContent: 'center', alignItems: 'center', height: Dimensions.get('window').height}}>
+          <Text style={{ fontSize: 50, color: '#001858', fontFamily: 'ProductSans' }}>Screen</Text>
+        </View>
+      </ScrollView>
     </View>
   )
 }
