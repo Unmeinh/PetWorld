@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { View, Text } from 'react-native';
 import { TabView, SceneMap, TabBar } from 'react-native-tab-view';
-import Tab1 from './NotifyAll';
-import Tab2 from './NotifyRemind';
-import Tab3 from './NotifyRead';
-import Tab4 from './NotifyUnRead';
+import Tab1 from '../tabNotify/NotifyAll';
+import Tab2 from '../tabNotify/NotifyRemind';
+import Tab3 from '../tabNotify/NotifyRead';
+import Tab4 from '../tabNotify/NotifyUnRead';
 
 
 const TabLayout = () => {
@@ -26,6 +26,7 @@ const TabLayout = () => {
   const renderTabBar = (props) => (
     <TabBar
       {...props}
+      pressColor='transparent'
       indicatorStyle={{ backgroundColor: '#F582AE' }}
       style={{ backgroundColor: '#FEF6E4' }}
       renderLabel={({ route, focused, color }) => (

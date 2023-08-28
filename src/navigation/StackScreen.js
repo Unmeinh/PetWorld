@@ -1,6 +1,6 @@
 import React from 'react';
-import {createStackNavigator} from '@react-navigation/stack';
-import {NavigationContainer} from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
+import { NavigationContainer } from '@react-navigation/native';
 import SlashScreen from '../view/slashscreen/SlashScreen';
 import OrboadScreen from '../view/orboardscreen/OrboadScreen';
 import LoginScreen from '../view/form/LoginScreen';
@@ -15,14 +15,23 @@ import DetailProduct from '../view/shopping/DetailProduct';
 import NotifyScreen from '../view/notify/NotifyScreen';
 import SettingNotify from '../view/notify/SettingNotify';
 import AccountScreen from '../view/account/AccountScreen';
+import HeaderBlog from '../component/header/HeaderAccount';
+import HeaderTitleAccount from '../component/header/HeaderTitleAccount'; 
+import InformationAccount from '../view/account/InformationAccount';
+import Information from '../view/account/Information';
+import NumberPhone from '../view/account/Numberphone';
+import EmailVerification from '../view/account/EmailVerification';
+import OderScreen from '../view/oder/OderScreen';
+import PhoneVerification from '../view/account/PhoneVerification';
+import Email from '../view/account/Email';
 const Stack = createStackNavigator();
 
 export default function StackScreen() {
   return (
     <NavigationContainer>
       <Stack.Navigator
-        screenOptions={() => ({headerShown: false})}
-        initialRouteName="SlashScreen">
+        screenOptions={() => ({ headerShown: false })}
+        initialRouteName="AccountScreen">
         <Stack.Screen name="SlashScreen" component={SlashScreen} />
         <Stack.Screen name="OrboadScreen" component={OrboadScreen} />
         <Stack.Screen name="LoginScreen" component={LoginScreen} />
@@ -37,6 +46,13 @@ export default function StackScreen() {
         <Stack.Screen name="SettingNotify" component={SettingNotify} />
         <Stack.Screen name="NotifyScreen" component={NotifyScreen} />
         <Stack.Screen name="AccountScreen" component={AccountScreen} />
+        <Stack.Screen name="OderScreen" component={OderScreen} />
+        <Stack.Screen name="InformationAccount" component={InformationAccount} />
+        <Stack.Screen name="Information" component={Information} />
+        <Stack.Screen name="NumberPhone" component={NumberPhone} />
+        <Stack.Screen name="PhoneVerification" component={PhoneVerification} />
+        <Stack.Screen name="Email" component={Email} />
+        <Stack.Screen name="EmailVerification" component={EmailVerification} />
       </Stack.Navigator>
     </NavigationContainer>
   );

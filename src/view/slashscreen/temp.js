@@ -1,13 +1,10 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, StyleSheet, Dimensions, Image, Animated, Easing } from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import { useNavigation } from '@react-navigation/native';
 import OrboadScreen from '../orboardscreen/OrboadScreen';
 
 export default function SplashScreen() {
-  const isMounted = useRef(true);
-  const stepAnimation = new Animated.Value(0);
-  const [footPrintPositions, setFootPrintPositions] = useState([]);
   const logoSize = 150; 
   const screenHeight = Dimensions.get('screen').height;
   const screenWidth = Dimensions.get('screen').width;
@@ -22,12 +19,28 @@ export default function SplashScreen() {
   const footPrintContainerWidth = 24;
   const stepDistance = 3.7;
   const totalSteps = Math.ceil(screenWidth / (footPrintContainerWidth + stepDistance));
+
+  const stepAnimation = new Animated.Value(0);
+  const [footPrintPositions, setFootPrintPositions] = useState([]);
   const [logoVisible, setLogoVisible] = useState(true);
   const [nameVisible, setNameVisible] = useState(false);
 
   const navigation = useNavigation();
 
   useEffect(() => {
+    const moveFootPrint = () => {
+      Animated.timing(stepAnimation, {
+        toValue: totalSteps,
+        duration: 100, 
+        easing: Easing.linear,
+        useNativeDriver: true,
+      }).start(({ finished }) => {
+        if (finished) {
+          setFootPrintPositions([...footPrintPositions, footPrintPositions.length]);
+        }
+      });
+    };
+
     const hideLogo = () => {
       setTimeout(() => {
         setLogoVisible(false);
@@ -46,30 +59,9 @@ export default function SplashScreen() {
     hideLogo();
 
     return () => {
-      isMounted.current = false; // Đánh dấu component đã bị hủy
-      stepAnimation.stopAnimation();    };
+      stepAnimation.stopAnimation();
+    };
   }, [footPrintPositions]);
-
-  const moveFootPrint = () => {
-    Animated.timing(stepAnimation, {
-      toValue: totalSteps,
-      duration: 100, 
-      easing: Easing.linear,
-      useNativeDriver: true,
-    }).start(({ finished }) => {
-      if (finished) {
-        setFootPrintPositions([...footPrintPositions, footPrintPositions.length]);
-      }
-    });
-  };
-  const hideLogo = () => {
-    setTimeout(() => {
-      if (isMounted.current) { // Kiểm tra isMounted trước khi setState
-        setLogoVisible(false);
-        showName();
-      }
-    }, 3000);
-  };
 
   const footPrintContainerStyles = {
     position: 'absolute',
@@ -97,7 +89,7 @@ export default function SplashScreen() {
   };
 
   return (
-    <View style={styles.container} pointerEvents="none">
+    <View style={styles.container}>
       {logoVisible && (
         <Animatable.Image
           animation={{

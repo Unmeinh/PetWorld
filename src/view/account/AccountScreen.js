@@ -1,162 +1,384 @@
-import { Text, View, ScrollView, StyleSheet, Image } from 'react-native';
+import {
+  Text, View,
+  ScrollView,
+  Dimensions,
+  StyleSheet,
+  TouchableOpacity,
+} from 'react-native';
 import React from 'react';
-import HeaderAccount from '../account/HeaderAccount';
-import TabLayout from './TabLayout';
+import { useState } from 'react';
 
-export default function AccountScreen({ scrollRef, onScrollView, navigation }) {
+import styles from '../../styles/temp.style';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import Fontisto from 'react-native-vector-icons/Fontisto';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import AntDesign from 'react-native-vector-icons/AntDesign';
+import Feather from 'react-native-vector-icons/Feather';
+import HeaderAccount from '../../component/header/HeaderAccount'
+import { useNavigation } from '@react-navigation/native';
+
+
+
+const listItems = [
+  {
+    iconType: 'Ionicons',
+    icon: 'paw-outline',
+    text: 'Thú cưng của tôi',
+  },
+  {
+    iconType: 'AntDesign',
+    icon: 'hearto',
+    text: 'Đã thích',
+  },
+  {
+    iconType: 'MaterialIcons',
+    icon: 'create-new-folder',
+    text: 'Đang theo dõi',
+  },
+  {
+    iconType: 'Feather',
+    icon: 'calendar',
+    text: 'Đặt lịch của tôi',
+  },
+  {
+    iconType: 'Feather',
+    icon: 'headphones',
+    text: 'Trợ giúp và yêu cầu hỗ trợ',
+  },
+];
+const listItems1 = [
+  {
+    iconType: 'Fontisto',
+    icon: 'person',
+    text: 'Tài khoản',
+   
+  },
+  {
+    iconType: 'Feather',
+    icon: 'lock',
+    text: 'Quyền riêng tư',
+  },
+ 
+];
+
+
+
+export default function AccountScreen({ scrollRef, onScrollView }) {
+  const navigation = useNavigation();
+  const [isPressed, setIsPressed] = useState(false);
+
+  const handlePress = () => {
+    setIsPressed(true);
+    setTimeout(() => {
+      setIsPressed(false);
+      navigation.navigate('OderScreen');
+    }, 200); // Reset the state after 200ms
+  };
   return (
-    <View style={{ backgroundColor: '#FEF6E4', flex: 1 }}>
-        <HeaderAccount nav={navigation} titleHeader="Account" colorHeader="#FF0000" />
-        
-        <View style={styles.userInfoContainer}>
-          <View style={styles.avatarStatusContainer}>
-            <Image 
-              style={styles.avatarImage}
-              source={require('../account/avatar.png')} 
-            />
-            <Image style={styles.statusImage} source={require('../account/status.png')} />
-          </View>
+    <View style={{ flex: 1 , backgroundColor: 'rgba(254, 246, 228, 0.5)'}}>
 
-          <View style={styles.userInfoTextContainer}>
-            <Text style={styles.userNameText}>Vergil. (Storm)</Text>
+      <ScrollView ref={scrollRef}
+        onScroll={onScrollView} style={styles.scrollView}>
+        <View style={styles.contentContainer}>
+        <HeaderAccount nav={navigation}/>
+        <View style={localStyles.Container}>
+        <View style={localStyles.rowContainer}>
+          <View style={localStyles.rowItem}>
+            <TouchableOpacity  onPress={handlePress}>
+            <View style={localStyles.purchaseOrder}
+            ><Text style={{
+              color: '#001858',
+              fontFamily: 'ProductSans',
+            }}
+            >Đơn mua</Text></View>
+            </TouchableOpacity>
+           
+            <View style={localStyles.rightContent}>
+              <Text style={{
+              color: '#001858',
+              fontFamily: 'ProductSans',
+            }}
+              >Xem lịch sử mua hàng</Text>
+              <MaterialIcons name='navigate-next' size={30} color={'#001858'} />
+            </View>
           </View>
         </View>
-        
-        <View style={styles.actionContainer}>
-          <View style={styles.actionButton}>
-            <Text style={styles.actionText}>Nhắn tin</Text>
+        <View style={localStyles.gridContainer}>
+          <View style={localStyles.gridColumn}>
+            <MaterialIcons name='hourglass-empty' size={30} color={'#001858'} />
+            <Text  style={{
+             
+              color: '#001858',
+              fontFamily: 'ProductSans',
+            }}>Chờ xác nhận</Text>
           </View>
+          <View style={localStyles.gridColumn}>
+            <Feather name='box' size={30} color={'#001858'} />
+            <Text style={{
+              color: '#001858',
+              fontFamily: 'ProductSans',
+            }}
+            >Chờ lấy hàng</Text>
+          </View>
+          <View style={localStyles.gridColumn}>
+            <Feather name='truck' size={30} color={'#001858'} />
+            <Text 
+            style={{
+              color: '#001858',
+              fontFamily: 'ProductSans',
+            }}
+            >Đang giao</Text>
+          </View>
+          <View style={localStyles.gridColumn}>
+            <Feather name='star' size={30} color={'#001858'} />
+            <Text
+            style={{
+              color: '#001858',
+              fontFamily: 'ProductSans',
+            }}
+            >Đánh giá
+            </Text>
+          </View>
+        </View>
+        </View>
+       
+        <View style={localStyles.Utilities}>
+          <View style={localStyles.Utilities1}>
+            <Text
+            style={{
+              color: '#001858',
+              fontFamily: 'ProductSans',
+            }}
+            >Tiện ích</Text>
+          </View>
+          {listItems.map((item, index) => (
+          <TouchableOpacity
+            key={index}
+            style={localStyles.rowUtilities}
+            onPress={() => {
+              // Handle the press event here
+              console.log('Item pressed:', item.text);
+              // Example: navigate to another screen
+              if (item.text === 'Thú cưng của tôi') {
+                navigation.navigate('OderScreen');
+              } else (item.text === 'Trợ giúp và yêu cầu hỗ trợ') 
+              { navigation.navigate('DetailProduct');// Handle other cases
+              }
+            }}
+          >
+              <View style={localStyles.rowItemUtilities}>
+              {item.iconType === 'Fontisto' && (
+                  <Fontisto name={item.icon} size={30} color={'#001858'} />
+                )}
+                {item.iconType === 'Ionicons' && (
+                  <Ionicons name={item.icon} size={30} color={'#001858'} />
+                )}
+                   {item.iconType === 'AntDesign' && (
+                  <AntDesign name={item.icon} size={30} color={'#001858'} />
+                )}
+                   {item.iconType === 'MaterialIcons' && (
+                  <MaterialIcons name={item.icon} size={30} color={'#001858'} />
+                )}
+                    {item.iconType === 'Feather' && (
+                  <Feather name={item.icon} size={30} color={'#001858'} />
+                )}
+
+                <View style={localStyles.centerContentUtilities}>
+                  <Text style={{
+              color: '#001858',
+              fontFamily: 'ProductSans',
+            }}>{item.text}</Text>
+                </View>
+                <MaterialIcons
+                  style={localStyles.rightContentUtilities}
+                  name='navigate-next' size={30} color={'#001858'} />
+              </View>
+            </TouchableOpacity>
+          ))}
+           <View style={localStyles.Utilities1}>
+            <Text
+            style={{
+              color: '#001858',
+              fontFamily: 'ProductSans',
+            }}
+            >Tài khoản và quyền riêng tư</Text>
+          </View>
+          {listItems1.map((item, index) => (
+          <TouchableOpacity
+            key={index}
+            style={localStyles.rowUtilities}
+            onPress={() => {
+              // Handle the press event here
+              console.log('Item pressed:', item.text);
+              // Example: navigate to another screen
+              if (item.text === 'Tài khoản') {
+                navigation.navigate('InformationAccount');
+            }}}
+          >
+
+
+              <View style={localStyles.rowItemUtilities}>
+              {item.iconType === 'Fontisto' && (
+                  <Fontisto name={item.icon} size={30} color={'#001858'} />
+                )}
+                {item.iconType === 'Ionicons' && (
+                  <Ionicons name={item.icon} size={30} color={'#001858'} />
+                )}
+                   {item.iconType === 'AntDesign' && (
+                  <AntDesign name={item.icon} size={30} color={'#001858'} />
+                )}
+                   {item.iconType === 'MaterialIcons' && (
+                  <MaterialIcons name={item.icon} size={30} color={'#001858'} />
+                )}
+                    {item.iconType === 'Feather' && (
+                  <Feather name={item.icon} size={22.5} color={'#001858'} />
+                )}
+
+                <View style={localStyles.centerContentUtilities}>
+                  <Text
+                  style={{
+                    color: '#001858',
+                    fontFamily: 'ProductSans',
+                  }}
+                  >{item.text
+                  
+                  }</Text>
+                </View>
+                <MaterialIcons
+                  style={localStyles.rightContentUtilities}
+                  name='navigate-next' size={30} color={'#001858'} />
+              </View>
+            </TouchableOpacity>
+          ))}
          
-          <View style={styles.actionButton}>
-            <Image style={styles.checkImage} source={require('../account/check.png')} />
-            <Text style={styles.actionText}>Đang theo dõi</Text>
-          </View>
+        </View>
         </View>
         
-        <View style={styles.statsContainer}>
-          <View style={styles.statsItem}>
-            <Text style={styles.statsNumber}>2</Text>
-            <Text style={styles.statsText}>Bài viết</Text>
-          </View>
-          <View style={styles.statsItem}>
-            <Text style={styles.statsNumber}>2</Text>
-            <Text style={styles.statsText}>Đang theo dõi</Text>
-          </View>
-          <View style={styles.statsItem}>
-            <Text style={styles.statsNumber}>2</Text>
-            <Text style={styles.statsText}>Người theo dõi</Text>
-          </View>
-        </View>
-       <View style={styles.leftTextContainer}>
-  <Text style={styles.leftText}>
-    I am the storm that is approaching
-    Provoking black clouds in isolation
-    I am reclaimer of my name
-    Born in flames, I have been blessed
-  </Text>
-</View>
-<TabLayout/>
+        <View style={localStyles.logoutContainer}>
+          <View style={localStyles.logoutButton}>
+            <MaterialIcons name='logout' size={30} color={'#001858'} />
+            <TouchableOpacity onPress={() => {
+               navigation.navigate('OrboadScreen');
+            }}>
+              
+            <Text style={localStyles.logoutButtonText}>Đăng xuất</Text>
 
-        
-    
+
+            </TouchableOpacity>
+          </View>
+        </View>
+
+      </ScrollView>
     </View>
-  );
+  )
 }
 
-const styles = StyleSheet.create({
-  userInfoContainer: {
-    flexDirection: 'row', 
-    alignItems: 'center', 
-    marginBottom: 20,
-    paddingHorizontal: 20,
+const localStyles = StyleSheet.create({
+  contentContainer:{
+    flex: 1,
+    
+    
   },
-  avatarStatusContainer: {
-    flexDirection: 'row', 
-    alignItems: 'center', 
-  },
-  avatarImage: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
-  },
-  statusImage: {
-    width: 10,
-    height: 10,
-    marginLeft: -20,
-    marginTop: 70,
-  },
-  userInfoTextContainer: {
-    marginLeft: 20,
-    marginTop: 15,
-  },
-  userNameText: {
-    color: '#001858',
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginLeft: 50,
-    marginTop: -35,
-  },
-  userEmailText: {
-    fontSize: 14,
-    color: 'gray',
-  },
-  actionContainer: {
-    flexDirection: 'row', 
-    alignItems: 'center', 
-    marginBottom: 20, 
-    paddingHorizontal: 20,
-    marginTop: -50,
-    marginLeft: 100,
-  },
-  actionButton: {
-    flexDirection: 'row', 
-    borderWidth: 1,
-    borderColor: 'gray',
-    borderRadius: 10,
-    paddingVertical: 5,
-    paddingHorizontal: 10,
-    alignItems: 'center', 
-    marginRight: 10,
-    marginLeft: 10,
-  },
-  actionText: {
-    color: '#001858',
-    fontSize: 16,
-    color: 'gray',
-    marginLeft: 5,
-  },
-  checkImage: {
-    width: 10,
-    height: 7.8,
-  },
-  statsContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between', // Canh đều các cột
-    paddingHorizontal: 20,
-  },
-  statsItem: {
-    flex: 1, // Chia đều không gian cho mỗi cột
-    alignItems: 'center', // Canh giữa theo chiều dọc
-    paddingHorizontal: 10,
+  rowContainer: {
+    alignItems: 'center',
   
+    borderBottomWidth: 1,
+    borderBottomColor: '#F3D2C1',
+    marginTop:10,
+    
   },
-  statsNumber: {
-    color: '#001858',
-    fontSize: 18,
-    fontWeight: 'bold',
+  rowItem: {
+    backgroundColor:'#FEF6E4',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between', // Optional, to evenly distribute content horizontally
   },
-  statsText: {
-    fontSize: 14,
+  rightContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginLeft: 160,
+  },
+  gridContainer: {
+    backgroundColor:'#FEF6E4',
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+    padding: 10,
+    
+  },
+  Container:{
+    flex:1,
+  },
+  purchaseOrder:{
+    paddingHorizontal: 15,
     color: '#001858',
+  },
+  gridColumn: {
+    width: '25%', // 2 columns with a little space between
+    alignItems: 'center',
+    marginBottom: 15,
+  },
+  Utilities1: {
+    backgroundColor:'#FEF6E4',
+    paddingHorizontal: 15,
+    marginTop:10,
+    borderBottomWidth: 1,
+    borderBottomColor: '#F3D2C1',
+  },
+  rowUtilities: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 15,
+    paddingVertical: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: '#F3D2C1',
+    backgroundColor:'#FEF6E4',
+    
+  },
 
+  rowItemUtilities: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between', // Optional, to evenly distribute content horizontally
   },
-  leftTextContainer:{
+  centerContentUtilities: {
+    marginLeft: 20,
+    width:300,
+    fontFamily: 'ProductSansBlod',
     color: '#001858',
-    margin:10,
-   marginLeft:50,
-    marginRight:100,
   },
-  leftText:{
+  rightContentUtilities: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    
+  },
+  logoutContainer: {
+   
+    alignItems: 'center',
+    paddingHorizontal: 15,
+    marginTop: 20,
+    borderWidth: 1,
+  
+    borderColor: '#F3D2C1',
+    paddingVertical: 10,
+    borderRadius: 8,
+    backgroundColor:'#FEF6E4',
+    
+  },
+  logoutButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor:'#FEF6E4',
+   
+ 
+  },
+  logoutButtonText: {
+    marginLeft: 20,
     color: '#001858',
-  }
+  
+    fontFamily: 'ProductSansBlod',
+    color: '#001858',
+  },
+
 });

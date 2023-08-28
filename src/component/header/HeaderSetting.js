@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { TouchableOpacity, Text, View, Image, StyleSheet } from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import SettingNotify from './SettingNotify';
+import SettingNotify from '../../view/notify/SettingNotify';
 
 import { Modal } from 'react-native';
 
