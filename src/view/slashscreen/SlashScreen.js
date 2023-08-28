@@ -6,6 +6,7 @@ export default function SplashScreen({ navigation }) {
   const logoSize = 150; 
   const screenHeight = Dimensions.get('screen').height;
   const screenWidth = Dimensions.get('screen').width;
+  
   const bottomPosition = screenHeight * 0.6 - logoSize / 2;
   const bottomPosition1 = screenHeight * 0.33 - logoSize / 2;
   const bottomPosition2 = screenHeight * 0.3 - logoSize / 2;
