@@ -51,7 +51,7 @@ export default [
         'https://danviet.mediacdn.vn/296231569849192448/2021/6/19/102-1624069500624986816290.jpeg',
       followers: ["002"]
     },
-    contentBlog: '\nMột mai, một cuốc, một cần câu\nThơ thẩn dầu ai vui thú nào\nTa dại, ta tìm nơi vắng vẻ\nNgười khôn, người đến chốn lao xao\nThu ăn măng trúc, đông ăn giá\nXuân tắm hồ sen, hạ tắm ao\nRượu, đến gốc cây, ta sẽ uống\nNhìn xem phú quý, tựa chiêm bao.',
+    contentBlog: 'Một mai, một cuốc, một cần câu\nThơ thẩn dầu ai vui thú nào\nTa dại, ta tìm nơi vắng vẻ\nNgười khôn, người đến chốn lao xao\nThu ăn măng trúc, đông ăn giá\nXuân tắm hồ sen, hạ tắm ao\nRượu, đến gốc cây, ta sẽ uống\nNhìn xem phú quý, tựa chiêm bao.',
     contentFont: 'ProductSans',
     createdAt: '09/08/2023',
     imageBlogs: [],

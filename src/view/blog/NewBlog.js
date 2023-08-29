@@ -18,8 +18,11 @@ import * as ImagePicker from 'react-native-image-picker';
 import { openPicker } from '@baronha/react-native-multiple-image-picker';
 import Feather from 'react-native-vector-icons/Feather';
 import { useSelector, useDispatch } from 'react-redux';
+import { getInfoLogin } from '../../redux/reducers/user/userReducer';
 import { selectUserByID } from '../../redux/selectors/userSelector';
-import { selectInfoLogin } from '../../redux/actions/userAction';
+import { axiosFormData, axiosJSON } from '../../api/axios.config';
+import { Toast } from 'react-native-toast-message/lib/src/Toast';
+import { ToastLayout } from '../../component/layout/ToastLayout';
 
 const NewPost = ({ route, navigation }) => {
     const dispatch = useDispatch();
@@ -32,13 +35,24 @@ const NewPost = ({ route, navigation }) => {
     const [isShowModal, setisShowModal] = useState(false);
     const [isLoader, setisLoader] = useState(true);
 
-    function CheckValidate(newPost) {
-        if (newPost.idNguoiDung == undefined) {
+    function checkValidate(newBlog) {
+        if (newBlog.idUser == undefined) {
+            Toast.show({
+                type: 'error',
+                position: 'top',
+                text1: "Không tìm thấy id người dùng!",
+                bottomOffset: 20
+            });
             return false;
         }
 
-        if (newPost.noiDung == "") {
-            alert('Bạn hãy nhập gì đó trước khi đăng nhé!')
+        if (newBlog.contentBlog == "") {
+            Toast.show({
+                type: 'error',
+                position: 'top',
+                text1: "Bạn hãy nhập gì đó trước khi đăng nhé!",
+                bottomOffset: 20
+            });
             return false;
         }
     }
@@ -52,7 +66,66 @@ const NewPost = ({ route, navigation }) => {
     }
 
     const UploadPost = async () => {
+        var newBlog = {
+            idUser: infoLogin._id,
+            contentBlog: inputContent
+        }
+        console.log(infoLogin);
 
+        if (checkValidate(newBlog) == false) {
+            return;
+        }
+
+        var formData = new FormData();
+        formData.append("idUser", infoLogin._id);
+        formData.append("contentBlog", newBlog.contentBlog);
+        formData.append("contentFont", inputFont);
+
+        if (arr_Image.length > 0) {
+            for (let i = 0; i < arr_Image.length; i++) {
+                console.log(arr_Image[i]);
+                var dataImage = {
+                    uri: Platform.OS === "android" ? arr_Image[i].path : arr_Image[i].path.replace("file://", ""),
+                    name: arr_Image[i].fileName,
+                    type: "multipart/form-data"
+                };
+                console.log(dataImage);
+                formData.append('uploadImages', dataImage);
+            }
+        }
+
+        axiosFormData.post('blog/insert', formData)
+            .then((response) => {
+                if (response.status == 201) {
+                    var data = response.data;
+                    if (data.success) {
+                        Toast.show({
+                            type: 'success',
+                            position: 'top',
+                            text1: String(data.message),
+                            bottomOffset: 20
+                        });
+                    }
+                } else {
+                    var data = response.data;
+                    Toast.show({
+                        type: 'error',
+                        position: 'top',
+                        text1: String(data.message),
+                        bottomOffset: 20
+                    });
+                }
+            })
+            .catch((e) => {
+                // var data = response.data;
+                console.log(e.response.data.message);
+                Toast.show({
+                    type: 'error',
+                    position: 'top',
+                    text1: String(e.response.data.message),
+                    bottomOffset: 20
+                });
+            });
     }
 
     async function PickingImage() {
@@ -131,8 +204,12 @@ const NewPost = ({ route, navigation }) => {
     }
 
     React.useEffect(() => {
-        const unsub = navigation.addListener('focus', () => {
-            dispatch(selectInfoLogin('001'));
+        const unsub = navigation.addListener('focus', async () => {
+            var res = await axiosJSON.get('/user/detail/64e6246094b5cf941a244f94')
+                .catch((e) => console.error(e.response.data))
+            if (res.data != undefined) {
+                dispatch(getInfoLogin(res.data.data));
+            }
             return () => {
                 unsub.remove();
             };
@@ -142,29 +219,44 @@ const NewPost = ({ route, navigation }) => {
     }, [navigation]);
 
     useEffect(() => {
+        if (infoLogin != undefined && isLoader) {
+            console.log(infoLogin);
+            setsrcAvatar({ uri: String(infoLogin.avatarUser) });
+            setisLoader(false);
+        }
+    }, [infoLogin]);
+
+    useEffect(() => {
         if (isLoader) {
             setTimeout(() => {
                 setisLoader(false);
-                setsrcAvatar({ uri: String(infoLogin.avatarUser) });
-            }, 5000);
+                // if (infoLogin != undefined) {
+                //     console.log(infoLogin);
+                //     setsrcAvatar({ uri: String(infoLogin.avatarUser) });
+                // }
+            }, 1000);
         }
     }, [isLoader]);
 
     return (
         <View style={{ flex: 1, backgroundColor: '#FEF6E4' }}>
             <HeaderTitle nav={navigation} titleHeader={'Bài viết mới'} colorHeader={'#FEF6E4'} />
-            <View style={[styles.viewInfoHead, { paddingTop: 15 }]}>
-                <View style={styles.viewRowCenter}>
-                    <Image source={srcAvatar} onError={() => setsrcAvatar(require('../../assets/images/error.png'))}
-                        style={styles.imageAvatar} />
-                    <Text style={styles.textName}>{infoLogin.fullName}</Text>
-                </View>
-                <TouchableHighlight style={styles.buttonUpload}
-                    activeOpacity={0.5} underlayColor="#DC749C"
-                    onPress={UploadPost}>
-                    <Text style={styles.textButtonUpload}>Đăng</Text>
-                </TouchableHighlight>
-            </View>
+            {
+                (infoLogin != undefined)
+                    ? <View style={[styles.viewInfoHead, { paddingTop: 15 }]}>
+                        <View style={styles.viewRowCenter}>
+                            <Image source={srcAvatar} onError={() => setsrcAvatar(require('../../assets/images/error.png'))}
+                                style={styles.imageAvatar} />
+                            <Text style={styles.textName}>{infoLogin.fullName}</Text>
+                        </View>
+                        <TouchableHighlight style={styles.buttonUpload}
+                            activeOpacity={0.5} underlayColor="#DC749C"
+                            onPress={UploadPost}>
+                            <Text style={styles.textButtonUpload}>Đăng</Text>
+                        </TouchableHighlight>
+                    </View>
+                    : ""
+            }
             <ScrollView style={styles.viewContent} showsVerticalScrollIndicator={false}>
                 {
                     (inputContent == "" && arr_Image.length > 0)
@@ -214,6 +306,7 @@ const NewPost = ({ route, navigation }) => {
             </View>
 
             <FontModal isShow={isShowModal} callBack={CallBackFontModal} font={inputFont} />
+            <ToastLayout />
         </View>
     );
 }

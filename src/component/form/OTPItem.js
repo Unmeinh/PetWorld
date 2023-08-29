@@ -23,36 +23,48 @@ const OTPItem = (props, ref) => {
         var otp = input.replace(/\D/g, '');
         otp.length >= 1 ? otp2.current.focus() : '';
         setinputOTP1(otp);
+        var returnOTP = [];
+        props.setInput(returnOTP.splice(0, 1, otp));
     }
 
     function onInputOTP2(input) {
         var otp = input.replace(/\D/g, '');
         otp.length >= 1 ? otp3.current.focus() : otp1.current.focus();
         setinputOTP2(otp);
+        var returnOTP = [];
+        props.setInput(returnOTP.splice(1, 1, otp));
     }
 
     function onInputOTP3(input) {
         var otp = input.replace(/\D/g, '');
         otp.length >= 1 ? otp4.current.focus() : otp2.current.focus();
         setinputOTP3(otp);
+        var returnOTP = [];
+        props.setInput(returnOTP.splice(2, 1, otp));
     }
 
     function onInputOTP4(input) {
         var otp = input.replace(/\D/g, '');
         otp.length >= 1 ? otp5.current.focus() : otp3.current.focus();
         setinputOTP4(otp);
+        var returnOTP = [];
+        props.setInput(returnOTP.splice(3, 1, otp));
     }
 
     function onInputOTP5(input) {
         var otp = input.replace(/\D/g, '');
         otp.length >= 1 ? otp6.current.focus() : otp4.current.focus();
         setinputOTP5(otp);
+        var returnOTP = [];
+        props.setInput(returnOTP.splice(4, 1, otp));
     }
 
     function onInputOTP6(input) {
         var otp = input.replace(/\D/g, '');
         otp.length >= 1 ? '' : otp5.current.focus();
         setinputOTP6(otp);
+        var returnOTP = [];
+        props.setInput(returnOTP.splice(5, 1, otp));
     }
 
     function getOTP() {
