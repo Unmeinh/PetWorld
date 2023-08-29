@@ -1,94 +1,149 @@
-import React, { useState, memo } from 'react'
-import { Button, View, Text } from 'react-native'
-import Toast from 'react-native-toast-message';
-import { ToastLayout } from '../../component/layout/ToastLayout';
-import ViewAccountModal from '../../component/modals/ViewAccountModal';
-import { useDispatch, useSelector } from 'react-redux';
-import { getInfoUser, getInfoLogin } from '../../redux/reducers/user/userReducer';
-import { getAllBlogs, getDetailBlog, getUserBlogs } from '../../redux/reducers/blog/blogReducer';
-import { selectUserByID, selectFollowByID } from '../../redux/selectors/userSelector';
-import { selectBlogs, selectBlogByID, selectBlogsByUser } from '../../redux/selectors/blogSelector';
-import axiosJSON from '../../api/axios.config';
+import React, { useState, useEffect } from 'react';
+import {
+    SafeAreaView,
+    Text,
+    TextInput,
+    TouchableOpacity,
+    View,
+} from 'react-native';
+import auth from '@react-native-firebase/auth';
 
 const test = () => {
-    const [isShowAccount, setisShowAccount] = useState(false);
-    const user = useSelector(selectUserByID);
-    const blogs = useSelector(selectBlogs);
-    const dispatch = useDispatch();
+    const [user, setUser] = useState(null);
 
-    async function ToastLoading() {
-        var res1 = await axiosJSON.get('/user/detail/64e6246094b5cf941a244f94')
-            .catch((e) => console.error(e.response.data))
-        if (res1.data != undefined) {
-            console.log("đây");
-            // return res.data;
-            dispatch(getInfoLogin(res1.data.data));
+    const [mobile, setMobile] = useState(null);
+
+    const [confirm, setConfirm] = useState(null);
+
+    const [code, setCode] = useState('');
+
+    const [recaptcha, setRecaptcha] = React.useState('');
+
+    const onAuthStateChanged = async userAuth => {
+        if (!userAuth) {
+            return;
+        }
+        if (userAuth) {
+            console.log(userAuth);
+            setUser(userAuth);
         }
 
-        var res = await axiosJSON.get('/blog/detail/64de0a7e727214cd2b5168cf')
-            .catch((e) => console.error(e));
+        return () => userReference();
+    };
+    useEffect(() => {
+        const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
+        return () => {
+            subscriber;
+        };
+    }, []);
 
-        if (res.data != undefined)
-            dispatch(getAllBlogs(res.data.data));
-        Toast.show({
-            type: 'loading',
-            position: 'top',
-            text1: 'Đang tải...',
-            bottomOffset: 20
-        });
-    }
+    const signInWithMobileNumber = async () => {
+        // auth().settings.appVerificationDisabledForTesting = true;
+        // auth().settings.forceRecaptchaFlowForTesting = true;
+        // auth().settings.setAutoRetrievedSmsCodeForPhoneNumber = true;
+        const confirmation = await auth().verifyPhoneNumber(mobile);
+        setConfirm(confirmation);
+    };
 
-    function ToastSuccess() {
-        setisShowAccount(true);
-        Toast.show({
-            type: 'success',
-            position: 'top',
-            text1: 'Thành công!',
-            bottomOffset: 20
-        });
-    }
+    const confirmCode = async () => {
+        try {
+            await confirm.confirm(code);
+        } catch (error) {
+            console.log('Invalid code.');
+        }
+    };
 
-    function ToastError() {
-        // dispatch(getUserBlogs("001"));
-        Toast.show({
-            type: 'error',
-            position: 'top',
-            text1: 'Thất bại!',
-            bottomOffset: 20
-        });
-    }
+    const signOut = async () => {
+        auth().signOut();
 
-    function ToastTomato() {
-        Toast.show({
-            type: 'tomatoToast',
-            position: 'top',
-            text1: 'Thất bại!',
-            bottomOffset: 20
-        });
-    }
+        setUser(null);
+
+        return () => userReference();
+    };
 
     return (
-        <View style={{ backgroundColor: '#FEF6E4', flex: 1, justifyContent: 'center' }}>
-            <Button onPress={ToastLoading} title='Loading' />
-            <Button onPress={ToastSuccess} title='Success' />
-            <Button onPress={ToastError} title='Error' />
-            <Button onPress={ToastTomato} title='Tomato' />
-            <Text>
-                {user.userName}
-            </Text>
-            {
-                (blogs.length > 0)
-                    ? blogs.map((blog, index, arr) => {
-                        return <View key={index}>
-                            <Text>{index}: {'\n'}{blog.contentBlog}{'\n'}</Text>
-                        </View>
-                    })
-                    : ""
-            }
-            <ViewAccountModal isShow={isShowAccount} info={user} callBack={() => setisShowAccount(false)} />
-            <ToastLayout />
-        </View>
-    );
-}
+        <SafeAreaView style={{ alignItems: 'center', flex: 1, paddingTop: 100, backgroundColor: '#8BD3DD' }}>
+            <View style={{ margin: 10 }}>
+                <Text style={{ color: '#001858', fontSize: 20 }}>Mobile Sign In Tutorial</Text>
+            </View>
 
-export default memo(test);
+            <View style={{ margin: 10 }}>
+                {user === null && (
+                    <>
+                        <TextInput
+                            value={mobile}
+                            onChangeText={e => setMobile(e)}
+                            placeholder="mobile"
+                            style={{
+                                borderWidth: 1,
+                                margin: 10,
+                                padding: 10,
+                                width: 250,
+                                color: '#001858'
+                            }}></TextInput>
+                        {!confirm ? (
+                            <>
+                                <TouchableOpacity
+                                    style={{
+                                        borderWidth: 1,
+                                        margin: 10,
+                                        padding: 10,
+                                        alignItems: 'center',
+                                        backgroundColor: '#F582AE'
+                                    }}
+                                    onPress={() => signInWithMobileNumber()}>
+                                    <Text style={{ color: '#FEF6E4', fontSize: 17 }}>Get Code</Text>
+                                </TouchableOpacity>
+                            </>
+                        ) : (
+                            <>
+                                <TextInput
+                                    value={code}
+                                    onChangeText={e => setCode(e)}
+                                    placeholder="Code"
+                                    style={{
+                                        borderWidth: 1,
+                                        margin: 10,
+                                        padding: 10,
+                                        width: 250,
+                                        color: '#001858'
+                                    }}></TextInput>
+                                <TouchableOpacity
+                                    style={{
+                                        borderWidth: 1,
+                                        margin: 10,
+                                        padding: 10,
+                                        alignItems: 'center',
+                                        backgroundColor: '#F582AE'
+                                    }}
+                                    onPress={() => confirmCode()}>
+                                    <Text style={{ color: '#FEF6E4', fontSize: 17 }}>Confirm Code</Text>
+                                </TouchableOpacity>
+                            </>
+                        )}
+                    </>
+                )}
+            </View>
+            {user !== null && (
+                <View style={{ margin: 10 }}>
+                    <View style={{ margin: 10 }}>
+                        <Text style={{ color: '#001858', fontSize: 20 }}>{user.phoneNumber}</Text>
+                    </View>
+                    <TouchableOpacity
+                        style={{
+                            borderWidth: 1,
+                            margin: 10,
+                            padding: 10,
+                            alignItems: 'center',
+                            backgroundColor: '#F582AE'
+                        }}
+                        onPress={signOut}>
+                        <Text style={{ color: '#FEF6E4', fontSize: 17 }}>Sign Out</Text>
+                    </TouchableOpacity>
+                </View>
+            )}
+        </SafeAreaView>
+    );
+};
+
+export default test;

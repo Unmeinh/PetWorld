@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "813777976743",
+    "project_id": "fir-petworld",
+    "storage_bucket": "fir-petworld.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:813777976743:android:961522fb5c3e64d9b28a82",
+        "android_client_info": {
+          "package_name": "com.petworld"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "813777976743-pvp19o4n3e0qdk6drur4dusv07ahr6kr.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.petworld",
+            "certificate_hash": "0bdeb84a1be706d295b467ab3ae236683e196100"
+          }
+        },
+        {
+          "client_id": "813777976743-lfo62lsemvsb06djepp4536bg5che6pg.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB-SWNbPJocuvGf_o3QK5xC7SVKaTJ-owU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "813777976743-lfo62lsemvsb06djepp4536bg5che6pg.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
