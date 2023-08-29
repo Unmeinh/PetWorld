@@ -2,7 +2,6 @@ import {StyleSheet, Text, View, Image} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useDispatch} from 'react-redux';
-import {minusProductAction, plusProductAction} from '../../redux/action';
 import {minusProduct, plusProduct} from '../../redux/reducers/shop/CartReduces';
 export default function ItemListCart({data, isSelect}) {
   const dispatch = useDispatch();
