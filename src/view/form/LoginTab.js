@@ -11,8 +11,8 @@ import Entypo from 'react-native-vector-icons/Entypo';
 import Feather from 'react-native-vector-icons/Feather';
 import LinearGradient from 'react-native-linear-gradient';
 import { useNavigation } from '@react-navigation/native';
-import axios, { isCancel, AxiosError } from 'axios';
-import axiosConfig from '../../api/axios.config';
+import { axiosJSON } from '../../api/axios.config';
+import { storageMMKV } from '../../storage/storageMMKV';
 import Toast from 'react-native-toast-message';
 import { ToastLayout } from '../../component/layout/ToastLayout';
 
@@ -72,7 +72,7 @@ export default function LoginTab(route) {
         formdata.append("userName", newUser.userName);
         formdata.append("passWord", newUser.passWord);
 
-        axiosConfig.post('user/login', newUser)
+        axiosJSON.post('user/login', newUser)
             .then((response) => {
                 if (response.status == 200) {
                     var data = response.data;
@@ -83,6 +83,16 @@ export default function LoginTab(route) {
                             text1: String(data.message),
                             bottomOffset: 20
                         });
+                        storageMMKV.setValue('login.token', String(data.token));
+                        console.log(storageMMKV.getString('login.token'));
+                        if (rememberMe) {
+                            storageMMKV.setValue('login.isLogin', true);
+                        } else {
+                            storageMMKV.setValue('login.isLogin', false);
+                        }
+                        if (storageMMKV.getString('login.token') == String(data.token)) {
+                            navigation.navigate('NaviTabScreen');
+                        }
                     }
                 } else {
                     var data = response.data;
@@ -100,7 +110,7 @@ export default function LoginTab(route) {
                 Toast.show({
                     type: 'error',
                     position: 'top',
-                    text1: String(e),
+                    text1: String(e.response.data.message),
                     bottomOffset: 20
                 });
             });

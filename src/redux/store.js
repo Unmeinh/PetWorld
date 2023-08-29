@@ -7,7 +7,7 @@ import blogReducer from './reducers/blog/blogReducer';
 import listCommentReducer from './reducers/comment/ListCommentReducer';
 import userReducer from './reducers/user/userReducer';
 import listCartReducer from './reducers/shop/CartReduces';
-import searchFilterReducer from './reducers/filters/FiltersReducer';
+import searchFilterReducer from './reducers/filters/filtersReducer';
 
 const store = configureStore({
   reducer: {

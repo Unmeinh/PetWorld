@@ -34,6 +34,7 @@
     "react-native-material-datetime-picker": "^0.2.1",
     "react-native-material-menu": "^2.0.0",
     "react-native-material-tabs": "^4.2.0",
+    "react-native-mmkv": "^2.10.2",
     "react-native-modal": "^13.0.1",
     "react-native-modern-datepicker": "^1.0.0-beta.91",
     "react-native-otp-textinput": "^1.1.1",

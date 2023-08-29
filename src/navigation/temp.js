@@ -4,7 +4,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import SlashScreen from '../view/slashscreen/SlashScreen';
 import OrboadScreen from '../view/orboardscreen/OrboadScreen';
 import LoginScreen from '../view/form/LoginScreen';
-import NaviTabSreen from './NaviTabSreen';
+import NaviTabScreen from './NaviTabScreen';
 import SearchFilters from '../view/search/SearchFilters';
 import ForgetPassword from '../view/form/ForgetPassword';
 import ConfirmOTP from '../view/form/ConfirmOTP';
@@ -32,7 +32,7 @@ export default function StackScreen() {
         <Stack.Screen name="SlashScreen" component={SlashScreen} />
         <Stack.Screen name="OrboadScreen" component={OrboadScreen} />
         <Stack.Screen name="LoginScreen" component={LoginScreen} />
-        <Stack.Screen name="NaviTabSreen" component={NaviTabSreen} />
+        <Stack.Screen name="NaviTabScreen" component={NaviTabScreen} />
         <Stack.Screen name="SearchFilters" component={SearchFilters} />
         <Stack.Screen name="ForgetPassword" component={ForgetPassword} />
         <Stack.Screen name="ConfirmOTP" component={ConfirmOTP} />

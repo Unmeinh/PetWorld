@@ -7,8 +7,7 @@ import {
 import React, { useState } from 'react';
 import styles from '../../styles/form.style';
 import Entypo from 'react-native-vector-icons/Entypo';
-import axios, { isCancel, AxiosError } from 'axios';
-import axiosConfig from '../../api/axios.config';
+import { axiosJSON } from '../../api/axios.config';
 import Toast from 'react-native-toast-message';
 import { ToastLayout } from '../../component/layout/ToastLayout';
 
@@ -81,12 +80,8 @@ export default function RegisterTab(route) {
             // ToastAndroid.show("Đăng nhập thất bại!", ToastAndroid.SHORT);
             return;
         }
-        var formdata = new FormData();
-        formdata.append("userName", newUser.userName);
-        formdata.append("phoneNumber", newUser.phoneNumber);
-        formdata.append("passWord", newUser.passWord);
 
-        axiosConfig.post('user/register', newUser)
+        axiosJSON.post('user/register', newUser)
             .then((response) => {
                 if (response.status == 201) {
                     var data = response.data;
