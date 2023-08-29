@@ -6,7 +6,7 @@ import {
   Dimensions,
   Pressable,
 } from 'react-native';
-import React, {useCallback, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import HeaderTitle from '../../component/header/HeaderTitle';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useSelector} from 'react-redux';
@@ -22,7 +22,7 @@ export default function CartScreen({navigation}) {
   const result = useSelector(listCartSelector);
   const products = useSelector(listProductSelector);
   const resultCart = useCart(result,products)
-
+  const [showList, setShowList] = useState(false)
   function Bottom() {
     const [isSelect, setIsSelect] = useState(() => false);
     const iconSelect = isSelect
@@ -63,7 +63,7 @@ export default function CartScreen({navigation}) {
         nav={navigation}
       />
 
-      <ListCart data={resultCart()}/>
+      <ListCart data={resultCart}/>
       <Bottom />
     </View>
   );

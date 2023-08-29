@@ -6,7 +6,7 @@ import {listShopSelector} from '../../redux/selector';
 import {Image} from 'react-native-animatable';
 import ItemListCart from '../shop/ItemListCart';
 import {useDispatch} from 'react-redux';
-import { selectItem } from '../../redux/reducers/shop/CartReduces';
+import {selectItem} from '../../redux/reducers/shop/CartReduces';
 export default function ItemCartProduct({result}) {
   const shops = useSelector(listShopSelector);
   const dispatch = useDispatch();
@@ -20,7 +20,7 @@ export default function ItemCartProduct({result}) {
     setShop(shopfind);
   }, [result]);
   return (
-    <View>
+    <>
       <View style={styles.container}>
         <Icon
           name={iconSelect}
@@ -38,15 +38,10 @@ export default function ItemCartProduct({result}) {
         <Text style={styles.nameShop}>{shop.nameShop}</Text>
         <Icon name="chevron-right" size={24} />
       </View>
-      <FlatList
-        data={result.products}
-        scrollEnabled={false}
-        keyExtractor={item => item.id}
-        renderItem={({item}) => (
-          <ItemListCart data={item} isSelect={isSelect} />
-        )}
-      />
-    </View>
+      {shop ? result.products.map(product => (
+        <ItemListCart data={product} key={product.id} isSelect={isSelect} />
+      )) : null}
+    </>
   );
 }
 
