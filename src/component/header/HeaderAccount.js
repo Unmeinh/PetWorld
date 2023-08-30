@@ -3,11 +3,11 @@ import { View, Text, StyleSheet, Dimensions } from 'react-native';
 import { Image } from 'react-native-animatable';
 import Feather from 'react-native-vector-icons/Feather';
 
-export default function HeaderBlog({ scrollRef, onScrollView }) {
+export default function HeaderBlog() {
   return (
     <View style={styles.headerContainer}>
       <View style={styles.leftHeader}>
-        <Image style={styles.avatarImage} source={require('../../assets/image/account/avatar.png')} />
+        <Image style={styles.avatarImage} source={require('../../assets/images/logoApp/logo.png')} />
       </View>
       <View style={styles.centerHeader}>
       <Text style={styles.nameAccount}>Vergil.</Text>

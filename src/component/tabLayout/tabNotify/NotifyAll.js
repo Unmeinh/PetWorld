@@ -8,7 +8,7 @@ const data = [
     title: 'Cho thú cưng ăn1',
     content: 'Đến lúc thú cưng ăn rồi! Hãy sẵn sàng thức ăn và nước cho thú cưng của bạn.',
     time: '10:00 AM',
-    image: require('../../assets/image/logoApp/logo.png'), // Replace with actual image source
+    // image: require('../../../assets/images/logoApp/logo.png'), // Replace with actual image source
   },
   {
     id: '2',
@@ -16,14 +16,15 @@ const data = [
     content: 'Đến lúc thú cưng ăn rồi! Hãy sẵn sàng thức ăn và nước cho thú cưng của bạn.',
     detail:'Chào bạn,Đến lúc thú cưng của bạn cần được ăn rồi! Hãy chuẩn bị sẵn thức ăn và nước cho thú cưng của mình để đảm bảo chúng luôn khỏe mạnh và hạnh phúc. Bạn có thể dựa vào lịch ăn hàng ngày để đảm bảo thú cưng không bị đói đêm hoặc bị thiếu dinh dưỡng Gợi ý món cho thú cưng:- Nếu bạn có chó: Hãy thử cho thú cưng một ít thịt gà hoặc cá hấp, kèm theo một ít cơm hoặc gạo lứt.- Nếu bạn có mèo: Một ít thức ăn ướt chứa các dưỡng chất cần thiết hoặc một ít thịt cá tươi có thể là một lựa chọn tốt. - Đừng quên cung cấp nước sạch cho thú cưng, đặc biệt trong những ngày nóng bức.Chúc bạn và thú cưng có một bữa ăn ngon lành và thú vị!Trân trọng,[Tên của bạn]',
     time: '11:30 AM',
-    image: require('../../assets/image/logoApp/logo.png'),// Replace with actual image source
+    // image: require('../../../assets/images/logoApp/logo.png'), // Replace with actual image source
+
   },
   {
     id: '3',
     title: 'Cho thú cưng ă3n',
     content: 'Đến lúc thú cưng ăn rồi! Hãy sẵn sàng thức ăn và nước cho thú cưng của bạn.',
     time: '02:45 PM',
-    image: require('../../assets/image/logoApp/logo.png'),
+    // image: require('../../../assets/image/logoApp/logo.png'),
     // Replace with actual image source
   },
   // Add more items as needed
