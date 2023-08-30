@@ -23,6 +23,7 @@ import AddNewAddress from '../view/account/AddNewAddress';
 import ChatScreen from '../view/chat/ChatScreen';
 import InfoManager from '../view/blog/InfoManager';
 import EditInfo from '../view/blog/EditInfo';
+import test from '../view/appointment/test';
 import AppointmentScreen from '../view/appointment/AppointmentScreen';
 import DetailAppointment from '../view/appointment/DetailAppointment';
 import NotifyScreen from '../view/notify/NotifyScreen';
