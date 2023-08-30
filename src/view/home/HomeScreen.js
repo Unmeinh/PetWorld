@@ -11,32 +11,42 @@ import {
 import React, {useEffect, useState} from 'react';
 import {SafeAreaView} from 'react-navigation';
 import Icon from 'react-native-vector-icons/Ionicons';
-import {makeMutable} from 'react-native-reanimated';
 import {useSelector} from 'react-redux';
 import {
   listPetSelector,
   listProductSelector,
   categorySelector,
+  categoryStatusSelector,
+  listStatusProductSelector
 } from '../../redux/selector';
 import LinearGradient from 'react-native-linear-gradient';
 import {createShimmerPlaceholder} from 'react-native-shimmer-placeholder';
 import Slider from '../../component/slideshow/Slider';
 import CategoryList from '../../component/list/CategoryList';
 import ListHorizontal from '../../component/list/ListHorizontal';
+import { fetchCategorys } from '../../redux/reducers/category/category';
+import { useDispatch } from 'react-redux';
+import { fetchProducts } from '../../redux/reducers/product/ProductReducer';
 
 const ShimmerPlaceHolder = createShimmerPlaceholder(LinearGradient);
 export default function HomeScreen({scrollRef, onScrollView, navigation}) {
   const [countCart, setCountCart] = useState(0);
+  const dispatch = useDispatch()
   const listPet = useSelector(listPetSelector);
   const listProduct = useSelector(listProductSelector);
   const listCategory = useSelector(categorySelector); 
+  const statusCategorys = useSelector(categoryStatusSelector); 
+  const statusProducts = useSelector(listStatusProductSelector); 
   const colorLoader = ['#f0e8d8', '#dbdbdb', '#f0e8d8'];
   const [isLoader, setisLoader] = useState(() =>true);
   useEffect(() => {
+    dispatch(fetchCategorys())
+    dispatch(fetchProducts())
     setTimeout(() => {
       setisLoader(false);
-    }, 3000);
+    }, 2000);
   }, []);
+ 
   return (
     <>
       <ScrollView ref={scrollRef} onScroll={onScrollView} style={{backgroundColor:"#FEF6E4"}}>
@@ -87,12 +97,12 @@ export default function HomeScreen({scrollRef, onScrollView, navigation}) {
         <Slider isLoader={isLoader} />
         {/* category */}
 
-        <CategoryList data={listCategory} isLoader={isLoader}/>
+        <CategoryList data={listCategory} isLoader={statusCategorys}/>
         {/* listpetnew */}
         <ListHorizontal data={listPet} title="Thú cưng mới" isLoader={isLoader} />
         {/* listproductnew */}
         <View style={{marginBottom:20}}>
-        <ListHorizontal data={listProduct} title="Sản phẩm mới" isLoader={isLoader}/>
+        <ListHorizontal data={listProduct} title="Sản phẩm mới" isLoader={statusProducts}/>
         </View>
        
       </ScrollView>

@@ -1,7 +1,6 @@
 import listComment from '../../../data/comment';
 const initState = listComment;
 const listCommentReducer = (state = initState, action) => {
-    console.log(action.payload);
     switch (action.type) {
         case "select/idBlog":
             [...state]
