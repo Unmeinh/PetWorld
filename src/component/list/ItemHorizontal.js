@@ -52,7 +52,7 @@ export default function ItemHorizontal({item}) {
       }}>
       <SharedElement id={`item.${item.id}.image`}>
         <Image
-          source={item.avatar}
+          source={item.arrProduct ? {uri:item.arrProduct[1]}:item.arrPet[0]}
           style={{
             width: '100%',
             height: 100,

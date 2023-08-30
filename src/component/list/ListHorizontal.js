@@ -13,7 +13,7 @@ function ListHorizontal({data, title, isLoader}) {
   return (
     <View style={{marginTop: 18}}>
       <View style={styles.title}>
-        {isLoader
+        {isLoader === 'loading'
           ? [
               <ShimerPlaceHolder
                 shimmerColors={colorLoader}
@@ -29,7 +29,7 @@ function ListHorizontal({data, title, isLoader}) {
               <Text style={styles.fontAll}>Xem tất cả</Text>,
             ]}
       </View>
-      {isLoader ? (
+      {isLoader === 'loading' ? (
         <FlatList
           horizontal
           showsHorizontalScrollIndicator={false}
@@ -46,7 +46,6 @@ function ListHorizontal({data, title, isLoader}) {
           horizontal
           showsHorizontalScrollIndicator={false}
           data={data}
-          keyExtractor={item => item.id}
           renderItem={({item}) => (
             <Pressable onPress={() => dispatch(selectIdProductAction(item.id))}>
               <ItemHorizontal item={item} />
