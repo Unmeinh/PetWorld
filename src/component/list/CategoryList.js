@@ -10,7 +10,7 @@ function CategoryList({data, isLoader}) {
   const colorLoader = ['#f0e8d8', '#dbdbdb', '#f0e8d8'];
   return (
     <View style={{marginTop: 16}}>
-      {isLoader
+      {isLoader === 'loading'
         ? [
             <ShimmerPlaceHolder
               shimmerColors={colorLoader}
@@ -34,8 +34,7 @@ function CategoryList({data, isLoader}) {
             <FlatList
               data={data}
               horizontal
-              scrollEnabled={false}
-              keyExtractor={(item) => item.id}
+              showsHorizontalScrollIndicator={false}
               renderItem={({item}) => <CategoryItem item={item} />}
             />,
           ]}
