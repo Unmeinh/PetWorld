@@ -7,6 +7,9 @@ import {
 import React, { useState } from 'react';
 import styles from '../../styles/form.style';
 import Entypo from 'react-native-vector-icons/Entypo';
+import { axiosJSON } from '../../api/axios.config';
+import Toast from 'react-native-toast-message';
+import { ToastLayout } from '../../component/layout/ToastLayout';
 
 export default function RegisterTab(route) {
     const [passToggle, setpassToggle] = useState(true);
@@ -64,7 +67,7 @@ export default function RegisterTab(route) {
         return true;
     }
 
-    function onSignUp() {
+    async function onSignUp() {
         var phoneNUM = inputPhoneNumber.replace(/\D/g, '');
         setinputPhoneNumber(phoneNUM);
         var newUser = {
@@ -74,19 +77,49 @@ export default function RegisterTab(route) {
         }
 
         if (checkValidate(newUser) == false) {
-            // return;
-            ToastAndroid.show("Đăng ký thất bại!", ToastAndroid.SHORT)
-        } else {
-            ToastAndroid.show("Đăng ký thành công!", ToastAndroid.SHORT)
+            // ToastAndroid.show("Đăng nhập thất bại!", ToastAndroid.SHORT);
+            return;
         }
+
+        axiosJSON.post('user/register', newUser)
+            .then((response) => {
+                if (response.status == 201) {
+                    var data = response.data;
+                    if (data.success) {
+                        Toast.show({
+                            type: 'success',
+                            position: 'top',
+                            text1: String(data.message),
+                            bottomOffset: 20
+                        });
+                    }
+                } else {
+                    var data = response.data;
+                    Toast.show({
+                        type: 'success',
+                        position: 'top',
+                        text1: String(data.message),
+                        bottomOffset: 20
+                    });
+                }
+            })
+            .catch((e) => {
+                Toast.show({
+                    type: 'error',
+                    position: 'top',
+                    text1: String(e),
+                    bottomOffset: 20
+                });
+            });
+
     }
 
     return (
         <View style={styles.container}>
             <Image style={{ position: 'absolute' }}
-                source={require('../../assets/image/form/topLeftPaw.png')} />
+                source={require('../../assets/images/form/topLeftPaw.png')} />
             <Image style={styles.pawBottomRight}
-                source={require('../../assets/image/form/bottomRightPaw.png')} />
+                source={require('../../assets/images/form/bottomRightPaw.png')} />
             <View style={{ marginTop: 75 }}>
                 <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                     <TouchableHighlight
@@ -177,6 +210,7 @@ export default function RegisterTab(route) {
                 </TouchableHighlight>
 
             </View>
+            <ToastLayout />
         </View>
     );
 }

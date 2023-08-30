@@ -10,8 +10,14 @@ import styles from '../../styles/form.style';
 import Entypo from 'react-native-vector-icons/Entypo';
 import Feather from 'react-native-vector-icons/Feather';
 import LinearGradient from 'react-native-linear-gradient';
+import { useNavigation } from '@react-navigation/native';
+import { axiosJSON } from '../../api/axios.config';
+import { storageMMKV } from '../../storage/storageMMKV';
+import Toast from 'react-native-toast-message';
+import { ToastLayout } from '../../component/layout/ToastLayout';
 
 export default function LoginTab(route) {
+    const navigation = useNavigation();
     const [passToggle, setpassToggle] = useState(true);
     const [rememberMe, setrememberMe] = useState(false);
     const [inputUsername, setinputUsername] = useState("");
@@ -58,20 +64,64 @@ export default function LoginTab(route) {
         }
 
         if (checkValidate(newUser) == false) {
-            ToastAndroid.show("Đăng nhập thất bại!", ToastAndroid.SHORT);
+            // ToastAndroid.show("Đăng nhập thất bại!", ToastAndroid.SHORT);
             return;
         }
 
-        ToastAndroid.show("Đăng nhập thành công!", ToastAndroid.SHORT);
-        route.nav.navigate('NaviTabSreen');
+        var formdata = new FormData();
+        formdata.append("userName", newUser.userName);
+        formdata.append("passWord", newUser.passWord);
+
+        axiosJSON.post('user/login', newUser)
+            .then((response) => {
+                if (response.status == 200) {
+                    var data = response.data;
+                    if (data.success) {
+                        Toast.show({
+                            type: 'success',
+                            position: 'top',
+                            text1: String(data.message),
+                            bottomOffset: 20
+                        });
+                        storageMMKV.setValue('login.token', String(data.token));
+                        console.log(storageMMKV.getString('login.token'));
+                        if (rememberMe) {
+                            storageMMKV.setValue('login.isLogin', true);
+                        } else {
+                            storageMMKV.setValue('login.isLogin', false);
+                        }
+                        if (storageMMKV.getString('login.token') == String(data.token)) {
+                            navigation.navigate('NaviTabScreen');
+                        }
+                    }
+                } else {
+                    var data = response.data;
+                    Toast.show({
+                        type: 'error',
+                        position: 'top',
+                        text1: String(data.message),
+                        bottomOffset: 20
+                    });
+                }
+            })
+            .catch((e) => {
+                // var data = response.data;
+                console.log(e);
+                Toast.show({
+                    type: 'error',
+                    position: 'top',
+                    text1: String(e.response.data.message),
+                    bottomOffset: 20
+                });
+            });
     }
 
     return (
         <View style={styles.container}>
             <Image style={{ position: 'absolute', right: 0 }}
-                source={require('../../assets/image/form/topRightPaw.png')} />
+                source={require('../../assets/images/form/topRightPaw.png')} />
             <Image style={styles.pawBottomLeft}
-                source={require('../../assets/image/form/bottomLeftPaw.png')} />
+                source={require('../../assets/images/form/bottomLeftPaw.png')} />
             <View style={{ marginTop: 75 }}>
                 <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                     <Text style={styles.textEnable}>Đăng nhập</Text>
@@ -139,7 +189,7 @@ export default function LoginTab(route) {
                             }, styles.titleInput]}>Ghi nhớ tôi?</Text>
                         </View>
                         <TouchableHighlight onPress={() => { route.nav.navigate('ForgetPassword') }}
-                            activeOpacity={0.5} underlayColor="#00185830" style={{ marginTop:15 }}>
+                            activeOpacity={0.5} underlayColor="#00185830" style={{ marginTop: 15 }}>
                             <Text style={{
                                 color: '#001858', textDecorationLine: 'underline',
                                 fontSize: 15, fontFamily: 'ProductSans',
@@ -166,20 +216,21 @@ export default function LoginTab(route) {
                     <View style={{ width: '100%', marginTop: 25, alignItems: 'center' }}>
                         <View style={{ flexDirection: 'row' }}>
                             <TouchableOpacity style={styles.borderIcon}>
-                                <Image source={require('../../assets/image/form/google.png')} style={{ height: 30, width: 30 }} />
+                                <Image source={require('../../assets/images/form/google.png')} style={{ height: 30, width: 30 }} />
                             </TouchableOpacity>
 
                             <TouchableOpacity style={[styles.borderIcon, { marginLeft: 15, marginRight: 15 }]}>
-                                <Image source={require('../../assets/image/form/facebook.png')} style={{ height: 30, width: 30 }} />
+                                <Image source={require('../../assets/images/form/facebook.png')} style={{ height: 30, width: 30 }} />
                             </TouchableOpacity>
 
                             <TouchableOpacity style={styles.borderIcon}>
-                                <Image source={require('../../assets/image/form/twitter.png')} style={{ height: 30, width: 30 }} />
+                                <Image source={require('../../assets/images/form/twitter.png')} style={{ height: 30, width: 30 }} />
                             </TouchableOpacity>
                         </View>
                     </View>
                 </View>
             </View>
+            <ToastLayout />
         </View>
     );
 }

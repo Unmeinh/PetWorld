@@ -4,8 +4,8 @@ import PanigationImage from './PanigationImage';
 import ImageSliderItem from './ItemSliderImage';
 
 export default function SliderImage({data}) {
-  const [index, setindex] = useState(0);
-  const scrollx = useRef(new Animated.Value(0)).current;
+  const [index, setIndex] = useState(0);
+  const scrollX = useRef(new Animated.Value(0)).current;
   const flatListRef = useRef(null);
   const handerOnScroll = event => {
     Animated.event(
@@ -13,7 +13,7 @@ export default function SliderImage({data}) {
         {
           nativeEvent: {
             contentOffset: {
-              x: scrollx,
+              x: scrollX,
             },
           },
         },
@@ -25,10 +25,10 @@ export default function SliderImage({data}) {
   };
 
   const handleOnViewItemChange = useRef(({viewableItems}) => {
-    setindex(viewableItems[0].index);
+    setIndex(viewableItems[0]?.index);
   }).current;
   const handlePanigationPress = selectedIndex => {
-    setindex(selectedIndex);
+    setIndex(selectedIndex);
     flatListRef.current.scrollToIndex({index: selectedIndex, animated: true});
   };
 
@@ -52,7 +52,7 @@ export default function SliderImage({data}) {
       />
       <PanigationImage
         data={data}
-        scrollx={scrollx}
+        scrollx={scrollX}
         index={index}
         onPress={handlePanigationPress}
       />

@@ -1,24 +1,25 @@
-import {StyleSheet, Text, View, FlatList} from 'react-native';
+import {StyleSheet, Text, View, FlatList, Pressable} from 'react-native';
 import React from 'react';
 import ItemHorizontal from './ItemHorizontal';
 import LinearGradient from 'react-native-linear-gradient';
 import {createShimmerPlaceholder} from 'react-native-shimmer-placeholder';
 import listfakeloader from '../../data/listfakeloader';
+import { useDispatch } from 'react-redux';
 
-const ShimerPlaceHolder = createShimmerPlaceholder(LinearGradient);
+const ShimmerPlaceHolder = createShimmerPlaceholder(LinearGradient);
 function ListHorizontal({data, title, isLoader}) {
   const colorLoader = ['#f0e8d8', '#dbdbdb', '#f0e8d8'];
-  console.log('Chạy vào đây');
+  const dispatch = useDispatch();
   return (
     <View style={{marginTop: 18}}>
       <View style={styles.title}>
-        {isLoader
+        {isLoader === 'loading'
           ? [
-              <ShimerPlaceHolder
+              <ShimmerPlaceHolder
                 shimmerColors={colorLoader}
                 shimmerStyle={styles.loaderText}
               />,
-              <ShimerPlaceHolder
+              <ShimmerPlaceHolder
                 shimmerColors={colorLoader}
                 shimmerStyle={styles.loaderText}
               />,
@@ -28,13 +29,13 @@ function ListHorizontal({data, title, isLoader}) {
               <Text style={styles.fontAll}>Xem tất cả</Text>,
             ]}
       </View>
-      {isLoader ? (
+      {isLoader === 'loading' ? (
         <FlatList
           horizontal
           showsHorizontalScrollIndicator={false}
           data={listfakeloader}
           renderItem={() => (
-            <ShimerPlaceHolder
+            <ShimmerPlaceHolder
               shimmerColors={colorLoader}
               shimmerStyle={styles.loaderItem}
             />
@@ -45,8 +46,11 @@ function ListHorizontal({data, title, isLoader}) {
           horizontal
           showsHorizontalScrollIndicator={false}
           data={data}
-          renderItem={({item}) => <ItemHorizontal item={item} />}
-          keyExtractor={({id}) => id.toString()}
+          renderItem={({item}) => (
+            <Pressable onPress={() => dispatch(selectIdProductAction(item.id))}>
+              <ItemHorizontal item={item} />
+            </Pressable>
+          )}
         />
       )}
     </View>
@@ -84,4 +88,4 @@ const styles = StyleSheet.create({
     marginLeft: 20,
   },
 });
-export default React.memo(ListHorizontal)
+export default React.memo(ListHorizontal);

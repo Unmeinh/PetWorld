@@ -14,15 +14,21 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import Moment from 'moment';
 import BlogImageSlider from "../slider/BlogImageSlider";
 import ListComment from '../../component/modals/ListComment';
+import MenuContext from "../menu/MenuContext";
+import ViewAccountModal from "../modals/ViewAccountModal";
 
-export default function ItemBlog(row) {
-    const [blog, setblog] = useState(row.blog);
+const ItemBlog = (row) => {
+    var blog = row.blog;
     var user = blog.idUser;
     const [isShowComment, setisShowComment] = useState(false);
+    const [isShowMenu, setisShowMenu] = useState(false);
+    const [isShowAccount, setisShowAccount] = useState(false);
     const [isShowMoreContent, setisShowMoreContent] = useState(false);
     const [isCollapsedContent, setisCollapsedContent] = useState(true);
     const [srcAvatar, setsrcAvatar] = useState({ uri: String(user.avatarUser) });
     const [isLove, setisLove] = useState(false);
+    const [menuNames, setmenuNames] = useState([]);
+    const [menuFunctions, setmenuFunctions] = useState([]);
     Moment.locale('en');
 
     const onTextLayout = useCallback(e => {
@@ -39,8 +45,37 @@ export default function ItemBlog(row) {
     }
 
     function OpenAccount() {
-
+        setisShowAccount(true);
     }
+
+    function getMyID() {
+        return "001";
+    }
+
+    function checkIsFollowed() {
+        var myID = getMyID();
+        if (user.followers.indexOf(myID) > -1) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    React.useEffect(() => {
+        var myID = getMyID();
+        if (isShowMenu) {
+            if (user._id == myID) {
+                setmenuNames(["Sửa bài viết", "Xóa bài viết"]);
+            } else {
+                var isFollowed = checkIsFollowed();
+                if (isFollowed) {
+                    setmenuNames(["Hủy theo dõi blogger", "Ẩn bài viết", "Báo cáo bài viết"]);
+                } else {
+                    setmenuNames(["Theo dõi blogger", "Ẩn bài viết", "Báo cáo bài viết"]);
+                }
+            }
+        }
+    }, [isShowMenu]);
 
     return (
         <View>
@@ -48,15 +83,17 @@ export default function ItemBlog(row) {
                 <View style={styles.viewInfo}>
                     <View style={{ flexDirection: 'row', alignItems: "center" }}>
                         <TouchableOpacity onPress={OpenAccount} activeOpacity={0.5}>
-                            <Image source={srcAvatar} onError={() => setsrcAvatar(require('../../assets/image/error.png'))}
+                            <Image source={srcAvatar} onError={() => setsrcAvatar(require('../../assets/images/error.png'))}
                                 style={styles.imageAvatar} />
                         </TouchableOpacity>
-                        <TouchableHighlight underlayColor={'rgba(0, 0, 0, 0.2)'} activeOpacity={0.5}>
+                        <TouchableHighlight underlayColor={'rgba(0, 0, 0, 0.2)'} activeOpacity={0.5}
+                            onPress={OpenAccount}>
                             <Text style={styles.textName}>{user.fullName}</Text>
                         </TouchableHighlight>
                     </View>
 
-                    <TouchableHighlight underlayColor={'#8BD3DD'} activeOpacity={0.5}>
+                    <TouchableHighlight underlayColor={'#8BD3DD'} activeOpacity={0.5}
+                        onPress={() => setisShowMenu(true)}>
                         <Entypo name='dots-three-horizontal' size={25} color={'#001858'} />
                     </TouchableHighlight>
                 </View>
@@ -164,7 +201,23 @@ export default function ItemBlog(row) {
 
                 <View style={{ backgroundColor: 'rgba(0, 0, 0, 0.20)', height: 1 }}></View>
             </View>
-            <ListComment isShow={isShowComment} blog={blog} callBack={() => setisShowComment(false)}/>
+            {
+                (isShowComment)
+                    ? <ListComment isShow={isShowComment} blog={blog} callBack={() => setisShowComment(false)} />
+                    : ""
+            }
+            {
+                (isShowMenu)
+                    ? <MenuContext isShow={isShowMenu} arr_OptionName={menuNames} arr_OptionFunction={menuFunctions} callBack={() => setisShowMenu(false)} />
+                    : ""
+            }
+            {
+                (isShowAccount)
+                    ? <ViewAccountModal isShow={isShowAccount} info={user} callBack={() => setisShowAccount(false)} />
+                    : ""
+            }
         </View>
     )
 }
+
+export default React.memo(ItemBlog);

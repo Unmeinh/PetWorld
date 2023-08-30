@@ -8,7 +8,9 @@ import {
 import React, { useState, useRef } from 'react'
 import styles from '../../styles/form.style';
 import HeaderTitle from '../../component/header/HeaderTitle';
-import OTPItem from '../../component/OTPItem';
+import OTPTextInput from 'react-native-otp-textinput';
+import Toast from 'react-native-toast-message';
+import { ToastLayout } from '../../component/layout/ToastLayout';
 
 var censorCharacters = ['*', '**', '***', '****', '*****'];
 
@@ -18,33 +20,42 @@ export default function ConfirmOTP({ route, navigation }) {
     const [inputValueVerify, setinputValueVerify] = useState(route.params.valueVerify);
     const [phoneNumberDisplay, setphoneNumberDisplay] = useState('');
     const [emailDisplay, setemailDisplay] = useState('');
-    const OTPRef = useRef();
 
     function onSendAgain() {
         ToastAndroid.show(inputValueVerify, ToastAndroid.SHORT);
     }
 
     function onContinue() {
-        var otp = OTPRef.current.getOTP();
-        console.log(otp);
-        
         if (inputOTP == '') {
-            ToastAndroid.show('Mã xác minh chưa được nhập!', ToastAndroid.SHORT);
+            Toast.show({
+                type: 'error',
+                position: 'top',
+                text1: 'Mã xác minh chưa được nhập!',
+                text2: String(inputOTP),
+                bottomOffset: 20
+            });
             return;
         }
 
         if (inputOTP.length < 6) {
-            ToastAndroid.show('Mã xác minh phải dài 6 số!', ToastAndroid.SHORT);
+            Toast.show({
+                type: 'error',
+                position: 'top',
+                text1: 'Mã xác minh phải dài 6 số!',
+                bottomOffset: 20
+            });
             return;
         }
 
-        ToastAndroid.show(inputOTP, ToastAndroid.SHORT);
-        ToastAndroid.show('Tiếp tục', ToastAndroid.SHORT);
-        navigation.navigate('ChangePassword');
-    }
-
-    function onSetOTP(input) {
-        setinputOTP(input);
+        Toast.show({
+            type: 'success',
+            position: 'top',
+            text1: 'Tiếp tục',
+            text2: String(inputOTP),
+            bottomOffset: 20
+        });
+        // ToastAndroid.show('Tiếp tục', ToastAndroid.SHORT);
+        // navigation.navigate('ChangePassword');
     }
 
     React.useEffect(() => {
@@ -63,6 +74,9 @@ export default function ConfirmOTP({ route, navigation }) {
                     setemailDisplay(emailCensored);
                 }
             }
+            return () => {
+                unsub.remove();
+            };
         });
 
         return unsub;
@@ -95,8 +109,11 @@ export default function ConfirmOTP({ route, navigation }) {
                     </TouchableOpacity>
                 </View>
 
-                <View style={{ marginTop: 25 }}>
-                    <OTPItem ref={OTPRef}/>
+                <View style={{ marginTop: 15 }}>
+                    <OTPTextInput ref={e => (otp = e)} handleTextChange={(input) => setinputOTP(input)}
+                        inputCount={6}
+                        tintColor={'#8BD3DD'}
+                        textInputStyle={styles.inputOTP} />
                 </View>
 
                 <TouchableHighlight style={[styles.buttonConfirm, { marginTop: 75 }]}
@@ -105,6 +122,7 @@ export default function ConfirmOTP({ route, navigation }) {
                     <Text style={styles.textButtonConfirm}>Tiếp tục</Text>
                 </TouchableHighlight>
             </View>
+            <ToastLayout />
         </View>
     )
 }

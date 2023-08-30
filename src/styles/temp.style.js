@@ -11,5 +11,4 @@ let darkBlue = '#001858';
 
 export default StyleSheet.create({
     
-    
 });

@@ -5,10 +5,7 @@ const {width, height} = Dimensions.get('screen');
 export default function SilderItem({item}) {
   return (
     <View style={styles.container}>
-      <Image source={item.img} resizeMode="cover" style={styles.img} />
-      <View style={styles.content}>
-        {/* <Text>{item.nameRestaurants}</Text> */}
-      </View>
+      <Image source={{uri:item.img}} resizeMode="cover" style={styles.img} />
     </View>
   );
 }

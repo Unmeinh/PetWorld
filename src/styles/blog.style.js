@@ -45,7 +45,9 @@ export default StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
-        padding: 15
+        paddingTop: 15,
+        paddingHorizontal: 15,
+        paddingBottom: 15
     },
 
     textName: {
@@ -263,4 +265,31 @@ export default StyleSheet.create({
         fontSize: 19,
         color: darkBlue
     },
+
+    //Modal more
+    viewModalMore: {
+        paddingHorizontal: 17,
+        paddingTop: 10,
+        justifyContent: 'center',
+        backgroundColor: 'white',
+        position: 'absolute',
+        top: '15%', right: '0%',
+        borderRadius: 5,
+        shadowColor: "#000",
+        elevation: 10,
+    },
+
+    viewModalItemMore: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        shadowColor: "#000",
+        elevation: 10,
+    },
+
+    textModalItem: {
+        color: 'rgba(0, 0, 0, 0.75)',
+        fontFamily: 'ProductSans',
+        fontSize: 15,
+        alignItems: 'center',
+    }
 });

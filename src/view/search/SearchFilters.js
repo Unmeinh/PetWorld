@@ -8,17 +8,16 @@ import {
   Dimensions,
   FlatList,
 } from 'react-native';
-import React, {useTransition} from 'react';
+import React, {useTransition,useState} from 'react';
 import Icon from 'react-native-vector-icons/Ionicons';
-import {useState} from 'react';
-import {searchFilterAction} from '../../redux/action';
 import {useDispatch, useSelector} from 'react-redux';
 import {listFilterSelector} from '../../redux/selector';
 import ShowSearchFilters from '../../component/search/ShowSearchFilters';
 import LinearGradient from 'react-native-linear-gradient';
 import {createShimmerPlaceholder} from 'react-native-shimmer-placeholder';
 import listfakeloader from '../../data/listfakeloader';
-const ShimerPlaceHolder = createShimmerPlaceholder(LinearGradient);
+import { searchFilterChanged } from '../../redux/reducers/filters/filtersReducer';
+const ShimmerPlaceHolder = createShimmerPlaceholder(LinearGradient);
 
 export default function SearchFilters({navigation}) {
   const dispatch = useDispatch();
@@ -56,7 +55,7 @@ export default function SearchFilters({navigation}) {
             onChangeText={text => {
               setsearchFilter(text);
               startTransition(() => {
-                dispatch(searchFilterAction(text));
+                dispatch(searchFilterChanged(text));
               });
             }}
             style={{flexGrow: 1}}></TextInput>
@@ -69,13 +68,13 @@ export default function SearchFilters({navigation}) {
           renderItem={({item}) => {
             return (
               <View style={styles.loaderContainer}>
-                <ShimerPlaceHolder
+                <ShimmerPlaceHolder
                   style={styles.loader}
                   shimmerColors={[
                     '#f0e8d8',
                     '#dbdbdb',
                     '#f0e8d8',
-                  ]}></ShimerPlaceHolder>
+                  ]}></ShimmerPlaceHolder>
               </View>
             );
           }}

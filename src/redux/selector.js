@@ -1,11 +1,13 @@
 import {createSelector} from '@reduxjs/toolkit';
 export const listPetSelector = state => state.listPet;
-export const listProductSelector = state => state.listProduct;
+export const listProductSelector = state => state.listProduct.products;
+export const listStatusProductSelector = state => state.listProduct.status;
 export const searchFilterSelector = state => state.searchFilter.search;
 export const selectFilterIdSelector = state => state.searchFilter.idCategory;
 export const selectFilterIdProduct = state => state.searchFilter.idProduct;
-export const categorySelector = state => state.category;
-export const listShopSelector = state => state.listShop
+export const categorySelector = state => state.category.categorys;
+export const categoryStatusSelector = state => state.category.status;
+export const listShopSelector = state => state.listShop;
 export const listFilterSelector = createSelector(
   listPetSelector,
   searchFilterSelector,
@@ -40,11 +42,14 @@ export const filterAll = state => state.searchFilter.filterProduct;
 export const productSelector = createSelector(
   selectFilterIdProduct,
   listPetSelector,
-  listProductSelector,
-  (id, pets, products) => {
+  listProductSelector,listShopSelector,
+  (id, pets, products,shops) => {
     const list = [...pets, ...products];
-    return list.find(p => p.id === id);
+    const product =  list.find(p => p.id === id);
+    const shop =  shops.find(p => p.id === product.idShop)
+    return [product,shop]
   },
 );
 
+export const listCartSelector = state => state.listCart
 
