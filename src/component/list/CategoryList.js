@@ -21,7 +21,7 @@ function CategoryList({data, isLoader}) {
               scrollEnabled={false}
               showsHorizontalScrollIndicator={false}
               data={listfakeloader}
-              renderItem={() => (
+              renderItem={({item}) => (
                 <ShimerPlaceHolder
                   shimmerColors={colorLoader}
                   shimmerStyle={styles.loader}
