@@ -17,7 +17,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import {createShimmerPlaceholder} from 'react-native-shimmer-placeholder';
 import listfakeloader from '../../data/listfakeloader';
 import { searchFilterChanged } from '../../redux/reducers/filters/filtersReducer';
-const ShimerPlaceHolder = createShimmerPlaceholder(LinearGradient);
+const ShimmerPlaceHolder = createShimmerPlaceholder(LinearGradient);
 
 export default function SearchFilters({navigation}) {
   const dispatch = useDispatch();
@@ -68,13 +68,13 @@ export default function SearchFilters({navigation}) {
           renderItem={({item}) => {
             return (
               <View style={styles.loaderContainer}>
-                <ShimerPlaceHolder
+                <ShimmerPlaceHolder
                   style={styles.loader}
                   shimmerColors={[
                     '#f0e8d8',
                     '#dbdbdb',
                     '#f0e8d8',
-                  ]}></ShimerPlaceHolder>
+                  ]}></ShimmerPlaceHolder>
               </View>
             );
           }}

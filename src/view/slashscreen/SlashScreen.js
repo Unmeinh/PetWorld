@@ -1,18 +1,22 @@
 import React, { useEffect, useState } from 'react';
 import { View, StyleSheet, Dimensions, Image, Animated, Easing } from 'react-native';
 import * as Animatable from 'react-native-animatable';
+import { storageMMKV } from '../../storage/storageMMKV';
+import { useNavigation } from '@react-navigation/native';
 
-export default function SplashScreen({ navigation }) {
-  const logoSize = 150; 
-  const screenHeight = Dimensions.get('screen').height;
-  const screenWidth = Dimensions.get('screen').width;
+export default function SplashScreen() {
+  const navigation = useNavigation();
+  const logoSize = 150;
+  const screenHeight = Dimensions.get('window').height;
+  const screenWidth = Dimensions.get('window').width;
+
   const bottomPosition = screenHeight * 0.6 - logoSize / 2;
   const bottomPosition1 = screenHeight * 0.33 - logoSize / 2;
   const bottomPosition2 = screenHeight * 0.3 - logoSize / 2;
   const nameBottomPosition = screenHeight * 0.4;
 
-  const nameImageWidth = screenWidth * 0.7; 
-  const nameImageHeight = (nameImageWidth * logoSize) / logoSize; 
+  const nameImageWidth = screenWidth * 0.7;
+  const nameImageHeight = (nameImageWidth * logoSize) / logoSize;
 
   const dauchanContainerWidth = 24;
   const stepDistance = 3.7; // Khoảng cách giữa các bước chân
@@ -22,54 +26,82 @@ export default function SplashScreen({ navigation }) {
   const [dauchanPositions, setDauchanPositions] = useState([]);
   const [logoVisible, setLogoVisible] = useState(true);
   const [nameVisible, setNameVisible] = useState(false);
+  const [isRunningAnimated, setisRunningAnimated] = useState(true);
 
   useEffect(() => {
-    const moveDauchan = () => {
-      Animated.timing(stepAnimation, {
-        toValue: totalSteps,
-        duration: 200, 
-        easing: Easing.linear,
-        useNativeDriver: true,
-      }).start(({ finished }) => {
+    if (isRunningAnimated) {
+      const moveDauchan = () => {
+        Animated.timing(stepAnimation, {
+          toValue: totalSteps,
+          duration: 200,
+          easing: Easing.linear,
+          useNativeDriver: true,
+        }).start(({ finished }) => {
+          if (finished) {
+            setDauchanPositions([...dauchanPositions, dauchanPositions.length]);
+          }
+        });
+      };
 
-        if (finished) {
-          setDauchanPositions([...dauchanPositions, dauchanPositions.length]);
-        }
-      });
-    };
+      const hideLogo = () => {
+        setTimeout(() => {
+          setLogoVisible(false);
+          showName();
+        }, 2000);
+      };
 
-    const hideLogo = () => {
-      setTimeout(() => {
-        setLogoVisible(false);
-        showName();
-      }, 2000);    
-    };
+      const showName = () => {
+        setTimeout(() => {
+          setNameVisible(true);
+        }, 300); // Hiển thị phần nameImageContainer sau khi logo biến mất 0.5 giây
+      };
 
-    const showName = () => {
-      setTimeout(() => {
-        setNameVisible(true);
-      }, 300); // Hiển thị phần nameImageContainer sau khi logo biến mất 0.5 giây
-    };
+      moveDauchan();
+      hideLogo();
 
-    moveDauchan();
-    hideLogo();
-
-    return () => {
-      stepAnimation.stopAnimation();
-    };
+    } else {
+      autoNavigate();
+    }
   }, [dauchanPositions]);
+
+  function onLayoutPaw(event) {
+    const { x, y, height, width } = event.nativeEvent.layout;
+    if (x >= Dimensions.get('window').width) {
+      setisRunningAnimated(false);
+    }
+  }
+
+  function autoNavigate() {
+    if (storageMMKV.checkKey('login.isFirstTime')) {
+      if (storageMMKV.getBoolean('login.isFirstTime')) {
+        navigation.navigate('OrboadScreen');
+      } else {
+        if (storageMMKV.checkKey('login.isLogin')) {
+          if (storageMMKV.getBoolean('login.isLogin')) {
+            navigation.navigate('NaviTabScreen');
+          } else {
+            navigation.navigate('LoginScreen');
+          }
+        } else {
+          navigation.navigate('LoginScreen');
+        }
+      }
+    } else {
+      navigation.navigate('OrboadScreen');
+    }
+  }
 
   const dauchanContainerStyles = {
     position: 'absolute',
-    bottom: screenHeight * 0.4, 
+    bottom: screenHeight * 0.4,
     transform: [
       {
-        rotate: '90deg', 
+        rotate: '90deg',
       },
       {
         translateX: stepAnimation.interpolate({
           inputRange: [0, totalSteps],
-          outputRange: [0, totalSteps * (dauchanContainerWidth + stepDistance)], 
+          outputRange: [0, totalSteps * (dauchanContainerWidth + stepDistance)],
         }),
       },
       {
@@ -107,7 +139,7 @@ export default function SplashScreen({ navigation }) {
         </Animatable.View>
       )}
       {dauchanPositions.map((position, index) => (
-        <View key={position} style={[styles.dauchanContainer, { left: position * (dauchanContainerWidth + stepDistance) }]}>
+        <View onLayout={onLayoutPaw} key={position} style={[styles.dauchanContainer, { left: position * (dauchanContainerWidth + stepDistance) }]}>
           <Image
             source={require('../../assets/images/logoApp/dauchan.png')}
             style={[
@@ -125,7 +157,7 @@ export default function SplashScreen({ navigation }) {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor:'#FEF6E4',
+    backgroundColor: '#FEF6E4',
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',

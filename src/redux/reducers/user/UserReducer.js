@@ -1,31 +1,27 @@
 import listUser from '../../../data/user';
-const initState = {
-    data: listUser,
+import { createSlice } from '@reduxjs/toolkit';
+const initialState = {
+    data: {},
     selectId: '',
     followType: ''
 };
 
-const userReducer = (state = initState, action) => {
-    switch (action.type) {
-        case "select/idLogin":
-            return {
-                ...state,
-                selectId: action.payload,
-            };
-        case "select/idUser":
-            return {
-                ...state,
-                selectId: action.payload,
-            };
-        case "selectFollow/idUser":
-            return {
-                ...state,
-                selectId: action.payload[0],
-                followType: action.payload[1],
-            };
-        default:
-            return state;
-    }
-}
+const userReducer = createSlice({
+    name: 'users',
+    initialState,
+    reducers: {
+        getInfoLogin: (state, action) => {
+            state.data = action.payload;
+        },
+        getInfoUser: (state, action) => {
+            state.selectId = action.payload;
+        },
+        getFollowUser: (state, action) => {
+            state.selectId = action.payload[0];
+            state.followType = action.payload[1];
+        },
+    },
+});
 
-export default userReducer;
+export const { getInfoLogin, getInfoUser, getFollowUser } = userReducer.actions;
+export default userReducer.reducer;

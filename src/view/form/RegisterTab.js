@@ -7,8 +7,9 @@ import {
 import React, { useState } from 'react';
 import styles from '../../styles/form.style';
 import Entypo from 'react-native-vector-icons/Entypo';
-import axios, { isCancel, AxiosError } from 'axios';
-import client from '../../api/axios.config';
+import { axiosJSON } from '../../api/axios.config';
+import Toast from 'react-native-toast-message';
+import { ToastLayout } from '../../component/layout/ToastLayout';
 
 export default function RegisterTab(route) {
     const [passToggle, setpassToggle] = useState(true);
@@ -75,60 +76,42 @@ export default function RegisterTab(route) {
             passWord: inputPassword
         }
 
-        // let res = await axios.post("/api/save_rate", formdata);
+        if (checkValidate(newUser) == false) {
+            // ToastAndroid.show("Đăng nhập thất bại!", ToastAndroid.SHORT);
+            return;
+        }
 
-        checkValidate(newUser);
-        var formdata = new FormData();
-        formdata.append("userName", newUser.userName);
-        formdata.append("phoneNumber", newUser.phoneNumber);
-        formdata.append("passWord", newUser.passWord);
-        var url_api = 'http://192.168.191.13:3000/api/user/regist';
-
-        client.post('user/regist', {
-            body: JSON.stringify(newUser)
-        }).then((response) => {
-            if (response.status == 201) {
-                if (response.success == true) {
-                    ToastAndroid.show(response.message, ToastAndroid.SHORT);
-                    navigation.goBack();
+        axiosJSON.post('user/register', newUser)
+            .then((response) => {
+                if (response.status == 201) {
+                    var data = response.data;
+                    if (data.success) {
+                        Toast.show({
+                            type: 'success',
+                            position: 'top',
+                            text1: String(data.message),
+                            bottomOffset: 20
+                        });
+                    }
+                } else {
+                    var data = response.data;
+                    Toast.show({
+                        type: 'success',
+                        position: 'top',
+                        text1: String(data.message),
+                        bottomOffset: 20
+                    });
                 }
-            } else {
-                ToastAndroid.show(response.message, ToastAndroid.SHORT);
-            }
-        });
+            })
+            .catch((e) => {
+                Toast.show({
+                    type: 'error',
+                    position: 'top',
+                    text1: String(e),
+                    bottomOffset: 20
+                });
+            });
 
-        // await axios.post(url_api, formdata)
-        //     .then(function (response) {
-        //         console.log(response);
-        //     })
-        //     .catch(function (error) {
-        //         console.log(error);
-        //     })
-        //     .finally(function () {
-        //     });
-
-        // fetch(url_api, {
-        //     method: 'POST',
-        //     headers: {
-        //         Accept: 'application/json',
-        //         'content-type': 'application/json',
-        //     },
-        //     body: JSON.stringify(newUser)
-        // })
-        //     .then(async (res) => {
-        //         const json = await res.json();
-        //         if (res.status == 201) {
-        //             if (json.success == true) {
-        //                 ToastAndroid.show(json.message, ToastAndroid.SHORT);
-        //                 navigation.goBack();
-        //             }
-        //         } else {
-        //             ToastAndroid.show(json.message, ToastAndroid.SHORT);
-        //         }
-        //     })
-        //     .catch((e) => {
-        //         console.log(e);
-        //     });
     }
 
     return (
@@ -227,6 +210,7 @@ export default function RegisterTab(route) {
                 </TouchableHighlight>
 
             </View>
+            <ToastLayout />
         </View>
     );
 }

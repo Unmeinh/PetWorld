@@ -28,7 +28,7 @@ import { fetchCategorys } from '../../redux/reducers/category/category';
 import { useDispatch } from 'react-redux';
 import { fetchProducts } from '../../redux/reducers/product/ProductReducer';
 
-const ShimerPlaceHolder = createShimmerPlaceholder(LinearGradient);
+const ShimmerPlaceHolder = createShimmerPlaceholder(LinearGradient);
 export default function HomeScreen({scrollRef, onScrollView, navigation}) {
   const [countCart, setCountCart] = useState(0);
   const dispatch = useDispatch()
@@ -74,7 +74,7 @@ export default function HomeScreen({scrollRef, onScrollView, navigation}) {
 
         {isLoader ? (
           <View style={styles.margin20}>
-            <ShimerPlaceHolder
+            <ShimmerPlaceHolder
               shimmerStyle={styles.styleLoader}
               shimmerColors={colorLoader}
             />

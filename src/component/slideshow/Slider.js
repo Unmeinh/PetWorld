@@ -6,7 +6,7 @@ import Panigation from './Panigation';
 import LinearGradient from 'react-native-linear-gradient';
 import {createShimmerPlaceholder} from 'react-native-shimmer-placeholder';
 import slideshow from '../../data/slideshow';
-const ShimerPlaceHolder = createShimmerPlaceholder(LinearGradient);
+const ShimmerPlaceHolder = createShimmerPlaceholder(LinearGradient);
  function Slider({isLoader}) {
   const [index, setindex] = useState(0);
   const scrollx = useRef(new Animated.Value(0)).current;
@@ -39,9 +39,9 @@ const ShimerPlaceHolder = createShimmerPlaceholder(LinearGradient);
   return (
     <View style={{height: 220}}>
       {(isLoader) ? <View style={{marginHorizontal:20}}>
-        <ShimerPlaceHolder
+        <ShimmerPlaceHolder
           style={{width: '100%', height: '95%',borderRadius:10}}
-          shimmerColors={colorLoader}></ShimerPlaceHolder>
+          shimmerColors={colorLoader}></ShimmerPlaceHolder>
       </View>: (<FlatList
         horizontal
         pagingEnabled

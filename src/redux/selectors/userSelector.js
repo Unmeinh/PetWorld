@@ -1,4 +1,5 @@
 import { createSelector } from '@reduxjs/toolkit';
+import axiosJSON from '../../api/axios.config';
 export const listUserSelector = state => state.listUser.data;
 export const userSelectId = state => state.listUser.selectId;
 export const userFollowType = state => state.listUser.followType;
@@ -6,13 +7,14 @@ export const userFollowType = state => state.listUser.followType;
 export const selectUserByID = createSelector(
     listUserSelector,
     userSelectId,
-    (users, id) => {
-        for (let i = 0; i < users.length; i++) {
-            const user = users[i];
-            if (user._id === id) {
-                return user;
-            }
-        }
+     (user, id) => {
+        // for (let i = 0; i < users.length; i++) {
+        //     const user = users[i];
+        //     if (user._id === id) {
+        //         return user;
+        //     }
+        // }
+        return user;
     },
 );
 

@@ -12,7 +12,7 @@ import { RefreshControl } from 'react-native-gesture-handler';
 import LinearGradient from 'react-native-linear-gradient';
 import { createShimmerPlaceholder } from 'react-native-shimmer-placeholder';
 
-const ShimerPlaceHolder = createShimmerPlaceholder(LinearGradient);
+const ShimmerPlaceHolder = createShimmerPlaceholder(LinearGradient);
 
 const colorLoader = ['#f0e8d8', '#dbdbdb', '#f0e8d8'];
 
@@ -51,26 +51,26 @@ const TabInfo = memo(
                     (isLoader)
                         ? <View>
                             <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 10, borderRadius: 5 }}>
-                                <ShimerPlaceHolder
+                                <ShimmerPlaceHolder
                                     shimmerColors={colorLoader}
                                     shimmerStyle={{ height: 20, width: 20, borderRadius: 5 }} />
-                                <ShimerPlaceHolder
+                                <ShimmerPlaceHolder
                                     shimmerColors={colorLoader}
                                     shimmerStyle={{ marginLeft: 7, marginTop: 4, fontSize: 15, width: '40%', }} />
                             </View>
                             <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 10, borderRadius: 5 }}>
-                                <ShimerPlaceHolder
+                                <ShimmerPlaceHolder
                                     shimmerColors={colorLoader}
                                     shimmerStyle={{ height: 20, width: 20, borderRadius: 5 }} />
-                                <ShimerPlaceHolder
+                                <ShimmerPlaceHolder
                                     shimmerColors={colorLoader}
                                     shimmerStyle={{ marginLeft: 7, marginTop: 4, fontSize: 15, width: '40%', borderRadius: 5 }} />
                             </View>
                             <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 10, borderRadius: 5 }}>
-                                <ShimerPlaceHolder
+                                <ShimmerPlaceHolder
                                     shimmerColors={colorLoader}
                                     shimmerStyle={{ height: 20, width: 20, borderRadius: 5 }} />
-                                <ShimerPlaceHolder
+                                <ShimmerPlaceHolder
                                     shimmerColors={colorLoader}
                                     shimmerStyle={{ marginLeft: 7, marginTop: 4, fontSize: 15, width: '40%', borderRadius: 5 }} />
                             </View>

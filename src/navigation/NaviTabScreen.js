@@ -11,7 +11,7 @@ import HomeScreen from '../view/home/HomeScreen';
 import BlogScreen from '../view/blog/BlogScreen';
 import NotifyScreen from '../view/notify/NotifyScreen';
 import AccountScreen from '../view/account/AccountScreen';
-import PetAISupport from '../component/PetAISupport';
+import PetAISupport from '../component/layout/PetAISupport';
 import Chats from '../view/chat/Chats';
 
 const TabArr = [

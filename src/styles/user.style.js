@@ -11,6 +11,11 @@ let darkBlue = '#001858';
 
 export default StyleSheet.create({
     //All
+    viewContainer: {
+        backgroundColor: yellowWhite,
+        flex: 1
+    },
+
     viewRowCenter: {
         flexDirection: 'row',
         justifyContent: 'center',
@@ -250,4 +255,74 @@ export default StyleSheet.create({
         elevation: 9,
     },
 
+    //Item Manager
+    viewItemManager: {
+        flexDirection: 'row',
+        width: WindowWidth,
+        marginTop: 3,
+        paddingHorizontal: 20,
+        paddingVertical: 10,
+        borderBottomColor: '#D9D9D9',
+        borderBottomWidth: 1,
+        alignItems: 'center',
+        justifyContent: 'space-between'
+    },
+
+    titleItemManager: {
+        color: '#001858',
+        fontSize: 16,
+        fontWeight: 'bold',
+        fontFamily: 'ProductSans'
+    },
+
+    textItemManager: {
+        color: '#001858',
+        fontSize: 14,
+        fontFamily: 'ProductSans',
+        marginLeft: 8
+    },
+
+    //Edit Info
+    itemEditInfo: {
+        marginLeft: 5,
+        marginTop: 5,
+        marginBottom: 5
+    },
+
+    titleItemEdit: {
+        color: '#000',
+        fontSize: 20,
+        fontFamily: 'ProductSans'
+    },
+
+    textItemEdit: {
+        color: 'rgba(0, 0, 0, 0.70)',
+        fontSize: 15,
+        fontFamily: 'ProductSans',
+        marginTop: 3,
+    },
+
+    inputEdit: {
+        color: '#000',
+        padding: 0,
+        width: '95%',
+        fontSize: 15,
+        marginTop: 3,
+        paddingHorizontal: 13,
+        borderWidth: 1,
+        borderTopColor: yellowWhite,
+        borderLeftColor: yellowWhite,
+        borderRightColor: yellowWhite,
+        borderBottomColor: 'rgba(0, 0, 0, 0.50)',
+        borderRadius: 15,
+    },
+
+    buttonSave: {
+        paddingHorizontal: 15,
+        paddingVertical: 5.5,
+        borderRadius: 10,
+        marginLeft: 10,
+        shadowColor: "#000",
+        elevation: 9,
+    },
 });

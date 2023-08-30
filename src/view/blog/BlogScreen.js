@@ -10,15 +10,12 @@ import ItemBlog from '../../component/items/ItemBlog';
 import ItemBlogLoader from '../../component/items/ItemBlogLoader';
 import AutoHeightImage from 'react-native-auto-height-image';
 import { useNavigation } from '@react-navigation/native';
-import LinearGradient from 'react-native-linear-gradient';
 import Entypo from 'react-native-vector-icons/Entypo';
 import { useSelector, useDispatch } from "react-redux";
 import { selectUserByID } from '../../redux/selectors/userSelector';
 import { selectInfoLogin } from '../../redux/actions/userAction';
 import { RefreshControl } from "react-native-gesture-handler";
-import { createShimmerPlaceholder } from 'react-native-shimmer-placeholder';
-
-const ShimerPlaceHolder = createShimmerPlaceholder(LinearGradient);
+import ShimmerPlaceHolder from '../../component/layout/ShimmerPlaceHolder';
 
 const BlogScreen = ({ scrollRef, onScrollView }) => {
   const navigation = useNavigation();
@@ -81,15 +78,15 @@ const BlogScreen = ({ scrollRef, onScrollView }) => {
                 ?
                 [
                   <View style={{ flexDirection: 'row', alignItems: "center" }}>
-                    <ShimerPlaceHolder
+                    <ShimmerPlaceHolder
                       shimmerColors={colorLoader}
                       shimmerStyle={styles.imageAvatar} />
-                    <ShimerPlaceHolder
+                    <ShimmerPlaceHolder
                       shimmerColors={colorLoader}
                       shimmerStyle={styles.textHint} />
                   </View>,
 
-                  <ShimerPlaceHolder
+                  <ShimmerPlaceHolder
                     shimmerColors={colorLoader}
                     shimmerStyle={{ width: 27, height: 27 }} />
                 ]
