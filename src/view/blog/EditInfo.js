@@ -8,7 +8,6 @@ import {
 import HeaderTitle from '../../component/header/HeaderTitle';
 import { useNavigation } from '@react-navigation/native';
 import styles from '../../styles/user.style';
-import Entypo from 'react-native-vector-icons/Entypo';
 import { useSelector, useDispatch } from "react-redux";
 import { selectUserByID } from '../../redux/selectors/userSelector';
 import { selectInfoLogin } from '../../redux/actions/userAction';

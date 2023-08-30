@@ -8,7 +8,6 @@ import React, { useState, useEffect, memo } from 'react'
 import styles from '../../styles/blog.style';
 import ItemBlog from '../../component/items/ItemBlog';
 import ItemBlogLoader from '../../component/items/ItemBlogLoader';
-import AutoHeightImage from 'react-native-auto-height-image';
 import { useNavigation } from '@react-navigation/native';
 import Entypo from 'react-native-vector-icons/Entypo';
 import { useSelector, useDispatch } from "react-redux";

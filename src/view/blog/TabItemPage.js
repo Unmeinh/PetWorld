@@ -4,11 +4,10 @@ import {
     View, FlatList,
 } from 'react-native';
 import ItemBlogPage from '../../component/items/ItemBlogPage';
-import ItemBlog from '../../component/items/ItemBlog';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useSelector, useDispatch } from "react-redux";
-import { selectInfoLogin } from '../../redux/actions/userAction';
 import { RefreshControl } from 'react-native-gesture-handler';
+import styles from '../../styles/blog.style';
 import LinearGradient from 'react-native-linear-gradient';
 import { createShimmerPlaceholder } from 'react-native-shimmer-placeholder';
 

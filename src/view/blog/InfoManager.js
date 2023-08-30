@@ -1,8 +1,8 @@
 import React, { useState, memo } from 'react';
 import {
-    Text,
+    Text, Dimensions,
     TouchableOpacity,
-    View
+    View, Image,
 } from 'react-native';
 import HeaderTitle from '../../component/header/HeaderTitle';
 import { useNavigation } from '@react-navigation/native';
@@ -57,7 +57,7 @@ const InfoManager = () => {
             {
                 (isLoader)
                     ?
-                    <View style={{paddingTop: 15}}>
+                    <View style={{ paddingTop: 15 }}>
                         <View style={styles.viewItemManager}>
                             <View style={{ flexDirection: 'row', alignItems: 'flex-end' }}>
                                 <ShimmerPlaceHolder
@@ -117,14 +117,22 @@ const InfoManager = () => {
                         {
                             (infoLogin != undefined)
                                 ? <View>
-                                    <TouchableOpacity style={styles.viewItemManager}
+                                    <View style={{ alignSelf: 'center' }}>
+                                        <Image source={{ uri: 'https://cdn.donmai.us/original/64/24/__briar_league_of_legends_drawn_by_mugoa_mugo__642484379bdfd5175115858a2c96eaa4.jpg' }}
+                                            style={{ width: '35%', aspectRatio: 1 / 1, borderRadius: Dimensions.get('window').width }} />
+                                        <TouchableOpacity style={styles.buttonChangeImage}>
+                                            <MaterialCommunityIcons name='pencil-outline'
+                                                size={16} color={'#fff'} />
+                                        </TouchableOpacity>
+                                    </View>
+                                    <TouchableOpacity style={[styles.viewItemManager, { borderTopColor: '#D9D9D9', borderTopWidth: 1, marginTop: 15 }]}
                                         onPress={() => OpenEditInfo(0)}>
                                         <View style={{ flexDirection: 'row', alignItems: 'flex-end' }}>
                                             <MaterialCommunityIcons name='card-account-details-outline' color={'#001858'} size={23} />
                                             <View style={{ marginLeft: 8 }}>
                                                 <Text style={styles.titleItemManager}>Họ và tên</Text>
                                                 <Text style={styles.textItemManager} numberOfLines={1}>
-                                                    {infoLogin.fullName}
+                                                    {(infoLogin.fullName != undefined) ? infoLogin.fullName : "Chưa có"}
                                                 </Text>
                                             </View>
                                         </View>
@@ -189,6 +197,36 @@ const InfoManager = () => {
                                             </View>
                                         </View>
                                         <TouchableOpacity onPress={() => OpenEditInfo(4)}>
+                                            <MaterialCommunityIcons name='chevron-right' color={'#001858'} size={27} />
+                                        </TouchableOpacity>
+                                    </TouchableOpacity>
+                                    <TouchableOpacity style={styles.viewItemManager}
+                                        onPress={() => OpenEditInfo(5)}>
+                                        <View style={{ flexDirection: 'row', alignItems: 'flex-end' }}>
+                                            <MaterialCommunityIcons name='phone-outline' color={'#001858'} size={23} />
+                                            <View style={{ marginLeft: 8 }}>
+                                                <Text style={styles.titleItemManager}>Số điện thoại</Text>
+                                                <Text style={styles.textItemManager} numberOfLines={1}>
+                                                    {(infoLogin.phoneNumber != undefined) ? infoLogin.phoneNumber : "Chưa có"}
+                                                </Text>
+                                            </View>
+                                        </View>
+                                        <TouchableOpacity onPress={() => OpenEditInfo(5)}>
+                                            <MaterialCommunityIcons name='chevron-right' color={'#001858'} size={27} />
+                                        </TouchableOpacity>
+                                    </TouchableOpacity>
+                                    <TouchableOpacity style={styles.viewItemManager}
+                                        onPress={() => OpenEditInfo(6)}>
+                                        <View style={{ flexDirection: 'row', alignItems: 'flex-end' }}>
+                                            <MaterialCommunityIcons name='email-outline' color={'#001858'} size={23} />
+                                            <View style={{ marginLeft: 8 }}>
+                                                <Text style={styles.titleItemManager}>Email</Text>
+                                                <Text style={styles.textItemManager} numberOfLines={1}>
+                                                    {(infoLogin.email != undefined) ? infoLogin.email : "Chưa có"}
+                                                </Text>
+                                            </View>
+                                        </View>
+                                        <TouchableOpacity onPress={() => OpenEditInfo(6)}>
                                             <MaterialCommunityIcons name='chevron-right' color={'#001858'} size={27} />
                                         </TouchableOpacity>
                                     </TouchableOpacity>
