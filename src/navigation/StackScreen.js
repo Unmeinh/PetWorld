@@ -36,6 +36,7 @@ import EmailVerification from '../view/account/EmailVerification';
 import OderScreen from '../view/oder/OderScreen';
 import PhoneVerification from '../view/account/PhoneVerification';
 import Email from '../view/account/Email';
+import test from '../view/appointment/test';
 import { createSharedElementStackNavigator } from 'react-navigation-shared-element';
 const Stack = createSharedElementStackNavigator();
 
