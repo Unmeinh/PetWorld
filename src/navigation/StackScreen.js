@@ -4,7 +4,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import SlashScreen from '../view/slashscreen/SlashScreen';
 import OrboadScreen from '../view/orboardscreen/OrboadScreen';
 import LoginScreen from '../view/form/LoginScreen';
-import NaviTabSreen from './NaviTabSreen';
+import NaviTabScreen from './NaviTabScreen';
 import SearchFilters from '../view/search/SearchFilters';
 import ForgetPassword from '../view/form/ForgetPassword';
 import ConfirmOTP from '../view/form/ConfirmOTP';
@@ -21,9 +21,9 @@ import SummaryBill from '../view/shopping/SummaryBill';
 import ListAddress from '../view/account/ListAddress';
 import AddNewAddress from '../view/account/AddNewAddress';
 import ChatScreen from '../view/chat/ChatScreen';
+import test from '../view/appointment/test';
 import InfoManager from '../view/blog/InfoManager';
 import EditInfo from '../view/blog/EditInfo';
-import test from '../view/appointment/test';
 import AppointmentScreen from '../view/appointment/AppointmentScreen';
 import DetailAppointment from '../view/appointment/DetailAppointment';
 import NotifyScreen from '../view/notify/NotifyScreen';
@@ -36,6 +36,7 @@ import EmailVerification from '../view/account/EmailVerification';
 import OderScreen from '../view/oder/OderScreen';
 import PhoneVerification from '../view/account/PhoneVerification';
 import Email from '../view/account/Email';
+import test from '../view/appointment/test';
 import { createSharedElementStackNavigator } from 'react-navigation-shared-element';
 const Stack = createSharedElementStackNavigator();
 
@@ -44,11 +45,11 @@ export default function StackScreen() {
     <NavigationContainer>
       <Stack.Navigator
         screenOptions={() => ({ headerShown: false })}
-        initialRouteName="OrboadScreen">
+        initialRouteName="SlashScreen">
         <Stack.Screen name="SlashScreen" component={SlashScreen} />
         <Stack.Screen name="OrboadScreen" component={OrboadScreen} />
         <Stack.Screen name="LoginScreen" component={LoginScreen} />
-        <Stack.Screen name="NaviTabSreen" component={NaviTabSreen} />
+        <Stack.Screen name="NaviTabScreen" component={NaviTabScreen} />
         <Stack.Screen name="SearchFilters" component={SearchFilters} />
         <Stack.Screen name="ForgetPassword" component={ForgetPassword} />
         <Stack.Screen name="ConfirmOTP" component={ConfirmOTP} />
@@ -95,6 +96,7 @@ export default function StackScreen() {
         <Stack.Screen name="ChatScreen" component={ChatScreen} />
         <Stack.Screen name="InfoManager" component={InfoManager} />
         <Stack.Screen name="EditInfo" component={EditInfo} />
+        <Stack.Screen name="test" component={test} />
         <Stack.Screen name="AppointmentScreen" component={AppointmentScreen} />
         <Stack.Screen name="DetailAppointment" component={DetailAppointment} />
         <Stack.Screen name="SettingNotify" component={SettingNotify} />
