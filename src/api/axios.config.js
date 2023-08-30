@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const axiosJSON = axios.create();
-const apiURL = "https://dee1-2402-800-6189-1302-c97b-4dd8-6432-9564.ngrok-free.app/api";
+const apiURL = "https://f835-116-97-108-141.ngrok-free.app/api";
 
 axiosJSON.defaults.baseURL = apiURL;
 
@@ -24,5 +24,9 @@ axiosFormData.defaults.headers = {
 // axiosJSON.defaults.timeout = 2000;
 
 // axiosJSON.defaults.withCredentials = true;
+const instance = axios.create({
+    baseURL: `https://f835-116-97-108-141.ngrok-free.app/api`,
+});
 
 export {axiosJSON, axiosFormData};
+export default instance;

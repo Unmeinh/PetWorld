@@ -8,21 +8,21 @@ const data = [
     title: 'Cho thú cưng ăn',
     content: 'Đến lúc thú cưng ăn rồi! Hãy sẵn sàng thức ăn và nước cho thú cưng của bạn.',
     time: '10:00 AM',
-    image: require('../../assets/image/logoApp/logo.png'), // Replace with actual image source
+    // image: require('../../../assets/image/logoApp/logo.png'), // Replace with actual image source
   },
   {
     id: '2',
     title: 'Cho thú cưng ăn',
     content: 'Đến lúc thú cưng ăn rồi! Hãy sẵn sàng thức ăn và nước cho thú cưng của bạn.',
     time: '11:30 AM',
-    image: require('../../assets/image/logoApp/logo.png'), // Replace with actual image source
+    // image: require('../../../assets/image/logoApp/logo.png'), // Replace with actual image source
   },
   {
     id: '3',
     title: 'Cho thú cưng ăn',
     content: 'Đến lúc thú cưng ăn rồi! Hãy sẵn sàng thức ăn và nước cho thú cưng của bạn.',
     time: '02:45 PM',
-    image: require('../../assets/image/logoApp/logo.png'),
+    // image: require('../../../assets/image/logoApp/logo.png'),
     // Replace with actual image source
   },
   // Add more items as needed
