@@ -26,6 +26,16 @@ import InfoManager from '../view/blog/InfoManager';
 import EditInfo from '../view/blog/EditInfo';
 import AppointmentScreen from '../view/appointment/AppointmentScreen';
 import DetailAppointment from '../view/appointment/DetailAppointment';
+import NotifyScreen from '../view/notify/NotifyScreen';
+import SettingNotify from '../view/notify/SettingNotify';
+import AccountScreen from '../view/account/AccountScreen';
+import InformationAccount from '../view/account/InformationAccount';
+import Information from '../view/account/Information';
+import NumberPhone from '../view/account/Numberphone';
+import EmailVerification from '../view/account/EmailVerification';
+import OderScreen from '../view/oder/OderScreen';
+import PhoneVerification from '../view/account/PhoneVerification';
+import Email from '../view/account/Email';
 import { createSharedElementStackNavigator } from 'react-navigation-shared-element';
 const Stack = createSharedElementStackNavigator();
 
@@ -88,6 +98,16 @@ export default function StackScreen() {
         <Stack.Screen name="test" component={test} />
         <Stack.Screen name="AppointmentScreen" component={AppointmentScreen} />
         <Stack.Screen name="DetailAppointment" component={DetailAppointment} />
+        <Stack.Screen name="SettingNotify" component={SettingNotify} />
+        <Stack.Screen name="NotifyScreen" component={NotifyScreen} />
+        <Stack.Screen name="AccountScreen" component={AccountScreen} />
+        <Stack.Screen name="OderScreen" component={OderScreen} />
+        <Stack.Screen name="InformationAccount" component={InformationAccount} />
+        <Stack.Screen name="Information" component={Information} />
+        <Stack.Screen name="NumberPhone" component={NumberPhone} />
+        <Stack.Screen name="PhoneVerification" component={PhoneVerification} />
+        <Stack.Screen name="Email" component={Email} />
+        <Stack.Screen name="EmailVerification" component={EmailVerification} />
       </Stack.Navigator>
     </NavigationContainer>
   );
