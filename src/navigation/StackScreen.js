@@ -21,13 +21,11 @@ import SummaryBill from '../view/shopping/SummaryBill';
 import ListAddress from '../view/account/ListAddress';
 import AddNewAddress from '../view/account/AddNewAddress';
 import ChatScreen from '../view/chat/ChatScreen';
-import test from '../view/appointment/test';
 import InfoManager from '../view/blog/InfoManager';
 import EditInfo from '../view/blog/EditInfo';
 import AppointmentScreen from '../view/appointment/AppointmentScreen';
 import DetailAppointment from '../view/appointment/DetailAppointment';
 import NotifyScreen from '../view/notify/NotifyScreen';
-import SettingNotify from '../view/notify/SettingNotify';
 import AccountScreen from '../view/account/AccountScreen';
 import InformationAccount from '../view/account/InformationAccount';
 import Information from '../view/account/Information';
@@ -37,6 +35,7 @@ import OderScreen from '../view/oder/OderScreen';
 import PhoneVerification from '../view/account/PhoneVerification';
 import Email from '../view/account/Email';
 import { createSharedElementStackNavigator } from 'react-navigation-shared-element';
+import SettingNotify from '../view/notify/SettingNotify copy';
 const Stack = createSharedElementStackNavigator();
 
 export default function StackScreen() {
@@ -95,7 +94,6 @@ export default function StackScreen() {
         <Stack.Screen name="ChatScreen" component={ChatScreen} />
         <Stack.Screen name="InfoManager" component={InfoManager} />
         <Stack.Screen name="EditInfo" component={EditInfo} />
-        <Stack.Screen name="test" component={test} />
         <Stack.Screen name="AppointmentScreen" component={AppointmentScreen} />
         <Stack.Screen name="DetailAppointment" component={DetailAppointment} />
         <Stack.Screen name="SettingNotify" component={SettingNotify} />
