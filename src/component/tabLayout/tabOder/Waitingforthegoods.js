@@ -8,7 +8,7 @@ const data = [
     namePrd: 'Bóng bay',
     distance:' Khoảng cách :0.5km',
     intomoney:'Thành tiền : 44.000.000.000',
-    image: require('../../assets/image/product/demo1.png'),
+    // image: require('../../../assets/image/product/demo1.png'),
     endow:'Uu đãi lên đến 100k',
     quatity:'số lượng : 11',
     status:'Chờ xác nhận',

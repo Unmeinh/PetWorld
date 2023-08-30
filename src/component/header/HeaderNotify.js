@@ -1,7 +1,5 @@
 import React, { useState } from 'react';
 import { TouchableOpacity, Text, View, Image, StyleSheet, Dimensions } from 'react-native';
-import AntDesign from 'react-native-vector-icons/AntDesign';
-import SettingNotify from '../../view/notify/SettingNotify';
 import Modal from 'react-native-modal';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useNavigation } from '@react-navigation/native';
