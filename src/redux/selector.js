@@ -1,5 +1,6 @@
 import {createSelector} from '@reduxjs/toolkit';
-export const listPetSelector = state => state.listPet;
+export const listPetSelector = state => state.listPet.pets;
+export const listStatusPetsSelector = state => state.listPet.status;
 export const listProductSelector = state => state.listProduct.products;
 export const listStatusProductSelector = state => state.listProduct.status;
 export const searchFilterSelector = state => state.searchFilter.search;

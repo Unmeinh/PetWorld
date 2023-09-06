@@ -24,7 +24,7 @@ const listPetSlice = createSlice({
 export const fetchProducts = createAsyncThunk(
   'products/fetchProducts',
   async () => {
-    const res = await api.get('/product');
+    const res = await api.get('/product/list/all');
     return res.data;
   },
 );
