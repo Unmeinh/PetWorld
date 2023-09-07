@@ -2,7 +2,7 @@ import {FlatList, StyleSheet, Text, View} from 'react-native';
 import React from 'react';
 import ItemProductVertical from './ItemProductVertical';
 import {useDispatch} from 'react-redux';
-import { idProduct } from '../../redux/reducers/filters/filtersReducer';
+import { idProduct } from '../../redux/reducers/filters/FiltersReducer';
 export default function ListProductVertical({data}) {
   const dispatch = useDispatch();
   return (

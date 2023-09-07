@@ -160,9 +160,9 @@ export default function AccountScreen({ scrollRef, onScrollView }) {
               console.log('Item pressed:', item.text);
               // Example: navigate to another screen
               if (item.text === 'Thú cưng của tôi') {
-                navigation.navigate('OderScreen');
+                navigation.navigate('MyPetScreen');
               } else (item.text === 'Trợ giúp và yêu cầu hỗ trợ') 
-              { navigation.navigate('DetailProduct');// Handle other cases
+              { navigation.navigate('');// Handle other cases
               }
             }}
           >

@@ -2,7 +2,7 @@ import { Text, TouchableOpacity, View} from 'react-native';
 import React from 'react';
 import {useDispatch} from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
-import { selectIdCategory } from '../../redux/reducers/filters/filtersReducer';
+import { selectIdCategory } from '../../redux/reducers/filters/FiltersReducer';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 export default function CategoryItem({item}) {
   const dispatch = useDispatch()

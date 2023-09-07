@@ -35,15 +35,15 @@ import OderScreen from '../view/oder/OderScreen';
 import PhoneVerification from '../view/account/PhoneVerification';
 import Email from '../view/account/Email';
 import { createSharedElementStackNavigator } from 'react-navigation-shared-element';
-import SettingNotify from '../view/notify/SettingNotify copy';
+import MyPetScreen from '../view/account/MyPetScreen';
+import SettingNotify from '../view/notify/SettingNotify';
 const Stack = createSharedElementStackNavigator();
-
 export default function StackScreen() {
   return (
     <NavigationContainer>
       <Stack.Navigator
         screenOptions={() => ({ headerShown: false })}
-        initialRouteName="SlashScreen">
+        initialRouteName="NotifyScreen">
         <Stack.Screen name="SlashScreen" component={SlashScreen} />
         <Stack.Screen name="OrboadScreen" component={OrboadScreen} />
         <Stack.Screen name="LoginScreen" component={LoginScreen} />
@@ -106,6 +106,7 @@ export default function StackScreen() {
         <Stack.Screen name="PhoneVerification" component={PhoneVerification} />
         <Stack.Screen name="Email" component={Email} />
         <Stack.Screen name="EmailVerification" component={EmailVerification} />
+        <Stack.Screen name="MyPetScreen" component={MyPetScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
