@@ -18,8 +18,8 @@ import * as ImagePicker from 'react-native-image-picker';
 import { openPicker } from '@baronha/react-native-multiple-image-picker';
 import Feather from 'react-native-vector-icons/Feather';
 import { useSelector, useDispatch } from 'react-redux';
-import { getInfoLogin } from '../../redux/reducers/user/userReducer';
-import { selectUserByID } from '../../redux/selectors/userSelector';
+import { getInfoLogin, fetchInfoLogin, fetchInfoUser } from '../../redux/reducers/user/userReducer';
+import { selectUserByID, userSelectStatus } from '../../redux/selectors/userSelector';
 import { axiosFormData, axiosJSON } from '../../api/axios.config';
 import { Toast } from 'react-native-toast-message/lib/src/Toast';
 import { ToastLayout } from '../../component/layout/ToastLayout';
@@ -27,6 +27,7 @@ import { ToastLayout } from '../../component/layout/ToastLayout';
 const NewPost = ({ route, navigation }) => {
     const dispatch = useDispatch();
     const infoLogin = useSelector(selectUserByID);
+    const selectorStatus = useSelector(userSelectStatus);
     const [arr_Image, setarr_Image] = useState([]);
     const [aspectRatio, setaspectRatio] = useState(1 / 1);
     const [srcAvatar, setsrcAvatar] = useState(require('../../assets/images/error.png'));
@@ -70,7 +71,6 @@ const NewPost = ({ route, navigation }) => {
             idUser: infoLogin._id,
             contentBlog: inputContent
         }
-        console.log(infoLogin);
 
         if (checkValidate(newBlog) == false) {
             return;
@@ -96,6 +96,7 @@ const NewPost = ({ route, navigation }) => {
 
         axiosFormData.post('blog/insert', formData)
             .then((response) => {
+                console.log(response);
                 if (response.status == 201) {
                     var data = response.data;
                     if (data.success) {
@@ -205,11 +206,13 @@ const NewPost = ({ route, navigation }) => {
 
     React.useEffect(() => {
         const unsub = navigation.addListener('focus', async () => {
-            var res = await axiosJSON.get('/user/detail/64e6246094b5cf941a244f94')
-                .catch((e) => console.error(e.response.data))
-            if (res.data != undefined) {
-                dispatch(getInfoLogin(res.data.data));
-            }
+            // var res = await axiosJSON.get('/user/detail')
+            //     .catch((e) => console.error(e.response.data))
+            // if (res.data != undefined) {
+            //     dispatch(getInfoLogin(res.data.data));
+            // }
+            // dispatch(fetchInfoUser("64e6246094b5cf941a244f94"));
+            dispatch(fetchInfoLogin());
             return () => {
                 unsub.remove();
             };
@@ -227,16 +230,22 @@ const NewPost = ({ route, navigation }) => {
     }, [infoLogin]);
 
     useEffect(() => {
-        if (isLoader) {
-            setTimeout(() => {
+        if (selectorStatus == "being idle") {
+            setisLoader(false);
+            if (infoLogin != undefined && isLoader) {
+                console.log(infoLogin);
+                setsrcAvatar({ uri: String(infoLogin.avatarUser) });
                 setisLoader(false);
-                // if (infoLogin != undefined) {
-                //     console.log(infoLogin);
-                //     setsrcAvatar({ uri: String(infoLogin.avatarUser) });
-                // }
-            }, 1000);
+            }
+            // setTimeout(() => {
+            //     setisLoader(false);
+            //     // if (infoLogin != undefined) {
+            //     //     console.log(infoLogin);
+            //     //     setsrcAvatar({ uri: String(infoLogin.avatarUser) });
+            //     // }
+            // }, 1000);
         }
-    }, [isLoader]);
+    }, [selectorStatus]);
 
     return (
         <View style={{ flex: 1, backgroundColor: '#FEF6E4' }}>

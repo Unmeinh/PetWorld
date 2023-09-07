@@ -11,8 +11,10 @@ import { CollapsibleTabs } from '../../component/layout/indexCollapsibleTab';
 import { TabInfo, TabBlog } from './TabItemPage';
 import { useNavigation } from '@react-navigation/native';
 import { useSelector, useDispatch } from "react-redux";
-import { selectUserByID } from '../../redux/selectors/userSelector';
-import { selectInfoLogin } from '../../redux/actions/userAction';
+import { selectUserByID, userSelectStatus } from '../../redux/selectors/userSelector';
+import { selectBlogsByUser, blogSelectStatus } from '../../redux/selectors/blogSelector';
+import { fetchInfoLogin } from '../../redux/reducers/user/userReducer';
+import { fetchBlogsUser } from '../../redux/reducers/blog/blogReducer';
 import { RefreshControl } from "react-native-gesture-handler";
 import ItemBlogLoader from '../../component/items/ItemBlogLoader';
 import MenuContext from '../../component/menu/MenuContext';
@@ -27,6 +29,9 @@ const MyPage = () => {
     const navigation = useNavigation();
     const dispatch = useDispatch();
     const infoLogin = useSelector(selectUserByID);
+    const uSelectStatus = useSelector(userSelectStatus);
+    const arr_blog = useSelector(selectBlogsByUser);
+    const bSelectStatus = useSelector(blogSelectStatus);
     const [blogCount, setblogCount] = useState(0);
     const [followingCount, setfollowingCount] = useState(0);
     const [followerCount, setfollowerCount] = useState(0);
@@ -52,17 +57,21 @@ const MyPage = () => {
 
     //Use effect    
     useEffect(() => {
-        if (isLoader) {
-            setTimeout(() => {
-                setisLoader(false);
-                setsrcAvatar({ uri: String(infoLogin.avatarUser) });
-            }, 5000);
+        if (uSelectStatus == "being idle") {
+            dispatch(fetchBlogsUser(infoLogin._id));
+            setsrcAvatar({uri: String(infoLogin.avatarUser)});
         }
-    }, [isLoader]);
+    }, [uSelectStatus]);
+
+    useEffect(() => {
+        if (bSelectStatus == "being idle") {
+            setisLoader(false);
+        }
+    }, [bSelectStatus]);
 
     React.useEffect(() => {
         const unsub = navigation.addListener('focus', () => {
-            dispatch(selectInfoLogin('001'));
+            dispatch(fetchInfoLogin());
             // setisLoader(true);
 
             // return navigation.remove();
@@ -202,7 +211,7 @@ const MyPage = () => {
                                                     <ItemBlogLoader />
                                                     <ItemBlogLoader />
                                                 </View>
-                                                : <TabBlog user={infoLogin} isLoader={isLoader} />
+                                                : <TabBlog user={infoLogin} isLoader={isLoader} arr_blog={arr_blog} />
                                         }
                                     </ScrollView>
                                 </View>

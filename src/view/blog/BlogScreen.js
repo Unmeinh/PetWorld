@@ -11,8 +11,10 @@ import ItemBlogLoader from '../../component/items/ItemBlogLoader';
 import { useNavigation } from '@react-navigation/native';
 import Entypo from 'react-native-vector-icons/Entypo';
 import { useSelector, useDispatch } from "react-redux";
-import { selectUserByID } from '../../redux/selectors/userSelector';
-import { selectInfoLogin } from '../../redux/actions/userAction';
+import { selectUserByID, userSelectStatus } from '../../redux/selectors/userSelector';
+import { selectBlogs, blogSelectStatus } from '../../redux/selectors/blogSelector';
+import { fetchInfoLogin } from '../../redux/reducers/user/userReducer';
+import { fetchBlogs } from '../../redux/reducers/blog/blogReducer';
 import { RefreshControl } from "react-native-gesture-handler";
 import ShimmerPlaceHolder from '../../component/layout/ShimmerPlaceHolder';
 
@@ -20,7 +22,9 @@ const BlogScreen = ({ scrollRef, onScrollView }) => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const infoLogin = useSelector(selectUserByID);
-  const arr_blog = useSelector((state) => state.listBlog);
+  const arr_blog = useSelector(selectBlogs);
+  const uSelectStatus = useSelector(userSelectStatus);
+  const bSelectStatus = useSelector(blogSelectStatus);
   const [isRefreshing, setisRefreshing] = useState(false);
   const colorLoader = ['#f0e8d8', '#dbdbdb', '#f0e8d8'];
   const [srcAvatar, setsrcAvatar] = useState(require('../../assets/images/error.png'));
@@ -28,17 +32,22 @@ const BlogScreen = ({ scrollRef, onScrollView }) => {
   console.log("Render BlogScreen");
 
   useEffect(() => {
-    if (isLoader) {
-      setTimeout(() => {
-        setisLoader(false);
-        setsrcAvatar({ uri: String(infoLogin.avatarUser) });
-      }, 5000);
+    if (bSelectStatus == 'being idle') {
+      setisLoader(false);
     }
-  }, [isLoader]);
+  }, [bSelectStatus]);
+
+  useEffect(() => {
+    if (uSelectStatus == 'being idle') {
+      setsrcAvatar({uri: String(infoLogin.avatarUser)})
+    }
+  }, [uSelectStatus]);
+
 
   React.useEffect(() => {
     const unsub = navigation.addListener('focus', () => {
-      dispatch(selectInfoLogin('001'));
+      dispatch(fetchInfoLogin());
+      dispatch(fetchBlogs());
       return () => {
         unsub.remove();
       };

@@ -3,6 +3,7 @@ import { View, StyleSheet, Dimensions, Image, Animated, Easing } from 'react-nat
 import * as Animatable from 'react-native-animatable';
 import { storageMMKV } from '../../storage/storageMMKV';
 import { useNavigation } from '@react-navigation/native';
+import axiosGet from '../../api/axios.config';
 
 export default function SplashScreen() {
   const navigation = useNavigation();
@@ -73,18 +74,37 @@ export default function SplashScreen() {
 
   function autoNavigate() {
     if (storageMMKV.checkKey('login.isFirstTime')) {
-      if (storageMMKV.getBoolean('login.isFirstTime')) {
-        navigation.navigate('OrboadScreen');
-      } else {
+      if (!storageMMKV.getBoolean('login.isFirstTime')) {
         if (storageMMKV.checkKey('login.isLogin')) {
           if (storageMMKV.getBoolean('login.isLogin')) {
-            navigation.navigate('NaviTabScreen');
+            if (storageMMKV.checkKey('login.token')) {
+              if (storageMMKV.getString('login.token')) {
+                //axios check token
+                axiosGet.get('/user/token/' + storageMMKV.getString('login.token'))
+                  .then((res) => {
+                    if (res.data.success) {
+                      navigation.navigate('NaviTabScreen');
+                    } else {
+                      navigation.navigate('LoginScreen');
+                    }
+                  })
+                  .catch((err) => {
+                    navigation.navigate('LoginScreen');
+                  })
+              } else {
+                navigation.navigate('LoginScreen');
+              }
+            } else {
+              navigation.navigate('LoginScreen');
+            }
           } else {
             navigation.navigate('LoginScreen');
           }
         } else {
           navigation.navigate('LoginScreen');
         }
+      } else {
+        navigation.navigate('OrboadScreen');
       }
     } else {
       navigation.navigate('OrboadScreen');

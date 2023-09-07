@@ -1,12 +1,14 @@
-import React, { useState, useEffect, useRef, memo } from 'react';
+import React, { useState, memo } from 'react';
 import {
-    Text, Dimensions,
+    Text,
     View, FlatList,
 } from 'react-native';
 import ItemBlogPage from '../../component/items/ItemBlogPage';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import { useNavigation } from '@react-navigation/native';
 import { useSelector, useDispatch } from "react-redux";
-import { RefreshControl } from 'react-native-gesture-handler';
+import { fetchBlogsUser } from '../../redux/reducers/blog/blogReducer';
+import { selectBlogsByUser, blogSelectStatus } from '../../redux/selectors/blogSelector';
 import styles from '../../styles/blog.style';
 import LinearGradient from 'react-native-linear-gradient';
 import { createShimmerPlaceholder } from 'react-native-shimmer-placeholder';
@@ -16,13 +18,12 @@ const ShimmerPlaceHolder = createShimmerPlaceholder(LinearGradient);
 const colorLoader = ['#f0e8d8', '#dbdbdb', '#f0e8d8'];
 
 const TabBlog = memo(
-    function TabBlog({ user }) {
-        const arr_blog = useSelector((state) => state.listBlog);
+    function TabBlog({ user, arr_blog, }) {
 
         return (
-            <View style={{flex: 1}}>
+            <View style={{ flex: 1 }}>
                 {
-                    (arr_blog.length > 0)
+                    (arr_blog != undefined && arr_blog.length > 0)
                         ?
                         <FlatList data={arr_blog} scrollEnabled={false}
                             renderItem={({ item, index }) =>
