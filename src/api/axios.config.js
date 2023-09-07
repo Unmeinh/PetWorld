@@ -2,7 +2,6 @@ import axios from "axios";
 
 const axiosJSON = axios.create();
 
-
 axiosJSON.defaults.baseURL = apiURL;
 
 axiosJSON.defaults.headers = {
