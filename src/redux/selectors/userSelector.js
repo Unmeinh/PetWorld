@@ -1,8 +1,8 @@
 import { createSelector } from '@reduxjs/toolkit';
-import axiosJSON from '../../api/axios.config';
 export const listUserSelector = state => state.listUser.data;
 export const userSelectId = state => state.listUser.selectId;
 export const userFollowType = state => state.listUser.followType;
+export const userSelectStatus = state => state.listUser.status;
 
 export const selectUserByID = createSelector(
     listUserSelector,

@@ -268,6 +268,14 @@ export default StyleSheet.create({
         justifyContent: 'space-between'
     },
 
+    buttonChangeImage: {
+        position: 'absolute',
+        right: 9, bottom: 5,
+        backgroundColor: '#656565',
+        padding: 3,
+        borderRadius: 25,
+    },
+
     titleItemManager: {
         color: '#001858',
         fontSize: 16,

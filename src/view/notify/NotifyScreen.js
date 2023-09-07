@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { View, Button, StyleSheet } from 'react-native';
 import messaging from '@react-native-firebase/messaging';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+// import AsyncStorage from '@react-native-async-storage/async-storage';
 import HeaderNotify from '../../component/header/HeaderNotify';
 import TabLayout from '../../component/tabLayout/tabMain/TabLayoutNotify';
 import database from '@react-native-firebase/database';
@@ -14,7 +14,7 @@ export default function NotifyScreen({ navigation }) {
         console.log(newToken, 'new token');
 
         // Store the new FCM token
-        await AsyncStorage.setItem('fcmtoken', newToken);
+        // await AsyncStorage.setItem('fcmtoken', newToken);
 
         // Send token data to Realtime Database
         const databaseRef = database().ref('/tokens');
@@ -40,12 +40,12 @@ export default function NotifyScreen({ navigation }) {
         }
 
         // Check if FCM token is already stored
-        const fcmtoken = await AsyncStorage.getItem('fcmtoken');
-        console.log(fcmtoken, 'old token');
+        // const fcmtoken = await AsyncStorage.getItem('fcmtoken');
+        // console.log(fcmtoken, 'old token');
 
-        if (!fcmtoken) {
-          sendTokenToFirebase();
-        }
+        // if (!fcmtoken) {
+        //   sendTokenToFirebase();
+        // }
       } catch (error) {
         console.error('Error:', error);
       }

@@ -64,7 +64,7 @@ const ViewAccountModal = (route) => {
                 if (infoUser != undefined) {
                     setsrcAvatar({ uri: String(infoUser.avatarUser) });
                 }
-            }, 5000);
+            }, 2000);
         }
     }, [isLoader]);
 
