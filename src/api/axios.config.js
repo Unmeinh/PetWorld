@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const axiosJSON = axios.create();
-const apiURL = "https://1e4e-117-0-112-148.ngrok-free.app/api";
+
 
 axiosJSON.defaults.baseURL = apiURL;
 
