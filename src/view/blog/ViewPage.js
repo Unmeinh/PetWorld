@@ -12,8 +12,10 @@ import { CollapsibleTabs } from '../../component/layout/indexCollapsibleTab';
 import { TabInfo, TabBlog } from './TabItemPage';
 import { useNavigation } from '@react-navigation/native';
 import { useSelector, useDispatch } from "react-redux";
-import { selectUserByID } from '../../redux/selectors/userSelector';
-import { selectInfoUser } from '../../redux/actions/userAction';
+import { selectUserByID, userSelectStatus } from '../../redux/selectors/userSelector';
+import { selectBlogsByUser, blogSelectStatus } from '../../redux/selectors/blogSelector';
+import { fetchInfoUser } from '../../redux/reducers/user/userReducer';
+import { fetchBlogsUser } from '../../redux/reducers/blog/blogReducer';
 import ItemBlogLoader from '../../component/items/ItemBlogLoader';
 import { RefreshControl } from "react-native-gesture-handler";
 import MenuContext from '../../component/menu/MenuContext';
@@ -24,10 +26,13 @@ import { createShimmerPlaceholder } from 'react-native-shimmer-placeholder';
 
 const ShimmerPlaceHolder = createShimmerPlaceholder(LinearGradient);
 
-const ViewPage = ({route}) => {
+const ViewPage = ({ route }) => {
     const navigation = useNavigation();
     const dispatch = useDispatch();
     const infoUser = useSelector(selectUserByID);
+    const uSelectStatus = useSelector(userSelectStatus);
+    const arr_blog = useSelector(selectBlogsByUser);
+    const bSelectStatus = useSelector(blogSelectStatus);
     const [blogCount, setblogCount] = useState(0);
     const [followingCount, setfollowingCount] = useState(0);
     const [followerCount, setfollowerCount] = useState(0);
@@ -43,33 +48,36 @@ const ViewPage = ({route}) => {
 
     //Use effect    
     useEffect(() => {
-        if (isLoader) {
-            setTimeout(() => {
-                setisLoader(false);
-            }, 5000);
+        if (bSelectStatus == "being idle") {
+            setisLoader(false);
         }
-    }, [isLoader]);
+    }, [bSelectStatus]);
 
     useEffect(() => {
-        console.log(infoUser);
         if (infoUser != undefined && infoUser != {}) {
             setsrcAvatar({ uri: String(infoUser.avatarUser) });
         }
     }, [infoUser]);
 
-    React.useEffect(() => {
+    useEffect(() => {
         const unsub = navigation.addListener('focus', () => {
-            dispatch(selectInfoUser(route.params.idUser));
+            dispatch(fetchBlogsUser(route.params.idUser));
+            dispatch(fetchInfoUser(route.params.idUser));
+            console.log("dispatch");
             // setisLoader(true);
 
             // return navigation.remove();
-        return () => {
+            return () => {
                 unsub.remove();
-              };
+            };
         });
 
         return unsub;
     }, [navigation]);
+
+    function callBackSetLoader() {
+        setisLoader(false);
+    }
 
     const HeaderView = () => {
         function OnFollow() {
@@ -81,7 +89,7 @@ const ViewPage = ({route}) => {
         }
 
         function OpenListFollow(type) {
-            navigation.navigate('ListFollow', {idUser: infoUser._id, typeFollow: type});
+            navigation.navigate('ListFollow', { idUser: infoUser._id, typeFollow: type });
         }
 
         return (
@@ -239,7 +247,7 @@ const ViewPage = ({route}) => {
                                                     <ItemBlogLoader />
                                                     <ItemBlogLoader />
                                                 </View>
-                                                : <TabBlog user={infoUser} isLoader={isLoader} />
+                                                : <TabBlog user={infoUser} isLoader={isLoader} arr_blog={arr_blog} />
                                         }
                                     </ScrollView>
                                 </View>
@@ -266,6 +274,5 @@ const ViewPage = ({route}) => {
         </SafeAreaView>
     );
 }
-
 
 export default memo(ViewPage);

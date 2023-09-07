@@ -6,12 +6,10 @@ import {
 } from 'react-native'
 import React, { useState, useEffect, memo } from 'react'
 import styles from '../../styles/user.style';
-import AutoHeightImage from 'react-native-auto-height-image';
 import { useNavigation } from '@react-navigation/native';
 import HeaderTitle from '../../component/header/HeaderTitle';
 import LinearGradient from 'react-native-linear-gradient';
 import Entypo from 'react-native-vector-icons/Entypo';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useSelector, useDispatch } from "react-redux";
 import { selectFollowByID } from '../../redux/selectors/userSelector';
 import { selectFollowUser } from '../../redux/actions/userAction';
