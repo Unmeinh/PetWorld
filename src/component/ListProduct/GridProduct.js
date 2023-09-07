@@ -4,7 +4,7 @@ import {FlatGrid} from 'react-native-super-grid';
 import {useDispatch} from 'react-redux';
 import {selectIdProductAction} from '../../redux/action';
 import { useNavigation } from '@react-navigation/native';
-import { idProduct } from '../../redux/reducers/filters/FiltersReducer';
+import { idProduct } from '../../redux/reducers/filters/filtersReducer';
 function GridProduct({data}) {
   const dispatch = useDispatch();
   const navigation = useNavigation();
