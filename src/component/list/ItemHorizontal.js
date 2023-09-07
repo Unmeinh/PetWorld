@@ -5,7 +5,7 @@ import {useNavigation} from '@react-navigation/native';
 import {useDispatch} from 'react-redux';
 import {selectIdProductAction} from '../../redux/action';
 import {SharedElement} from 'react-navigation-shared-element';
-import { idProduct } from '../../redux/reducers/filters/filtersReducer';
+import {idProduct} from '../../redux/reducers/filters/filtersReducer';
 export default function ItemHorizontal({item}) {
   const navigation = useNavigation();
   const dispatch = useDispatch();
@@ -52,7 +52,11 @@ export default function ItemHorizontal({item}) {
       }}>
       <SharedElement id={`item.${item.id}.image`}>
         <Image
-          source={item.arrProduct ? {uri:item.arrProduct[1]}:item.arrPet[0]}
+          source={
+            item.arrProduct
+              ? {uri: item.arrProduct[1]}
+              : {uri: item.imagesPet[0]}
+          }
           style={{
             width: '100%',
             height: 100,
