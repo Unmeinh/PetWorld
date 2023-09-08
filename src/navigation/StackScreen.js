@@ -43,7 +43,7 @@ export default function StackScreen() {
     <NavigationContainer>
       <Stack.Navigator
         screenOptions={() => ({ headerShown: false })}
-        initialRouteName="InfoManager">
+        initialRouteName="ForgetPassword">
         <Stack.Screen name="SlashScreen" component={SlashScreen} />
         <Stack.Screen name="OrboadScreen" component={OrboadScreen} />
         <Stack.Screen name="LoginScreen" component={LoginScreen} />

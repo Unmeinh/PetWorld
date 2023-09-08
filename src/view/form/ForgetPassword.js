@@ -10,6 +10,7 @@ import styles from '../../styles/form.style';
 import HeaderTitle from '../../component/header/HeaderTitle';
 import Feather from 'react-native-vector-icons/Feather';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import auth from '@react-native-firebase/auth';
 
 export default function ForgetPassword({ navigation }) {
   const [inputPhoneNumber, setinputPhoneNumber] = useState('');
@@ -44,7 +45,7 @@ export default function ForgetPassword({ navigation }) {
     setinputPhoneNumber(phoneNUM);
   }
 
-  function onContinue() {
+  async function onContinue() {
     var regEmail = /^(\w+@[a-zA-Z]+\.[a-zA-Z]{2,})$/;
     var regPhone = /^(\+\d{10,})$/;
 
@@ -63,9 +64,9 @@ export default function ForgetPassword({ navigation }) {
       return;
     }
 
-    ToastAndroid.show('Tiếp tục', ToastAndroid.SHORT);
     if (isSelectPhone == true) {
-      navigation.navigate('ConfirmOTP', { typeVerify: 'phoneNumber', valueVerify: inputPhoneNumber });
+      const confirmation = await auth().signInWithPhoneNumber('+' + inputPhoneNumber);
+      navigation.navigate('ConfirmOTP', { typeVerify: 'phoneNumber', valueVerify: inputPhoneNumber, authConfirm: confirmation });
     } else {
       navigation.navigate('ConfirmOTP', { typeVerify: 'email', valueVerify: inputEmail });
     }
