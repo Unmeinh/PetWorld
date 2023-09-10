@@ -1,4 +1,7 @@
-import {createSlice} from '@reduxjs/toolkit';
+import {createAsyncThunk, createSlice} from '@reduxjs/toolkit';
+import api from '../../../api/axios.config';
+
+
 const initialState = {
   search: '',
   idCategory: 0,
@@ -22,7 +25,8 @@ const initialState = {
       {id: 2, name: 'Bán chạy', isSelected: false},
     ],
   },
-  idProduct: '',
+  detailProduct: {},
+  status: 'loading'
 };
 const filtersReducer =  createSlice({
   name: 'filters',
@@ -37,9 +41,28 @@ const filtersReducer =  createSlice({
     idProduct: (state, action) => {
       state.idProduct = action.payload;
     },
+    setStatusFilter: (state, action) => {
+      state.status = action.payload
+    }
   },
-});
+  extraReducers: builder => {
+    builder.addCase(fetchDetailProduct.pending , (state, action) => {
+      state.loading = 'loading'
+    }).addCase(fetchDetailProduct.fulfilled, (state, action) => {
+      if (action.payload.success === true) {
+        state.detailProduct = action.payload.data;
+        state.status = 'idle';
+      } else {
+        state.status = 'loading';
+      }
+    })
 
-export const {searchFilterChanged,selectIdCategory,idProduct} = filtersReducer.actions
+  }
+});
+export const fetchDetailProduct = createAsyncThunk('detail/fetchDetail', async (action) => {
+  const res = await api.get(`/${action.type === 0 ? 'pet':'product'}/detail/${action.id}`);
+  return res.data;
+});
+export const {searchFilterChanged,selectIdCategory,idProduct,setStatusFilter} = filtersReducer.actions
 export default filtersReducer.reducer
 

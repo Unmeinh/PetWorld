@@ -1,5 +1,4 @@
 import React from 'react';
-import { createStackNavigator } from '@react-navigation/stack';
 import { NavigationContainer } from '@react-navigation/native';
 import SlashScreen from '../view/slashscreen/SlashScreen';
 import OrboadScreen from '../view/orboardscreen/OrboadScreen';
@@ -70,18 +69,7 @@ export default function StackScreen() {
                 },
               };
             },
-          }}
-          sharedElements={route => {
-            const { id } = route.params.item;
-            const objAni = (feild, animation = 'fade-in', resize = 'clip') => {
-              return {
-                id: `item.${id}.${feild}`,
-                animation: animation,
-                resize: resize,
-              }
-            };
-            return [objAni('image'), objAni('name'), objAni('price'), objAni('rate')];
-          }}
+          }}     
         />
         <Stack.Screen name="ShopScreen" component={ShopScreen} />
         <Stack.Screen name="MyPage" component={MyPage} />

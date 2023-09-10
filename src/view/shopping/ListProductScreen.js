@@ -1,14 +1,34 @@
 import {StyleSheet, Text, View, TouchableOpacity} from 'react-native';
-import React from 'react';
+import React, {useEffect} from 'react';
 import Icon from 'react-native-vector-icons/Ionicons';
 import FilterSelector from '../../component/filters/filterSelector';
 import ListProductVertical from '../../component/ListProduct/ListProductVertical';
-import {useSelector} from 'react-redux';
-import {categoryIdSelector} from '../../redux/selector';
-export default function ListProductScreen({navigation}) {
-  const list = useSelector(categoryIdSelector);
+import {listPetSelector,listProductSelector,listStatusPetsSelector,listStatusProductSelector} from '../../redux/selector';
+import { fetchPets, handleStatusPets } from '../../redux/reducers/pet/PetReducer';
+import { fetchProducts, handleStatusProducts } from '../../redux/reducers/product/ProductReducer';
+import { useDispatch,useSelector } from 'react-redux';
+import LoaderListProductVertical from '../../component/list/LoaderListProductVertical';
+export default function ListProductScreen({navigation, route}) {
+  const dispatch = useDispatch()
+  const type = route.params.type
+  const list = type === 0 ? useSelector(listPetSelector) : useSelector(listProductSelector) 
+  const status = type === 0 ? useSelector(listStatusPetsSelector) : useSelector(listStatusProductSelector) 
+  useEffect(() =>{
+    if(type === 0){
+      dispatch(fetchPets())
+    }else if(type === 1){
+      dispatch(fetchProducts())
+    }
+    // return () =>{
+    //   if(type === 0){
+    //     dispatch(handleStatusPets('loading'))
+    //   }else{
+    //     dispatch(handleStatusProducts('loading'))
+    //   }
+    // }
+  },[type])
   return (
-    <View style={{backgroundColor:"#FEF6E4"}}>
+    <View style={{backgroundColor: '#FEF6E4', flex: 1}}>
       <View
         style={{
           marginTop: 20,
@@ -46,7 +66,7 @@ export default function ListProductScreen({navigation}) {
           marginTop: 10,
         }}
       />
-      <ListProductVertical data={list}/>
+      {status === 'idle' ? <ListProductVertical data={list} type={type} /> :<LoaderListProductVertical/>}
     </View>
   );
 }

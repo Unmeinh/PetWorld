@@ -11,29 +11,34 @@ import {
 import React, {useEffect, useRef, useState} from 'react';
 import {
   listProductSelector,
-  productSelector,
+  selectFilterDetailProduct,
   selectFilterIdSelector,
+  selectStatusDetailProduct,
 } from '../../redux/selector';
 import {useDispatch, useSelector} from 'react-redux';
 import SliderImage from '../../component/detailProduct/SliderImage';
 import Icon from 'react-native-vector-icons/Ionicons';
-import {SharedElement} from 'react-navigation-shared-element';
 import ShopTag from '../../component/shop/ShopTag';
 import ListHorizontal from '../../component/list/ListHorizontal';
 import {addCart} from '../../redux/reducers/shop/CartReduces';
+import ShimmerPlaceHolder from '../../component/layout/ShimmerPlaceHolder';
+import { setStatusFilter } from '../../redux/reducers/filters/filtersReducer';
 const {width} = Dimensions.get('screen');
 
 function DetailProduct({navigation}) {
   const dispatch = useDispatch();
-  const [product, shop] = useSelector(productSelector);
+  const resultDetail = useSelector(selectFilterDetailProduct);
   const listProduct = useSelector(listProductSelector);
+  const statusDetail = useSelector(selectStatusDetailProduct);
   const category = useSelector(selectFilterIdSelector);
   const [like, setLike] = useState(false);
   const [showDes, setShowDes] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
-  const listImage = product.imagePet ? product.imagePet : product.imageProduct;
+  const listImage = resultDetail.arrProduct
+    ? resultDetail.arrProduct
+    : resultDetail.imagesPet;
   const AnimatedIcon = Animated.createAnimatedComponent(Icon);
-  const AnimatedPressible = Animated.createAnimatedComponent(Pressable)
+  const AnimatedPressible = Animated.createAnimatedComponent(Pressable);
   const handleLike = like ? 'heart' : 'heart-outline';
   const iconDes = showDes ? 'chevron-up-outline' : 'chevron-down-outline';
   const priceDiscount = (price, discount) => {
@@ -78,25 +83,30 @@ function DetailProduct({navigation}) {
       duration: 500,
       useNativeDriver: true,
     });
-  
+
     const opacityAnimationAni = Animated.timing(opacityAnimation, {
       toValue: isVisible ? 1 : 0,
       duration: 500,
       useNativeDriver: true,
     });
-  
-    const animation = Animated.parallel([slideAnimationAni, opacityAnimationAni]);
+
+    const animation = Animated.parallel([
+      slideAnimationAni,
+      opacityAnimationAni,
+    ]);
     animation.start();
-  
+
     return () => {
       animation.stop();
       slideAnimation.setValue(0);
       opacityAnimation.setValue(0);
     };
-    
-    
   }, [isVisible]);
-
+  useEffect(() => {
+    return () =>{
+      dispatch(setStatusFilter('loading'))
+    }
+  }, [navigation]);
   const handleAddCart = (idProduct, idUser, mount) => {
     dispatch(
       addCart({
@@ -119,7 +129,7 @@ function DetailProduct({navigation}) {
         ]}>
         <AnimatedPressible
           onPress={() => {
-            navigation.pop();
+            navigation.goBack();
             setIsVisible(!isVisible);
           }}
           style={[styles.iconBack, {backgroundColor: headerIconBackground}]}>
@@ -133,17 +143,21 @@ function DetailProduct({navigation}) {
           <AnimatedIcon name="cart-outline" size={24} color={headerIcon} />
         </AnimatedPressible>
       </Animated.View>
+
       <ScrollView
         style={{flex: 1, backgroundColor: '#FEF6E4'}}
+        scrollEnabled={statusDetail === 'idle' ? true : false}
         onScroll={Animated.event(
           [{nativeEvent: {contentOffset: {y: scrollY}}}],
           {useNativeDriver: false},
         )}
         scrollEventThrottle={16}>
         <View>
-          <SharedElement id={`item.${product.id}.image`}>
+          {statusDetail === 'idle' ? (
             <SliderImage data={listImage} />
-          </SharedElement>
+          ) : (
+            <ShimmerPlaceHolder shimmerStyle={styles.loaderImage} />
+          )}
         </View>
         <View style={styles.content}>
           <Text
@@ -152,65 +166,75 @@ function DetailProduct({navigation}) {
               fontSize: 20,
               color: '#F582AE',
             }}>
-            <SharedElement id={`item.${product.id}.price`}>
-              {priceDiscount(
-                product.pricePet ? product.pricePet : product.priceProduct,
-                product.discount,
-              )}
-            </SharedElement>
+            {statusDetail === 'idle' ? (
+              priceDiscount(
+                resultDetail.pricePet
+                  ? resultDetail.pricePet
+                  : resultDetail.priceProduct,
+                resultDetail.discount,
+              )
+            ) : (
+              <ShimmerPlaceHolder shimmerStyle={styles.loaderPrice} />
+            )}
           </Text>
 
-          <View
-            style={{
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-            }}>
-            <SharedElement id={`item.${product.id}.name`}>
+          {statusDetail === 'idle' ? (
+            <View
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+              }}>
               <Text
                 style={{
                   fontFamily: 'ProductSansBold',
                   fontSize: 20,
                   color: '#001858',
                 }}>
-                {product.namePet ? product.namePet : product.nameProduct}
+                {resultDetail.namePet
+                  ? resultDetail.namePet
+                  : resultDetail.nameProduct}
               </Text>
-            </SharedElement>
-            <Icon
-              onPress={() => setLike(!like)}
-              name={handleLike}
-              size={24}
-              color="#F582AE"
-            />
-          </View>
-          <View style={{flexDirection: 'row', marginTop: 5}}>
-            <Icon name="star-sharp" size={16} color="#fcba03" />
-            <SharedElement id={`item.${product.id}.rate`}>
+              <Icon
+                onPress={() => setLike(!like)}
+                name={handleLike}
+                size={24}
+                color="#F582AE"
+              />
+            </View>
+          ) : (
+            <ShimmerPlaceHolder shimmerStyle={styles.loaderName} />
+          )}
+          {statusDetail === 'idle' ? (
+            <View style={{flexDirection: 'row', marginTop: 5}}>
+              <Icon name="star-sharp" size={16} color="#fcba03" />
               <Text style={{color: '#001858', marginLeft: 5}}>
-                {product.rate}/5
+                {resultDetail.rate}/5
               </Text>
-            </SharedElement>
 
-            <Text style={{marginLeft: 5, marginRight: 5, color: '#ccc'}}>
-              |
-            </Text>
-            <Text
-              style={{
-                marginLeft: 5,
-                marginRight: 5,
-                color: '#73726e',
-                fontFamily: 'ProductSans',
-              }}>
-              Đã bán
-            </Text>
-            <Text
-              style={{
-                marginRight: 5,
-                color: '#001858',
-                fontFamily: 'ProductSans',
-              }}>
-              {product.sold}
-            </Text>
-          </View>
+              <Text style={{marginLeft: 5, marginRight: 5, color: '#ccc'}}>
+                |
+              </Text>
+              <Text
+                style={{
+                  marginLeft: 5,
+                  marginRight: 5,
+                  color: '#73726e',
+                  fontFamily: 'ProductSans',
+                }}>
+                Đã bán
+              </Text>
+              <Text
+                style={{
+                  marginRight: 5,
+                  color: '#001858',
+                  fontFamily: 'ProductSans',
+                }}>
+                {resultDetail.quantitySold}
+              </Text>
+            </View>
+          ) : (
+            <ShimmerPlaceHolder shimmerStyle={styles.loaderName} />
+          )}
         </View>
         <Animated.View
           style={{
@@ -232,37 +256,55 @@ function DetailProduct({navigation}) {
               opacity: 0.5,
               marginTop: 8,
             }}></View>
-
-          <Text style={styles.textColor}>Thông tin chi tiết</Text>
+          {statusDetail === 'idle' ? (
+            <Text style={styles.textColor}>Thông tin chi tiết</Text>
+          ) : (
+            <ShimmerPlaceHolder
+              shimmerStyle={[styles.loaderName, styles.textColor]}
+            />
+          )}
           <View style={styles.line}></View>
-          <View style={styles.content}>
-            <View
-              style={{
-                fontFamily: 'ProductSans',
-                color: '#656565',
-                flexDirection: 'column',
-              }}>
-              <Text style={styles.lineHeight}>
-                Tên thú cưng:{' '}
-                {product.namePet ? product.namePet : product.nameProduct + '\n'}
-                Giống: Lai Mĩ{'\n'}Tuổi: 18 tháng
-              </Text>
-              {showDes ? (
+          {statusDetail === 'idle' ? (
+            <View style={styles.content}>
+              <View
+                style={{
+                  fontFamily: 'ProductSans',
+                  color: '#656565',
+                  flexDirection: 'column',
+                }}>
                 <Text style={styles.lineHeight}>
-                  Mô tả: Lorem ipsum dolor sit amet, consectetur adipiscing
-                  elit, sed do eiusmod tempor incididunt ut labore et dolore
-                  magna aliqua. Ut enim ad minim veniam, quis nostrud
-                  exercitation ullamco laboris nisi ut aliquip ex ea commodo
-                  consequat. Duis aute irure dolor in reprehenderit in voluptate
-                  velit esse cillum dolore eu fugiat nulla pariatur. Excepteur
-                  sint occaecat cupidatat non proident, sunt in culpa qui
-                  officia deserunt mollit anim id est laborum.
+                  Tên thú cưng:{' '}
+                  {resultDetail.namePet
+                    ? resultDetail.namePet
+                    : resultDetail.nameProduct + '\n'}
+                  Giống: Lai Mĩ{'\n'}Tuổi: 18 tháng
                 </Text>
-              ) : (
-                <Text>...</Text>
-              )}
+                {showDes ? (
+                  <Text style={styles.lineHeight}>
+                    Mô tả: Lorem ipsum dolor sit amet, consectetur adipiscing
+                    elit, sed do eiusmod tempor incididunt ut labore et dolore
+                    magna aliqua. Ut enim ad minim veniam, quis nostrud
+                    exercitation ullamco laboris nisi ut aliquip ex ea commodo
+                    consequat. Duis aute irure dolor in reprehenderit in
+                    voluptate velit esse cillum dolore eu fugiat nulla pariatur.
+                    Excepteur sint occaecat cupidatat non proident, sunt in
+                    culpa qui officia deserunt mollit anim id est laborum.
+                  </Text>
+                ) : (
+                  <Text>...</Text>
+                )}
+              </View>
             </View>
-          </View>
+          ) : (
+            <>
+              <ShimmerPlaceHolder
+                shimmerStyle={[styles.loaderName, styles.textColor]}
+              />
+              <ShimmerPlaceHolder
+                shimmerStyle={[styles.loaderName, styles.textColor]}
+              />
+            </>
+          )}
           <View style={[styles.line, {marginTop: 8}]}></View>
           <TouchableOpacity
             onPress={() => setShowDes(!showDes)}
@@ -286,7 +328,7 @@ function DetailProduct({navigation}) {
               marginTop: 8,
             }}
           />
-          <ShopTag data={shop} />
+          <ShopTag data={resultDetail.idShop} isLoading={statusDetail}/>
           <View
             style={{
               width: width,
@@ -300,12 +342,12 @@ function DetailProduct({navigation}) {
             <ListHorizontal
               data={listProduct}
               title="Sản phẩm liên quan"
-              isLoader={false}
+              isLoader={statusDetail}
             />
           </View>
         </Animated.View>
       </ScrollView>
-      <View style={styles.bottomButton}>
+     {statusDetail === 'idle' ?  <View style={styles.bottomButton}>
         <TouchableOpacity style={[styles.buttonContact, styles.buttonSheet]}>
           <Icon name="chatbubbles-outline" size={24} color={'#001858'} />
           <Text style={styles.textButton}> Liên hệ</Text>
@@ -335,7 +377,7 @@ function DetailProduct({navigation}) {
             Mua ngay
           </Text>
         </TouchableOpacity>
-      </View>
+      </View>:null}
     </>
   );
 }
@@ -384,6 +426,7 @@ const styles = StyleSheet.create({
     height: 50,
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'flex-end',
   },
   content: {
     marginRight: 16,
@@ -426,6 +469,21 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 18,
+  },
+  loaderImage: {
+    width,
+    height: 240,
+  },
+  loaderPrice: {
+    width: 100,
+    height: 12,
+    borderRadius: 8,
+  },
+  loaderName: {
+    width: 130,
+    height: 12,
+    borderRadius: 8,
+    marginTop: 10,
   },
 });
 
