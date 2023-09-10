@@ -25,7 +25,7 @@ axiosFormData.defaults.headers = {
 
 // axiosJSON.defaults.withCredentials = true;
 const instance = axios.create({
-    baseURL: `https://29f9-2402-800-6189-1302-fd9c-a03d-3486-b000.ngrok-free.app/api`,
+    baseURL: `https://fc9a-1-54-176-119.ngrok-free.app/api`,
 });
 
 export {axiosJSON, axiosFormData};

@@ -2,9 +2,8 @@ import React from 'react';
 import {StyleSheet, View, Text, Image, Pressable} from 'react-native';
 import {FlatGrid} from 'react-native-super-grid';
 import {useDispatch} from 'react-redux';
-import {selectIdProductAction} from '../../redux/action';
-import { useNavigation } from '@react-navigation/native';
-import { idProduct } from '../../redux/reducers/filters/filtersReducer';
+import {useNavigation} from '@react-navigation/native';
+import {idProduct} from '../../redux/reducers/filters/filtersReducer';
 function GridProduct({data}) {
   const dispatch = useDispatch();
   const navigation = useNavigation();
@@ -36,9 +35,18 @@ function GridProduct({data}) {
       renderItem={({item}) => (
         <Pressable
           style={styles.itemContainer}
-          onPress={() => {dispatch(idProduct(item.id))
-            navigation.navigate('DetailProduct',{item})}}>
-          <Image source={item.avatar} style={styles.image} />
+          onPress={() => {
+            dispatch(idProduct(item.id));
+            navigation.navigate('DetailProduct', {item});
+          }}>
+          <Image
+            source={{
+              uri: item.arrProduct
+                ? item.arrProduct[0]
+                : item.imagesPet[0],
+            }}
+            style={styles.image}
+          />
           <View style={styles.content}>
             <Text style={styles.itemName}>
               {item.namePet ? item.namePet : item.nameProduct}
@@ -49,8 +57,8 @@ function GridProduct({data}) {
             )}
           </View>
           <Text
-            style={{position: 'absolute', bottom: 7, right: 7, fontSize: 12}}>
-            Đã bán {item.sold}
+            style={styles.sold}>
+            Đã bán {item.quantitySold}
           </Text>
         </Pressable>
       )}
@@ -60,13 +68,13 @@ function GridProduct({data}) {
 
 const styles = StyleSheet.create({
   content: {padding: 3},
-  image: {width: '100%', height: '70%'},
+  image: {width: '100%', height: '70%',borderRadius:4},
   gridView: {
     marginTop: 10,
     flex: 1,
   },
   itemContainer: {
-    borderRadius: 7,
+    borderRadius: 4,
     height: 230,
     backgroundColor: '#f2f2eb',
   },
@@ -93,5 +101,6 @@ const styles = StyleSheet.create({
     textDecorationLine: 'line-through',
     fontSize: 13,
   },
+  sold:{position: 'absolute', bottom: 7, right: 7, fontSize: 12,fontFamily:'ProductSans'}
 });
 export default React.memo(GridProduct);

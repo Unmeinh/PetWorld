@@ -103,10 +103,10 @@ export default function HomeScreen({scrollRef, onScrollView, navigation}) {
 
         <CategoryList data={listCategory} isLoader={statusCategorys}/>
         {/* listpetnew */}
-        <ListHorizontal data={listPet} title="Thú cưng mới" isLoader={statusPets} />
+        <ListHorizontal data={listPet} title="Thú cưng mới" isLoader={statusPets} type={0} />
         {/* listproductnew */}
         <View style={{marginBottom:20}}>
-        <ListHorizontal data={listProduct} title="Sản phẩm mới" isLoader={statusProducts}/>
+        <ListHorizontal data={listProduct} title="Sản phẩm mới" isLoader={statusProducts} type={1}/>
         </View>
        
       </ScrollView>
