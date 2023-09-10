@@ -43,7 +43,7 @@ export default function StackScreen() {
     <NavigationContainer>
       <Stack.Navigator
         screenOptions={() => ({ headerShown: false })}
-        initialRouteName="SlashScreen">
+        initialRouteName="InfoManager">
         <Stack.Screen name="SlashScreen" component={SlashScreen} />
         <Stack.Screen name="OrboadScreen" component={OrboadScreen} />
         <Stack.Screen name="LoginScreen" component={LoginScreen} />
@@ -95,6 +95,7 @@ export default function StackScreen() {
         <Stack.Screen name="PhoneVerification" component={PhoneVerification} />
         <Stack.Screen name="Email" component={Email} />
         <Stack.Screen name="EmailVerification" component={EmailVerification} />
+        <Stack.Screen name="MyPetScreen" component={MyPetScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
