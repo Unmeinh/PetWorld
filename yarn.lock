@@ -6434,6 +6434,11 @@ react-native-otp-textinput@^1.1.1:
   dependencies:
     react "^16.8.6"
 
+react-native-otp-verify@^1.1.6:
+  version "1.1.6"
+  resolved "https://registry.yarnpkg.com/react-native-otp-verify/-/react-native-otp-verify-1.1.6.tgz#d84946ee6ba6c640bb525915c9c9ef95f439131e"
+  integrity sha512-EeGSWwA81zLCXb4Q7qLJ5T1SqAjwWYH7evP5yZknWWbU8xnySoSwQBz/p7FBsh5MIcM1pJadt8E+Pp3BTvh1cw==
+
 react-native-pager-view@^6.2.0:
   version "6.2.0"
   resolved "https://registry.yarnpkg.com/react-native-pager-view/-/react-native-pager-view-6.2.0.tgz#51380d93fbe47f6380dc71d613a787bf27a4ca37"
