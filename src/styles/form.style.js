@@ -76,12 +76,9 @@ export default StyleSheet.create({
         marginTop: 15
     },
 
-    plusTextInput: {
-        color: '#001858',
-        fontSize: 17,
-        fontFamily: 'ProductSans',
+    dropdownSelect: {
         position: 'absolute',
-        top: '35%', left: 10
+        top: '35%', left: 5
     },
 
     textInput: {
@@ -105,6 +102,40 @@ export default StyleSheet.create({
         elevation: 5,
     },
 
+    viewInputSelect: {
+        flexDirection: 'row',
+        marginLeft: 15,
+        marginTop: 7,
+        backgroundColor: lightBrown,
+        borderRadius: 10,
+        borderWidth: 1,
+        borderColor: 'rgba(0, 0, 0, 0.50)',
+        overflow: 'hidden'
+    },
+
+    textInputPhoneCountry: {
+        color: darkBlue,
+        fontSize: 17,
+        fontFamily: 'ProductSans',
+        backgroundColor: lightBrown,
+        width: 68,
+        paddingLeft: 15,
+        paddingHorizontal: 0,
+        paddingVertical: 9,
+        borderRightColor: darkBlue,
+        borderRightWidth: 1
+    },
+
+    textInputPhoneNumber: {
+        color: darkBlue,
+        fontSize: 17,
+        fontFamily: 'ProductSans',
+        backgroundColor: lightBrown,
+        width: (WindowWidth - 118) - 53,
+        paddingRight: 15,
+        paddingVertical: 9
+    },
+
     textInputSelect: {
         marginTop: 7,
         marginLeft: 15,
@@ -116,8 +147,8 @@ export default StyleSheet.create({
         borderRadius: 10,
         borderWidth: 1,
         borderColor: 'rgba(0, 0, 0, 0.50)',
-        paddingLeft: 20, paddingRight: 15,
-        paddingTop: 9, paddingBottom: 9,
+        paddingHorizontal: 15,
+        paddingVertical: 9,
         shadowColor: "#000",
         shadowOffset: {
             width: 0,
@@ -246,5 +277,38 @@ export default StyleSheet.create({
     underlineOTP: {
         backgroundColor: '#000',
         height: 1, width: '13.5%'
+    },
+
+    //Modal phone
+    modalPhoneContainer: {
+        marginTop: 7,
+        backgroundColor: lightBrown,
+        borderRadius: 10,
+        borderWidth: 1,
+        borderColor: 'rgba(0, 0, 0, 0.50)',
+        right: 0, top: 47,
+        position: 'absolute',
+        height: WindowHeight / 3,
+        width: WindowWidth - 100,
+        paddingVertical: 4.5,
+        zIndex: 100
+    },
+
+    itemPhoneSelect: {
+        color: darkBlue,
+        fontSize: 17,
+        fontFamily: 'ProductSans',
+        width: 53,
+        // paddingHorizontal: 9,
+        // paddingVertical: 4.5
+    },
+
+    itemCountrySelect: {
+        color: darkBlue,
+        fontSize: 17,
+        fontFamily: 'ProductSans',
+        width: (WindowWidth - 118) - 53,
+        // paddingHorizontal: 9,
+        // paddingVertical: 4.5
     }
 });

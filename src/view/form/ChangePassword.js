@@ -9,9 +9,16 @@ import React, { useState } from 'react'
 import styles from '../../styles/form.style';
 import HeaderTitle from '../../component/header/HeaderTitle';
 import Entypo from 'react-native-vector-icons/Entypo';
+import { useNavigation } from '@react-navigation/native';
+import { axiosJSON } from '../../api/axios.config';
+import Toast from 'react-native-toast-message';
+import { ToastLayout } from '../../component/layout/ToastLayout';
 
-export default function ChangePassword({ navigation }) {
+export default function ChangePassword({ route }) {
+  const navigation = useNavigation();
   const [passToggle, setpassToggle] = useState(true);
+  const inputTypeVerify = route.params.typeVerify;
+  const inputValueVerify = route.params.valueVerify;
   const [confirmPassToggle, setconfirmPassToggle] = useState(true);
   const [inputNewPassword, setinputNewPassword] = useState('');
   const [inputConfirmPassword, setinputConfirmPassword] = useState('');
@@ -32,9 +39,9 @@ export default function ChangePassword({ navigation }) {
     }
   }
 
-  function checkValidate(inputObj) {
-    var regPass = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[@#$%^&+=<>!]).{8,}/;
-    
+  function checkValidate() {
+    var regPass = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).{8,}/;
+
     if (!inputNewPassword.match(regPass)) {
       ToastAndroid.show('Mật khẩu chưa đúng định dạng!', ToastAndroid.SHORT);
       ToastAndroid.show('Mật khẩu phải dài ít nhất 8 ký tự và chứa ít nhất một số, chữ cái viết thường, chữ viết hoa và ký tự đặc biệt!', ToastAndroid.LONG);
@@ -49,13 +56,66 @@ export default function ChangePassword({ navigation }) {
     return true;
   }
 
-  function onChangePass() {
+  async function onChangePass() {
     if (checkValidate() == false) {
       return;
     }
 
-    ToastAndroid.show('Xác nhận', ToastAndroid.SHORT);
-    navigation.navigate('LoginScreen');
+    let objData = {
+      typeUpdate: inputTypeVerify,
+      valueUpdate: inputValueVerify,
+      newPassword: inputNewPassword
+    }
+
+    Toast.show({
+      type: 'loading',
+      position: 'top',
+      text1: "Đang cập nhật lại mật khẩu...",
+      bottomOffset: 20,
+      autoHide: false
+    });
+    var response = await axiosJSON.put('/user/changePassword', objData)
+      .catch((e) => {
+        Toast.show({
+          type: 'error',
+          position: 'top',
+          text1: String(e.response.data.message),
+          bottomOffset: 20
+        });
+
+      });
+    if (response != undefined) {
+      if (response.status == 200) {
+        var data = response.data;
+        try {
+          if (data.success) {
+            Toast.show({
+              type: 'success',
+              position: 'top',
+              text1: String(data.message),
+              bottomOffset: 20
+            });
+            setTimeout(() => 
+            navigation.navigate('LoginScreen'), 1000)
+          }
+        } catch (error) {
+          console.log(error);
+        }
+      } else {
+        var data = response.data;
+        try {
+          Toast.show({
+            type: 'error',
+            position: 'top',
+            text1: String(data.message),
+            bottomOffset: 20
+          });
+        } catch (error) {
+          console.log(error);
+        }
+        
+      }
+    }
   }
 
   return (
@@ -72,7 +132,7 @@ export default function ChangePassword({ navigation }) {
           1 chữ thường, 1 số và 1 ký tự đặc biệt.
         </Text>
 
-        <View style={{marginTop: 15}}>
+        <View style={{ marginTop: 15 }}>
           <Text style={[{
             color: 'rgba(0, 24, 88, 0.80)',
           }, styles.titleInput]}>Mật khẩu mới</Text>
@@ -126,6 +186,7 @@ export default function ChangePassword({ navigation }) {
           <Text style={styles.textButtonConfirm}>Xác nhận</Text>
         </TouchableHighlight>
       </View>
+      <ToastLayout/>
     </View>
   )
 }
