@@ -8,6 +8,7 @@ import SearchFilters from '../view/search/SearchFilters';
 import ForgetPassword from '../view/form/ForgetPassword';
 import ConfirmOTP from '../view/form/ConfirmOTP';
 import ChangePassword from '../view/form/ChangePassword';
+import RegisterPassword from '../view/form/RegisterPassword';
 import ListProductScreen from '../view/shopping/ListProductScreen';
 import NewPost from '../view/blog/NewBlog';
 import DetailProduct from '../view/shopping/DetailProduct';
@@ -50,6 +51,7 @@ export default function StackScreen() {
         <Stack.Screen name="NaviTabScreen" component={NaviTabScreen} />
         <Stack.Screen name="SearchFilters" component={SearchFilters} />
         <Stack.Screen name="ForgetPassword" component={ForgetPassword} />
+        <Stack.Screen name="RegisterPassword" component={RegisterPassword} />
         <Stack.Screen name="ConfirmOTP" component={ConfirmOTP} />
         <Stack.Screen name="ChangePassword" component={ChangePassword} />
         <Stack.Screen name="ListProductScreen" component={ListProductScreen} />
