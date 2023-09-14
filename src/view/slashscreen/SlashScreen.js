@@ -80,18 +80,18 @@ export default function SplashScreen() {
             if (storageMMKV.checkKey('login.token')) {
               if (storageMMKV.getString('login.token')) {
                 navigation.navigate('NaviTabScreen')
-                //axios check token
-                // axiosGet.get('/user/token/' + storageMMKV.getString('login.token'))
-                //   .then((res) => {
-                //     if (res.data.success) {
-                //       navigation.navigate('NaviTabScreen');
-                //     } else {
-                //       navigation.navigate('LoginScreen');
-                //     }
-                //   })
-                //   .catch((err) => {
-                //     navigation.navigate('LoginScreen');
-                //   })
+                // axios check token
+                axiosGet.get('/user/token/' + storageMMKV.getString('login.token'))
+                  .then((res) => {
+                    if (res.data.success) {
+                      navigation.navigate('NaviTabScreen');
+                    } else {
+                      navigation.navigate('LoginScreen');
+                    }
+                  })
+                  .catch((err) => {
+                    navigation.navigate('LoginScreen');
+                  })
               } else {
                 navigation.navigate('LoginScreen');
               }
