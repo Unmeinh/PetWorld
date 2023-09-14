@@ -171,10 +171,10 @@ export default function AccountScreen({ scrollRef, onScrollView }) {
                   console.log('Item pressed:', item.text);
                   // Example: navigate to another screen
                   if (item.text === 'Thú cưng của tôi') {
-                    navigation.navigate('OderScreen');
+                    navigation.navigate('MyPetScreen');
                   } else (item.text === 'Trợ giúp và yêu cầu hỗ trợ')
                   {
-                    navigation.navigate('DetailProduct');// Handle other cases
+                    navigation.navigate('');// Handle other cases
                   }
                 }}
               >
@@ -229,7 +229,6 @@ export default function AccountScreen({ scrollRef, onScrollView }) {
                 }}
               >
 
-
                 <View style={localStyles.rowItemUtilities}>
                   {item.iconType === 'Fontisto' && (
                     <Fontisto name={item.icon} size={30} color={'#001858'} />
@@ -270,7 +269,9 @@ export default function AccountScreen({ scrollRef, onScrollView }) {
         <View style={localStyles.logoutContainer}>
           <View style={localStyles.logoutButton}>
             <MaterialIcons name='logout' size={30} color={'#001858'} />
-            <TouchableOpacity onPress={onLogout}>
+            <TouchableOpacity onPress={() => {
+              navigation.navigate('OrboadScreen');
+            }}>
 
               <Text style={localStyles.logoutButtonText}>Đăng xuất</Text>
 
