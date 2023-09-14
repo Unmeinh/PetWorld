@@ -80,18 +80,13 @@ export default function SplashScreen() {
             if (storageMMKV.checkKey('login.token')) {
               if (storageMMKV.getString('login.token')) {
                 navigation.navigate('NaviTabScreen')
-                //axios check token
-                axiosGet.get('/user/autoLogin')
-                  .then((res) => {
-                    if (res.data.success) {
-                      navigation.navigate('NaviTabScreen');
-                    } else {
-                      navigation.navigate('LoginScreen');
-                    }
-                  })
-                  .catch((err) => {
-                    navigation.navigate('LoginScreen');
-                  })
+                let res = await onAxiosGet('/user/autoLogin')
+                if (res.success) {
+                  navigation.navigate('NaviTabScreen');
+                } else {
+                  storageMMKV.setValue('login.token', "");
+                  navigation.navigate('LoginScreen');
+                }
               } else {
                 navigation.navigate('LoginScreen');
               }
