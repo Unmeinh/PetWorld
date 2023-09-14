@@ -4,12 +4,11 @@ import ItemHorizontal from './ItemHorizontal';
 import LinearGradient from 'react-native-linear-gradient';
 import {createShimmerPlaceholder} from 'react-native-shimmer-placeholder';
 import listfakeloader from '../../data/listfakeloader';
-import { useDispatch } from 'react-redux';
-
+import {useNavigation} from '@react-navigation/native';
 const ShimmerPlaceHolder = createShimmerPlaceholder(LinearGradient);
-function ListHorizontal({data, title, isLoader}) {
+function ListHorizontal({data, title, isLoader, type}) {
+  const navigation = useNavigation();
   const colorLoader = ['#f0e8d8', '#dbdbdb', '#f0e8d8'];
-  const dispatch = useDispatch();
   return (
     <View style={{marginTop: 18}}>
       <View style={styles.title}>
@@ -26,7 +25,10 @@ function ListHorizontal({data, title, isLoader}) {
             ]
           : [
               <Text style={styles.fontStyle}>{title}</Text>,
-              <Text style={styles.fontAll}>Xem tất cả</Text>,
+              <Pressable
+                onPress={() => navigation.navigate('ListProductScreen',{type})}>
+                <Text style={styles.fontAll}>Xem thêm</Text>
+              </Pressable>,
             ]}
       </View>
       {isLoader === 'loading' ? (
@@ -46,11 +48,7 @@ function ListHorizontal({data, title, isLoader}) {
           horizontal
           showsHorizontalScrollIndicator={false}
           data={data}
-          renderItem={({item}) => (
-            <Pressable onPress={() => dispatch(selectIdProductAction(item.id))}>
-              <ItemHorizontal item={item} />
-            </Pressable>
-          )}
+          renderItem={({item}) => <ItemHorizontal item={item} type={type} />}
         />
       )}
     </View>

@@ -11,7 +11,7 @@ const {width} = Dimensions.get('screen');
 export default function PanigationImage({data, scrollx, index, onPress}) {
   return (
     <View style={styles.container}>
-      {data.map((_, idx) => {
+      {data.map((item, idx) => {
         const inputRange = [(idx - 1) * width, idx * width, (idx + 1) * width];
         const dotWidth = scrollx.interpolate({
           inputRange,
@@ -28,7 +28,7 @@ export default function PanigationImage({data, scrollx, index, onPress}) {
            key={idx.toString()}
             onPress={() => onPress(idx)}>
             <Animated.Image
-              source={_}
+              source={{uri:item}}
              
               style={[styles.dot, {width: dotWidth, borderColor}]} // Thay đổi backgroundColor thành borderColor
             />

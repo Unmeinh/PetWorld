@@ -1,5 +1,4 @@
 import React from 'react';
-import { createStackNavigator } from '@react-navigation/stack';
 import { NavigationContainer } from '@react-navigation/native';
 import SlashScreen from '../view/slashscreen/SlashScreen';
 import OrboadScreen from '../view/orboardscreen/OrboadScreen';
@@ -35,9 +34,10 @@ import EmailVerification from '../view/account/EmailVerification';
 import OderScreen from '../view/oder/OderScreen';
 import PhoneVerification from '../view/account/PhoneVerification';
 import Email from '../view/account/Email';
-import { createSharedElementStackNavigator } from 'react-navigation-shared-element';
-import SettingNotify from '../view/notify/SettingNotify copy';
-const Stack = createSharedElementStackNavigator();
+import { createStackNavigator } from '@react-navigation/stack';
+import SettingNotify from '../view/notify/SettingNotify';
+import MyPetScreen from '../view/account/MyPetScreen';
+const Stack = createStackNavigator();
 
 export default function StackScreen() {
   return (
@@ -72,18 +72,7 @@ export default function StackScreen() {
                 },
               };
             },
-          }}
-          sharedElements={route => {
-            const { id } = route.params.item;
-            const objAni = (feild, animation = 'fade-in', resize = 'clip') => {
-              return {
-                id: `item.${id}.${feild}`,
-                animation: animation,
-                resize: resize,
-              }
-            };
-            return [objAni('image'), objAni('name'), objAni('price'), objAni('rate')];
-          }}
+          }}     
         />
         <Stack.Screen name="ShopScreen" component={ShopScreen} />
         <Stack.Screen name="MyPage" component={MyPage} />
@@ -108,6 +97,7 @@ export default function StackScreen() {
         <Stack.Screen name="PhoneVerification" component={PhoneVerification} />
         <Stack.Screen name="Email" component={Email} />
         <Stack.Screen name="EmailVerification" component={EmailVerification} />
+        <Stack.Screen name="MyPetScreen" component={MyPetScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

@@ -5,25 +5,38 @@ import {
   FlatList,
   Dimensions,
   Pressable,
+  ActivityIndicator,
 } from 'react-native';
 import React, {useCallback, useEffect, useState} from 'react';
 import HeaderTitle from '../../component/header/HeaderTitle';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import {useSelector} from 'react-redux';
+import {useSelector, useDispatch} from 'react-redux';
 import {
   listCartSelector,
   listProductSelector,
   listShopSelector,
+  listCartStatusSelector,
+  listShopStatusSelector,
 } from '../../redux/selector';
 import useCart from '../../hooks/useCart';
 import ListCart from '../../component/list/ListCart';
+import {fetchCart} from '../../redux/reducers/shop/CartReduces';
+import {fetchShops} from '../../redux/reducers/shop/ShopReducer';
+import { usePrice } from '../../hooks/usePrice';
 const {width} = Dimensions.get('screen');
 export default function CartScreen({navigation}) {
+  const dispatch = useDispatch();
   const result = useSelector(listCartSelector);
-  const products = useSelector(listProductSelector);
-  const resultCart = useCart(result,products)
-  const [showList, setShowList] = useState(false)
-  function Bottom() {
+  const resultShops = useSelector(listShopSelector);
+  const statusCart = useSelector(listCartStatusSelector);
+  const statusShops = useSelector(listShopStatusSelector);
+  const [total,discount] = usePrice(result)
+  const resultCart = useCart(result, resultShops);
+  useEffect(() => {
+    dispatch(fetchCart());
+    dispatch(fetchShops());
+  }, []);
+  function Bottom({total,discount}) {
     const [isSelect, setIsSelect] = useState(() => false);
     const iconSelect = isSelect
       ? 'checkbox-marked-circle'
@@ -44,13 +57,17 @@ export default function CartScreen({navigation}) {
           </Text>
         </View>
         <View style={styles.total}>
-          <Text style={[styles.fontFamyly, styles.textTotal]}>22.222.222đ</Text>
+          <Text style={[styles.fontFamyly, styles.textTotal]}>{discount.toLocaleString('vi-VN')} đ</Text>
           <Text style={[styles.fontFamyly, styles.textDiscont]}>
-            Tiết kiệm 222.222đ
+            Tiết kiệm {(total-discount).toLocaleString('vi-VN')} đ
           </Text>
         </View>
-        <Pressable style={styles.button} onPress={()=>navigation.navigate('SummaryBill')}>
-          <Text style={[styles.fontFamyly,styles.textButton]}>Thanh toán (3)</Text>
+        <Pressable
+          style={styles.button}
+          onPress={() => navigation.navigate('SummaryBill')}>
+          <Text style={[styles.fontFamyly, styles.textButton]}>
+            Thanh toán (3)
+          </Text>
         </Pressable>
       </View>
     );
@@ -62,14 +79,23 @@ export default function CartScreen({navigation}) {
         colorHeader={'#FEF6E4'}
         nav={navigation}
       />
+      {(statusCart && statusShops) === 'loading' ? (
+        <ActivityIndicator size={'large'} />
+      ) : (
+        <ListCart data={resultCart} />
+      )}
 
-      <ListCart data={resultCart}/>
-      <Bottom />
+      <Bottom total={total} discount={discount}/>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
+  loader: {
+    position: 'absolute',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   nameShop: {
     fontSize: 16,
     color: '#001858',
@@ -87,9 +113,9 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     marginLeft: 6,
   },
-  textButton:{
-    color:'#FFFFFF'
-    ,fontSize:16
+  textButton: {
+    color: '#FFFFFF',
+    fontSize: 16,
   },
   button: {
     width: 130,

@@ -1,32 +1,8 @@
-import { createSlice } from '@reduxjs/toolkit';
-
-const initialState = [
-  {
-    idProduct: 'f3n2p1s7',
-    idUser: '123',
-    createAt: '14/8/2023',
-    amount: 88,
-    isSelect: false,
-  },
-  {
-    idProduct: 'o4s8c7z3',
-    idUser: '123',
-    createAt: '14/8/2023',
-    amount: 3,
-    isSelect: false,
-  },
-  {
-    idProduct: 'v5w4x3u2',
-    idUser: '123',
-    createAt: '14/8/2023',
-    amount: 3,
-    isSelect: false,
-  },
-];
-
+import { createSlice,createAsyncThunk } from '@reduxjs/toolkit';
+import  api, {axiosJSON} from '../../../api/axios.config';
 const cartSlice = createSlice({
   name: 'cart',
-  initialState,
+  initialState:{status:'idle',carts:[],message:''},
   reducers: {
     addCart: (state, action) => {
       state.push(action.payload);
@@ -54,8 +30,32 @@ const cartSlice = createSlice({
       });
     },
   },
+  extraReducers: builder =>{
+    builder.addCase(fetchCart.pending,(state, action) => {
+      state.status = 'loading';
+    }).addCase(fetchCart.fulfilled,(state, action) => {
+      if(action.payload.success){
+        state.carts = action.payload.data.carts
+        state.status = 'idle';
+      }else{
+        state.status = 'loading';
+      }
+    })
+  }
 });
-
+export const fetchCart = createAsyncThunk(
+  'cart/fetchCart',
+  async () => {
+    const res = await api.get('/cart');
+    return res.data;
+  },
+);
+export const addProductToCart = createAsyncThunk(
+  'cart/addProduct',
+  async (action) => {
+    const res = await axiosJSON.post('/cart',action);
+  },
+);
 export const { addCart, plusProduct, minusProduct, selectItem } = cartSlice.actions;
 
 export default cartSlice.reducer;

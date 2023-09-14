@@ -3,10 +3,10 @@ import React from 'react';
 import Icon from 'react-native-vector-icons/AntDesign';
 import {useNavigation} from '@react-navigation/native';
 import {useDispatch} from 'react-redux';
-import {selectIdProductAction} from '../../redux/action';
-import {SharedElement} from 'react-navigation-shared-element';
-import { idProduct } from '../../redux/reducers/filters/filtersReducer';
-export default function ItemHorizontal({item}) {
+import {fetchDetailProduct} from '../../redux/reducers/filters/filtersReducer';
+import Animated from 'react-native-reanimated';
+
+export default function ItemHorizontal({item,type,route}) {
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const rateShow = rate => {
@@ -38,8 +38,8 @@ export default function ItemHorizontal({item}) {
   return (
     <Pressable
       onPress={() => {
-        dispatch(idProduct(item.id));
-        navigation.navigate('DetailProduct', {item});
+        dispatch(fetchDetailProduct({id:item._id,type}));
+        navigation.push('DetailProduct');
       }}
       style={{
         width: 110,
@@ -50,40 +50,36 @@ export default function ItemHorizontal({item}) {
         borderBottomRightRadius: 10,
         borderBottomLeftRadius: 10,
       }}>
-      <SharedElement id={`item.${item.id}.image`}>
-        <Image
-          source={item.arrProduct ? {uri:item.arrProduct[1]}:item.arrPet[0]}
-          style={{
-            width: '100%',
-            height: 100,
-            borderBottomRightRadius: 10,
-            borderBottomLeftRadius: 10,
-          }}
-        />
-      </SharedElement>
-      <View style={{marginLeft: 6, marginTop: 5}}>
-        <SharedElement id={`item.${item.id}.name`}>
-          <View>
-            <Text
-              style={{
-                fontFamily: 'ProductSansBold',
-                fontSize: 14,
-                color: '#001858',
-              }}>
-              {item.namePet ? item.namePet : item.nameProduct}
-            </Text>
-          </View>
-        </SharedElement>
-        <SharedElement id={`item.${item.id}.rate`}>
-          <Text style={{flexDirection: 'row'}}>{rateShow(item?.rate)}</Text>
-        </SharedElement>
+      <Animated.Image
+        source={
+          item.arrProduct ? {uri: item.arrProduct[0]} : {uri: item.imagesPet[0]}
+        }
+        style={{
+          width: '100%',
+          height: 100,
+          borderBottomRightRadius: 10,
+          borderBottomLeftRadius: 10,
+        }}
+        sharedTransitionTag={`detail_${item._id}`}
+      />
 
-        <SharedElement id={`item.${item.id}.price`}>
-          {priceDiscount(
-            item.pricePet ? item.pricePet : item.priceProduct,
-            item.discount,
-          )}
-        </SharedElement>
+      <View style={{marginLeft: 6, marginTop: 5}}>
+        <View>
+          <Text
+            style={{
+              fontFamily: 'ProductSansBold',
+              fontSize: 14,
+              color: '#001858',
+            }}>
+            {item.namePet ? item.namePet : item.nameProduct}
+          </Text>
+        </View>
+
+        <Text style={{flexDirection: 'row'}}>{rateShow(item?.rate)}</Text>
+        {priceDiscount(
+          item.pricePet ? item.pricePet : item.priceProduct,
+          item.discount,
+        )}
       </View>
     </Pressable>
   );
