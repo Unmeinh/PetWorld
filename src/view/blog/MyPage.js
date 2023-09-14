@@ -11,7 +11,7 @@ import { CollapsibleTabs } from '../../component/layout/indexCollapsibleTab';
 import { TabInfo, TabBlog } from './TabItemPage';
 import { useNavigation } from '@react-navigation/native';
 import { useSelector, useDispatch } from "react-redux";
-import { selectUserByID, userSelectStatus } from '../../redux/selectors/userSelector';
+import { selectUserLogin, userSelectStatus } from '../../redux/selectors/userSelector';
 import { selectBlogsByUser, blogSelectStatus } from '../../redux/selectors/blogSelector';
 import { fetchInfoLogin } from '../../redux/reducers/user/userReducer';
 import { fetchBlogsUser } from '../../redux/reducers/blog/blogReducer';
@@ -28,7 +28,7 @@ const ShimmerPlaceHolder = createShimmerPlaceholder(LinearGradient);
 const MyPage = () => {
     const navigation = useNavigation();
     const dispatch = useDispatch();
-    const infoLogin = useSelector(selectUserByID);
+    const infoLogin = useSelector(selectUserLogin);
     const uSelectStatus = useSelector(userSelectStatus);
     const arr_blog = useSelector(selectBlogsByUser);
     const bSelectStatus = useSelector(blogSelectStatus);

@@ -16,7 +16,7 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import Feather from 'react-native-vector-icons/Feather';
 import HeaderAccount from '../../component/header/HeaderAccount'
 import { useNavigation } from '@react-navigation/native';
-
+import { storageMMKV } from '../../storage/storageMMKV';
 
 
 const listItems = [
@@ -51,14 +51,14 @@ const listItems1 = [
     iconType: 'Fontisto',
     icon: 'person',
     text: 'Tài khoản',
-   
+
   },
   {
     iconType: 'Feather',
     icon: 'lock',
     text: 'Quyền riêng tư',
   },
- 
+
 ];
 
 
@@ -74,194 +74,205 @@ export default function AccountScreen({ scrollRef, onScrollView }) {
       navigation.navigate('OderScreen');
     }, 200); // Reset the state after 200ms
   };
+
+  function onLogout() {
+    storageMMKV.setValue('login.token', "null");
+    storageMMKV.setValue('login.isLogin', false);
+    if (!storageMMKV.getBoolean('login.isLogin') && storageMMKV.getString('login.token') == "null") {
+      navigation.navigate('LoginScreen');
+    } else {
+      console.log("Lỗi lưu dữ liệu người dùng!");
+    }
+  }
+
   return (
-    <View style={{ flex: 1 , backgroundColor: 'rgba(254, 246, 228, 0.5)'}}>
+    <View style={{ flex: 1, backgroundColor: 'rgba(254, 246, 228, 0.5)' }}>
 
       <ScrollView ref={scrollRef}
         onScroll={onScrollView} style={styles.scrollView}>
         <View style={styles.contentContainer}>
-        <HeaderAccount nav={navigation}/>
-        <View style={localStyles.Container}>
-        <View style={localStyles.rowContainer}>
-          <View style={localStyles.rowItem}>
-            <TouchableOpacity  onPress={handlePress}>
-            <View style={localStyles.purchaseOrder}
-            ><Text style={{
-              color: '#001858',
-              fontFamily: 'ProductSans',
-            }}
-            >Đơn mua</Text></View>
-            </TouchableOpacity>
-           
-            <View style={localStyles.rightContent}>
-              <Text style={{
-              color: '#001858',
-              fontFamily: 'ProductSans',
-            }}
-              >Xem lịch sử mua hàng</Text>
-              <MaterialIcons name='navigate-next' size={30} color={'#001858'} />
-            </View>
-          </View>
-        </View>
-        <View style={localStyles.gridContainer}>
-          <View style={localStyles.gridColumn}>
-            <MaterialIcons name='hourglass-empty' size={30} color={'#001858'} />
-            <Text  style={{
-             
-              color: '#001858',
-              fontFamily: 'ProductSans',
-            }}>Chờ xác nhận</Text>
-          </View>
-          <View style={localStyles.gridColumn}>
-            <Feather name='box' size={30} color={'#001858'} />
-            <Text style={{
-              color: '#001858',
-              fontFamily: 'ProductSans',
-            }}
-            >Chờ lấy hàng</Text>
-          </View>
-          <View style={localStyles.gridColumn}>
-            <Feather name='truck' size={30} color={'#001858'} />
-            <Text 
-            style={{
-              color: '#001858',
-              fontFamily: 'ProductSans',
-            }}
-            >Đang giao</Text>
-          </View>
-          <View style={localStyles.gridColumn}>
-            <Feather name='star' size={30} color={'#001858'} />
-            <Text
-            style={{
-              color: '#001858',
-              fontFamily: 'ProductSans',
-            }}
-            >Đánh giá
-            </Text>
-          </View>
-        </View>
-        </View>
-       
-        <View style={localStyles.Utilities}>
-          <View style={localStyles.Utilities1}>
-            <Text
-            style={{
-              color: '#001858',
-              fontFamily: 'ProductSans',
-            }}
-            >Tiện ích</Text>
-          </View>
-          {listItems.map((item, index) => (
-          <TouchableOpacity
-            key={index}
-            style={localStyles.rowUtilities}
-            onPress={() => {
-              // Handle the press event here
-              console.log('Item pressed:', item.text);
-              // Example: navigate to another screen
-              if (item.text === 'Thú cưng của tôi') {
-                navigation.navigate('OderScreen');
-              } else (item.text === 'Trợ giúp và yêu cầu hỗ trợ') 
-              { navigation.navigate('DetailProduct');// Handle other cases
-              }
-            }}
-          >
-              <View style={localStyles.rowItemUtilities}>
-              {item.iconType === 'Fontisto' && (
-                  <Fontisto name={item.icon} size={30} color={'#001858'} />
-                )}
-                {item.iconType === 'Ionicons' && (
-                  <Ionicons name={item.icon} size={30} color={'#001858'} />
-                )}
-                   {item.iconType === 'AntDesign' && (
-                  <AntDesign name={item.icon} size={30} color={'#001858'} />
-                )}
-                   {item.iconType === 'MaterialIcons' && (
-                  <MaterialIcons name={item.icon} size={30} color={'#001858'} />
-                )}
-                    {item.iconType === 'Feather' && (
-                  <Feather name={item.icon} size={30} color={'#001858'} />
-                )}
+          <HeaderAccount nav={navigation} />
+          <View style={localStyles.Container}>
+            <View style={localStyles.rowContainer}>
+              <View style={localStyles.rowItem}>
+                <TouchableOpacity onPress={handlePress}>
+                  <View style={localStyles.purchaseOrder}
+                  ><Text style={{
+                    color: '#001858',
+                    fontFamily: 'ProductSans',
+                  }}
+                  >Đơn mua</Text></View>
+                </TouchableOpacity>
 
-                <View style={localStyles.centerContentUtilities}>
+                <View style={localStyles.rightContent}>
                   <Text style={{
-              color: '#001858',
-              fontFamily: 'ProductSans',
-            }}>{item.text}</Text>
+                    color: '#001858',
+                    fontFamily: 'ProductSans',
+                  }}
+                  >Xem lịch sử mua hàng</Text>
+                  <MaterialIcons name='navigate-next' size={30} color={'#001858'} />
                 </View>
-                <MaterialIcons
-                  style={localStyles.rightContentUtilities}
-                  name='navigate-next' size={30} color={'#001858'} />
               </View>
-            </TouchableOpacity>
-          ))}
-           <View style={localStyles.Utilities1}>
-            <Text
-            style={{
-              color: '#001858',
-              fontFamily: 'ProductSans',
-            }}
-            >Tài khoản và quyền riêng tư</Text>
-          </View>
-          {listItems1.map((item, index) => (
-          <TouchableOpacity
-            key={index}
-            style={localStyles.rowUtilities}
-            onPress={() => {
-              // Handle the press event here
-              console.log('Item pressed:', item.text);
-              // Example: navigate to another screen
-              if (item.text === 'Tài khoản') {
-                navigation.navigate('InformationAccount');
-            }}}
-          >
+            </View>
+            <View style={localStyles.gridContainer}>
+              <View style={localStyles.gridColumn}>
+                <MaterialIcons name='hourglass-empty' size={30} color={'#001858'} />
+                <Text style={{
 
-
-              <View style={localStyles.rowItemUtilities}>
-              {item.iconType === 'Fontisto' && (
-                  <Fontisto name={item.icon} size={30} color={'#001858'} />
-                )}
-                {item.iconType === 'Ionicons' && (
-                  <Ionicons name={item.icon} size={30} color={'#001858'} />
-                )}
-                   {item.iconType === 'AntDesign' && (
-                  <AntDesign name={item.icon} size={30} color={'#001858'} />
-                )}
-                   {item.iconType === 'MaterialIcons' && (
-                  <MaterialIcons name={item.icon} size={30} color={'#001858'} />
-                )}
-                    {item.iconType === 'Feather' && (
-                  <Feather name={item.icon} size={22.5} color={'#001858'} />
-                )}
-
-                <View style={localStyles.centerContentUtilities}>
-                  <Text
+                  color: '#001858',
+                  fontFamily: 'ProductSans',
+                }}>Chờ xác nhận</Text>
+              </View>
+              <View style={localStyles.gridColumn}>
+                <Feather name='box' size={30} color={'#001858'} />
+                <Text style={{
+                  color: '#001858',
+                  fontFamily: 'ProductSans',
+                }}
+                >Chờ lấy hàng</Text>
+              </View>
+              <View style={localStyles.gridColumn}>
+                <Feather name='truck' size={30} color={'#001858'} />
+                <Text
                   style={{
                     color: '#001858',
                     fontFamily: 'ProductSans',
                   }}
-                  >{item.text
-                  
-                  }</Text>
-                </View>
-                <MaterialIcons
-                  style={localStyles.rightContentUtilities}
-                  name='navigate-next' size={30} color={'#001858'} />
+                >Đang giao</Text>
               </View>
-            </TouchableOpacity>
-          ))}
-         
+              <View style={localStyles.gridColumn}>
+                <Feather name='star' size={30} color={'#001858'} />
+                <Text
+                  style={{
+                    color: '#001858',
+                    fontFamily: 'ProductSans',
+                  }}
+                >Đánh giá
+                </Text>
+              </View>
+            </View>
+          </View>
+
+          <View style={localStyles.Utilities}>
+            <View style={localStyles.Utilities1}>
+              <Text
+                style={{
+                  color: '#001858',
+                  fontFamily: 'ProductSans',
+                }}
+              >Tiện ích</Text>
+            </View>
+            {listItems.map((item, index) => (
+              <TouchableOpacity
+                key={index}
+                style={localStyles.rowUtilities}
+                onPress={() => {
+                  // Handle the press event here
+                  console.log('Item pressed:', item.text);
+                  // Example: navigate to another screen
+                  if (item.text === 'Thú cưng của tôi') {
+                    navigation.navigate('OderScreen');
+                  } else (item.text === 'Trợ giúp và yêu cầu hỗ trợ')
+                  {
+                    navigation.navigate('DetailProduct');// Handle other cases
+                  }
+                }}
+              >
+                <View style={localStyles.rowItemUtilities}>
+                  {item.iconType === 'Fontisto' && (
+                    <Fontisto name={item.icon} size={30} color={'#001858'} />
+                  )}
+                  {item.iconType === 'Ionicons' && (
+                    <Ionicons name={item.icon} size={30} color={'#001858'} />
+                  )}
+                  {item.iconType === 'AntDesign' && (
+                    <AntDesign name={item.icon} size={30} color={'#001858'} />
+                  )}
+                  {item.iconType === 'MaterialIcons' && (
+                    <MaterialIcons name={item.icon} size={30} color={'#001858'} />
+                  )}
+                  {item.iconType === 'Feather' && (
+                    <Feather name={item.icon} size={30} color={'#001858'} />
+                  )}
+
+                  <View style={localStyles.centerContentUtilities}>
+                    <Text style={{
+                      color: '#001858',
+                      fontFamily: 'ProductSans',
+                    }}>{item.text}</Text>
+                  </View>
+                  <MaterialIcons
+                    style={localStyles.rightContentUtilities}
+                    name='navigate-next' size={30} color={'#001858'} />
+                </View>
+              </TouchableOpacity>
+            ))}
+            <View style={localStyles.Utilities1}>
+              <Text
+                style={{
+                  color: '#001858',
+                  fontFamily: 'ProductSans',
+                }}
+              >Tài khoản và quyền riêng tư</Text>
+            </View>
+            {listItems1.map((item, index) => (
+              <TouchableOpacity
+                key={index}
+                style={localStyles.rowUtilities}
+                onPress={() => {
+                  // Handle the press event here
+                  console.log('Item pressed:', item.text);
+                  // Example: navigate to another screen
+                  if (item.text === 'Tài khoản') {
+                    navigation.navigate('InformationAccount');
+                  }
+                }}
+              >
+
+
+                <View style={localStyles.rowItemUtilities}>
+                  {item.iconType === 'Fontisto' && (
+                    <Fontisto name={item.icon} size={30} color={'#001858'} />
+                  )}
+                  {item.iconType === 'Ionicons' && (
+                    <Ionicons name={item.icon} size={30} color={'#001858'} />
+                  )}
+                  {item.iconType === 'AntDesign' && (
+                    <AntDesign name={item.icon} size={30} color={'#001858'} />
+                  )}
+                  {item.iconType === 'MaterialIcons' && (
+                    <MaterialIcons name={item.icon} size={30} color={'#001858'} />
+                  )}
+                  {item.iconType === 'Feather' && (
+                    <Feather name={item.icon} size={22.5} color={'#001858'} />
+                  )}
+
+                  <View style={localStyles.centerContentUtilities}>
+                    <Text
+                      style={{
+                        color: '#001858',
+                        fontFamily: 'ProductSans',
+                      }}
+                    >{item.text
+
+                      }</Text>
+                  </View>
+                  <MaterialIcons
+                    style={localStyles.rightContentUtilities}
+                    name='navigate-next' size={30} color={'#001858'} />
+                </View>
+              </TouchableOpacity>
+            ))}
+
+          </View>
         </View>
-        </View>
-        
+
         <View style={localStyles.logoutContainer}>
           <View style={localStyles.logoutButton}>
             <MaterialIcons name='logout' size={30} color={'#001858'} />
-            <TouchableOpacity onPress={() => {
-               navigation.navigate('OrboadScreen');
-            }}>
-              
-            <Text style={localStyles.logoutButtonText}>Đăng xuất</Text>
+            <TouchableOpacity onPress={onLogout}>
+
+              <Text style={localStyles.logoutButtonText}>Đăng xuất</Text>
 
 
             </TouchableOpacity>
@@ -274,21 +285,21 @@ export default function AccountScreen({ scrollRef, onScrollView }) {
 }
 
 const localStyles = StyleSheet.create({
-  contentContainer:{
+  contentContainer: {
     flex: 1,
-    
-    
+
+
   },
   rowContainer: {
     alignItems: 'center',
-  
+
     borderBottomWidth: 1,
     borderBottomColor: '#F3D2C1',
-    marginTop:10,
-    
+    marginTop: 10,
+
   },
   rowItem: {
-    backgroundColor:'#FEF6E4',
+    backgroundColor: '#FEF6E4',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between', // Optional, to evenly distribute content horizontally
@@ -299,17 +310,17 @@ const localStyles = StyleSheet.create({
     marginLeft: 160,
   },
   gridContainer: {
-    backgroundColor:'#FEF6E4',
+    backgroundColor: '#FEF6E4',
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'space-between',
     padding: 10,
-    
+
   },
-  Container:{
-    flex:1,
+  Container: {
+    flex: 1,
   },
-  purchaseOrder:{
+  purchaseOrder: {
     paddingHorizontal: 15,
     color: '#001858',
   },
@@ -319,9 +330,9 @@ const localStyles = StyleSheet.create({
     marginBottom: 15,
   },
   Utilities1: {
-    backgroundColor:'#FEF6E4',
+    backgroundColor: '#FEF6E4',
     paddingHorizontal: 15,
-    marginTop:10,
+    marginTop: 10,
     borderBottomWidth: 1,
     borderBottomColor: '#F3D2C1',
   },
@@ -333,8 +344,8 @@ const localStyles = StyleSheet.create({
     paddingVertical: 10,
     borderBottomWidth: 1,
     borderBottomColor: '#F3D2C1',
-    backgroundColor:'#FEF6E4',
-    
+    backgroundColor: '#FEF6E4',
+
   },
 
   rowItemUtilities: {
@@ -344,39 +355,39 @@ const localStyles = StyleSheet.create({
   },
   centerContentUtilities: {
     marginLeft: 20,
-    width:300,
+    width: 300,
     fontFamily: 'ProductSansBlod',
     color: '#001858',
   },
   rightContentUtilities: {
     flexDirection: 'row',
     alignItems: 'center',
-    
+
   },
   logoutContainer: {
-   
+
     alignItems: 'center',
     paddingHorizontal: 15,
     marginTop: 20,
     borderWidth: 1,
-  
+
     borderColor: '#F3D2C1',
     paddingVertical: 10,
     borderRadius: 8,
-    backgroundColor:'#FEF6E4',
-    
+    backgroundColor: '#FEF6E4',
+
   },
   logoutButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor:'#FEF6E4',
-   
- 
+    backgroundColor: '#FEF6E4',
+
+
   },
   logoutButtonText: {
     marginLeft: 20,
     color: '#001858',
-  
+
     fontFamily: 'ProductSansBlod',
     color: '#001858',
   },

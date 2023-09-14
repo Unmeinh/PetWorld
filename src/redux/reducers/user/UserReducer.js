@@ -1,6 +1,7 @@
 import {createAsyncThunk, createSlice} from '@reduxjs/toolkit';
 import axiosGet from '../../../api/axios.config';
 const initialState = {
+    loginData: {},
     data: {},
     status: '',
     message: '',
@@ -30,7 +31,7 @@ const userReducer = createSlice({
             })
             .addCase(fetchInfoLogin.fulfilled, (state, action) => {
                 if (action.payload.success === true) {
-                    state.data = action.payload.data;
+                    state.loginData = action.payload.data;
                     state.status = 'being idle';
                 } else {
                     state.status = 'loading';
@@ -51,9 +52,9 @@ const userReducer = createSlice({
 });
 
 export const fetchUsers = createAsyncThunk(
-    'users/list/all',
+    'user/list/all',
     async () => {
-        const res = await axiosGet.get('/users/list/all');
+        const res = await axiosGet.get('/user/list/all');
         return res.data;
     },
 );

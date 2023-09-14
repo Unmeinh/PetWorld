@@ -41,38 +41,24 @@ const PhoneSelect = ({ callBack, isShow, width }) => {
     )
 
     return (
-        // <Modal
-        //     animationIn={'slideInLeft'}
-        //     animationOut={'slideOutRight'}
-        //     animationOutTiming={350}
-        //     animationInTiming={350}
-        //     isVisible={route.isShow}
-        //     backdropColor="#ffffff00"
-        //     onBackdropPress={() => {
-        //         // route.callBack();
-        //     }}
-        //     onBackButtonPress={() => {
-        //         // route.callBack();
-        //     }}>
-        <>
+        < >
             {
                 (isShow) ?
-                    <TouchableWithoutFeedback onPress={() => null}>
-                        <View style={[styles.modalPhoneContainer, { width: width }]} >
-                            <FlatList data={arr_country}
-                                renderItem={({ item, index }) =>
-                                    <ItemCountry key={index} item={item} select={callBack} />}
-                                keyExtractor={(item, index) => index.toString()}
-                                initialNumToRender={10}
-                                removeClippedSubviews={true}
-                                maxToRenderPerBatch={8}
-                                windowSize={11} />
-                        </View>
-                    </TouchableWithoutFeedback >
+                    <View style={[styles.modalPhoneContainer, { width: width }]}
+                        onResponderTerminationRequest={(env) => false} >
+                        <FlatList data={arr_country}
+                            renderItem={({ item, index }) =>
+                                <ItemCountry key={index} item={item} select={callBack} />}
+                            keyExtractor={(item, index) => index.toString()}
+                            initialNumToRender={10}
+                            removeClippedSubviews={true}
+                            maxToRenderPerBatch={8}
+                            windowSize={11}
+                            onResponderTerminationRequest={(env) => false} />
+                    </View>
                     : ""
             }
         </>
-        // </Modal >
     );
 };
 

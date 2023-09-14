@@ -3,7 +3,7 @@ import { View, StyleSheet, Dimensions, Image, Animated, Easing } from 'react-nat
 import * as Animatable from 'react-native-animatable';
 import { storageMMKV } from '../../storage/storageMMKV';
 import { useNavigation } from '@react-navigation/native';
-import axiosGet from '../../api/axios.config';
+import { onAxiosGet } from '../../api/axios.function';
 
 export default function SplashScreen() {
   const navigation = useNavigation();
@@ -72,41 +72,42 @@ export default function SplashScreen() {
     }
   }
 
-  function autoNavigate() {
+  async function autoNavigate() {
     if (storageMMKV.checkKey('login.isFirstTime')) {
       if (!storageMMKV.getBoolean('login.isFirstTime')) {
         if (storageMMKV.checkKey('login.isLogin')) {
           if (storageMMKV.getBoolean('login.isLogin')) {
             if (storageMMKV.checkKey('login.token')) {
               if (storageMMKV.getString('login.token')) {
-                //axios check token
-                axiosGet.get('/user/autoLogin')
-                  .then((res) => {
-                    if (res.data.success) {
-                      navigation.navigate('NaviTabScreen');
-                    } else {
-                      navigation.navigate('LoginScreen');
-                    }
-                  })
-                  .catch((err) => {
-                    navigation.navigate('LoginScreen');
-                  })
+                let res = await onAxiosGet('/user/autoLogin')
+                if (res.success) {
+                  navigation.navigate('NaviTabScreen');
+                } else {
+                  storageMMKV.setValue('login.token', "");
+                  navigation.navigate('LoginScreen');
+                }
               } else {
+                storageMMKV.setValue('login.token', "");
                 navigation.navigate('LoginScreen');
               }
             } else {
+              storageMMKV.setValue('login.token', "");
               navigation.navigate('LoginScreen');
             }
           } else {
+            storageMMKV.setValue('login.token', "");
             navigation.navigate('LoginScreen');
           }
         } else {
+          storageMMKV.setValue('login.token', "");
           navigation.navigate('LoginScreen');
         }
       } else {
+        storageMMKV.setValue('login.token', "");
         navigation.navigate('OrboadScreen');
       }
     } else {
+      storageMMKV.setValue('login.token', "");
       navigation.navigate('OrboadScreen');
     }
   }
