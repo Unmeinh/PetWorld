@@ -1,7 +1,7 @@
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import { NavigationContainer } from '@react-navigation/native';
-import SlashScreen from '../view/splashscreen/SplashScreen';
+import SlashScreen from '../view/slashscreen/SlashScreen';
 import OrboadScreen from '../view/orboardscreen/OrboadScreen';
 import LoginScreen from '../view/form/LoginScreen';
 import NaviTabScreen from './NaviTabScreen';
