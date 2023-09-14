@@ -5,6 +5,7 @@ import {useDispatch} from 'react-redux';
 import {minusProduct, plusProduct} from '../../redux/reducers/shop/CartReduces';
 export default function ItemListCart({data, isSelect}) {
   const dispatch = useDispatch();
+  const product = data.idProduct
   const [selectChild, setSelectChild] = useState(isSelect);
   const iconSelect = selectChild
     ? 'checkbox-marked-circle'
@@ -37,10 +38,10 @@ export default function ItemListCart({data, isSelect}) {
         color={'#F582AE'}
         onPress={() => setSelectChild(!selectChild)}
       />
-      <Image source={data.avatar ? data.avatar : null} style={styles.image} />
+      <Image source={{uri:product?.arrProduct[0]}} style={styles.image} />
       <View style={styles.content}>
-        <Text style={styles.nameProduct}>{data.nameProduct}</Text>
-        <Text>{priceDiscount(data.priceProduct, data.discount)}</Text>
+        <Text style={styles.nameProduct}>{product.nameProduct}</Text>
+        <Text>{priceDiscount(product.priceProduct, product.discount)}</Text>
       </View>
       <View style={styles.boxCount}>
         <View style={styles.icon}>
@@ -49,7 +50,7 @@ export default function ItemListCart({data, isSelect}) {
               name="minus"
               size={16}
               color={'#001858'}
-              onPress={() => dispatch(minusProduct(data.id))}
+              onPress={() => dispatch(minusProduct(product.id))}
             />
           </Text>
         </View>
@@ -62,7 +63,7 @@ export default function ItemListCart({data, isSelect}) {
               name="plus"
               size={16}
               color={'#001858'}
-              onPress={() => dispatch(plusProduct(data.id))}
+              onPress={() => dispatch(plusProduct(product.id))}
             />
           </Text>
         </View>
@@ -117,6 +118,7 @@ const styles = StyleSheet.create({
     width: 70,
     height: 70,
     borderRadius: 4,
+    marginLeft:8
   },
   price: {
     fontFamily: 'ProductSansBold',

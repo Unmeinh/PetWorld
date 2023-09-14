@@ -1,28 +1,30 @@
-import { useCallback } from "react";
+import {useCallback} from 'react';
 
-const useCart = (results, products) => {
-  const groupProductsByShop = {};
-  const listCartCallBack = useCallback(() => {
-    results.forEach(result => {
-      const { idProduct, amount } = result;
-      const product = products.find(product => product.id === idProduct);
-      if (product) {
-        const idShop = product.idShop;
-        if (!groupProductsByShop[idShop]) {
-          groupProductsByShop[idShop] = {
-            idShop: idShop,
-            products: [],
-          };
+const useCart = (cart, shops) => {
+  if (cart || shops) {
+    const groupProductsByShop = {};
+    const listCartCallBack = useCallback(() => {
+      cart.forEach(result => {
+        const {idProduct, amount} = result;
+        const shop = shops.find(shop => shop._id === idProduct.idShop);
+        if (shop) {
+          const idShop = shop._id;
+          if (!groupProductsByShop[idShop]) {
+            groupProductsByShop[idShop] = {
+              idShop: shop,
+              cart: [],
+            };
+          }
+          const productWithAmount = {idProduct, amount};
+          groupProductsByShop[idShop].cart.push(productWithAmount);
         }
-        const productWithAmount = { ...product, amount };
-        groupProductsByShop[idShop].products.push(productWithAmount);
-      }
-    });
+      });
 
-    return Object.values(groupProductsByShop);
-  }, [results, products]);
+      return Object.values(groupProductsByShop);
+    }, [cart, shops]);
 
-  return listCartCallBack();
+    return listCartCallBack();
+  }
 };
 
 export default useCart;

@@ -10,14 +10,10 @@ import React from 'react';
 import Icon from 'react-native-vector-icons/AntDesign';
 import {useSelector} from 'react-redux';
 import {selectFilterIdSelector} from '../../redux/selector';
-import {SharedElement}  from 'react-navigation-shared-element';
-import { useNavigation } from '@react-navigation/native';
-export default function ItemProductVertical({
-  item,
-  disPatchIdProduct,
-}) {
+import {SharedElement} from 'react-navigation-shared-element';
+import {useNavigation} from '@react-navigation/native';
+export default function ItemProductVertical({item, disPatchIdProduct}) {
   const navigation = useNavigation();
-  const idCategory = useSelector(selectFilterIdSelector);
   const priceDiscount = (price, discount) => {
     if (discount > 0) {
       return (
@@ -60,38 +56,37 @@ export default function ItemProductVertical({
         activeOpacity={0.7}
         underlayColor="#00185830"
         onPress={() => {
-          disPatchIdProduct(item.id);
-          navigation.navigate('DetailProduct', {item});
+          disPatchIdProduct(item._id);
+          navigation.navigate('DetailProduct');
         }}>
         <View
           style={{
             marginLeft: 20,
             marginRight: 20,
             marginTop: 14,
-            marginBottom: 20,
+            marginBottom: 8,
             flexDirection: 'row',
           }}>
-          <SharedElement id={`item.${item.id}.image`}>
-            <Image
-              source={
-                idCategory === 1 ? item?.imagePet[0] : item?.imageProduct[0]
-              }
-              style={{width: 90, height: 90, borderRadius: 10}}
-            />
-          </SharedElement>
+          <Image
+            source={{
+              uri: item.imagesPet ? item.imagesPet[0] : item.arrProduct[0],
+            }}
+            style={{width: 90, height: 90, borderRadius: 10}}
+          />
+
           <View style={{marginLeft: 12}}>
             {discountShow(item?.discount)}
-            <SharedElement id={`item.${item.id}.name`}>
-              <Text
-                style={{
-                  fontFamily: 'ProductSansBold',
-                  fontSize: 16,
-                  color: '#001858',
-                  marginTop: 6,
-                }}>
-                {idCategory === 1 ? item?.namePet : item?.nameProduct}
-              </Text>
-            </SharedElement>
+
+            <Text
+              style={{
+                fontFamily: 'ProductSansBold',
+                fontSize: 16,
+                color: '#001858',
+                marginTop: 6,
+              }}>
+              {item?.namePet ? item?.namePet : item?.nameProduct}
+            </Text>
+
             <View
               style={{
                 flexDirection: 'row',
@@ -131,28 +126,18 @@ export default function ItemProductVertical({
                 }}
               />
               <Icon name="star" size={14} color="#FFC20F" />
-              <SharedElement id={`item.${item.id}.name`}>
+
               <Text style={{flexGrow: 1}}>{item?.rate}</Text>
-              </SharedElement>
             </View>
             <View>
               {priceDiscount(
-                idCategory === 1 ? item?.pricePet : item?.priceProduct,
-                item?.discount,
+                item.pricePet ? item.pricePet : item.priceProduct,
+                item.discount,
               )}
             </View>
           </View>
         </View>
       </TouchableHighlight>
-      <View
-        style={{
-          height: 1,
-          backgroundColor: '#000000',
-          opacity: 0.2,
-          marginRight: 20,
-          marginLeft: 20,
-        }}
-      />
     </View>
   );
 }

@@ -1,42 +1,57 @@
 import {StyleSheet, Text, View, Image, Pressable} from 'react-native';
 import React from 'react';
 import Icon from 'react-native-vector-icons/SimpleLineIcons';
-import { useNavigation } from '@react-navigation/native';
-export default function ShopTag({data}) {
+import ShimmerPlaceHolder from '../layout/ShimmerPlaceHolder';
+import {useNavigation} from '@react-navigation/native';
+export default function ShopTag({data, isLoading}) {
   const navigation = useNavigation();
   return (
     <View>
       <View style={styles.tagContainer}>
-        <View style={styles.img}>
-          <Image source={data.avatar} style={styles.img} />
-          {data.status ? <View style={styles.dot} /> : null}
-        </View>
-        <Text style={styles.title}>
-          {data.nameShop}
-          {'\n'}
-          <Text style={styles.titleDes}>
-            {data.status ? 'Đang hoạt động' : 'Offline'}
+        {isLoading === 'idle' ? (
+          <View style={styles.img}>
+            <Image source={{uri: data.avatarShop}} style={styles.img} />
+            {data.status ? <View style={styles.dot} /> : null}
+          </View>
+        ) : (
+          <ShimmerPlaceHolder shimmerStyle={styles.img} />
+        )}
+        {isLoading === 'idle' ? (
+          <Text style={styles.title}>
+            {data.nameShop}
+            {'\n'}
+            <Text style={styles.titleDes}>
+              {data.status ? 'Đang hoạt động' : 'Offline'}
+            </Text>
+            {'\n'}
+            <Icon name="location-pin" size={16} color="#656565" />
+            <Text style={styles.titleDes}> {data.locationShop}</Text>
           </Text>
-          {'\n'}
-          <Icon name="location-pin" size={16} color="#656565" />
-          <Text style={styles.titleDes}>{data.location}</Text>
-        </Text>
-        <Pressable
-          style={styles.button}
-          onPress={() => {
-            navigation.navigate('ShopScreen',{data});
-          }}>
-          <Text style={styles.titleButton}>Xem Shop</Text>
-        </Pressable>
+        ) : (
+          <ShimmerPlaceHolder shimmerStyle={styles.title} />
+        )}
+        {isLoading === 'idle' ? (
+          <Pressable
+            style={styles.button}
+            onPress={() => {
+              navigation.navigate('ShopScreen', {data});
+            }}>
+            <Text style={styles.titleButton}>Xem Shop</Text>
+          </Pressable>
+        ) : null}
       </View>
-      <View style={styles.desContainer}>
-        <Text style={styles.textDes}>
-          {data.quantity} <Text style={styles.textDes2}>Sản phẩm</Text>
-        </Text>
-        <Text style={styles.textDes}>
-          {data.rate} <Text style={styles.textDes2}>Đánh giá</Text>
-        </Text>
-      </View>
+      {isLoading === 'idle' ? (
+        <View style={styles.desContainer}>
+          <Text style={styles.textDes}>
+            {data.quantity} <Text style={styles.textDes2}>Sản phẩm</Text>
+          </Text>
+          <Text style={styles.textDes}>
+            {data.rate} <Text style={styles.textDes2}>Đánh giá</Text>
+          </Text>
+        </View>
+      ) : (
+        <ShimmerPlaceHolder shimmerStyle={styles.title} />
+      )}
     </View>
   );
 }
@@ -68,6 +83,7 @@ const styles = StyleSheet.create({
     marginLeft: 5,
     lineHeight: 21,
     fontSize: 16,
+    borderRadius: 20,
   },
   button: {
     width: 90,

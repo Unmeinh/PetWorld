@@ -1,5 +1,4 @@
 import React from 'react';
-import { createStackNavigator } from '@react-navigation/stack';
 import { NavigationContainer } from '@react-navigation/native';
 import SlashScreen from '../view/slashscreen/SlashScreen';
 import OrboadScreen from '../view/orboardscreen/OrboadScreen';
@@ -34,10 +33,11 @@ import EmailVerification from '../view/account/EmailVerification';
 import OderScreen from '../view/oder/OderScreen';
 import PhoneVerification from '../view/account/PhoneVerification';
 import Email from '../view/account/Email';
-import { createSharedElementStackNavigator } from 'react-navigation-shared-element';
-import MyPetScreen from '../view/account/MyPetScreen';
+import { createStackNavigator } from '@react-navigation/stack';
 import SettingNotify from '../view/notify/SettingNotify';
-const Stack = createSharedElementStackNavigator();
+import MyPetScreen from '../view/account/MyPetScreen';
+const Stack = createStackNavigator();
+
 export default function StackScreen() {
   return (
     <NavigationContainer>
@@ -70,18 +70,7 @@ export default function StackScreen() {
                 },
               };
             },
-          }}
-          sharedElements={route => {
-            const { id } = route.params.item;
-            const objAni = (feild, animation = 'fade-in', resize = 'clip') => {
-              return {
-                id: `item.${id}.${feild}`,
-                animation: animation,
-                resize: resize,
-              }
-            };
-            return [objAni('image'), objAni('name'), objAni('price'), objAni('rate')];
-          }}
+          }}     
         />
         <Stack.Screen name="ShopScreen" component={ShopScreen} />
         <Stack.Screen name="MyPage" component={MyPage} />
