@@ -79,7 +79,6 @@ export default function SplashScreen() {
           if (storageMMKV.getBoolean('login.isLogin')) {
             if (storageMMKV.checkKey('login.token')) {
               if (storageMMKV.getString('login.token')) {
-                navigation.navigate('NaviTabScreen')
                 let res = await onAxiosGet('/user/autoLogin')
                 if (res.success) {
                   navigation.navigate('NaviTabScreen');
