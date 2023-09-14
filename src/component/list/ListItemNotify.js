@@ -1,14 +1,26 @@
 
 import React, { useState } from 'react';
+import { useEffect } from 'react';
 import { View, Text, Image,  Dimensions, StyleSheet,TouchableOpacity } from 'react-native';
 import Feather from 'react-native-vector-icons/Feather';
 import Modal from 'react-native-modal';
 import { ScrollView } from 'react-native-gesture-handler';
 import Icon from 'react-native-vector-icons/Ionicons';
+import { fetchNotices } from '../../redux/reducers/notice/NoticeReducer';
+import { useSelector, useDispatch } from "react-redux";
+import { selectUserByID, userSelectStatus } from '../../redux/selectors/userSelectStatus';
+import { listNotice } from '../../redux/selector';
 const {width, height} = Dimensions.get('window');
 const ListItem = ({ item }) => {
   const [isDialogVisible, setIsDialogVisible] = useState(false);
 
+  
+  const dispatch = useDispatch();
+  const notices = useSelector(listNotice);
+  useEffect(() => {
+    dispatch(fetchNotices());
+  }, []);
+  console.log("Notices in ListItem:", notices);
   const toggleDialog = () => {
     setIsDialogVisible(!isDialogVisible);
   };
@@ -17,17 +29,17 @@ const ListItem = ({ item }) => {
     <TouchableOpacity onPress={toggleDialog}>
       <View style={styles.container}>
         <View style={styles.leftContainer}>
-          <Image source={item.image} style={styles.image} />
+          <Image source={notices.image} style={styles.image} />
         </View>
         <View style={styles.middleContainer}>
           <View style={styles.header}>
-            <Text style={styles.title}>{item.title}</Text>
+            <Text style={styles.title}>{notices.content}</Text>
             <View style={styles.timeContainer}>
               <Feather name='clock' size={13} color={'#001858'} />
-              <Text style={styles.time}>{item.time}</Text>
+              <Text style={styles.time}>{notices.time}</Text>
             </View>
           </View>
-          <Text style={styles.content}>{item.content}</Text>
+          <Text style={styles.content}>{notices.content}</Text>
         </View>
         <View style={styles.rightContainer}>
           <Feather name='more-horizontal' size={30} color={'#001858'} />

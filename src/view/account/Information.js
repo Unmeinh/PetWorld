@@ -3,12 +3,15 @@ import {
   ScrollView,
   Dimensions, StyleSheet, TouchableOpacity
 } from 'react-native'
-import React from 'react'
+import React , { useEffect }from 'react'
 import styles from '../../styles/temp.style';
 import HeaderTitleAccount from '../../component/header/HeaderTitleAccount';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { useNavigation } from '@react-navigation/native';
 import { useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { selectUserByID, userSelectStatus } from '../../redux/selectors/userSelector'; // Điều chỉnh đường dẫn theo đúng cấu trúc của dự án
+import { fetchInfoLogin } from '../../redux/reducers/user/userReducer';
 const listItems = [
 
   {
@@ -40,6 +43,31 @@ export default function Information({ scrollRef, onScrollView }) {
   const navigation = useNavigation();
   const [birthDate, setBirthDate] = useState('');
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const dispatch = useDispatch();
+  const infoLogin = useSelector(selectUserByID);
+  const uSelectStatus = useSelector(userSelectStatus);
+
+  useEffect(() => {
+    if (uSelectStatus === "being idle") {
+      console.log("infoLogin:", infoLogin);
+      console.log("avatarUser:", infoLogin.avatarUser);
+    }
+
+  }, [uSelectStatus]);
+  
+  React.useEffect(() => {
+    const unsub = navigation.addListener('focus', () => {
+        dispatch(fetchInfoLogin());
+        // setisLoader(true);
+
+        // return navigation.remove();
+        return () => {
+            unsub.remove();
+        };
+    });
+
+    return unsub;
+}, [navigation]);
 
 const toggleModal = () => {
   setIsModalVisible(!isModalVisible);
@@ -95,20 +123,20 @@ const handleSaveBirthDate = (selectedDate) => {
                     fontFamily: 'ProductSans',
                     fontWeight: 'bold',
                   }}
-                  >{item.name}</Text>}
+                  >{infoLogin.fullName}</Text>}
                   {item.number && <Text
                   style={{
                     color: '#001858',
                     fontFamily: 'ProductSans',
                   }}
-                  >{item.number}</Text>}
+                  >{infoLogin.phoneNumber}</Text>}
                   {item.status && <Text
                   style={{
                     color: '#001858',
                     fontFamily: 'ProductSans',
                     color:'red',
                   }}
-                  >{item.status}</Text>}
+                  >{infoLogin.email}</Text>}
                 </View>
                 <View style={localStyles.rightContentUtilities}>
                  

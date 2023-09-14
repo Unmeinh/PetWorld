@@ -2,7 +2,7 @@ import axios from "axios";
 import { storageMMKV } from "../storage/storageMMKV";
 
 const tokenHeader =  (storageMMKV.checkKey('login.token')) ? `Bearer ${storageMMKV.getString('login.token')}` : undefined;
-const apiURL = "https://ec17-2a09-bac1-7a80-40-00-245-96.ngrok-free.app/api";
+const apiURL = "https://3efc-2405-4802-1c98-ecb0-5458-6a6e-c7f5-706e.ngrok-free.app/api";
 
 const axiosJSON = axios.create();
 
@@ -13,7 +13,7 @@ axiosJSON.defaults.headers = {
     'Content-Type': 'application/json',
     "Content-Type": "application/x-www-form-urlencoded",
     "Authorization" : tokenHeader
-};
+}
 
 const axiosFormData = axios.create();
 
