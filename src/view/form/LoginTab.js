@@ -11,17 +11,17 @@ import Entypo from 'react-native-vector-icons/Entypo';
 import Feather from 'react-native-vector-icons/Feather';
 import LinearGradient from 'react-native-linear-gradient';
 import { useNavigation } from '@react-navigation/native';
-import { axiosJSON } from '../../api/axios.config';
 import { storageMMKV } from '../../storage/storageMMKV';
 import Toast from 'react-native-toast-message';
-import { ToastLayout } from '../../component/layout/ToastLayout';
+import { onAxiosPost } from '../../api/axios.function';
 
 export default function LoginTab(route) {
     const navigation = useNavigation();
     const [passToggle, setpassToggle] = useState(true);
     const [rememberMe, setrememberMe] = useState(false);
-    const [inputUsername, setinputUsername] = useState("");
+    const [inputUsername, setinputUsername] = useState(route.user);
     const [inputPassword, setinputPassword] = useState("");
+    const [isDisableRequest, setisDisableRequest] = useState(false);
 
     function onChangePassToggle() {
         if (passToggle == true) {
@@ -40,80 +40,68 @@ export default function LoginTab(route) {
     }
 
     function onChangeTab() {
-        route.callback();
+        route.callback(inputUsername);
     }
 
-    function checkValidate(inputObj) {
-        if (inputObj.userName == "") {
-            ToastAndroid.show('Tên đăng nhập không được trống!', ToastAndroid.SHORT);
+    function checkValidate() {
+        if (inputUsername == "") {
+            Toast.show({
+                type: 'error',
+                position: 'top',
+                text1: 'Tên đăng nhập không được trống!',
+                bottomOffset: 20,
+            });
             return false;
         }
 
-        if (inputObj.passWord == "") {
-            ToastAndroid.show('Mật khẩu không được trống!', ToastAndroid.SHORT);
+        if (inputPassword == "") {
+            Toast.show({
+                type: 'error',
+                position: 'top',
+                text1: 'Mật khẩu không được trống!',
+                bottomOffset: 20,
+            });
             return false;
         }
-
         return true;
     }
 
-    function onSignIn() {
+    async function onSignIn() {
         var newUser = {
             userName: inputUsername,
             passWord: inputPassword
         }
 
-        if (checkValidate(newUser) == false) {
-            // ToastAndroid.show("Đăng nhập thất bại!", ToastAndroid.SHORT);
+        if (checkValidate() == false) {
             return;
         }
 
-        var formdata = new FormData();
-        formdata.append("userName", newUser.userName);
-        formdata.append("passWord", newUser.passWord);
+        setisDisableRequest(true);
 
-        axiosJSON.post('user/login', newUser)
-            .then((response) => {
-                if (response.status == 200) {
-                    var data = response.data;
-                    if (data.success) {
-                        Toast.show({
-                            type: 'success',
-                            position: 'top',
-                            text1: String(data.message),
-                            bottomOffset: 20
-                        });
-                        storageMMKV.setValue('login.token', String(data.token));
-                        console.log(storageMMKV.getString('login.token'));
-                        if (rememberMe) {
-                            storageMMKV.setValue('login.isLogin', true);
-                        } else {
-                            storageMMKV.setValue('login.isLogin', false);
-                        }
-                        if (storageMMKV.getString('login.token') == String(data.token)) {
-                            navigation.navigate('NaviTabScreen');
-                        }
-                    }
-                } else {
-                    var data = response.data;
-                    Toast.show({
-                        type: 'error',
-                        position: 'top',
-                        text1: String(data.message),
-                        bottomOffset: 20
-                    });
-                }
-            })
-            .catch((e) => {
-                // var data = response.data;
-                console.log(e);
-                Toast.show({
-                    type: 'error',
-                    position: 'top',
-                    text1: String(e.response.data.message),
-                    bottomOffset: 20
-                });
-            });
+        Toast.show({
+            type: 'loading',
+            position: 'top',
+            text1: 'Đang đăng nhập...',
+            bottomOffset: 20,
+            autoHide: false
+        });
+
+        const response = await onAxiosPost('user/login', newUser, "Json");
+        if (response) {
+            storageMMKV.setValue('login.token', String(response.token));
+            if (rememberMe) {
+                storageMMKV.setValue('login.isLogin', true);
+            } else {
+                storageMMKV.setValue('login.isLogin', false);
+            }
+            if (storageMMKV.getString('login.token') == String(response.token)) {
+                Toast.hide();
+                navigation.navigate('NaviTabScreen');
+            }
+        } else {
+            console.log("Đăng nhập thất bại");
+            setisDisableRequest(false);
+        }
     }
 
     return (
@@ -142,7 +130,7 @@ export default function LoginTab(route) {
                     <View>
                         <Text style={[{
                             color: 'rgba(0, 24, 88, 0.80)',
-                        }, styles.titleInput]}>Tên đăng nhập hoặc số điện thoại</Text>
+                        }, styles.titleInput]}>Tên đăng nhập</Text>
                         <TextInput style={styles.textInput} value={inputUsername}
                             onChangeText={(input) => { setinputUsername(input) }} />
                     </View>
@@ -159,12 +147,12 @@ export default function LoginTab(route) {
                                     ?
                                     <TouchableOpacity style={styles.togglePassword}
                                         onPress={onChangePassToggle}>
-                                        <Entypo name='eye' color={'#001858'} size={25} />
+                                        <Entypo name='eye' color={'#001858'} size={22} />
                                     </TouchableOpacity>
                                     :
                                     <TouchableOpacity style={styles.togglePassword}
                                         onPress={onChangePassToggle}>
-                                        <Entypo name='eye-with-line' color={'#001858'} size={25} />
+                                        <Entypo name='eye-with-line' color={'#001858'} size={22} />
                                     </TouchableOpacity>
                             }
                         </View>
@@ -188,7 +176,7 @@ export default function LoginTab(route) {
                                 color: '#001858',
                             }, styles.titleInput]}>Ghi nhớ tôi?</Text>
                         </View>
-                        <TouchableHighlight onPress={() => { route.nav.navigate('ForgetPassword') }}
+                        <TouchableHighlight onPress={() => { navigation.navigate('ForgetPassword') }}
                             activeOpacity={0.5} underlayColor="#00185830" style={{ marginTop: 15 }}>
                             <Text style={{
                                 color: '#001858', textDecorationLine: 'underline',
@@ -199,7 +187,7 @@ export default function LoginTab(route) {
 
                     <TouchableHighlight style={styles.buttonConfirm}
                         activeOpacity={0.5} underlayColor="#DC749C"
-                        onPress={onSignIn}>
+                        onPress={onSignIn} disabled={isDisableRequest}>
                         <Text style={styles.textButtonConfirm}>Đăng nhập</Text>
                     </TouchableHighlight>
 
@@ -230,7 +218,6 @@ export default function LoginTab(route) {
                     </View>
                 </View>
             </View>
-            <ToastLayout />
         </View>
     );
 }

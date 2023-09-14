@@ -11,7 +11,7 @@ import ItemBlogLoader from '../../component/items/ItemBlogLoader';
 import { useNavigation } from '@react-navigation/native';
 import Entypo from 'react-native-vector-icons/Entypo';
 import { useSelector, useDispatch } from "react-redux";
-import { selectUserByID, userSelectStatus } from '../../redux/selectors/userSelector';
+import { selectUserLogin, userSelectStatus } from '../../redux/selectors/userSelector';
 import { selectBlogs, blogSelectStatus } from '../../redux/selectors/blogSelector';
 import { fetchInfoLogin } from '../../redux/reducers/user/userReducer';
 import { fetchBlogs } from '../../redux/reducers/blog/blogReducer';
@@ -21,7 +21,7 @@ import ShimmerPlaceHolder from '../../component/layout/ShimmerPlaceHolder';
 const BlogScreen = ({ scrollRef, onScrollView }) => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
-  const infoLogin = useSelector(selectUserByID);
+  const infoLogin = useSelector(selectUserLogin);
   const arr_blog = useSelector(selectBlogs);
   const uSelectStatus = useSelector(userSelectStatus);
   const bSelectStatus = useSelector(blogSelectStatus);
@@ -29,7 +29,6 @@ const BlogScreen = ({ scrollRef, onScrollView }) => {
   const colorLoader = ['#f0e8d8', '#dbdbdb', '#f0e8d8'];
   const [srcAvatar, setsrcAvatar] = useState(require('../../assets/images/error.png'));
   const [isLoader, setisLoader] = useState(true);
-  console.log("Render BlogScreen");
 
   useEffect(() => {
     if (bSelectStatus == 'being idle') {
