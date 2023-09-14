@@ -9,7 +9,11 @@ export const selectFilterDetailProduct = state => state.searchFilter.detailProdu
 export const selectStatusDetailProduct = state => state.searchFilter.status;
 export const categorySelector = state => state.category.categorys;
 export const categoryStatusSelector = state => state.category.status;
-export const listShopSelector = state => state.listShop;
+export const listShopSelector = state => state.listShop.shops;
+export const listShopStatusSelector = state => state.listShop.status;
+export const listCartSelector = state => state.listCart.carts
+export const listCartStatusSelector = state => state.listCart.status
+
 export const listFilterSelector = createSelector(
   listPetSelector,
   searchFilterSelector,
@@ -41,5 +45,4 @@ export const categoryIdSelector = createSelector(
 );
 export const filterAll = state => state.searchFilter.filterProduct;
 
-export const listCartSelector = state => state.listCart
 

@@ -47,7 +47,7 @@ const filtersReducer =  createSlice({
   },
   extraReducers: builder => {
     builder.addCase(fetchDetailProduct.pending , (state, action) => {
-      state.loading = 'loading'
+      state.status = 'loading'
     }).addCase(fetchDetailProduct.fulfilled, (state, action) => {
       if (action.payload.success === true) {
         state.detailProduct = action.payload.data;

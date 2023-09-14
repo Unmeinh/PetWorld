@@ -20,7 +20,7 @@ import SliderImage from '../../component/detailProduct/SliderImage';
 import Icon from 'react-native-vector-icons/Ionicons';
 import ShopTag from '../../component/shop/ShopTag';
 import ListHorizontal from '../../component/list/ListHorizontal';
-import {addCart} from '../../redux/reducers/shop/CartReduces';
+import {addCart, addProductToCart} from '../../redux/reducers/shop/CartReduces';
 import ShimmerPlaceHolder from '../../component/layout/ShimmerPlaceHolder';
 import { setStatusFilter } from '../../redux/reducers/filters/filtersReducer';
 const {width} = Dimensions.get('screen');
@@ -102,11 +102,11 @@ function DetailProduct({navigation}) {
       opacityAnimation.setValue(0);
     };
   }, [isVisible]);
-  useEffect(() => {
-    return () =>{
-      dispatch(setStatusFilter('loading'))
-    }
-  }, [navigation]);
+  // useEffect(() => {
+  //   // return () =>{
+  //   //   dispatch(setStatusFilter('loading'))
+  //   // }
+  // }, [navigation]);
   const handleAddCart = (idProduct, idUser, mount) => {
     dispatch(
       addCart({
@@ -359,7 +359,7 @@ function DetailProduct({navigation}) {
           </TouchableOpacity>
         ) : (
           <TouchableOpacity
-            onPress={() => handleAddCart(product.id, '1234', 6)}
+            onPress={() => dispatch(addProductToCart({idProduct:resultDetail._id, amount:1}))}
             style={[
               styles.buttonBooking,
               styles.buttonSheet,
@@ -487,4 +487,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default React.memo(DetailProduct);
+export default  DetailProduct;

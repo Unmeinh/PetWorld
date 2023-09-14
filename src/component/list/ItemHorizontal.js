@@ -39,7 +39,7 @@ export default function ItemHorizontal({item,type,route}) {
     <Pressable
       onPress={() => {
         dispatch(fetchDetailProduct({id:item._id,type}));
-        navigation.navigate('DetailProduct');
+        navigation.push('DetailProduct');
       }}
       style={{
         width: 110,
@@ -52,7 +52,7 @@ export default function ItemHorizontal({item,type,route}) {
       }}>
       <Animated.Image
         source={
-          item.arrProduct ? {uri: item.arrProduct[1]} : {uri: item.imagesPet[0]}
+          item.arrProduct ? {uri: item.arrProduct[0]} : {uri: item.imagesPet[0]}
         }
         style={{
           width: '100%',
