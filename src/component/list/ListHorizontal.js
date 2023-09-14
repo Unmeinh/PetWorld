@@ -27,7 +27,7 @@ function ListHorizontal({data, title, isLoader, type}) {
               <Text style={styles.fontStyle}>{title}</Text>,
               <Pressable
                 onPress={() => navigation.navigate('ListProductScreen',{type})}>
-                <Text style={styles.fontAll}>Xem tất cả</Text>
+                <Text style={styles.fontAll}>Xem thêm</Text>
               </Pressable>,
             ]}
       </View>
