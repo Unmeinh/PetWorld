@@ -6556,11 +6556,6 @@ react-native-parsed-text@0.0.22:
   dependencies:
     prop-types "^15.7.x"
 
-react-native-permissions@^3.9.1:
-  version "3.9.1"
-  resolved "https://registry.yarnpkg.com/react-native-permissions/-/react-native-permissions-3.9.1.tgz#15f1039b3e6d9b4250f715db642ce0a38e0ae101"
-  integrity sha512-9Pvq7d8hb75+DVzdU5qrwTNmlULWqCugusCxD4Hce0ztbQhInS0tdgp/qt1neWLS0Xg6WX+emr9dM4BpKdk87w==
-
 react-native-progress@oblador/react-native-progress#pull/258/head:
   version "5.0.0"
   resolved "https://codeload.github.com/oblador/react-native-progress/tar.gz/1a20f605c36a3301ff2b8e5f6f3010c3c82552e4"

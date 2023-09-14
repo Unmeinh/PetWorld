@@ -162,7 +162,7 @@ export default function SplashScreen() {
       {dauchanPositions.map((position, index) => (
         <View onLayout={onLayoutPaw} key={position} style={[styles.dauchanContainer, { left: position * (dauchanContainerWidth + stepDistance) }]}>
           <Image
-            source={require('../../assets/images/logoApp/dauchan.png')}
+            source={require('../../assets/images/logoApp/footprint.png')}
             style={[
               styles.dauchanImage,
               {
