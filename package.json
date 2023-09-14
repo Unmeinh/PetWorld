@@ -38,6 +38,7 @@
     "react-native-mmkv": "^2.10.2",
     "react-native-modal": "^13.0.1",
     "react-native-otp-textinput": "^1.1.1",
+    "react-native-otp-verify": "^1.1.6",
     "react-native-pager-view": "^6.2.0",
     "react-native-progress": "oblador/react-native-progress#pull/258/head",
     "react-native-reanimated": "^3.4.2",
