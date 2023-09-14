@@ -19,19 +19,19 @@ export default function SplashScreen() {
   const nameImageWidth = screenWidth * 0.7;
   const nameImageHeight = (nameImageWidth * logoSize) / logoSize;
 
-  const footprintContainerWidth = 24;
+  const dauchanContainerWidth = 24;
   const stepDistance = 3.7; // Khoảng cách giữa các bước chân
-  const totalSteps = Math.ceil(screenWidth / (footprintContainerWidth + stepDistance)); // Tổng số bước chân cần di chuyển
+  const totalSteps = Math.ceil(screenWidth / (dauchanContainerWidth + stepDistance)); // Tổng số bước chân cần di chuyển
 
   const stepAnimation = new Animated.Value(0);
-  const [footprintPositions, setFootPrintPositions] = useState([]);
+  const [dauchanPositions, setDauchanPositions] = useState([]);
   const [logoVisible, setLogoVisible] = useState(true);
   const [nameVisible, setNameVisible] = useState(false);
   const [isRunningAnimated, setisRunningAnimated] = useState(true);
 
   useEffect(() => {
     if (isRunningAnimated) {
-      const moveFootPrint = () => {
+      const moveDauchan = () => {
         Animated.timing(stepAnimation, {
           toValue: totalSteps,
           duration: 200,
@@ -39,7 +39,7 @@ export default function SplashScreen() {
           useNativeDriver: true,
         }).start(({ finished }) => {
           if (finished) {
-            setFootPrintPositions([...footprintPositions, footprintPositions.length]);
+            setDauchanPositions([...dauchanPositions, dauchanPositions.length]);
           }
         });
       };
@@ -57,13 +57,13 @@ export default function SplashScreen() {
         }, 300); // Hiển thị phần nameImageContainer sau khi logo biến mất 0.5 giây
       };
 
-      moveFootPrint();
+      moveDauchan();
       hideLogo();
 
     } else {
       autoNavigate();
     }
-  }, [footprintPositions]);
+  }, [dauchanPositions]);
 
   function onLayoutPaw(event) {
     const { x, y, height, width } = event.nativeEvent.layout;
@@ -79,19 +79,19 @@ export default function SplashScreen() {
           if (storageMMKV.getBoolean('login.isLogin')) {
             if (storageMMKV.checkKey('login.token')) {
               if (storageMMKV.getString('login.token')) {
+                navigation.navigate('NaviTabScreen')
                 //axios check token
-                navigation.navigate('NaviTabScreen');
-                // axiosGet.get('/user/token/' + storageMMKV.getString('login.token'))
-                //   .then((res) => {
-                //     if (res.data.success) {
-                //       navigation.navigate('NaviTabScreen');
-                //     } else {
-                //       navigation.navigate('LoginScreen');
-                //     }
-                //   })
-                //   .catch((err) => {
-                //     navigation.navigate('LoginScreen');
-                //   })
+                axiosGet.get('/user/autoLogin')
+                  .then((res) => {
+                    if (res.data.success) {
+                      navigation.navigate('NaviTabScreen');
+                    } else {
+                      navigation.navigate('LoginScreen');
+                    }
+                  })
+                  .catch((err) => {
+                    navigation.navigate('LoginScreen');
+                  })
               } else {
                 navigation.navigate('LoginScreen');
               }
@@ -112,7 +112,7 @@ export default function SplashScreen() {
     }
   }
 
-  const footprintContainerStyles = {
+  const dauchanContainerStyles = {
     position: 'absolute',
     bottom: screenHeight * 0.4,
     transform: [
@@ -122,7 +122,7 @@ export default function SplashScreen() {
       {
         translateX: stepAnimation.interpolate({
           inputRange: [0, totalSteps],
-          outputRange: [0, totalSteps * (footprintContainerWidth + stepDistance)],
+          outputRange: [0, totalSteps * (dauchanContainerWidth + stepDistance)],
         }),
       },
       {
@@ -159,12 +159,12 @@ export default function SplashScreen() {
           />
         </Animatable.View>
       )}
-      {footprintPositions.map((position, index) => (
-        <View onLayout={onLayoutPaw} key={position} style={[styles.footprintContainer, { left: position * (footprintContainerWidth + stepDistance) }]}>
+      {dauchanPositions.map((position, index) => (
+        <View onLayout={onLayoutPaw} key={position} style={[styles.dauchanContainer, { left: position * (dauchanContainerWidth + stepDistance) }]}>
           <Image
-            source={require('../../assets/images/logoApp/footprint.png')}
+            source={require('../../assets/images/logoApp/dauchan.png')}
             style={[
-              styles.footprintImage,
+              styles.dauchanImage,
               {
                 bottom: index % 2 === 0 ? bottomPosition1 : bottomPosition2,
               },
@@ -189,11 +189,11 @@ const styles = StyleSheet.create({
   nameImageContainer: {
     position: 'absolute',
   },
-  footprintContainer: {
+  dauchanContainer: {
     position: 'absolute',
     bottom: 0,
   },
-  footprintImage: {
+  dauchanImage: {
     width: 24,
     height: 24,
   },
