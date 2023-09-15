@@ -1,10 +1,14 @@
 import {createAsyncThunk, createSlice} from '@reduxjs/toolkit';
 import api from '../../../api/axios.config';
 
-const listPetSlice = createSlice({
-  name: 'listPet',
+const listProductSlice = createSlice({
+  name: 'listproducts',
   initialState: {status: 'idle', products: [], message: ''},
-  reducers: {},
+  reducers: {
+    handleStatusProducts: (state,action) => {
+      state.status = action.payload
+    }
+  },
   extraReducers: builder => {
     builder
       .addCase(fetchProducts.pending, (state, action) => {
@@ -24,8 +28,9 @@ const listPetSlice = createSlice({
 export const fetchProducts = createAsyncThunk(
   'products/fetchProducts',
   async () => {
-    const res = await api.get('/product');
+    const res = await api.get('/product/list/all');
     return res.data;
   },
 );
-export default listPetSlice.reducer;
+export const {handleStatusProducts} = listProductSlice.actions;
+export default listProductSlice.reducer;

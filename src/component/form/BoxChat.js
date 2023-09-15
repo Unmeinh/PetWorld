@@ -68,16 +68,6 @@ export default function BoxChat() {
       />
     );
   };
-  const customMessage = props => {
-    return (
-      <Message
-        {...props}
-        containerStyle={{
-         
-        }}
-      />
-    );
-  };
   return (
     <GiftedChat
       textInputProps={{autoFocus: true}}
@@ -90,7 +80,6 @@ export default function BoxChat() {
       renderInputToolbar={customtInputToolbar}
       renderSend={customSend}
       renderBubble={customBuddle}
-      renderMessage={customMessage}
       minInputToolbarHeight={65}
     />
   );
@@ -99,16 +88,20 @@ export default function BoxChat() {
 const styles = StyleSheet.create({
   buttonSend: {
     backgroundColor: 'transparent',
-    borderWidth: 1.7,
-    borderRadius: 30,
+    borderTopWidth:2,
+    borderBottomWidth:2,
+    borderLeftWidth:2,
+    borderRightWidth:2,
+    borderRadius:50,
+    marginBottom:8,
+    marginHorizontal:10,
     borderColor: '#F582AE',
-    margin: 10,
+    
+  
   },
   customSed:{
-    borderWidth: 0,
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: 10,
-    fontSize: 10,
   }
 });

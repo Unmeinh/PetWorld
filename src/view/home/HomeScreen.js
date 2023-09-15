@@ -17,7 +17,8 @@ import {
   listProductSelector,
   categorySelector,
   categoryStatusSelector,
-  listStatusProductSelector
+  listStatusProductSelector,
+  listStatusPetsSelector
 } from '../../redux/selector';
 import LinearGradient from 'react-native-linear-gradient';
 import {createShimmerPlaceholder} from 'react-native-shimmer-placeholder';
@@ -27,6 +28,7 @@ import ListHorizontal from '../../component/list/ListHorizontal';
 import { fetchCategorys } from '../../redux/reducers/category/category';
 import { useDispatch } from 'react-redux';
 import { fetchProducts } from '../../redux/reducers/product/ProductReducer';
+import { fetchPets } from '../../redux/reducers/pet/PetReducer';
 
 const ShimmerPlaceHolder = createShimmerPlaceholder(LinearGradient);
 export default function HomeScreen({scrollRef, onScrollView, navigation}) {
@@ -37,10 +39,12 @@ export default function HomeScreen({scrollRef, onScrollView, navigation}) {
   const listCategory = useSelector(categorySelector); 
   const statusCategorys = useSelector(categoryStatusSelector); 
   const statusProducts = useSelector(listStatusProductSelector); 
+  const statusPets = useSelector(listStatusPetsSelector); 
   const colorLoader = ['#f0e8d8', '#dbdbdb', '#f0e8d8'];
   const [isLoader, setisLoader] = useState(() =>true);
   useEffect(() => {
     dispatch(fetchCategorys())
+    dispatch(fetchPets())
     dispatch(fetchProducts())
     setTimeout(() => {
       setisLoader(false);
@@ -99,10 +103,10 @@ export default function HomeScreen({scrollRef, onScrollView, navigation}) {
 
         <CategoryList data={listCategory} isLoader={statusCategorys}/>
         {/* listpetnew */}
-        <ListHorizontal data={listPet} title="Thú cưng mới" isLoader={isLoader} />
+        <ListHorizontal data={listPet} title="Thú cưng mới" isLoader={statusPets} type={0} />
         {/* listproductnew */}
         <View style={{marginBottom:20}}>
-        <ListHorizontal data={listProduct} title="Sản phẩm mới" isLoader={statusProducts}/>
+        <ListHorizontal data={listProduct} title="Sản phẩm mới" isLoader={statusProducts} type={1}/>
         </View>
        
       </ScrollView>
