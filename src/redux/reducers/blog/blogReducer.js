@@ -1,6 +1,6 @@
 import listBlog from '../../../data/blog';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import axiosGet from '../../../api/axios.config';
+import { onAxiosGet } from '../../../api/axios.function';
 const initialState = {
     data: {},
     status: '',
@@ -54,19 +54,17 @@ const blogReducer = createSlice({
 export const fetchBlogs = createAsyncThunk(
     'blog/list/all',
     async () => {
-        const res = await axiosGet.get('/blog/list/all');
-        return res.data;
+        const res = await onAxiosGet('/blog/list/all');
+        return res;
     },
 );
 
 export const fetchBlogsUser = createAsyncThunk(
     'blog/list/user',
     async (id) => {
-        const res = await axiosGet.get('/blog/list/user/' + id);
-        console.log(res.data);
-        return res.data;
+        const res = await onAxiosGet('/blog/list/user/' + id);
+        return res;
     },
 );
 
-export const { getAllBlogs, getUserBlogs, getDetailBlog } = blogReducer.actions;
 export default blogReducer.reducer;

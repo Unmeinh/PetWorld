@@ -1,11 +1,13 @@
-import axiosGet from "./axios.config";
-import { axiosJSON, axiosFormData } from "./axios.config";
+import axiosAPi from "./axios.config";
 import Toast from "react-native-toast-message";
 import { storageMMKV } from "../storage/storageMMKV";
-import store from "../redux/store";
 
 export async function onAxiosGet(url) {
-    const response = await axiosGet.get(url)
+    let axios = axiosAPi;
+    axios.defaults.headers = {
+        "Authorization": (storageMMKV.getString('login.token') != "") ? `Bearer ${storageMMKV.getString('login.token')}` : undefined
+    };
+    const response = await axios.get(url)
         .catch((e) => {
             // var data = response.data;
             console.log(e);
@@ -72,11 +74,21 @@ export async function onAxiosGet(url) {
 }
 
 export async function onAxiosPost(url, body, typeBody) {
-    let axios = null;
+    let axios = axiosAPi;
     if (String(typeBody).toLocaleLowerCase() == 'json') {
-        axios = axiosJSON;
+        axios.defaults.headers = {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+            "Content-Type": "application/x-www-form-urlencoded",
+            "Authorization": (storageMMKV.getString('login.token') != "") ? `Bearer ${storageMMKV.getString('login.token')}` : undefined
+        };
     } else if (String(typeBody).toLocaleLowerCase() == 'formdata') {
-        axios = axiosFormData;
+        axios.defaults.headers = {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+            'Content-Type': 'multipart/form-data',
+            "Authorization": (storageMMKV.getString('login.token') != "") ? `Bearer ${storageMMKV.getString('login.token')}` : undefined
+        };
     } else {
         console.log("Sai thể loại");
         return false;
@@ -154,14 +166,14 @@ export async function onAxiosPut(url, body, typeBody) {
             Accept: 'application/json',
             'Content-Type': 'application/json',
             "Content-Type": "application/x-www-form-urlencoded",
-            "Authorization": getTokenUser()
+            "Authorization": (storageMMKV.getString('login.token') != "") ? `Bearer ${storageMMKV.getString('login.token')}` : undefined
         };
     } else if (String(typeBody).toLocaleLowerCase() == 'formdata') {
         axios.defaults.headers = {
             Accept: 'application/json',
             'Content-Type': 'application/json',
             'Content-Type': 'multipart/form-data',
-            "Authorization": getTokenUser()
+            "Authorization": (storageMMKV.getString('login.token') != "") ? `Bearer ${storageMMKV.getString('login.token')}` : undefined
         };
     } else {
         console.log("Sai thể loại");

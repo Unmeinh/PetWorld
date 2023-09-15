@@ -1,5 +1,5 @@
 import {createAsyncThunk, createSlice} from '@reduxjs/toolkit';
-import axiosGet from '../../../api/axios.config';
+import { onAxiosGet } from '../../../api/axios.function';
 const initialState = {
     loginData: {},
     data: {},
@@ -54,30 +54,30 @@ const userReducer = createSlice({
 export const fetchUsers = createAsyncThunk(
     'user/list/all',
     async () => {
-        const res = await axiosGet.get('/user/list/all');
-        return res.data;
+        const res = await onAxiosGet('/user/list/all');
+        return res;
     },
 );
 export const fetchInfoLogin = createAsyncThunk(
     'user/myDetail',
     async () => {
-        const res = await axiosGet.get('/user/myDetail');
-        return res.data;
+        const res = await onAxiosGet('/user/myDetail');
+        return res;
     },
 );
 export const fetchInfoUser = createAsyncThunk(
     'user/userDetail',
     async (id) => {
-        const res = await axiosGet.get('/user/userDetail/' + id);
-        return res.data;
+        const res = await onAxiosGet('/user/userDetail/' + id);
+        return res;
     },
 );
 export const fetchFollowUser = createAsyncThunk(
     'user/myDetail',
     async () => {
-        const res = await axiosGet.get('/user/userDetal');
-        return res.data;
+        const res = await onAxiosGet('/user/userDetal');
+        return res;
     },
 );
-export const { getInfoLogin, getInfoUser, getFollowUser } = userReducer.actions;
+
 export default userReducer.reducer;

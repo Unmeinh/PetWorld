@@ -110,7 +110,6 @@ export default function RegisterPassword({ route }) {
         } catch (error) {
           console.log(error);
         }
-
       }
     }
   }
