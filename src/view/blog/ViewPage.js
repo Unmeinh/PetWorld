@@ -89,7 +89,7 @@ const ViewPage = ({ route }) => {
         }
 
         function OpenListFollow(type) {
-            navigation.navigate('ListFollow', { idUser: infoUser._id, typeFollow: type });
+            navigation.push('ListFollow', { idUser: infoUser._id, typeFollow: type });
         }
 
         return (
