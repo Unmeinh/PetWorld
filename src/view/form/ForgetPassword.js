@@ -61,20 +61,32 @@ export default function ForgetPassword({ navigation }) {
 
   async function onContinue() {
     var regEmail = /^(\w+@[a-zA-Z]+\.[a-zA-Z]{2,})$/;
-    var regPhone = /^(\+\d{10,})$/;
+    var regPhone = /^(\+\d{9,})$/;
 
     if (isSelectPhone == false && isSelectEmail == false) {
-      ToastAndroid.show('Phương thức xác minh chưa được chọn!', ToastAndroid.SHORT);
+      Toast.show({
+        type: 'error',
+        text1: 'Phương thức xác minh chưa được chọn!',
+        position: 'top',
+      })
       return;
     }
 
     if (!(inputPhoneCountry + inputPhoneNumber).match(regPhone) && isSelectPhone == true) {
-      ToastAndroid.show('Số điện thoại chưa đúng định dạng!', ToastAndroid.SHORT);
+      Toast.show({
+        type: 'error',
+        text1: 'Số điện thoại cần đúng định dạng!\nVí dụ: +123456789',
+        position: 'top',
+      })
       return;
     }
 
     if (!inputEmail.match(regEmail) && isSelectEmail == true) {
-      ToastAndroid.show('Email chưa đúng định dạng!', ToastAndroid.SHORT);
+      Toast.show({
+        type: 'error',
+        text1: 'Email cần đúng định dạng!\nVí dụ: abc@def.xyz',
+        position: 'top',
+      })
       return;
     }
     setisDisableRequest(true);

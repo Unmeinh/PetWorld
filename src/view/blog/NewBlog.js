@@ -10,17 +10,15 @@ import {
 import React, { useState, useEffect } from "react";
 import styles from '../../styles/blog.style';
 
-import AutoHeightImage from 'react-native-auto-height-image';
 import HeaderTitle from '../../component/header/HeaderTitle';
 import FontModal from '../../component/modals/FontModal';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import * as ImagePicker from 'react-native-image-picker';
 import { openPicker } from '@baronha/react-native-multiple-image-picker';
 import Feather from 'react-native-vector-icons/Feather';
 import { useSelector, useDispatch } from 'react-redux';
-import { getInfoLogin, fetchInfoLogin, fetchInfoUser } from '../../redux/reducers/user/userReducer';
+import { fetchInfoLogin } from '../../redux/reducers/user/userReducer';
 import { selectUserByID, userSelectStatus } from '../../redux/selectors/userSelector';
-import { axiosFormData, axiosJSON } from '../../api/axios.config';
+import { axiosFormData } from '../../api/axios.config';
 import { Toast } from 'react-native-toast-message/lib/src/Toast';
 import { ToastLayout } from '../../component/layout/ToastLayout';
 

@@ -219,12 +219,16 @@ export default function ConfirmOTP({ route }) {
                     text1: 'Thành công',
                     bottomOffset: 20
                 });
-                setisReadedMessage(false);
                 setTimeout(() => {
-                    if (route.params.navigate == "RegisterPassword") {
-                        navigation.navigate(route.params.navigate, { objUser: route.params.objUser, typeVerify: inputTypeVerify, valueVerify: inputValueVerify });
-                    } else {
-                        navigation.navigate(route.params.navigate, { typeVerify: inputTypeVerify, valueVerify: inputValueVerify });
+                    if (route.params.function) {
+                        route.params.function();
+                    }
+                    if (route.params.navigate) {
+                        if (route.params.navigate == "RegisterPassword") {
+                            navigation.navigate(route.params.navigate, { objUser: route.params.objUser, typeVerify: inputTypeVerify, valueVerify: inputValueVerify });
+                        } else {
+                            navigation.navigate(route.params.navigate, { typeVerify: inputTypeVerify, valueVerify: inputValueVerify });
+                        }
                     }
                 }, 500)
                 // setTimeout(() => {
@@ -232,37 +236,11 @@ export default function ConfirmOTP({ route }) {
                 // }, 1000)
             }
         }
-    }, [userAuth]);
-
-    useEffect(() => {
-        if (otpRef != null) {
-            console.log(userAuth);
-            if (userAuth != null && isReadedMessage) {
-                otpRef.setValue(inputOTP);
-                Toast.show({
-                    type: 'success',
-                    position: 'top',
-                    text1: 'Thành công',
-                    bottomOffset: 20
-                });
-                setuserAuth(null);
-                setTimeout(() => {
-                    if (route.params.navigate == "RegisterPassword") {
-                        navigation.navigate(route.params.navigate, { objUser: route.params.objUser, typeVerify: inputTypeVerify, valueVerify: inputValueVerify });
-                    } else {
-                        navigation.navigate(route.params.navigate, { typeVerify: inputTypeVerify, valueVerify: inputValueVerify });
-                    }
-                }, 500)
-                // setTimeout(() => {
-                //     navigation.navigate('ChangePassword');
-                // }, 1000)
-            }
-        }
-    }, [isReadedMessage]);
+    }, [userAuth, isReadedMessage]);
 
     return (
         <View style={{ backgroundColor: '#FEF6E4', flex: 1 }}>
-            <HeaderTitle nav={navigation} titleHeader={'Quên mật khẩu'} colorHeader={'#FEF6E4'} />
+            <HeaderTitle nav={navigation} titleHeader={'Nhập mã xác minh'} colorHeader={'#FEF6E4'} />
             <View style={styles.container}>
                 <Text style={styles.titleLarge}>
                     Nhập mã xác minh

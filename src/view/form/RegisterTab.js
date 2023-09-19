@@ -29,14 +29,12 @@ export default function RegisterTab(route) {
     }
 
     function checkValidate() {
-        var regEmail = /^(\w+@[a-zA-Z]+\.[a-zA-Z]{2,})$/;
-        var regPhone = /^(\+\d{10,})$/;
+        var regPhone = /^(\+\d{9,})$/;
         if (inputUsername == "") {
             Toast.show({
                 type: 'error',
                 position: 'top',
                 text1: 'Tên đăng nhập không được trống!',
-                bottomOffset: 20
             });
             return false;
         }
@@ -45,8 +43,7 @@ export default function RegisterTab(route) {
             Toast.show({
                 type: 'error',
                 position: 'top',
-                text1: 'Họ và tên không được trống!',
-                bottomOffset: 20
+                text1: 'Họ và tên không được trống!'
             });
             return false;
         }
@@ -54,10 +51,9 @@ export default function RegisterTab(route) {
         if (!(inputPhoneCountry + inputPhoneNumber).match(regPhone)) {
             Toast.show({
                 type: 'error',
+                text1: 'Số điện thoại cần đúng định dạng!\nVí dụ: +123456789',
                 position: 'top',
-                text1: 'Số điện thoại chưa đúng định dạng!',
-                bottomOffset: 20
-            });
+            })
             return false;
         }
 

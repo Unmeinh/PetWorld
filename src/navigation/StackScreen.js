@@ -22,7 +22,8 @@ import ListAddress from '../view/account/ListAddress';
 import AddNewAddress from '../view/account/AddNewAddress';
 import ChatScreen from '../view/chat/ChatScreen';
 import InfoManager from '../view/blog/InfoManager';
-import EditInfo from '../view/blog/EditInfo';
+import EditUser from '../view/blog/EditUser';
+import EditAccount from '../view/blog/EditAccount';
 import AppointmentScreen from '../view/appointment/AppointmentScreen';
 import DetailAppointment from '../view/appointment/DetailAppointment';
 import NotifyScreen from '../view/notify/NotifyScreen';
@@ -84,7 +85,8 @@ export default function StackScreen() {
         <Stack.Screen name="AddNewAddress" component={AddNewAddress} />
         <Stack.Screen name="ChatScreen" component={ChatScreen} />
         <Stack.Screen name="InfoManager" component={InfoManager} />
-        <Stack.Screen name="EditInfo" component={EditInfo} />
+        <Stack.Screen name="EditUser" component={EditUser} />
+        <Stack.Screen name="EditAccount" component={EditAccount} />
         <Stack.Screen name="AppointmentScreen" component={AppointmentScreen} />
         <Stack.Screen name="DetailAppointment" component={DetailAppointment} />
         <Stack.Screen name="SettingNotify" component={SettingNotify} />
