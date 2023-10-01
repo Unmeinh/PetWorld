@@ -7,6 +7,8 @@ import {
   Dimensions,
   Animated,
   Pressable,
+  ToastAndroid,
+  ActivityIndicator,
 } from 'react-native';
 import React, {useEffect, useRef, useState} from 'react';
 import {
@@ -14,26 +16,31 @@ import {
   selectFilterDetailProduct,
   selectFilterIdSelector,
   selectStatusDetailProduct,
+  statusAddProductToCart,
+  messageCart,
 } from '../../redux/selector';
 import {useDispatch, useSelector} from 'react-redux';
 import SliderImage from '../../component/detailProduct/SliderImage';
 import Icon from 'react-native-vector-icons/Ionicons';
 import ShopTag from '../../component/shop/ShopTag';
 import ListHorizontal from '../../component/list/ListHorizontal';
-import {addCart, addProductToCart} from '../../redux/reducers/shop/CartReduces';
+import {addCart, addProductToCart,setStatusMessageCart} from '../../redux/reducers/shop/CartReduces';
 import ShimmerPlaceHolder from '../../component/layout/ShimmerPlaceHolder';
-import { setStatusFilter } from '../../redux/reducers/filters/filtersReducer';
 const {width} = Dimensions.get('screen');
 
-function DetailProduct({navigation}) {
+function DetailProduct({navigation,route}) {
+  const type = route.params.type
   const dispatch = useDispatch();
   const resultDetail = useSelector(selectFilterDetailProduct);
   const listProduct = useSelector(listProductSelector);
   const statusDetail = useSelector(selectStatusDetailProduct);
   const category = useSelector(selectFilterIdSelector);
+  const statusAdd = useSelector(statusAddProductToCart);
+  const message = useSelector(messageCart);
   const [like, setLike] = useState(false);
   const [showDes, setShowDes] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
+  const [showMessage, setShowMessage] = useState(false);
   const listImage = resultDetail.arrProduct
     ? resultDetail.arrProduct
     : resultDetail.imagesPet;
@@ -102,21 +109,18 @@ function DetailProduct({navigation}) {
       opacityAnimation.setValue(0);
     };
   }, [isVisible]);
-  // useEffect(() => {
-  //   // return () =>{
-  //   //   dispatch(setStatusFilter('loading'))
-  //   // }
-  // }, [navigation]);
-  const handleAddCart = (idProduct, idUser, mount) => {
-    dispatch(
-      addCart({
-        idProduct,
-        idUser,
-        mount,
-        createAt: Date.now(),
-      }),
-    );
-  };
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('blur',() =>{
+      dispatch(setStatusMessageCart(''))
+    })
+    return unsubscribe;
+  }, [navigation]);
+
+  useEffect(() => {
+    if (message) {
+      ToastAndroid.show(message, ToastAndroid.SHORT);
+    }
+  }, [message]);
   return (
     <>
       <Animated.View
@@ -143,7 +147,20 @@ function DetailProduct({navigation}) {
           <AnimatedIcon name="cart-outline" size={24} color={headerIcon} />
         </AnimatedPressible>
       </Animated.View>
-
+      {statusAdd === 'loading' ? <View
+        style={[
+          StyleSheet.absoluteFillObject,
+          {
+            zIndex: 2,
+            position: 'absolute',
+            alignItems: 'center',
+            justifyContent: 'center',
+          },
+        ]}>
+        {statusAdd == 'loading' ? (
+          <ActivityIndicator size="large" color="#F582AE" />
+        ) : null}
+      </View>:null}
       <ScrollView
         style={{flex: 1, backgroundColor: '#FEF6E4'}}
         scrollEnabled={statusDetail === 'idle' ? true : false}
@@ -328,7 +345,7 @@ function DetailProduct({navigation}) {
               marginTop: 8,
             }}
           />
-          <ShopTag data={resultDetail.idShop} isLoading={statusDetail}/>
+          <ShopTag data={resultDetail.idShop} isLoading={statusDetail} />
           <View
             style={{
               width: width,
@@ -347,37 +364,44 @@ function DetailProduct({navigation}) {
           </View>
         </Animated.View>
       </ScrollView>
-     {statusDetail === 'idle' ?  <View style={styles.bottomButton}>
-        <TouchableOpacity style={[styles.buttonContact, styles.buttonSheet]}>
-          <Icon name="chatbubbles-outline" size={24} color={'#001858'} />
-          <Text style={styles.textButton}> Liên hệ</Text>
-        </TouchableOpacity>
-        {category === 1 ? (
-          <TouchableOpacity style={[styles.buttonBooking, styles.buttonSheet]}>
-            <Icon name="bookmarks-outline" size={22} color={'#001858'} />
-            <Text style={styles.textButton}>Đặt lịch</Text>
+      {statusDetail === 'idle' ? (
+        <View style={styles.bottomButton}>
+          <TouchableOpacity style={[styles.buttonContact, styles.buttonSheet]}>
+            <Icon name="chatbubbles-outline" size={24} color={'#001858'} />
+            <Text style={styles.textButton}> Liên hệ</Text>
           </TouchableOpacity>
-        ) : (
-          <TouchableOpacity
-            onPress={() => dispatch(addProductToCart({idProduct:resultDetail._id, amount:1}))}
-            style={[
-              styles.buttonBooking,
-              styles.buttonSheet,
-              {flexDirection: category === 1 ? 'row' : 'column'},
-            ]}>
-            <Icon name="cart-outline" size={24} color={'#001858'} />
-            <Text style={[styles.textButton, {fontSize: 12}]}>
-              Thêm vào giỏ hàng
+          {type === 0 ? (
+            <TouchableOpacity
+              style={[styles.buttonBooking, styles.buttonSheet]}>
+              <Icon name="bookmarks-outline" size={22} color={'#001858'} />
+              <Text style={styles.textButton}>Đặt lịch</Text>
+            </TouchableOpacity>
+          ) : (
+            <TouchableOpacity
+              onPress={() =>
+                dispatch(
+                  addProductToCart({idProduct: resultDetail._id, amount: 1}),
+                )
+              }
+              style={[
+                styles.buttonBooking,
+                styles.buttonSheet,
+                {flexDirection: category === 1 ? 'row' : 'column'},
+              ]}>
+              <Icon name="cart-outline" size={24} color={'#001858'} />
+              <Text style={[styles.textButton, {fontSize: 12}]}>
+                Thêm vào giỏ hàng
+              </Text>
+            </TouchableOpacity>
+          )}
+
+          <TouchableOpacity style={[styles.buttonBuy, styles.buttonSheet]}>
+            <Text style={[styles.textButton, styles.textButtonBuy]}>
+              Mua ngay
             </Text>
           </TouchableOpacity>
-        )}
-
-        <TouchableOpacity style={[styles.buttonBuy, styles.buttonSheet]}>
-          <Text style={[styles.textButton, styles.textButtonBuy]}>
-            Mua ngay
-          </Text>
-        </TouchableOpacity>
-      </View>:null}
+        </View>
+      ) : null}
     </>
   );
 }
@@ -427,6 +451,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'flex-end',
+    zIndex: 2,
   },
   content: {
     marginRight: 16,
@@ -487,4 +512,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default  DetailProduct;
+export default DetailProduct;

@@ -1,8 +1,10 @@
 import {createAsyncThunk, createSlice} from '@reduxjs/toolkit';
-import axiosGet from '../../../api/axios.config';
+import axiosGet, { axiosJSON } from '../../../api/axios.config';
+import { goBack } from '../../../navigation/rootNavigation';
+import { updateCart } from '../shop/CartReduces';
 const initialState = {
     data: {},
-    status: '',
+    status: 'being idle',
     message: '',
     selectId: '',
     followType: ''
@@ -22,6 +24,9 @@ const userReducer = createSlice({
         //     state.selectId = action.payload[0];
         //     state.followType = action.payload[1];
         // },
+        setMessageUser: (state, action) => {
+            state.message = action.payload
+        },
     },
     extraReducers: builder => {
         builder
@@ -46,7 +51,41 @@ const userReducer = createSlice({
                 } else {
                     state.status = 'loading';
                 }
-            });
+            }).addCase(addLocationUser.pending, (state,action) =>{
+                state.status = 'loading';
+            }).addCase(addLocationUser.fulfilled, (state,action) =>{
+                if(action.payload.success){
+                    state.data = action.payload.data   
+                    state.message = action.payload.message
+                    state.status = 'being idle';
+                    goBack()
+                }else{
+                    state.status = 'loading';
+                }
+            }).addCase(editLocationUser.pending, (state,action) =>{
+                state.status = 'loading';
+            }).addCase(editLocationUser.fulfilled, (state,action) =>{
+                if(action.payload.success){
+                    state.data = action.payload.data   
+                    state.message = action.payload.message
+                    state.status = 'being idle';
+                    goBack()
+                }else{
+                    state.status = 'loading';
+                }
+            }).addCase(editLocationSelect.pending, (state,action) =>{
+                state.status = 'loading';
+            }).addCase(editLocationSelect.fulfilled, (state,action) =>{
+                if(action.payload.success){
+                    state.data = action.payload.data   
+                    state.message = action.payload.message
+                    state.status = 'being idle';
+                    goBack()
+
+                }else{
+                    state.status = 'loading';
+                }
+            })
     },
 });
 
@@ -78,5 +117,26 @@ export const fetchFollowUser = createAsyncThunk(
         return res.data;
     },
 );
-export const { getInfoLogin, getInfoUser, getFollowUser } = userReducer.actions;
+export const addLocationUser = createAsyncThunk(
+    'user/addLocationUser',
+    async (action) => {
+        const res = await axiosJSON.post('/cart/addLocations',action)
+        return res.data
+    }
+)
+export const editLocationUser = createAsyncThunk(
+    'user/editLocationUser',
+    async (action) => {
+        const res = await axiosJSON.put(`/cart/editLocation`,{data: JSON.stringify(action)})
+        return res.data
+    }
+)
+export const editLocationSelect = createAsyncThunk(
+    'user/editLocationUserSelect',
+    async (action) => {
+        const res = await axiosJSON.put(`/cart/editLocations/${action}`)
+        return res.data
+    }
+)
+export const { getInfoLogin, getInfoUser, getFollowUser ,setMessageUser,setChangeLocationSelect} = userReducer.actions;
 export default userReducer.reducer;

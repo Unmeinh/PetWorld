@@ -36,11 +36,12 @@ import Email from '../view/account/Email';
 import { createStackNavigator } from '@react-navigation/stack';
 import SettingNotify from '../view/notify/SettingNotify';
 import MyPetScreen from '../view/account/MyPetScreen';
+import { navigationRef } from './rootNavigation';
 const Stack = createStackNavigator();
 
 export default function StackScreen() {
   return (
-    <NavigationContainer>
+    <NavigationContainer ref={navigationRef}>
       <Stack.Navigator
         screenOptions={() => ({ headerShown: false })}
         initialRouteName="SlashScreen">

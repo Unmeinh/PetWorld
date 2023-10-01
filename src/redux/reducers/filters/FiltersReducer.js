@@ -26,7 +26,8 @@ const initialState = {
     ],
   },
   detailProduct: {},
-  status: 'loading'
+  status: 'loading',
+  idCheckCart:''
 };
 const filtersReducer =  createSlice({
   name: 'filters',
@@ -43,6 +44,10 @@ const filtersReducer =  createSlice({
     },
     setStatusFilter: (state, action) => {
       state.status = action.payload
+    },
+    checkIdCart: (state, action) => {
+      console.log(action);
+      state.idCheckCart = action.payload
     }
   },
   extraReducers: builder => {
@@ -63,6 +68,6 @@ export const fetchDetailProduct = createAsyncThunk('detail/fetchDetail', async (
   const res = await api.get(`/${action.type === 0 ? 'pet':'product'}/detail/${action.id}`);
   return res.data;
 });
-export const {searchFilterChanged,selectIdCategory,idProduct,setStatusFilter} = filtersReducer.actions
+export const {searchFilterChanged,selectIdCategory,idProduct,setStatusFilter,checkIdCart} = filtersReducer.actions
 export default filtersReducer.reducer
 

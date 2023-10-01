@@ -3,9 +3,8 @@ import {useCallback} from 'react';
 const useCart = (cart, shops) => {
   if (cart || shops) {
     const groupProductsByShop = {};
-    const listCartCallBack = useCallback(() => {
       cart.forEach(result => {
-        const {idProduct, amount} = result;
+        const {idProduct, amount,isSelected} = result;
         const shop = shops.find(shop => shop._id === idProduct.idShop);
         if (shop) {
           const idShop = shop._id;
@@ -15,15 +14,11 @@ const useCart = (cart, shops) => {
               cart: [],
             };
           }
-          const productWithAmount = {idProduct, amount};
+          const productWithAmount = {idProduct, amount,isSelected};
           groupProductsByShop[idShop].cart.push(productWithAmount);
         }
       });
-
       return Object.values(groupProductsByShop);
-    }, [cart, shops]);
-
-    return listCartCallBack();
   }
 };
 

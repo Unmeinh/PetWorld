@@ -13,7 +13,26 @@ export const listShopSelector = state => state.listShop.shops;
 export const listShopStatusSelector = state => state.listShop.status;
 export const listCartSelector = state => state.listCart.carts
 export const listCartStatusSelector = state => state.listCart.status
-
+export const statusAddProductToCart = state => state.listCart.statusAddProductoCart
+export const messageCart = state => state.listCart.message
+export const billSelector = state => state.bill
+export const statusUserSelector = state => state.listUser.status
+export const userLocation = state => state.listUser.data?.locationDelivery
+export const listItemBill = createSelector(listCartSelector,(listcart) =>{
+    return listcart.filter(item => item.isSelected === true)
+})
+export const useLocationSeleted = createSelector(userLocation,(location) =>{
+  let user ={}
+  let district = ''
+  if(location){
+     user = location.find(item => item.isSelected === true)
+    if(user){
+      const parts = user.location.split(', ')
+      district = parts[parts.length - 1]
+    }
+  }
+  return [user,district.trim()]
+})
 export const listFilterSelector = createSelector(
   listPetSelector,
   searchFilterSelector,
