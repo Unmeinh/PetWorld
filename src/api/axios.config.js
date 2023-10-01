@@ -1,45 +1,12 @@
 import axios from "axios";
-import { storageMMKV } from "../storage/storageMMKV";
 
-const tokenHeader =  (storageMMKV.checkKey('login.token')) ? `Bearer ${storageMMKV.getString('login.token')}` : undefined;
-const apiURL = "https://58dc-104-28-254-74.ngrok-free.app/api";
+const apiURL = "https://7768-2402-800-61c4-c98-bd5e-d6b-a9d0-aa3c.ngrok-free.app/api";
 
-const axiosJSON = axios.create();
+// axiosAPi.defaults.timeout = 2000;
 
-axiosJSON.defaults.baseURL = apiURL;
+// axiosAPi.defaults.withCredentials = true;
+let axiosAPi = axios.create();
 
-axiosJSON.defaults.headers = {
-    Accept: 'application/json',
-    'Content-Type': 'application/json',
-    "Content-Type": "application/x-www-form-urlencoded",
-    "Authorization" : tokenHeader
-};
+axiosAPi.defaults.baseURL = apiURL;
 
-const axiosFormData = axios.create();
-
-axiosFormData.defaults.baseURL = apiURL;
-
-axiosFormData.defaults.headers = {
-    Accept: 'application/json',
-    'Content-Type': 'application/json',
-    'Content-Type': 'multipart/form-data',
-    "Authorization" : tokenHeader
-};
-
-// axiosJSON.defaults.timeout = 2000;
-
-// axiosJSON.defaults.withCredentials = true;
-const axiosGet = axios.create();
-
-axiosGet.defaults.baseURL = apiURL;
-
-axiosGet.defaults.headers = {
-    "Authorization" : tokenHeader
-};
-
-const instance = axios.create({
-    baseURL: apiURL,
-});
-
-export {axiosJSON, axiosFormData};
-export default axiosGet;
+export default axiosAPi;
