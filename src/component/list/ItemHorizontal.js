@@ -39,7 +39,7 @@ export default function ItemHorizontal({item,type,route}) {
     <Pressable
       onPress={() => {
         dispatch(fetchDetailProduct({id:item._id,type}));
-        navigation.push('DetailProduct');
+        navigation.push('DetailProduct',{type});
       }}
       style={{
         width: 110,

@@ -12,6 +12,7 @@ export default function ListProductVertical({data,type}) {
         renderItem={({item}) => (
           <ItemProductVertical
             item={item}
+            type={type}
             disPatchIdProduct={id => dispatch(fetchDetailProduct({id,type}))}
           />
         )}

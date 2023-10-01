@@ -1,53 +1,75 @@
 import {StyleSheet, Text, View, FlatList} from 'react-native';
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import {useSelector} from 'react-redux';
-import {listShopSelector} from '../../redux/selector';
 import {Image} from 'react-native-animatable';
-export default function ItemCartSummary({result}) {
-  const shops = useSelector(listShopSelector);
-  const [shop, setShop] = useState([]);
+import moment from 'moment';
+import { setShip } from '../../redux/reducers/shop/billSlice';
+import { useDispatch } from 'react-redux';
+function ItemCartSummary({result,locationShop}) {
+  const {idShop,cart} = result
+  const [date,setDate] = useState(dateShip())
+  const dispatch = useDispatch()
   const priceDiscount = (price, discount) => {
     if (discount > 0) {
       return (
         <Text style={styles.price}>
-          {(price - (price * discount) / 100).toLocaleString('vi-VN') + 'đ'}
+          {(price - (price * discount) / 100)?.toLocaleString('vi-VN') + 'đ'}
           {'\n'}
           <Text style={styles.discount}>
-            {price.toLocaleString('vi-VN') + 'đ'}
+            {price?.toLocaleString('vi-VN') + 'đ'}
           </Text>
         </Text>
       );
     } else {
       return (
-        <Text style={styles.price}>{price.toLocaleString('vi-VN') + 'đ'}</Text>
+        <Text style={styles.price}>{price?.toLocaleString('vi-VN') + 'đ'}</Text>
       );
     }
   };
-  useEffect(() => {
-    const shopfind = shops.find(shop => shop.id === result.idShop);
-    setShop(shopfind);
-  }, [result]);
+  const district = (location) =>{
+    let result = ''
+    if(location){
+      const parts = location.split(', ')
+      result = parts[parts.length - 1]
+    }
+    return result.trim()
+  }
+  const showShip = () =>{
+    const money = district(idShop.locationShop) == locationShop ? 10000 : 30000
+    return money
+  }
+  // useEffect(() =>{
+  //   dispatch(setShip(showShip()))
+  // },[])
+  function dateShip(){
+    const step = 2;
+    const gap = 2
+    let currentDate = new Date()
+    const dateFirst = currentDate.setDate(currentDate.getDate() + step)
+    const dateLast = currentDate.setDate(currentDate.getDate() + gap)
+    return {dateFirst:moment(dateFirst).format('DD/MM'), dateLast: moment(dateLast).format('DD/MM')}
+  }
   return (
     <View>
       <View style={styles.container}>
-      {shop.avatar ? <Image source={shop.avatar} style={styles.image} /> : null}
-        <Text style={styles.nameShop}>{shop.nameShop}</Text>
+      {idShop.avatarShop ? <Image source={{ uri:idShop.avatarShop}} style={styles.image} /> : null}
+        <Text style={styles.nameShop}>{idShop.nameShop}</Text>
       </View>
       <FlatList
-        data={result.products}
-        keyExtractor={item => item.id}
+        data={cart}
+        keyExtractor={item => item.idProduct._id}
         renderItem={({item}) => {
+          const product = item.idProduct
           return (
             <View style={styles.container2}>
               <Image
-                source={item.avatar ? item.avatar : null}
+                source={{uri:product.arrProduct[0] ? product.arrProduct[0] : product.imagePet[0]}}
                 style={styles.imageItem}
               />
               <View style={styles.content}>
-                <Text style={styles.nameProduct}>{item.nameProduct}</Text>
-                <Text>{priceDiscount(item.priceProduct, item.discount)}</Text>
+                <Text style={styles.nameProduct}>{product.nameProduct}</Text>
+                <Text>{priceDiscount(product.priceProduct, product.discount)}</Text>
               </View>
               <View style={styles.boxCount}>
                 <Text size={20} style={[styles.textMount]}>
@@ -73,7 +95,7 @@ export default function ItemCartSummary({result}) {
               color="#001858"
             />
           </Text>
-          <Text style={styles.styleDiscount}>Từ Hà Nội</Text>
+          <Text style={styles.styleDiscount}>{district(idShop.locationShop)}</Text>
           </View>
           <View style={styles.flexRow}>
           <Text>
@@ -83,12 +105,12 @@ export default function ItemCartSummary({result}) {
               color="#001858"
             />
           </Text>
-          <Text style={styles.styleDiscount}> Ngày giao hàng dự kiến: Jun 20 - Jul 22</Text>
+          <Text style={styles.styleDiscount}> Ngày giao hàng dự kiến: {date.dateFirst} - {date.dateLast}</Text>
           </View>
         </View>
         <View>
-          <Text style={[styles.price,{color:"#001858",fontSize:12}]}>30.000 đ</Text>
-          <Text style={[styles.discount,{fontSize:12}]}>30.000 đ</Text>
+          <Text style={[styles.price,{color:"#001858",fontSize:12}]}>{showShip()?.toLocaleString('vi-VN')}đ</Text>
+          <Text style={[styles.discount,{fontSize:12}]}></Text>
         </View>
       </View>
     </View>
@@ -181,3 +203,4 @@ const styles = StyleSheet.create({
     marginLeft: 6,
   },
 });
+export default React.memo(ItemCartSummary)

@@ -4,6 +4,7 @@ export const userLoginSelector = state => state.listUser.loginData;
 export const userSelectId = state => state.listUser.selectId;
 export const userFollowType = state => state.listUser.followType;
 export const userSelectStatus = state => state.listUser.status;
+export const userMessage = state => state.listUser.message;
 
 export const selectUserLogin = createSelector(
     userLoginSelector,

@@ -1,31 +1,36 @@
-import {StyleSheet, Text, View, FlatList,Pressable} from 'react-native';
-import React from 'react';
+import {StyleSheet, Text, View, FlatList, Pressable, Alert, ActivityIndicator} from 'react-native';
+import React, {useEffect} from 'react';
 import HeaderTitle from '../../component/header/HeaderTitle';
-import {useNavigation} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Feather';
-
-const data = [
-  {
-    id: 1,
-    name: 'Lương Việt Hoàng',
-    phoneNumber: '08********32',
-    location: 'Cầu diễn, Phú Diễn, Bắc từ Liêm, Hà Nội',
-  },
-  {
-    id: 2,
-    name: 'Lương Việt Hoàng',
-    phoneNumber: '08********32',
-    location: 'Cầu diễn, Phú Diễn, Bắc từ Liêm, Hà Nội',
-  },
-  {
-    id: 3,
-    name: 'Lương Việt Hoàng',
-    phoneNumber: '08********32',
-    location: 'Cầu diễn, Phú Diễn, Bắc từ Liêm, Hà Nội',
-  },
-];
-export default function ListAddress() {
-  const navigation = useNavigation();
+import {statusUserSelector, userLocation} from '../../redux/selector';
+import {useDispatch, useSelector} from 'react-redux';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import {userMessage} from '../../redux/selectors/userSelector';
+import {editLocationSelect, editLocationUser, setMessageUser} from '../../redux/reducers/user/userReducer';
+import {addLocationUser} from '../../redux/reducers/user/userReducer';
+export default function ListAddress({navigation}) {
+  const location = useSelector(userLocation);
+  const status = useSelector(statusUserSelector);
+  const message = useSelector(userMessage);
+  const dispatch = useDispatch();
+  useEffect(() => {
+    const subcriber = navigation.addListener('focus', () => {
+      if (message) {
+        console.log('focus list');
+        dispatch(setMessageUser(''));
+      }
+    });
+    return subcriber;
+  }, [navigation]);
+  const createTwoButtonAlert = (id) =>
+    Alert.alert('Xác nhận', 'Bạn chắc chắc muốn đổi địa chỉ giao hàng', [
+      {
+        text: 'Hủy',
+        
+        style: 'cancel',
+      },
+      {text: 'Xác nhận', onPress: () => dispatch(editLocationSelect(id))},
+    ]);
   return (
     <View style={styles.container}>
       <HeaderTitle
@@ -34,34 +39,59 @@ export default function ListAddress() {
         colorHeader={'#FEF6E4'}
       />
       <Pressable
-      onPress={()=>navigation.navigate('AddNewAddress')}
-       style={styles.addNewAddress}>
+        onPress={() =>
+          navigation.navigate('AddNewAddress', {action: addLocationUser,title:'Thêm thông tin địa chỉ'})
+        }
+        style={styles.addNewAddress}>
         <Icon name="plus" color="#001858" size={24} />
         <Text style={styles.text}>Thêm địa chỉ mới</Text>
         <Icon name="chevron-right" size={24} color="#001858" />
       </Pressable>
       <FlatList
-        data={data}
+        data={location}
         keyExtractor={item => item.id}
         renderItem={({item}) => {
+          const iconSelect = item.isSelected
+            ? 'checkbox-marked-circle'
+            : 'checkbox-blank-circle-outline';
           return (
-            <View style={styles.list}>
-              <View>
+            <Pressable style={styles.list} onPress={()=>{
+              createTwoButtonAlert(item._id)
+            }}>
+              <MaterialCommunityIcons
+                name={iconSelect}
+                size={24}
+                color={'#F582AE'}
+                // onPress={() => {
+                //   setIsSelect(!isSelect);
+                //   dispatch(selectAllItemsShop({idShop:idShop._id,isSelect}));
+                // }}
+              />
+              <View style={{flexGrow: 1, marginLeft: 20}}>
                 <Text style={[styles.fontFamily, styles.textName]}>
-                  {item.name}
+                  {item.fullName}
                 </Text>
                 <Text style={[styles.fontFamily]}>{item.phoneNumber}</Text>
                 <Text style={[styles.fontFamily, styles.textLocation]}>
                   {item.location}
                 </Text>
               </View>
-              <Text style={[styles.fontFamily, styles.textEdit]}>
+              <Text
+                style={[styles.fontFamily, styles.textEdit]}
+                onPress={() =>
+                  navigation.navigate('AddNewAddress', {
+                    data: item,
+                    action: editLocationUser,
+                    title:'Sửa thông tin địa chỉ'
+                  })
+                }>
                 Chỉnh sửa
               </Text>
-            </View>
+            </Pressable>
           );
         }}
       />
+      {status === 'loading' ? <View style={[StyleSheet.absoluteFillObject,{justifyContent:'center',alignItems:'center',zIndex:999}]}><ActivityIndicator size={'large'} color={'#F582AE'}/></View>:''}
     </View>
   );
 }

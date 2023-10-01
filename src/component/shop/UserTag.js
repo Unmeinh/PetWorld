@@ -15,7 +15,7 @@ export default function UserTag({data}) {
         />
         <View style={styles.info}>
           <Text style={styles.textName}>
-            {data.name} <Text style={styles.textPhone}>{data.phoneNumber}</Text>
+            {data.fullName} , <Text style={styles.textPhone}>0{data.phoneNumber}</Text>
           </Text>
           <Text style={styles.textLocation}>{data.location}</Text>
         </View>
