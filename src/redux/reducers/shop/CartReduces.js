@@ -1,5 +1,5 @@
 import { createSlice,createAsyncThunk } from '@reduxjs/toolkit';
-import  api, {axiosJSON} from '../../../api/axios.config';
+import  api from '../../../api/axios.config';
 const cartSlice = createSlice({
   name: 'cart',
   initialState:{status:'idle',carts:[],message:'',idCheckCart:'',statusAddProductoCart:'idle'},
@@ -79,13 +79,13 @@ export const fetchCart = createAsyncThunk(
 export const addProductToCart = createAsyncThunk(
   'cart/addProduct',
   async (action) => {
-    const res = await axiosJSON.post('/cart',action);
+    const res = await api.post('/cart',action);
     return res.data;
   },
 );
 export const updateCart = createAsyncThunk(
   'cart/update',async (action) => {
-    const res = await axiosJSON.post('/cart/update',{data: JSON.stringify(action)});
+    const res = await api.post('/cart/update',{data: JSON.stringify(action)});
     return res.data
   }
 )
