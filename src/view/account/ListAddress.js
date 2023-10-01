@@ -26,6 +26,7 @@ export default function ListAddress({navigation}) {
     Alert.alert('Xác nhận', 'Bạn chắc chắc muốn đổi địa chỉ giao hàng', [
       {
         text: 'Hủy',
+        
         style: 'cancel',
       },
       {text: 'Xác nhận', onPress: () => dispatch(editLocationSelect(id))},
