@@ -16,7 +16,7 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import Feather from 'react-native-vector-icons/Feather';
 import HeaderAccount from '../../component/header/HeaderAccount'
 import { useNavigation } from '@react-navigation/native';
-
+import { storageMMKV } from '../../storage/storageMMKV';
 
 
 const listItems = [
@@ -51,14 +51,14 @@ const listItems1 = [
     iconType: 'Fontisto',
     icon: 'person',
     text: 'Tài khoản',
-   
+
   },
   {
     iconType: 'Feather',
     icon: 'lock',
     text: 'Quyền riêng tư',
   },
- 
+
 ];
 
 
@@ -74,6 +74,17 @@ export default function AccountScreen({ scrollRef, onScrollView }) {
       navigation.navigate('OderScreen');
     }, 200); // Reset the state after 200ms
   };
+
+  function onLogout() {
+    storageMMKV.setValue('login.token', "null");
+    storageMMKV.setValue('login.isLogin', false);
+    if (!storageMMKV.getBoolean('login.isLogin') && storageMMKV.getString('login.token') == "null") {
+      navigation.navigate('LoginScreen');
+    } else {
+      console.log("Lỗi lưu dữ liệu người dùng!");
+    }
+  }
+
   return (
     <View style={{ flex: 1 , backgroundColor: 'rgba(254, 246, 228, 0.5)'}}>
 
@@ -274,21 +285,21 @@ export default function AccountScreen({ scrollRef, onScrollView }) {
 }
 
 const localStyles = StyleSheet.create({
-  contentContainer:{
+  contentContainer: {
     flex: 1,
-    
-    
+
+
   },
   rowContainer: {
     alignItems: 'center',
-  
+
     borderBottomWidth: 1,
     borderBottomColor: '#F3D2C1',
-    marginTop:10,
-    
+    marginTop: 10,
+
   },
   rowItem: {
-    backgroundColor:'#FEF6E4',
+    backgroundColor: '#FEF6E4',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between', // Optional, to evenly distribute content horizontally
@@ -299,17 +310,17 @@ const localStyles = StyleSheet.create({
     marginLeft: 160,
   },
   gridContainer: {
-    backgroundColor:'#FEF6E4',
+    backgroundColor: '#FEF6E4',
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'space-between',
     padding: 10,
-    
+
   },
-  Container:{
-    flex:1,
+  Container: {
+    flex: 1,
   },
-  purchaseOrder:{
+  purchaseOrder: {
     paddingHorizontal: 15,
     color: '#001858',
   },
@@ -319,9 +330,9 @@ const localStyles = StyleSheet.create({
     marginBottom: 15,
   },
   Utilities1: {
-    backgroundColor:'#FEF6E4',
+    backgroundColor: '#FEF6E4',
     paddingHorizontal: 15,
-    marginTop:10,
+    marginTop: 10,
     borderBottomWidth: 1,
     borderBottomColor: '#F3D2C1',
   },
@@ -333,8 +344,8 @@ const localStyles = StyleSheet.create({
     paddingVertical: 10,
     borderBottomWidth: 1,
     borderBottomColor: '#F3D2C1',
-    backgroundColor:'#FEF6E4',
-    
+    backgroundColor: '#FEF6E4',
+
   },
 
   rowItemUtilities: {
@@ -344,39 +355,39 @@ const localStyles = StyleSheet.create({
   },
   centerContentUtilities: {
     marginLeft: 20,
-    width:300,
+    width: 300,
     fontFamily: 'ProductSansBlod',
     color: '#001858',
   },
   rightContentUtilities: {
     flexDirection: 'row',
     alignItems: 'center',
-    
+
   },
   logoutContainer: {
-   
+
     alignItems: 'center',
     paddingHorizontal: 15,
     marginTop: 20,
     borderWidth: 1,
-  
+
     borderColor: '#F3D2C1',
     paddingVertical: 10,
     borderRadius: 8,
-    backgroundColor:'#FEF6E4',
-    
+    backgroundColor: '#FEF6E4',
+
   },
   logoutButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor:'#FEF6E4',
-   
- 
+    backgroundColor: '#FEF6E4',
+
+
   },
   logoutButtonText: {
     marginLeft: 20,
     color: '#001858',
-  
+
     fontFamily: 'ProductSansBlod',
     color: '#001858',
   },

@@ -3,7 +3,7 @@ import {
     Text, Image,
     SafeAreaView,
     ScrollView,
-    View, Animated,
+    View,
     TouchableOpacity,
 } from 'react-native';
 import styles from '../../styles/user.style';
@@ -11,7 +11,7 @@ import { CollapsibleTabs } from '../../component/layout/indexCollapsibleTab';
 import { TabInfo, TabBlog } from './TabItemPage';
 import { useNavigation } from '@react-navigation/native';
 import { useSelector, useDispatch } from "react-redux";
-import { selectUserByID, userSelectStatus } from '../../redux/selectors/userSelector';
+import { selectUserLogin, userSelectStatus } from '../../redux/selectors/userSelector';
 import { selectBlogsByUser, blogSelectStatus } from '../../redux/selectors/blogSelector';
 import { fetchInfoLogin } from '../../redux/reducers/user/userReducer';
 import { fetchBlogsUser } from '../../redux/reducers/blog/blogReducer';
@@ -28,13 +28,10 @@ const ShimmerPlaceHolder = createShimmerPlaceholder(LinearGradient);
 const MyPage = () => {
     const navigation = useNavigation();
     const dispatch = useDispatch();
-    const infoLogin = useSelector(selectUserByID);
+    const infoLogin = useSelector(selectUserLogin);
     const uSelectStatus = useSelector(userSelectStatus);
     const arr_blog = useSelector(selectBlogsByUser);
     const bSelectStatus = useSelector(blogSelectStatus);
-    const [blogCount, setblogCount] = useState(0);
-    const [followingCount, setfollowingCount] = useState(0);
-    const [followerCount, setfollowerCount] = useState(0);
     const [srcAvatar, setsrcAvatar] = useState(require('../../assets/images/error.png'));
     const [isLoader, setisLoader] = useState(true);
     const [isRefreshing, setisRefreshing] = useState(false);
@@ -59,13 +56,14 @@ const MyPage = () => {
     useEffect(() => {
         if (uSelectStatus == "being idle") {
             dispatch(fetchBlogsUser(infoLogin._id));
-            setsrcAvatar({uri: String(infoLogin.avatarUser)});
+            setsrcAvatar({ uri: String(infoLogin.avatarUser) });
         }
     }, [uSelectStatus]);
 
     useEffect(() => {
         if (bSelectStatus == "being idle") {
             setisLoader(false);
+            console.log("done loading");
         }
     }, [bSelectStatus]);
 
@@ -85,7 +83,7 @@ const MyPage = () => {
 
     const HeaderView = () => {
         function OpenListFollow(type) {
-            navigation.navigate('ListFollow', { idUser: infoLogin._id, typeFollow: type })
+            navigation.push('ListFollow', { idUser: infoLogin._id, typeFollow: type })
         }
 
         return (
@@ -140,17 +138,17 @@ const MyPage = () => {
                             </View>
                             <View style={styles.viewRowAroundPage}>
                                 <View style={{ alignItems: 'center' }}>
-                                    <Text style={styles.textCountPage}>{blogCount}</Text>
+                                    <Text style={styles.textCountPage}>{infoLogin.blogs}</Text>
                                     <Text style={styles.detailCountPage}>Bài viết</Text>
                                 </View>
                                 <TouchableOpacity style={{ alignItems: 'center' }}
                                     onPress={() => OpenListFollow('following')}>
-                                    <Text style={styles.textCountPage}>{followingCount}</Text>
+                                    <Text style={styles.textCountPage}>{infoLogin.followings}</Text>
                                     <Text style={styles.detailCountPage}>Đang theo dõi</Text>
                                 </TouchableOpacity>
                                 <TouchableOpacity style={{ alignItems: 'center' }}
                                     onPress={() => OpenListFollow('follower')}>
-                                    <Text style={styles.textCountPage}>{followerCount}</Text>
+                                    <Text style={styles.textCountPage}>{infoLogin.followers}</Text>
                                     <Text style={styles.detailCountPage}>Người theo dõi</Text>
                                 </TouchableOpacity>
                             </View>
@@ -202,9 +200,25 @@ const MyPage = () => {
                             label: 'Blog',
                             showsVerticalScrollIndicator: true,
                             component: (
-                                <View >
+                                <View style={{ flex: 1 }}>
                                     <View style={{ height: 1, width: '100%', backgroundColor: '#FEF6E4', shadowColor: '#000', elevation: 3, zIndex: 100, marginBottom: 10 }} />
                                     <ScrollView>
+                                        {
+                                            (isLoader)
+                                                ? <View>
+                                                    <ItemBlogLoader />
+                                                    <ItemBlogLoader />
+                                                </View>
+                                                : <TabBlog user={infoLogin} isLoader={isLoader} arr_blog={arr_blog} />
+                                        }
+                                        {
+                                            (isLoader)
+                                                ? <View>
+                                                    <ItemBlogLoader />
+                                                    <ItemBlogLoader />
+                                                </View>
+                                                : <TabBlog user={infoLogin} isLoader={isLoader} arr_blog={arr_blog} />
+                                        }
                                         {
                                             (isLoader)
                                                 ? <View>

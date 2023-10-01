@@ -1,66 +1,59 @@
 import {
     Image, Text, View,
     TouchableHighlight,
-    TextInput, TouchableOpacity,
+    TextInput, Pressable,
     ToastAndroid
 } from 'react-native';
 import React, { useState } from 'react';
 import styles from '../../styles/form.style';
-import Entypo from 'react-native-vector-icons/Entypo';
-import { axiosJSON } from '../../api/axios.config';
+import PhoneSelect from '../../component/modals/PhoneSelect';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import { onSendOTPbyPhoneNumber } from '../../function/functionOTP';
 import Toast from 'react-native-toast-message';
+import { axiosJSON } from '../../api/axios.config';
+import { useNavigation } from '@react-navigation/native';
 import { ToastLayout } from '../../component/layout/ToastLayout';
 
 export default function RegisterTab(route) {
-    const [passToggle, setpassToggle] = useState(true);
-    const [confirmPassToggle, setconfirmPassToggle] = useState(true);
-    const [inputUsername, setinputUsername] = useState("");
+    const navigation = useNavigation();
+    const [inputPhoneCountry, setinputPhoneCountry] = useState('+84');
+    const [inputUsername, setinputUsername] = useState(route.user);
+    const [inputFullName, setinputFullName] = useState("");
     const [inputPhoneNumber, setinputPhoneNumber] = useState("");
-    const [inputPassword, setinputPassword] = useState("");
-    const [inputConfirmPassword, setinputConfirmPassword] = useState("");
-
-    function onChangePassToggle() {
-        if (passToggle == true) {
-            setpassToggle(false);
-        } else {
-            setpassToggle(true);
-        }
-    }
-
-    function onChangeConfirmPassToggle() {
-        if (confirmPassToggle == true) {
-            setconfirmPassToggle(false);
-        } else {
-            setconfirmPassToggle(true);
-        }
-    }
+    const [isShowPhoneSelect, setisShowPhoneSelect] = useState(false);
+    const [widthPhoneSelect, setwidthPhoneSelect] = useState(0);
+    const [isDisableRequest, setisDisableRequest] = useState(false);
 
     function onChangeTab() {
-        route.callback();
+        route.callback(inputUsername);
     }
 
-    function checkValidate(inputObj) {
-        var regEmail = /^(\w+@[a-zA-Z]+\.[a-zA-Z]{2,})$/;
-        var regPhone = /^(\+\d{10,})$/;
-        var regPass = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[@#$%^&+=<>!]).{8,}/;
-        if (inputObj.userName == "") {
-            ToastAndroid.show('Tên đăng nhập không được trống!', ToastAndroid.SHORT);
+    function checkValidate() {
+        var regPhone = /^(\+\d{9,})$/;
+        if (inputUsername == "") {
+            Toast.show({
+                type: 'error',
+                position: 'top',
+                text1: 'Tên đăng nhập không được trống!',
+            });
             return false;
         }
 
-        if (!inputObj.phoneNumber.match(regPhone)) {
-            ToastAndroid.show('Số điện thoại chưa đúng định dạng!', ToastAndroid.SHORT);
+        if (inputFullName == "") {
+            Toast.show({
+                type: 'error',
+                position: 'top',
+                text1: 'Họ và tên không được trống!'
+            });
             return false;
         }
 
-        if (!inputObj.passWord.match(regPass)) {
-            ToastAndroid.show('Mật khẩu chưa đúng định dạng!', ToastAndroid.SHORT);
-            ToastAndroid.show('Mật khẩu phải dài ít nhất 8 ký tự và chứa ít nhất một số, chữ cái viết thường, chữ viết hoa và ký tự đặc biệt!', ToastAndroid.LONG);
-            return false;
-        }
-
-        if (inputObj.passWord != inputConfirmPassword) {
-            ToastAndroid.show('Mật khẩu nhập lại không trùng!', ToastAndroid.SHORT);
+        if (!(inputPhoneCountry + inputPhoneNumber).match(regPhone)) {
+            Toast.show({
+                type: 'error',
+                text1: 'Số điện thoại cần đúng định dạng!\nVí dụ: +123456789',
+                position: 'top',
+            })
             return false;
         }
 
@@ -68,54 +61,84 @@ export default function RegisterTab(route) {
     }
 
     async function onSignUp() {
-        var phoneNUM = inputPhoneNumber.replace(/\D/g, '');
-        setinputPhoneNumber(phoneNUM);
-        var newUser = {
-            userName: inputUsername,
-            phoneNumber: '+' + phoneNUM,
-            passWord: inputPassword
-        }
-
-        if (checkValidate(newUser) == false) {
-            // ToastAndroid.show("Đăng nhập thất bại!", ToastAndroid.SHORT);
+        if (checkValidate() == false) {
             return;
         }
+        setisDisableRequest(true);
+        Toast.show({
+            type: 'loading',
+            position: 'top',
+            text1: "Đang gửi mã xác minh...",
+            bottomOffset: 20,
+            autoHide: false
+        });
 
-        axiosJSON.post('user/register', newUser)
-            .then((response) => {
-                if (response.status == 201) {
-                    var data = response.data;
-                    if (data.success) {
-                        Toast.show({
-                            type: 'success',
-                            position: 'top',
-                            text1: String(data.message),
-                            bottomOffset: 20
-                        });
-                    }
-                } else {
-                    var data = response.data;
-                    Toast.show({
-                        type: 'success',
-                        position: 'top',
-                        text1: String(data.message),
-                        bottomOffset: 20
-                    });
-                }
-            })
+        var phoneCountry = inputPhoneCountry.replace(/\D/g, '');
+        var newUser = {
+            userName: inputUsername,
+            fullName: inputFullName,
+            phoneNumber: phoneCountry + inputPhoneNumber,
+        }
+
+        var res = await axiosJSON.post('/user/checkPhoneNumber', { phoneNumber: newUser.phoneNumber })
             .catch((e) => {
                 Toast.show({
                     type: 'error',
                     position: 'top',
-                    text1: String(e),
+                    text1: String(e.response.data.message),
                     bottomOffset: 20
                 });
+                setisDisableRequest(false);
+                return;
             });
+        if (res != undefined) {
+            var data = res.data;
+            if (res.status == 200) {
+                if (data.success) {
+                    const response = await onSendOTPbyPhoneNumber(inputPhoneCountry + inputPhoneNumber);
+                    if (response != undefined && response.success) {
+                        setTimeout(() => {
+                            navigation.navigate('ConfirmOTP', { navigate: "RegisterPassword", objUser: newUser, typeVerify: 'phoneNumber', valueVerify: inputPhoneCountry + inputPhoneNumber, authConfirm: response.confirm })
+                        }, 500)
+                    } else {
+                        setisDisableRequest(false);
+                    }
+                } else {
+                    Toast.show({
+                        type: 'error',
+                        position: 'top',
+                        text1: String(data.message),
+                        bottomOffset: 20
+                    });
+                    setisDisableRequest(false);
+                    return;
+                }
+            }
+        }
+    }
 
+    function onInputPhoneNumber(input) {
+        var phoneNUM = input.replace(/\D/g, '');
+        setinputPhoneNumber(phoneNUM);
+    }
+
+    function onInputPhoneCountry(input) {
+        setinputPhoneCountry(input);
+        setisShowPhoneSelect(false);
+        // console.log(input);
+    }
+
+    const onLayoutPhoneSelect = (event) => {
+        const { x, y, height, width } = event.nativeEvent.layout;
+        setwidthPhoneSelect(width);
     }
 
     return (
-        <View style={styles.container}>
+        <Pressable style={styles.container} onPress={() => {
+            if (isShowPhoneSelect) {
+                setisShowPhoneSelect(false);
+            }
+        }}>
             <Image style={{ position: 'absolute' }}
                 source={require('../../assets/images/form/topLeftPaw.png')} />
             <Image style={styles.pawBottomRight}
@@ -148,69 +171,42 @@ export default function RegisterTab(route) {
                 <View>
                     <Text style={[{
                         color: 'rgba(0, 24, 88, 0.80)',
-                    }, styles.titleInput]}>Số điện thoại</Text>
-                    <View>
-                        <TextInput style={[styles.textInput, { paddingLeft: 25 }]}
+                    }, styles.titleInput]}>Họ và tên</Text>
+                    <TextInput style={styles.textInput} value={inputFullName}
+                        onChangeText={(input) => { setinputFullName(input) }} />
+                </View>
+                <Text style={[{
+                    color: 'rgba(0, 24, 88, 0.80)',
+                }, styles.titleInput]}>Số điện thoại</Text>
+                <View>
+                    <View style={[styles.viewInputSelect, { marginLeft: 0 }]}
+                        onLayout={onLayoutPhoneSelect}>
+                        <Pressable onPress={() => {
+                            setisShowPhoneSelect(true);
+                        }}>
+                            <TextInput style={styles.textInputPhoneCountry}
+                                value={inputPhoneCountry}
+                                editable={false} />
+                        </Pressable>
+                        <TextInput style={styles.textInputPhoneNumber}
                             keyboardType='number-pad' value={inputPhoneNumber}
-                            onChangeText={(input) => { setinputPhoneNumber(input) }} />
-                        <Text style={styles.plusTextInput}>+</Text>
+                            onChangeText={(input) => { onInputPhoneNumber(input) }}
+                        />
+                        <FontAwesome name='sort-down' style={styles.dropdownSelect}
+                            color={'#00185880'} size={13} />
                     </View>
-                </View>
-                <View>
-                    <Text style={[{
-                        color: 'rgba(0, 24, 88, 0.80)',
-                    }, styles.titleInput]}>Mật khẩu</Text>
-                    <View>
-                        <TextInput style={styles.textInputPass}
-                            secureTextEntry={passToggle} value={inputPassword}
-                            onChangeText={(input) => { setinputPassword(input) }} />
-                        {
-                            (passToggle)
-                                ?
-                                <TouchableOpacity style={styles.togglePassword}
-                                    onPress={onChangePassToggle}>
-                                    <Entypo name='eye' color={'#001858'} size={25} />
-                                </TouchableOpacity>
-                                :
-                                <TouchableOpacity style={styles.togglePassword}
-                                    onPress={onChangePassToggle}>
-                                    <Entypo name='eye-with-line' color={'#001858'} size={25} />
-                                </TouchableOpacity>
-                        }
-                    </View>
-                </View>
-                <View>
-                    <Text style={[{
-                        color: 'rgba(0, 24, 88, 0.80)',
-                    }, styles.titleInput]}>Nhập lại mật khẩu</Text>
-                    <View>
-                        <TextInput style={styles.textInputPass}
-                            secureTextEntry={confirmPassToggle} value={inputConfirmPassword}
-                            onChangeText={(input) => { setinputConfirmPassword(input) }} />
-                        {
-                            (confirmPassToggle)
-                                ?
-                                <TouchableOpacity style={styles.togglePassword}
-                                    onPress={onChangeConfirmPassToggle}>
-                                    <Entypo name='eye' color={'#001858'} size={25} />
-                                </TouchableOpacity>
-                                :
-                                <TouchableOpacity style={styles.togglePassword}
-                                    onPress={onChangeConfirmPassToggle}>
-                                    <Entypo name='eye-with-line' color={'#001858'} size={25} />
-                                </TouchableOpacity>
-                        }
-                    </View>
+                    <PhoneSelect isShow={isShowPhoneSelect} callBack={onInputPhoneCountry}
+                        width={widthPhoneSelect} />
                 </View>
 
                 <TouchableHighlight style={[styles.buttonConfirm, { marginTop: 45 }]}
                     activeOpacity={0.5} underlayColor="#DC749C"
-                    onPress={onSignUp}>
+                    onPress={onSignUp} disabled={isDisableRequest}>
                     <Text style={styles.textButtonConfirm}>Đăng ký</Text>
                 </TouchableHighlight>
 
             </View>
             <ToastLayout />
-        </View>
+        </Pressable>
     );
 }

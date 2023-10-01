@@ -8,6 +8,7 @@ import SearchFilters from '../view/search/SearchFilters';
 import ForgetPassword from '../view/form/ForgetPassword';
 import ConfirmOTP from '../view/form/ConfirmOTP';
 import ChangePassword from '../view/form/ChangePassword';
+import RegisterPassword from '../view/form/RegisterPassword';
 import ListProductScreen from '../view/shopping/ListProductScreen';
 import NewPost from '../view/blog/NewBlog';
 import DetailProduct from '../view/shopping/DetailProduct';
@@ -21,7 +22,8 @@ import ListAddress from '../view/account/ListAddress';
 import AddNewAddress from '../view/account/AddNewAddress';
 import ChatScreen from '../view/chat/ChatScreen';
 import InfoManager from '../view/blog/InfoManager';
-import EditInfo from '../view/blog/EditInfo';
+import EditUser from '../view/blog/EditUser';
+import EditAccount from '../view/blog/EditAccount';
 import AppointmentScreen from '../view/appointment/AppointmentScreen';
 import DetailAppointment from '../view/appointment/DetailAppointment';
 import NotifyScreen from '../view/notify/NotifyScreen';
@@ -51,6 +53,7 @@ export default function StackScreen() {
         <Stack.Screen name="NaviTabScreen" component={NaviTabScreen} />
         <Stack.Screen name="SearchFilters" component={SearchFilters} />
         <Stack.Screen name="ForgetPassword" component={ForgetPassword} />
+        <Stack.Screen name="RegisterPassword" component={RegisterPassword} />
         <Stack.Screen name="ConfirmOTP" component={ConfirmOTP} />
         <Stack.Screen name="ChangePassword" component={ChangePassword} />
         <Stack.Screen name="ListProductScreen" component={ListProductScreen} />
@@ -83,7 +86,8 @@ export default function StackScreen() {
         <Stack.Screen name="AddNewAddress" component={AddNewAddress} />
         <Stack.Screen name="ChatScreen" component={ChatScreen} />
         <Stack.Screen name="InfoManager" component={InfoManager} />
-        <Stack.Screen name="EditInfo" component={EditInfo} />
+        <Stack.Screen name="EditUser" component={EditUser} />
+        <Stack.Screen name="EditAccount" component={EditAccount} />
         <Stack.Screen name="AppointmentScreen" component={AppointmentScreen} />
         <Stack.Screen name="DetailAppointment" component={DetailAppointment} />
         <Stack.Screen name="SettingNotify" component={SettingNotify} />

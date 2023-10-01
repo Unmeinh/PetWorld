@@ -33,9 +33,9 @@ const ViewAccountModal = (route) => {
     function OpenAccount() {
         route.callBack();
         if (getMyID() == infoUser._id)
-            navigation.navigate('MyPage');
+            navigation.push('MyPage');
         else
-            navigation.navigate('ViewPage', { idUser: infoUser._id });
+            navigation.push('ViewPage', { idUser: infoUser._id });
     }
 
     function OnFollow() {
@@ -48,7 +48,7 @@ const ViewAccountModal = (route) => {
 
     function OpenListFollow(type) {
         route.callBack();
-        navigation.navigate('ListFollow', { idUser: infoUser._id, typeFollow: type });
+        navigation.push('ListFollow', { idUser: infoUser._id, typeFollow: type });
     }
 
     React.useEffect(() => {

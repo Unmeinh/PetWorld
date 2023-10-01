@@ -7,7 +7,6 @@ export const blogSelectStatus = state => state.listBlog.status;
 export const selectBlogs = createSelector(
     listBlogSelector,
     (blogs) => {
-        console.log(blogs);
         return blogs;
     },
 );

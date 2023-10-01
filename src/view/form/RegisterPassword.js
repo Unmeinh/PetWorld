@@ -14,11 +14,9 @@ import { axiosJSON } from '../../api/axios.config';
 import Toast from 'react-native-toast-message';
 import { ToastLayout } from '../../component/layout/ToastLayout';
 
-export default function ChangePassword({ route }) {
+export default function RegisterPassword({ route }) {
   const navigation = useNavigation();
   const [passToggle, setpassToggle] = useState(true);
-  const inputTypeVerify = route.params.typeVerify;
-  const inputValueVerify = route.params.valueVerify;
   const [confirmPassToggle, setconfirmPassToggle] = useState(true);
   const [inputNewPassword, setinputNewPassword] = useState('');
   const [inputConfirmPassword, setinputConfirmPassword] = useState('');
@@ -61,20 +59,19 @@ export default function ChangePassword({ route }) {
       return;
     }
 
-    let objData = {
-      typeUpdate: inputTypeVerify,
-      valueUpdate: inputValueVerify,
-      newPassword: inputNewPassword
-    }
+    let objData = {};
+    objData = route.params.objUser;
+    objData.passWord = inputNewPassword;
 
     Toast.show({
       type: 'loading',
       position: 'top',
-      text1: "Đang cập nhật lại mật khẩu...",
+      text1: "Đang đăng ký tài khoản...",
       bottomOffset: 20,
       autoHide: false
     });
-    var response = await axiosJSON.put('/user/changePassword', objData)
+
+    var response = await axiosJSON.post('/user/register', objData)
       .catch((e) => {
         Toast.show({
           type: 'error',
@@ -85,7 +82,7 @@ export default function ChangePassword({ route }) {
 
       });
     if (response != undefined) {
-      if (response.status == 200) {
+      if (response.status == 201) {
         var data = response.data;
         try {
           if (data.success) {
@@ -95,8 +92,8 @@ export default function ChangePassword({ route }) {
               text1: String(data.message),
               bottomOffset: 20
             });
-            setTimeout(() => 
-            navigation.navigate('LoginScreen'), 1000)
+            setTimeout(() =>
+              navigation.navigate('LoginScreen'), 1000)
           }
         } catch (error) {
           console.log(error);
@@ -113,23 +110,22 @@ export default function ChangePassword({ route }) {
         } catch (error) {
           console.log(error);
         }
-        
       }
     }
   }
 
   return (
     <View style={{ backgroundColor: '#FEF6E4', flex: 1 }}>
-      <HeaderTitle nav={navigation} titleHeader={'Quên mật khẩu'} colorHeader={'#FEF6E4'} />
+      <HeaderTitle nav={navigation} titleHeader={'Đăng ký tài khoản'} colorHeader={'#FEF6E4'} />
       <View style={styles.container}>
         <Text style={styles.titleLarge}>
-          Thiết lập mật khẩu mới
+          Nhập mật khẩu mới
         </Text>
         <Text style={styles.textDetail}>
           Hãy nhập mật khẩu mới của bạn.{'\n'}
           Mật khẩu cần dài ít nhất 8 ký tự. {'\n'}
           Bao gồm tối thiểu 1 chữ hoa,{'\n'}
-          1 chữ thường, 1 số và 1 ký tự đặc biệt.
+          1 chữ thường và 1 số.
         </Text>
 
         <View style={{ marginTop: 15 }}>
@@ -183,10 +179,10 @@ export default function ChangePassword({ route }) {
         <TouchableHighlight style={[styles.buttonConfirm, { marginTop: 75 }]}
           activeOpacity={0.5} underlayColor="#DC749C"
           onPress={onChangePass}>
-          <Text style={styles.textButtonConfirm}>Xác nhận</Text>
+          <Text style={styles.textButtonConfirm}>Đăng ký</Text>
         </TouchableHighlight>
       </View>
-      <ToastLayout/>
+      <ToastLayout />
     </View>
   )
 }

@@ -110,7 +110,15 @@ export default StyleSheet.create({
         borderRadius: 10,
         borderWidth: 1,
         borderColor: 'rgba(0, 0, 0, 0.50)',
-        overflow: 'hidden'
+        overflow: 'hidden',
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+        elevation: 5,
     },
 
     textInputPhoneCountry: {
@@ -182,7 +190,7 @@ export default StyleSheet.create({
 
     togglePassword: {
         position: 'absolute',
-        right: 10, top: '30%'
+        right: 10, top: '35%'
     },
 
     checkboxRM: {
