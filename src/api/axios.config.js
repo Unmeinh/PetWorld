@@ -1,6 +1,7 @@
 import axios from "axios";
+import { storageMMKV } from "../storage/storageMMKV";
 
-const apiURL = "https://7768-2402-800-61c4-c98-bd5e-d6b-a9d0-aa3c.ngrok-free.app/api";
+const apiURL = "https://c2d8-104-28-254-75.ngrok-free.app/api";
 
 // axiosAPi.defaults.timeout = 2000;
 
@@ -8,5 +9,10 @@ const apiURL = "https://7768-2402-800-61c4-c98-bd5e-d6b-a9d0-aa3c.ngrok-free.app
 let axiosAPi = axios.create();
 
 axiosAPi.defaults.baseURL = apiURL;
-
+axiosAPi.defaults.headers = {
+    Accept: 'application/json',
+    'Content-Type': 'application/json',
+    "Content-Type": "application/x-www-form-urlencoded",
+    "Authorization": (storageMMKV.getString('login.token') != "") ? `Bearer ${storageMMKV.getString('login.token')}` : undefined
+};
 export default axiosAPi;

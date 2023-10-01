@@ -23,7 +23,7 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import useCart from '../../hooks/useCart';
 import ModalTicket from '../../component/modals/ModalTicket';
-import {fetchInfoLogin} from '../../redux/reducers/user/userReducer';
+import {fetchInfoLogin, fetchInfoUserNoMessage} from '../../redux/reducers/user/userReducer';
 import {userSelectStatus} from '../../redux/selectors/userSelector';
 const payment = [
   {id: 1, name: 'Thanh toán khi nhận hàng'},
@@ -93,7 +93,7 @@ export default function SummaryBill({navigation}) {
     );
   }
   useEffect(() => {
-    dispatch(fetchInfoLogin());
+    dispatch(fetchInfoUserNoMessage());
   }, []);
   return (
     <View style={styles.container}>

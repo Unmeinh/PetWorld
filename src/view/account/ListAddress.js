@@ -16,7 +16,6 @@ export default function ListAddress({navigation}) {
   useEffect(() => {
     const subcriber = navigation.addListener('focus', () => {
       if (message) {
-        console.log('focus list');
         dispatch(setMessageUser(''));
       }
     });
