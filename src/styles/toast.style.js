@@ -11,7 +11,7 @@ let darkBlue = '#001858';
 
 export default StyleSheet.create({
     toastContainer: {
-        width: '85%',
+        width: '90%',
         height: 60,
         backgroundColor: '#fff',
         borderRadius: 5,
@@ -21,7 +21,7 @@ export default StyleSheet.create({
         paddingVertical: 10,
         paddingHorizontal: 10,
         alignItems: 'center',
-        overflow: 'hidden'
+        overflow: 'hidden',
     },
 
     viewToastType: {
@@ -44,6 +44,7 @@ export default StyleSheet.create({
         fontSize: 15,
         fontWeight: '400',
         color: '#001858',
-        left: 7
+        left: 7,
+        width: '85%',
     }
 });

@@ -1,6 +1,6 @@
 import {
     View, Text,
-    StyleSheet
+    Dimensions,
 } from 'react-native';
 import React from 'react';
 import styles from '../../styles/toast.style';
@@ -10,7 +10,6 @@ import LinearGradient from 'react-native-linear-gradient';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 export function ToastLayout() {
-    const [isLoading, setisLoading] = React.useState(false);
 
     const toastConfig = {
         success: ({ text1, props }) => (
@@ -50,21 +49,6 @@ export function ToastLayout() {
         loading: ({ text1, props }) => (
             <>
                 <View style={styles.toastContainer}>
-                    {
-                        setisLoading(true)
-                    }
-                    {/* <View>
-                    <ScrollView style={{ height: 50, width: 50, }}
-                        refreshControl={
-                            <RefreshControl refreshing={true}
-                                colors={["red", "green", "blue"]}
-                                progressViewOffset={-15} 
-                                tintColor="transparent"
-                                style={{backgroundColor: '#000'}}/>
-                        }>
-                        <View />
-                    </ScrollView>
-                </View> */}
                     <View>
                         <Progress.CircleSnail color={['#EAC645']} size={35} />
                     </View>
@@ -80,16 +64,19 @@ export function ToastLayout() {
                         </LinearGradient>
                     </View>
                 </View>
+                <View style={{
+                    zIndex: 150,
+                    backgroundColor: "#0000001A",
+                    height: Dimensions.get('screen').height * 2,
+                    width: Dimensions.get('window').width,
+                    position: 'absolute',
+                    top: -200
+                }} />
             </>
         )
     };
 
     return (
-        <>
-            <Toast config={toastConfig} />
-            {isLoading &&
-                <View style={[StyleSheet.absoluteFillObject, { zIndex: 150, backgroundColor: "#0000001A", }]} />
-            }
-        </>
+        <Toast config={toastConfig} />
     );
 }

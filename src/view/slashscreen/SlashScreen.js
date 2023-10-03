@@ -60,15 +60,15 @@ export default function SplashScreen() {
       moveDauchan();
       hideLogo();
 
-    } else {
-      autoNavigate();
-    }
+    } 
   }, [dauchanPositions]);
 
   function onLayoutPaw(event) {
     const { x, y, height, width } = event.nativeEvent.layout;
     if (x >= Dimensions.get('window').width) {
-      setisRunningAnimated(false);
+      // setisRunningAnimated(false);
+      stepAnimation.setValue(0);
+      setDauchanPositions([]);
     }
   }
 
@@ -80,11 +80,13 @@ export default function SplashScreen() {
             if (storageMMKV.checkKey('login.token')) {
               if (storageMMKV.getString('login.token')) {
                 let res = await onAxiosGet('/user/autoLogin')
-                if (res.success) {
-                  navigation.navigate('NaviTabScreen');
-                } else {
-                  storageMMKV.setValue('login.token', "");
-                  navigation.navigate('LoginScreen');
+                if (res) {
+                  if (res.success) {
+                    navigation.navigate('NaviTabScreen');
+                  } else {
+                    storageMMKV.setValue('login.token', "");
+                    navigation.navigate('LoginScreen');
+                  }
                 }
               } else {
                 storageMMKV.setValue('login.token', "");
@@ -133,6 +135,17 @@ export default function SplashScreen() {
       },
     ],
   };
+
+  React.useEffect(() => {
+    const unsub = navigation.addListener('focus', () => {
+      autoNavigate();
+      return () => {
+        unsub.remove();
+      };
+    });
+
+    return unsub;
+  }, [navigation]);
 
   return (
     <View style={styles.container}>
