@@ -14,7 +14,7 @@ import { openPicker } from '@baronha/react-native-multiple-image-picker';
 import { useSelector, useDispatch } from "react-redux";
 import { selectUserLogin, userSelectStatus } from '../../redux/selectors/userSelector';
 import { listBlogSelector, blogSelectStatus } from '../../redux/selectors/blogSelector';
-import { fetchInfoLogin, changeStatusPending } from '../../redux/reducers/user/userReducer';
+import { fetchInfoLogin } from '../../redux/reducers/user/userReducer';
 import { fetchBlogs } from '../../redux/reducers/blog/blogReducer';
 import { RefreshControl } from "react-native-gesture-handler";
 import ShimmerPlaceHolder from '../../component/layout/ShimmerPlaceHolder';

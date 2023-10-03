@@ -6,7 +6,6 @@ import {
 import React, { useState, useRef, memo } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { useDispatch } from "react-redux";
-import { changeStatusPending } from "../../redux/reducers/user/userReducer";
 import Modal from 'react-native-modal';
 import styles from "../../styles/user.style";
 import Entypo from 'react-native-vector-icons/Entypo';
@@ -32,7 +31,6 @@ const ViewAccountModal = (route) => {
         if (loginId == infoUser._id)
             navigation.push('MyPage');
         else {
-            dispatch(changeStatusPending('loading'));
             navigation.push('ViewPage', { idUser: infoUser._id });
         }
     }
