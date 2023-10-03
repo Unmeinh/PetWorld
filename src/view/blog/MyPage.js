@@ -12,31 +12,31 @@ import { TabInfo, TabBlog } from './TabItemPage';
 import { useNavigation } from '@react-navigation/native';
 import { useSelector, useDispatch } from "react-redux";
 import { selectUserLogin, userSelectStatus } from '../../redux/selectors/userSelector';
-import { selectBlogsByUser, blogSelectStatus } from '../../redux/selectors/blogSelector';
-import { fetchInfoLogin, changeStatusPending } from '../../redux/reducers/user/userReducer';
-import { fetchBlogsUser } from '../../redux/reducers/blog/blogReducer';
-import { RefreshControl } from "react-native-gesture-handler";
+import { fetchInfoLogin } from '../../redux/reducers/user/userReducer';
 import ItemBlogLoader from '../../component/items/ItemBlogLoader';
 import MenuContext from '../../component/menu/MenuContext';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Entypo from 'react-native-vector-icons/Entypo';
 import ShimmerPlaceHolder from '../../component/layout/ShimmerPlaceHolder';
+import { onAxiosGet } from '../../api/axios.function';
 
 const MyPage = () => {
     const navigation = useNavigation();
     const dispatch = useDispatch();
     const infoLogin = useSelector(selectUserLogin);
     const uSelectStatus = useSelector(userSelectStatus);
-    const arr_blog = useSelector(selectBlogsByUser);
-    const bSelectStatus = useSelector(blogSelectStatus);
-    const [srcAvatar, setsrcAvatar] = useState(require('../../assets/images/error.png'));
+    const [blogs, setblogs] = useState(undefined);
+    const [srcAvatar, setsrcAvatar] = useState(require('../../assets/images/loading.png'));
     const [isLoadingUser, setisLoadingUser] = useState(true);
     const [isLoadingBlog, setisLoadingBlog] = useState(true);
     const [infoTabHeight, setinfoTabHeight] = useState(0);
+    const [isFocusScreen, setisFocusScreen] = useState(false);
     const [isRefreshing, setisRefreshing] = useState(false);
     const [isHeaderCollapse, setisHeaderCollapse] = useState(false);
     const [isShowMenu, setisShowMenu] = useState(false);
-    const menuNames = ["Chỉnh sửa thông tin", "Đổi ảnh đại diện"];
+    const menuNames = ["Chỉnh sửa thông tin", "Đăng blog mới", "Blog đã tương tác"];
+
+    const menuFunctions = [OpenInfoManager, OpenChangeAvatar];
 
     function OpenInfoManager() {
         setisShowMenu(false);
@@ -48,12 +48,21 @@ const MyPage = () => {
         navigation.navigate('ChangeAvatar');
     }
 
-    const menuFunctions = [OpenInfoManager, OpenChangeAvatar];
+    async function fetchBlogsUser(id) {
+        const res = await onAxiosGet('/blog/list/user/' + id);
+        if (res) {
+            setblogs(res.data);
+        } else {
+            setblogs([]);
+        }
+    }
 
     const onLayoutBlog = (event) => {
         const { x, y, height, width } = event.nativeEvent.layout;
         if (height <= Dimensions.get('window').height) {
-            setinfoTabHeight(height);
+            if (blogs.length > 0) {
+                setinfoTabHeight(height);
+            }
         } else {
             setinfoTabHeight(Dimensions.get('window').height);
         }
@@ -61,9 +70,10 @@ const MyPage = () => {
 
     //Use effect    
     useEffect(() => {
-        if (isLoadingUser) {
+        if (infoLogin && isLoadingUser) {
             if (uSelectStatus == "being idle") {
-                dispatch(fetchBlogsUser(infoLogin._id));
+                fetchBlogsUser(infoLogin._id);
+                setisLoadingBlog(true);
                 setsrcAvatar({ uri: String(infoLogin.avatarUser) });
                 setisLoadingUser(false);
             }
@@ -71,23 +81,53 @@ const MyPage = () => {
     }, [uSelectStatus, infoLogin]);
 
     useEffect(() => {
-        if (isLoadingBlog) {
-            if (bSelectStatus == "being idle") {
-                setisLoadingBlog(false);
+        if (blogs != undefined) {
+            setisLoadingBlog(false);
+        }
+    }, [blogs]);
+
+    useEffect(() => {
+        if (isFocusScreen) {
+            if (infoLogin == undefined) {
+                setisLoadingUser(true);
+                dispatch(fetchInfoLogin());
+                if (blogs != undefined) {
+                    setisLoadingBlog(false);
+                }
+            } else {
+                setisLoadingUser(false);
+                dispatch(fetchInfoLogin());
+                setsrcAvatar({ uri: String(infoLogin.avatarUser) });
+                if (blogs == undefined) {
+                    fetchBlogsUser(infoLogin._id);
+                    setisLoadingBlog(true);
+                }
             }
         }
-    }, [bSelectStatus]);
+    }, [isFocusScreen]);
 
-    React.useEffect(() => {
-        const unsub = navigation.addListener('focus', () => {
-            dispatch(fetchInfoLogin());
-
+    useEffect(() => {
+        const unsubFocus = navigation.addListener('focus', () => {
+            setisFocusScreen(true);
             return () => {
-                unsub.remove();
+                unsubFocus.remove();
             };
         });
 
-        return unsub;
+        const unsubBlur = navigation.addListener('blur', () => {
+            setisFocusScreen(false);
+            return () => {
+                unsubBlur.remove();
+            };
+        });
+
+        const unsubRemove = navigation.addListener('beforeRemove', () => {
+            setisFocusScreen(false);
+            return () => {
+                unsubRemove.remove();
+            };
+        });
+
     }, [navigation]);
 
     const LoaderHeader = () => {
@@ -209,13 +249,11 @@ const MyPage = () => {
                 <View style={{ flex: 1, marginTop: 55 }}>
                     {
                         (isLoadingUser)
-                            ? <>
-                                <ScrollView>
-                                    <LoaderHeader key={1}/>
-                                    <ItemBlogLoader key={2}/>
-                                    <ItemBlogLoader key={3}/>
-                                </ScrollView>
-                            </>
+                            ? <ScrollView>
+                                <LoaderHeader key={1} />
+                                <ItemBlogLoader key={2} />
+                                <ItemBlogLoader key={3} />
+                            </ScrollView>
                             : <CollapsibleTabs
                                 collapsibleContent={(<HeaderView />)}
                                 barColor="#FEF6E4"
@@ -239,7 +277,7 @@ const MyPage = () => {
                                                             <ItemBlogLoader />
                                                             <ItemBlogLoader />
                                                         </>
-                                                        : <TabBlog user={infoLogin} arr_blog={arr_blog} />
+                                                        : <TabBlog user={infoLogin} arr_blog={blogs} />
                                                 }
                                             </ScrollView>
                                         </View>

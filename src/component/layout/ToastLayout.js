@@ -1,7 +1,6 @@
 import {
     View, Text,
     Dimensions,
-    StyleSheet
 } from 'react-native';
 import React from 'react';
 import styles from '../../styles/toast.style';
@@ -78,8 +77,6 @@ export function ToastLayout() {
     };
 
     return (
-        <>
-            <Toast config={toastConfig} />
-        </>
+        <Toast config={toastConfig} />
     );
 }

@@ -1,12 +1,15 @@
 import { createSelector } from '@reduxjs/toolkit';
 export const listBlogSelector = state => state.listBlog.data;
+export const listBlogUserSelector = state => state.listBlog.dataUser;
 export const userSelectId = state => state.listBlog.userId;
 export const blogSelectId = state => state.listBlog.selectId;
 export const blogSelectStatus = state => state.listBlog.status;
+export const userLoginId = state => state.listUser.loginData._id;
 
 export const selectBlogs = createSelector(
     listBlogSelector,
-    (blogs) => {
+    userLoginId,
+    (blogs, loginId) => {
         return blogs;
     },
 );

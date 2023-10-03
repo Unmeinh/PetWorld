@@ -29,9 +29,9 @@ const NewPost = ({ route }) => {
     let listImageRef = useRef(null);
     const infoLogin = useSelector(selectUserLogin);
     const selectorStatus = useSelector(userSelectStatus);
-    const [arr_Image, setarr_Image] = useState((route.params.arr_Picked) ? route.params.arr_Picked : []);
+    const [arr_Image, setarr_Image] = useState((route.params && route.params.arr_Picked) ? route.params.arr_Picked : []);
     const [aspectRatio, setaspectRatio] = useState(1 / 1);
-    const [srcAvatar, setsrcAvatar] = useState(require('../../assets/images/error.png'));
+    const [srcAvatar, setsrcAvatar] = useState(require('../../assets/images/loading.png'));
     const [inputContent, setinputContent] = useState("");
     const [inputFont, setinputFont] = useState("Default");
     const [isShowModal, setisShowModal] = useState(false);
@@ -89,7 +89,7 @@ const NewPost = ({ route }) => {
         }
 
         let res = await onAxiosPost('blog/insert', formData, "formdata");
-        if (res.success) {
+        if (res && res.success) {
             navigation.goBack();
         }
 

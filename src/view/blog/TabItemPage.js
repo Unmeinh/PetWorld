@@ -23,7 +23,7 @@ const TabBlog = memo(
                         ?
                         <FlatList data={arr_blog} scrollEnabled={false}
                             renderItem={({ item, index }) =>
-                                <ItemBlogPage key={item._id} blog={item} info={user} />}
+                                <ItemBlogPage key={item._id} blog={item} />}
                             showsVerticalScrollIndicator={false}
                             keyExtractor={(item, index) => index.toString()} />
                         :

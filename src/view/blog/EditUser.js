@@ -59,7 +59,7 @@ const EditInfo = ({ route }) => {
         } else {
             res = await onAxiosPut('user/updateUser', { typeInfo: infoKeys[route.params.infoType], valueUpdate: inputValue }, 'json');
         }
-        if (res.success) {
+        if (res && res.success) {
             navigation.goBack();
         }
     }

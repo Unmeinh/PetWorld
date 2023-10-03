@@ -42,6 +42,36 @@ export default StyleSheet.create({
         borderRadius: 50
     },
 
+    viewContentOnline: {
+        position: 'absolute',
+        bottom: 3, right: 5,
+        borderRadius: 10,
+        backgroundColor: '#fff',
+        padding: 1,
+        overflow: 'hidden',
+        borderWidth: 0.15
+    },
+
+    contentOnline: {
+        width: 9, height: 9,
+        borderRadius: 5,
+        backgroundColor: '#00CC00'
+    },
+
+    topOfline: {
+        width: 11, height: 5,
+        backgroundColor: '#fff',
+        position: 'absolute',
+        zIndex: 5,
+    },
+
+    contentOfline: {
+        width: 9, height: 9,
+        borderRadius: 5,
+        backgroundColor: '#C0C0C0',
+        paddingBottom: 4.5,
+    },
+
     modalUserName: {
         color: darkBlue,
         fontSize: 17,

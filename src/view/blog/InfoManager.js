@@ -27,7 +27,7 @@ const InfoManager = () => {
     const infoLogin = useSelector(selectUserLogin);
     const uSelectStatus = useSelector(userSelectStatus);
     const [pickedImage, setpickedImage] = useState(null);
-    const [srcAvatar, setsrcAvatar] = useState(require('../../assets/images/error.png'))
+    const [srcAvatar, setsrcAvatar] = useState(require('../../assets/images/loading.png'))
     const [isLoader, setisLoader] = useState(true);
     const colorLoader = ['#f0e8d8', '#dbdbdb', '#f0e8d8'];
 
@@ -81,7 +81,7 @@ const InfoManager = () => {
                 let formData = new FormData();
                 formData.append('uploadImages', dataImage);
                 let res = await onAxiosPut('user/updateAvatar', formData, 'formdata');
-                if (res.success) {
+                if (res && res.success) {
                     setpickedImage(null);
                     dispatch(fetchInfoLogin());
                 }

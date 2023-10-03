@@ -4,7 +4,7 @@ import listProductReducer from './reducers/product/ProductReducer';
 import categoryReducer from './reducers/category/category';
 import listShopReducer from './reducers/shop/ShopReducer';
 import blogReducer from './reducers/blog/blogReducer';
-import listCommentReducer from './reducers/comment/ListCommentReducer';
+import commentReducer from './reducers/comment/commentReducer';
 import listCartReducer from './reducers/shop/CartReduces';
 import searchFilterReducer from './reducers/filters/filtersReducer';
 import userReducer from './reducers/user/userReducer';
@@ -18,7 +18,7 @@ const store = configureStore({
     category: categoryReducer,
     listShop: listShopReducer,
     listBlog: blogReducer,
-    listComment: listCommentReducer,
+    listComment: commentReducer,
     listUser: userReducer,
     listCart: listCartReducer,
     listFollow: followReducer

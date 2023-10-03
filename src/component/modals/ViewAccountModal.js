@@ -13,19 +13,17 @@ import Entypo from 'react-native-vector-icons/Entypo';
 import Fontisto from 'react-native-vector-icons/Fontisto';
 import { userLoginId } from '../../redux/selectors/userSelector';
 import { useSelector } from "react-redux";
+import { onAxiosPost } from "../../api/axios.function";
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import LinearGradient from 'react-native-linear-gradient';
-import { createShimmerPlaceholder } from 'react-native-shimmer-placeholder';
-
-const ShimmerPlaceHolder = createShimmerPlaceholder(LinearGradient);
+import ShimmerPlaceHolder from "../layout/ShimmerPlaceHolder";
 
 const ViewAccountModal = (route) => {
     const navigation = useNavigation();
     const dispatch = useDispatch();
     const infoUser = route.info;
     var loginId = useSelector(userLoginId);
-    const [srcAvatar, setsrcAvatar] = useState(require('../../assets/images/error.png'));
-    const [isFollow, setisFollow] = useState(false);
+    const [srcAvatar, setsrcAvatar] = useState(require('../../assets/images/loading.png'));
+    const [isFollow, setisFollow] = useState(route.isFollow);
     const [isLoader, setisLoader] = useState(false);
     const colorLoader = ['#f0e8d8', '#dbdbdb', '#f0e8d8'];
 
@@ -33,18 +31,20 @@ const ViewAccountModal = (route) => {
         route.callBack();
         if (loginId == infoUser._id)
             navigation.push('MyPage');
-        else
-        {
+        else {
             dispatch(changeStatusPending('loading'));
             navigation.push('ViewPage', { idUser: infoUser._id });
         }
     }
 
-    function OnFollow() {
-        if (isFollow) {
-            setisFollow(false);
+    async function OnFollow() {
+        let fl = isFollow;
+        setisFollow(!fl);
+        let res = await onAxiosPost('follow/insert', { idFollow: infoUser._id }, 'json', false);
+        if (res) {
+            route.callbackFollow(!fl);
         } else {
-            setisFollow(true);
+            setisFollow(fl);
         }
     }
 
@@ -69,7 +69,19 @@ const ViewAccountModal = (route) => {
     const ModalAccount = () => {
         return (
             <View style={styles.modalUser}>
-                <Image source={srcAvatar} style={styles.modalUserAvatar} />
+                <View>
+                    <Image source={srcAvatar} style={styles.modalUserAvatar} />
+                    <View style={styles.viewContentOnline}>
+                        {
+                            (infoUser.idAccount.online == 0)
+                                ? <View style={styles.contentOnline} />
+                                : <>
+                                    <View style={styles.topOfline} />
+                                    <View style={styles.contentOfline} />
+                                </>
+                        }
+                    </View>
+                </View>
                 <Text style={styles.modalUserName} numberOfLines={1}>{infoUser.fullName}</Text>
                 {
                     (isFollow)
@@ -106,7 +118,7 @@ const ViewAccountModal = (route) => {
                         <Text style={styles.detailCountModal}>Người theo dõi</Text>
                     </TouchableOpacity>
                 </View>
-                <Text style={styles.textDescModal}>
+                <Text style={styles.textDescModal} numberOfLines={4}>
                     {
                         (infoUser.description != undefined)
                             ? infoUser.description

@@ -13,7 +13,7 @@ import Entypo from 'react-native-vector-icons/Entypo';
 import { openPicker } from '@baronha/react-native-multiple-image-picker';
 import { useSelector, useDispatch } from "react-redux";
 import { selectUserLogin, userSelectStatus } from '../../redux/selectors/userSelector';
-import { selectBlogs, blogSelectStatus } from '../../redux/selectors/blogSelector';
+import { listBlogSelector, blogSelectStatus } from '../../redux/selectors/blogSelector';
 import { fetchInfoLogin, changeStatusPending } from '../../redux/reducers/user/userReducer';
 import { fetchBlogs } from '../../redux/reducers/blog/blogReducer';
 import { RefreshControl } from "react-native-gesture-handler";
@@ -23,41 +23,75 @@ const BlogScreen = ({ scrollRef, onScrollView }) => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const infoLogin = useSelector(selectUserLogin);
-  const arr_blog = useSelector(selectBlogs);
-  const [arr_Image, setarr_Image] = useState([]);
+  const blogs = useSelector(listBlogSelector);
+  const [extraBlogs, setextraBlogs] = useState([]);
+  const [isFocusBlog, setisFocusBlog] = useState(false);
   const uSelectStatus = useSelector(userSelectStatus);
-  const bSelectStatus = useSelector(blogSelectStatus);
   const [isRefreshing, setisRefreshing] = useState(false);
-  const colorLoader = ['#f0e8d8', '#dbdbdb', '#f0e8d8'];
-  const [srcAvatar, setsrcAvatar] = useState(require('../../assets/images/error.png'));
+  const [srcAvatar, setsrcAvatar] = useState(require('../../assets/images/loading.png'));
   const [isLoader, setisLoader] = useState(true);
+  console.log("Rendering BlogScreen");
 
   useEffect(() => {
-    if (bSelectStatus == 'being idle') {
-      setisLoader(false);
-    }
-  }, [bSelectStatus]);
-
-  useEffect(() => {
-    if (uSelectStatus == 'being idle') {
-      setsrcAvatar({ uri: String(infoLogin.avatarUser) })
+    if (isFocusBlog) {
+      if (uSelectStatus == 'being idle') {
+        setsrcAvatar({ uri: String(infoLogin.avatarUser) })
+      }
     }
   }, [uSelectStatus]);
 
-  React.useEffect(() => {
-    const unsub = navigation.addListener('focus', () => {
+  useEffect(() => {
+    if (isFocusBlog) {
+      if (!blogs) {
+        setisLoader(true);
+        dispatch(fetchBlogs());
+      } else {
+        if (blogs.length <= 0) {
+          setisLoader(true);
+          dispatch(fetchBlogs());
+        }
+      }
+    }
+  }, [isFocusBlog]);
+
+  useEffect(() => {
+    if (blogs != undefined) {
+      setextraBlogs(blogs);
+      if (isRefreshing) {
+        setisRefreshing(false);
+      }
+      if (isLoader) {
+        setisLoader(false);
+      }
+    }
+  }, [blogs]);
+
+  useEffect(() => {
+    const unsubFocus = navigation.addListener('focus', () => {
       dispatch(fetchInfoLogin());
-      dispatch(fetchBlogs());
+      setisFocusBlog(true);
       return () => {
-        unsub.remove();
+        unsubFocus.remove();
       };
     });
 
-    return unsub;
+    const unsubBlur = navigation.addListener('blur', () => {
+      setisFocusBlog(false);
+      return () => {
+        unsubBlur.remove();
+      };
+    });
+
+    const unsubRemove = navigation.addListener('beforeRemove', () => {
+      setisFocusBlog(false);
+      return () => {
+        unsubRemove.remove();
+      };
+    });
+
   }, [navigation]);
 
   function OpenAccount() {
-    dispatch(changeStatusPending('loading'));
     navigation.navigate('MyPage');
   }
 
@@ -72,7 +106,7 @@ const BlogScreen = ({ scrollRef, onScrollView }) => {
         selectedAssets: 'Images',
         doneTitle: 'Xong',
       });
-      navigation.navigate('NewPost', {arr_Picked: response});
+      navigation.navigate('NewPost', { arr_Picked: response });
     } catch (error) {
       console.log(error);
     }
@@ -80,9 +114,7 @@ const BlogScreen = ({ scrollRef, onScrollView }) => {
 
   const ReloadData = React.useCallback(() => {
     setisRefreshing(true);
-    setTimeout(() => {
-      setisRefreshing(false);
-    }, 2000);
+    dispatch(fetchBlogs());
   }, []);
 
   return (
@@ -97,14 +129,11 @@ const BlogScreen = ({ scrollRef, onScrollView }) => {
                 <>
                   <View style={{ flexDirection: 'row', alignItems: "center" }}>
                     <ShimmerPlaceHolder
-                      shimmerColors={colorLoader}
                       shimmerStyle={styles.imageAvatar} />
                     <ShimmerPlaceHolder
-                      shimmerColors={colorLoader}
                       shimmerStyle={styles.textHint} />
                   </View>
                   <ShimmerPlaceHolder
-                    shimmerColors={colorLoader}
                     shimmerStyle={{ width: 27, height: 27 }} />
                 </>
                 :
@@ -135,11 +164,12 @@ const BlogScreen = ({ scrollRef, onScrollView }) => {
               :
               <View>
                 {
-                  (arr_blog.length > 0)
+                  (blogs.length > 0)
                     ?
-                    <FlatList data={arr_blog} scrollEnabled={false}
-                      renderItem={({ item, index }) => <ItemBlog key={index} blog={item} navigation={navigation}
-                        info={infoLogin} openAcc={OpenAccount} />}
+                    <FlatList data={blogs} scrollEnabled={false}
+                      extraData={extraBlogs}
+                      renderItem={({ item, index }) =>
+                        <ItemBlog key={index} blog={item} info={infoLogin} />}
                       showsVerticalScrollIndicator={false}
                       keyExtractor={(item, index) => index.toString()}
                       refreshControl={

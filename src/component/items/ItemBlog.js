@@ -1,7 +1,7 @@
 import {
-    Image, Share,
+    Image, View,
     Text, TouchableOpacity,
-    TouchableHighlight, View,
+    TouchableHighlight,
     Dimensions, Pressable
 } from "react-native";
 import React, { useState, useCallback } from "react";
@@ -13,18 +13,21 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import BlogImageSlider from "../slider/BlogImageSlider";
 import CommentTab from '../modals/CommentTab';
 import MenuContext from "../menu/MenuContext";
-import { userLoginId } from '../../redux/selectors/userSelector';
-import { useSelector } from "react-redux";
-import { useNavigation } from "@react-navigation/native";
 import ViewAccountModal from "../modals/ViewAccountModal";
-import { encodeToAscii } from "../../function/functionHash";
+import { useSelector, useDispatch } from "react-redux";
+import { userLoginId } from '../../redux/selectors/userSelector';
+import { useNavigation } from "@react-navigation/native";
 import { getDateTimeVietnamese } from "../../function/functionDate";
+import { onSharingBlog } from "../../function/functionShare";
+import { changeBlogIsFollow } from "../../redux/reducers/blog/blogReducer";
+import { onAxiosPost } from "../../api/axios.function";
 
 const ItemBlog = (row) => {
-    let blog = row.blog;
+    const [blog, setblog] = useState(row.blog);
     let user = blog.idUser;
     let loginId = useSelector(userLoginId);
-    let navigation = useNavigation();
+    const navigation = useNavigation();
+    const dispatch = useDispatch();
     const [isMe, setisMe] = useState(false);
     const [dateBlog, setdateBlog] = useState("");
     const [isShowComment, setisShowComment] = useState(false);
@@ -33,35 +36,33 @@ const ItemBlog = (row) => {
     const [isShowMoreBlog, setisShowMoreBlog] = useState(true);
     const [isShowMoreContent, setisShowMoreContent] = useState(false);
     const [isCollapsedContent, setisCollapsedContent] = useState(true);
-    const [srcAvatar, setsrcAvatar] = useState(require('../../assets/images/error.png'));
+    const [srcAvatar, setsrcAvatar] = useState(require('../../assets/images/loading.png'));
     const [isLove, setisLove] = useState(false);
+    const [isFollowed, setisFollowed] = useState(blog.isFollowed);
     const [menuNames, setmenuNames] = useState([]);
     const [menuFunctions, setmenuFunctions] = useState([]);
 
     const onTextLayout = useCallback(e => {
-        setisShowMoreContent(e.nativeEvent.lines.length > 1);
+        setisShowMoreContent(e.nativeEvent.lines.length > 2);
     }, []);
 
     async function onSharing() {
-        try {
-            const result = await Share.share({
-                message: "https://9f03-2402-800-61c4-4085-20ae-2b4b-9dfb-e287.ngrok-free.app/blog/shareBlog/" + encodeToAscii(blog._id),
-                title: "Chia sẻ Blog này với:",
-                url: "https://9f03-2402-800-61c4-4085-20ae-2b4b-9dfb-e287.ngrok-free.app/blog/shareBlog/" + encodeToAscii(blog._id)
-            });
-            if (result.action === Share.sharedAction) {
-                if (result.activityType) {
-                } else {
-                }
-            } else if (result.action === Share.dismissedAction) {
-            }
-        } catch (error) {
-            alert(error.message);
+        await onSharingBlog(blog._id);
+    }
+
+    async function onReacting() {
+        let react = isLove;
+        setisLove(!isLove);
+        let res = await onAxiosPost('blog/interact/' + blog._id, {}, 'json', false);
+        if (res) {
+            setblog(res.data);
+        } else {
+            setisLove(react);
         }
     }
 
-    function onReacting() {
-        setisLove(!isLove);
+    function onCallbackBlog(data) {
+        setblog(data);
     }
 
     function onCollapsedContent() {
@@ -80,6 +81,23 @@ const ItemBlog = (row) => {
         }
     }
 
+    function onCallbackFollow(isFl) {
+        setisFollowed(isFl);
+        dispatch(changeBlogIsFollow([user._id, isFl]));
+    }
+
+    async function onFollowMenu() {
+        let fl = isFollowed;
+        setisFollowed(!fl);
+        setisShowMenu(false);
+        let res = await onAxiosPost('follow/insert', { idFollow: user._id }, 'json', false);
+        if (res) {
+            onCallbackFollow(!fl);
+        } else {
+            setisFollowed(fl);
+        }
+    }
+
     function OpenAccount() {
         if (isMe) {
             navigation.navigate('MyPage');
@@ -93,11 +111,12 @@ const ItemBlog = (row) => {
             if (isMe) {
                 setmenuNames(["Sửa bài viết", "Xóa bài viết"]);
             } else {
-                var isFollowed = user.followers.find(follower => String(follower.idFollower) == String(loginId));
                 if (isFollowed) {
                     setmenuNames(["Hủy theo dõi blogger", "Ẩn bài viết", "Báo cáo bài viết"]);
+                    setmenuFunctions([onFollowMenu]);
                 } else {
                     setmenuNames(["Theo dõi blogger", "Ẩn bài viết", "Báo cáo bài viết"]);
+                    setmenuFunctions([onFollowMenu]);
                 }
             }
         }
@@ -106,8 +125,28 @@ const ItemBlog = (row) => {
     React.useEffect(() => {
         if (blog) {
             setdateBlog(getDateTimeVietnamese(blog.createdAt));
+            if (blog.interacts.includes(loginId)) {
+                setisLove(true);
+            } else {
+                setisLove(false);
+            }
+            if (blog.isFollowed != undefined) {
+                setisFollowed(blog.isFollowed);
+            }
         }
     }, [blog]);
+
+    React.useEffect(() => {
+        if (row.blog) {
+            if (blog != row.blog) {
+                if (blog.isFollowed != row.blog.isFollowed) {
+                    setisFollowed(row.blog.isFollowed);
+                } else {
+                    setblog(row.blog);
+                }
+            }
+        }
+    }, [row.blog]);
 
     React.useEffect(() => {
         if (user) {
@@ -196,9 +235,9 @@ const ItemBlog = (row) => {
                                 </View>
                                 <View style={{ flexDirection: 'row', marginVertical: 7 }}>
                                     {
-                                        (isShowMoreContent == false)
+                                        (!isShowMoreContent)
                                             ?
-                                            <Text style={styles.textContent} numberOfLines={1}
+                                            <Text style={styles.textContent} numberOfLines={2}
                                                 onTextLayout={onTextLayout} ellipsizeMode='clip'>
                                                 <Text style={[styles.textContent, { fontWeight: 'bold' }]}>{user.fullName}{" "}</Text>
                                                 {blog.contentBlog}
@@ -209,7 +248,7 @@ const ItemBlog = (row) => {
                                                     (isCollapsedContent)
                                                         ?
                                                         <View>
-                                                            <Text style={[styles.textContent, { fontFamily: String(blog.contentFont) }]} numberOfLines={1}
+                                                            <Text style={[styles.textContent, { fontFamily: String(blog.contentFont) }]} numberOfLines={2}
                                                                 onTextLayout={onTextLayout} ellipsizeMode='clip'>
                                                                 <Text style={styles.textBlogger}>{user.fullName}{" "}</Text>
                                                                 {blog.contentBlog}
@@ -283,17 +322,19 @@ const ItemBlog = (row) => {
             }
             {
                 (isShowComment)
-                    ? <CommentTab isShow={isShowComment} blog={blog} isMe={isMe} callBack={() => setisShowComment(false)} />
+                    ? <CommentTab isShow={isShowComment} blog={blog} isMe={isMe} isFollow={isFollowed}
+                        callBack={() => setisShowComment(false)} callbackFollow={onCallbackFollow}
+                        isLove={isLove} onCallbackBlog={onCallbackBlog} />
+                    : ""
+            }
+            {
+                (isShowAccount)
+                    ? <ViewAccountModal isShow={isShowAccount} info={user} isFollow={isFollowed} callBack={() => setisShowAccount(false)} callbackFollow={onCallbackFollow} />
                     : ""
             }
             {
                 (isShowMenu)
                     ? <MenuContext isShow={isShowMenu} arr_OptionName={menuNames} arr_OptionFunction={menuFunctions} callBack={() => setisShowMenu(false)} />
-                    : ""
-            }
-            {
-                (isShowAccount)
-                    ? <ViewAccountModal isShow={isShowAccount} info={user} callBack={() => setisShowAccount(false)} />
                     : ""
             }
         </View>

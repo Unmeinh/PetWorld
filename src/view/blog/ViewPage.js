@@ -4,82 +4,138 @@ import {
     SafeAreaView,
     ScrollView, View,
     TouchableOpacity,
-    TouchableHighlight
+    TouchableHighlight,
+    Dimensions
 } from 'react-native';
 import styles from '../../styles/user.style';
 import { CollapsibleTabs } from '../../component/layout/indexCollapsibleTab';
 import { TabInfo, TabBlog } from './TabItemPage';
 import { useNavigation } from '@react-navigation/native';
-import { useSelector, useDispatch } from "react-redux";
-import { selectUserByID, userSelectStatus } from '../../redux/selectors/userSelector';
-import { selectBlogsByUser, blogSelectStatus } from '../../redux/selectors/blogSelector';
-import { fetchInfoUser } from '../../redux/reducers/user/userReducer';
-import { fetchBlogsUser } from '../../redux/reducers/blog/blogReducer';
 import ItemBlogLoader from '../../component/items/ItemBlogLoader';
-import { RefreshControl } from "react-native-gesture-handler";
 import MenuContext from '../../component/menu/MenuContext';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Entypo from 'react-native-vector-icons/Entypo';
 import ShimmerPlaceHolder from '../../component/layout/ShimmerPlaceHolder';
+import { onAxiosGet } from '../../api/axios.function';
 
 const ViewPage = ({ route }) => {
     const navigation = useNavigation();
-    const dispatch = useDispatch();
-    const infoUser = useSelector(selectUserByID);
-    const uSelectStatus = useSelector(userSelectStatus);
-    const arr_blog = useSelector(selectBlogsByUser);
-    const bSelectStatus = useSelector(blogSelectStatus);
-    const [isFollowing, setisFollowing] = useState(false);
-    const [srcAvatar, setsrcAvatar] = useState(require('../../assets/images/error.png'));
+    const [infoUser, setinfoUser] = useState(undefined);
+    const [blogs, setblogs] = useState(undefined);
+    const [srcAvatar, setsrcAvatar] = useState(require('../../assets/images/loading.png'));
     const [isLoadingUser, setisLoadingUser] = useState(true);
     const [isLoadingBlog, setisLoadingBlog] = useState(true);
+    const [infoTabHeight, setinfoTabHeight] = useState(0);
+    const [isFocusScreen, setisFocusScreen] = useState(false);
     const [isRefreshing, setisRefreshing] = useState(false);
+    const [isFollowed, setisFollowed] = useState(false);
     const [isHeaderCollapse, setisHeaderCollapse] = useState(false);
     const [isShowMenu, setisShowMenu] = useState(false);
-    const colorLoader = ['#f0e8d8', '#dbdbdb', '#f0e8d8'];
-    const menuNames = ["Gửi email", "Báo cáo"];
-    const menuFunctions = [];
+    const menuNames = ["Chia sẻ người dùng", "Gửi email", "Báo cáo"];
+
+    const menuFunctions = [OpenInfoManager, OpenChangeAvatar];
+
+    function OpenInfoManager() {
+        setisShowMenu(false);
+        navigation.navigate('InfoManager');
+    }
+
+    function OpenChangeAvatar() {
+        setisShowMenu(false);
+        navigation.navigate('ChangeAvatar');
+    }
+
+    async function fetchBlogsUser(id) {
+        const res = await onAxiosGet('/blog/list/user/' + id);
+        if (res) {
+            setblogs(res.data);
+        } else {
+            setblogs([]);
+        }
+    }
+
+    async function fetchUser() {
+        const res = await onAxiosGet('/user/userDetail/' + route.params.idUser);
+        if (res) {
+            setinfoUser(res.data);
+        } else {
+            setinfoUser({});
+        }
+    }
+
+    const onLayoutBlog = (event) => {
+        const { x, y, height, width } = event.nativeEvent.layout;
+        if (height <= Dimensions.get('window').height) {
+            if (blogs) {
+                if (blogs.length > 0) {
+                    setinfoTabHeight(height);
+                }
+            } 
+        } else {
+            setinfoTabHeight(Dimensions.get('window').height);
+        }
+    }
 
     //Use effect    
     useEffect(() => {
-        console.log(uSelectStatus);
-        if (isLoadingUser) {
-            if (uSelectStatus == "being idle") {
-                console.log(infoUser);
-                setsrcAvatar({ uri: String(infoUser.avatarUser) });
-                dispatch(fetchBlogsUser(infoUser._id));
+        if (infoUser != undefined && isLoadingUser) {
+            fetchBlogsUser(infoUser._id);
+            setisLoadingBlog(true);
+            setsrcAvatar({ uri: String(infoUser.avatarUser) });
+            setisFollowed(infoUser.isFollowed);
+            setisLoadingUser(false);
+        }
+    }, [infoUser]);
+
+    useEffect(() => {
+        if (blogs != undefined) {
+            setisLoadingBlog(false);
+        }
+    }, [blogs]);
+
+    useEffect(() => {
+        if (isFocusScreen) {
+            if (infoUser == undefined) {
+                setisLoadingUser(true);
+                fetchUser();
+                if (blogs != undefined) {
+                    setisLoadingBlog(false);
+                }
+            } else {
                 setisLoadingUser(false);
+                fetchUser();
+                setsrcAvatar({ uri: String(infoUser.avatarUser) });
+                if (blogs == undefined) {
+                    fetchBlogsUser(infoUser._id);
+                    setisLoadingBlog(true);
+                }
             }
         }
-    }, [uSelectStatus, infoUser, isLoadingUser]);
+    }, [isFocusScreen]);
 
     useEffect(() => {
-        if (isLoadingBlog) {
-            if (bSelectStatus == "being idle") {
-                setisLoadingBlog(false);
-            }
-            if (bSelectStatus == "loading") {
-                setisLoadingBlog(true);
-            }
-        }
-    }, [bSelectStatus]);
-
-    useEffect(() => {
-        const unsub = navigation.addListener('focus', () => {
-            if (route.params.idUser) {
-                dispatch(fetchInfoUser(route.params.idUser));
-            }
+        const unsubFocus = navigation.addListener('focus', () => {
+            setisFocusScreen(true);
             return () => {
-                unsub.remove();
+                unsubFocus.remove();
             };
         });
 
-        return unsub;
-    }, [navigation]);
+        const unsubBlur = navigation.addListener('blur', () => {
+            setisFocusScreen(false);
+            return () => {
+                unsubBlur.remove();
+            };
+        });
 
-    function callBackSetLoader() {
-        setisLoader(false);
-    }
+        const unsubRemove = navigation.addListener('beforeRemove', () => {
+            setisFocusScreen(false);
+            return () => {
+                unsubRemove.remove();
+            };
+        });
+
+    }, [navigation]);
 
     const LoaderHeader = () => {
         return (
@@ -92,10 +148,8 @@ const ViewPage = ({ route }) => {
                             shimmerStyle={{ width: '35%', height: 20, marginLeft: 20, borderRadius: 5 }} />
                         <View style={styles.viewButtonHeader}>
                             <ShimmerPlaceHolder
-                                shimmerColors={colorLoader}
                                 shimmerStyle={{ width: 75, height: 30, borderRadius: 12 }} />
                             <ShimmerPlaceHolder
-                                shimmerColors={colorLoader}
                                 shimmerStyle={{ width: 75, height: 30, borderRadius: 12, marginLeft: 10 }} />
                         </View>
                     </View>
@@ -138,10 +192,10 @@ const ViewPage = ({ route }) => {
 
     const HeaderView = () => {
         function OnFollow() {
-            if (isFollowing) {
-                setisFollowing(false);
+            if (isFollowed) {
+                setisFollowed(false);
             } else {
-                setisFollowing(true);
+                setisFollowed(true);
             }
         }
 
@@ -171,7 +225,7 @@ const ViewPage = ({ route }) => {
                                         <Text style={styles.textButtonHeader}>Nhắn tin</Text>
                                     </TouchableHighlight>
                                     {
-                                        (isFollowing)
+                                        (isFollowed)
                                             ? <TouchableHighlight style={[styles.buttonHeader, { backgroundColor: '#8BD3DD' }]}
                                                 activeOpacity={0.5} underlayColor="#63AAB4"
                                                 onPress={OnFollow}>
@@ -244,13 +298,11 @@ const ViewPage = ({ route }) => {
                 <View style={{ flex: 1, marginTop: 55 }}>
                     {
                         (isLoadingUser)
-                            ? <>
-                                <ScrollView>
-                                    <LoaderHeader key={1} />
-                                    <ItemBlogLoader key={2} />
-                                    <ItemBlogLoader key={3} />
-                                </ScrollView>
-                            </>
+                            ? <ScrollView>
+                                <LoaderHeader key={1} />
+                                <ItemBlogLoader key={2} />
+                                <ItemBlogLoader key={3} />
+                            </ScrollView>
                             : <CollapsibleTabs
                                 collapsibleContent={(<HeaderView />)}
                                 barColor="#FEF6E4"
@@ -265,16 +317,16 @@ const ViewPage = ({ route }) => {
                                     label: 'Blog',
                                     showsVerticalScrollIndicator: true,
                                     component: (
-                                        <View >
+                                        <View style={{ flex: 1 }} onLayout={onLayoutBlog}>
                                             <View style={{ height: 1, width: '100%', backgroundColor: '#FEF6E4', shadowColor: '#000', elevation: 3, zIndex: 100, marginBottom: 10 }} />
                                             <ScrollView>
                                                 {
                                                     (isLoadingBlog)
-                                                        ? <View>
+                                                        ? <>
                                                             <ItemBlogLoader />
                                                             <ItemBlogLoader />
-                                                        </View>
-                                                        : <TabBlog user={infoUser} arr_blog={arr_blog} />
+                                                        </>
+                                                        : <TabBlog user={infoUser} arr_blog={blogs} />
                                                 }
                                             </ScrollView>
                                         </View>
@@ -282,9 +334,9 @@ const ViewPage = ({ route }) => {
                                 }, {
                                     label: 'Info',
                                     component: (
-                                        <View>
+                                        <View style={{ flex: 1, height: infoTabHeight }}>
                                             <View style={{ height: 1, width: '100%', backgroundColor: '#FEF6E4', shadowColor: '#000', elevation: 3, zIndex: 100, marginBottom: 15 }} />
-                                            <ScrollView >
+                                            <ScrollView>
                                                 <TabInfo user={infoUser} isLoader={isLoadingUser} />
                                             </ScrollView>
                                         </View>
