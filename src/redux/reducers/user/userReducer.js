@@ -15,16 +15,9 @@ const userReducer = createSlice({
     name: 'users',
     initialState,
     reducers: {
-        // getInfoLogin: (state, action) => {
-        //     state.data = action.payload;
-        // },
-        // getInfoUser: (state, action) => {
-        //     state.selectId = action.payload;
-        // },
-        // getFollowUser: (state, action) => {
-        //     state.selectId = action.payload[0];
-        //     state.followType = action.payload[1];
-        // },
+        changeStatusPending: (state, action) => {
+            state.status = action.payload
+        },
         setMessageUser: (state, action) => {
             state.message = action.payload
         },
