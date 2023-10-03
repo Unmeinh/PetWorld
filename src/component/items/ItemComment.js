@@ -6,6 +6,7 @@ import {
 import React, { useState, memo } from "react";
 import styles from "../../styles/comment.style";
 import Ionicons from "react-native-vector-icons/Ionicons";
+import { getDateTimeVietnamese } from "../../function/functionDate";
 
 const ItemComment = (row) => {
     var comment = row.item;
@@ -50,7 +51,7 @@ const ItemComment = (row) => {
                                     </TouchableOpacity>
                             }
                         </View>
-                        <Text style={styles.textInteractComment}>{"• "}{comment.createdAt}</Text>
+                        <Text style={styles.textInteractComment}>{"• "}{getDateTimeVietnamese(comment.createdAt)}</Text>
                         <Text style={styles.textInteractComment}>{"• "}{comment.interacts.length} lượt thích</Text>
                     </View>
                 </View>

@@ -4,7 +4,7 @@ import {View, Text} from 'react-native';
 const styles = {
     container: {
         width: '100%',
-        height: 100,
+        height: 0,
         justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: '#0d5951',

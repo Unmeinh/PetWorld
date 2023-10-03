@@ -11,41 +11,41 @@ import HeaderTitle from '../../component/header/HeaderTitle';
 import LinearGradient from 'react-native-linear-gradient';
 import Entypo from 'react-native-vector-icons/Entypo';
 import { useSelector, useDispatch } from "react-redux";
-import { selectFollowByID } from '../../redux/selectors/userSelector';
-import { selectFollowUser } from '../../redux/actions/userAction';
+import { listFollowSelector, followSelectStatus, selectMyFollow } from '../../redux/selectors/userSelector';
+import { fetchMyFollow, fetchUserFollow } from '../../redux/reducers/user/followReducer';
 import { RefreshControl } from "react-native-gesture-handler";
 import ViewAccountModal from "../../component/modals/ViewAccountModal";
 import { createShimmerPlaceholder } from 'react-native-shimmer-placeholder';
 
 const ShimmerPlaceHolder = createShimmerPlaceholder(LinearGradient);
 
-import temp from '../../data/user';
 const ListFollow = ({ route }) => {
     const navigation = useNavigation();
     const dispatch = useDispatch();
-    const arr_follow = useSelector(selectFollowByID);
+    const arr_follow = useSelector(selectMyFollow);
+    const followStatus = useSelector(followSelectStatus);
     const [isRefreshing, setisRefreshing] = useState(false);
     const colorLoader = ['#f0e8d8', '#dbdbdb', '#f0e8d8'];
     const [isLoader, setisLoader] = useState(true);
 
     useEffect(() => {
-        if (isLoader) {
-            setTimeout(() => {
-                setisLoader(false);
-            }, 5000);
+        if (followStatus == "being idle") {
+            setisLoader(false);
         }
-    }, [isLoader]);
-
-    useEffect(() => {
-        console.log(arr_follow);
-        if (arr_follow != undefined && arr_follow != {}) {
-
+        if (followStatus == "loading") {
+            setisLoader(true);
         }
-    }, [arr_follow]);
+    }, [followStatus]);
 
     React.useEffect(() => {
         const unsub = navigation.addListener('focus', () => {
-            dispatch(selectFollowUser(route.params.idUser, route.params.typeFollow));
+            if (route.params.typeUser) {
+                if (route.params.typeUser == "userLogin") {
+                    dispatch(fetchMyFollow(route.params.typeFollow));
+                } else {
+                    dispatch(fetchUserFollow([route.params.typeFollow, route.params.idUser]));
+                }
+            }
             return () => {
                 unsub.remove();
             };
@@ -62,10 +62,9 @@ const ListFollow = ({ route }) => {
     }, []);
 
     const ItemUser = (row) => {
-        var idUser = row.user;
-        var user = temp.find(e => e._id == idUser);
+        let user = row.item.idFollow;
         const [srcAvatar, setsrcAvatar] = useState(require('../../assets/images/error.png'));
-        const [isFollowing, setisFollowing] = useState(true);
+        const [isFollowing, setisFollowing] = useState((row.item.isFollowed) ? row.item.isFollowed : 0);
         const [isShowAccount, setisShowAccount] = useState(false);
 
         function OnFollow() {
@@ -97,29 +96,36 @@ const ListFollow = ({ route }) => {
                         </TouchableOpacity>
                         <View style={{ width: Dimensions.get('window').width - 80, }}>
                             <View style={{ marginTop: 7, justifyContent: 'space-between', flexDirection: 'row' }}>
-                                <Text style={{ color: 'rgba(0, 0, 0, 0.70)', fontFamily: 'ProductSans', fontSize: 13, width: "60%", marginLeft: 3 }}
+                                <Text style={{ color: 'rgba(0, 0, 0, 0.70)', fontFamily: 'ProductSans', fontSize: 13, width: (isFollowing > -1) ? "60%" : "97%", marginLeft: 3 }}
                                     numberOfLines={2}>
-                                    {(user.description != undefined) ? user.description : "Chưa có giới thiệu"}
+                                    {user.description}
                                 </Text>
                                 <View>
                                     {
-                                        (isFollowing)
-                                            ? <TouchableHighlight style={[styles.buttonFollow, { backgroundColor: '#8BD3DD' }]}
-                                                activeOpacity={0.5} underlayColor="#63AAB4"
-                                                onPress={OnFollow}>
-                                                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                                    <Entypo name="check" color={'#001858'} size={13} />
-                                                    <Text style={styles.textButtonHeader}>Đang theo dõi</Text>
-                                                </View>
-                                            </TouchableHighlight>
-                                            : <TouchableHighlight style={[styles.buttonFollow, { backgroundColor: '#F582AE' }]}
-                                                activeOpacity={0.5} underlayColor="#DC749C"
-                                                onPress={OnFollow}>
-                                                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                                    <Entypo name="plus" color={'#FEF6E4'} size={13} />
-                                                    <Text style={[styles.textButtonHeader, { color: '#FEF6E4' }]}>Theo dõi</Text>
-                                                </View>
-                                            </TouchableHighlight>
+                                        (isFollowing > -1)
+                                            ?
+                                            <>
+                                                {
+                                                    (isFollowing == 0)
+                                                        ? <TouchableHighlight style={[styles.buttonFollow, { backgroundColor: '#8BD3DD' }]}
+                                                            activeOpacity={0.5} underlayColor="#63AAB4"
+                                                            onPress={OnFollow}>
+                                                            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                                                                <Entypo name="check" color={'#001858'} size={13} />
+                                                                <Text style={styles.textButtonHeader}>Đang theo dõi</Text>
+                                                            </View>
+                                                        </TouchableHighlight>
+                                                        : <TouchableHighlight style={[styles.buttonFollow, { backgroundColor: '#F582AE' }]}
+                                                            activeOpacity={0.5} underlayColor="#DC749C"
+                                                            onPress={OnFollow}>
+                                                            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                                                                <Entypo name="plus" color={'#FEF6E4'} size={13} />
+                                                                <Text style={[styles.textButtonHeader, { color: '#FEF6E4' }]}>Theo dõi</Text>
+                                                            </View>
+                                                        </TouchableHighlight>
+                                                }
+                                            </>
+                                            : ""
                                     }
                                 </View>
                             </View>
@@ -169,7 +175,7 @@ const ListFollow = ({ route }) => {
                     ? <HeaderTitle nav={navigation} titleHeader={"Danh sách người theo dõi"} colorHeader={"#FEF6E4"} />
                     : <HeaderTitle nav={navigation} titleHeader={"Danh sách đang theo dõi"} colorHeader={"#FEF6E4"} />
             }
-            <View style={{flex: 1, paddingTop: 15}}>
+            <View style={{ flex: 1, paddingTop: 15 }}>
                 {
                     (isLoader)
                         ?
@@ -184,7 +190,7 @@ const ListFollow = ({ route }) => {
                                     ?
                                     <FlatList data={arr_follow} scrollEnabled={false}
                                         renderItem={({ item, index }) =>
-                                            <ItemUser key={index} user={item} navigation={navigation} />}
+                                            <ItemUser key={index} item={item} navigation={navigation} />}
                                         showsVerticalScrollIndicator={false}
                                         keyExtractor={(item, index) => index.toString()}
                                         refreshControl={

@@ -1,6 +1,6 @@
-import listBlog from '../../../data/blog';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { onAxiosGet } from '../../../api/axios.function';
+import { encodeToAscii, decodeFromAscii } from '../../../function/functionHash';
 const initialState = {
     data: {},
     status: '',
@@ -62,6 +62,7 @@ export const fetchBlogs = createAsyncThunk(
 export const fetchBlogsUser = createAsyncThunk(
     'blog/list/user',
     async (id) => {
+        // let idHex = encodeToAscii(id);
         const res = await onAxiosGet('/blog/list/user/' + id);
         return res;
     },

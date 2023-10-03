@@ -1,13 +1,16 @@
 import { createSelector } from '@reduxjs/toolkit';
 export const listUserSelector = state => state.listUser.data;
 export const userLoginSelector = state => state.listUser.loginData;
+export const userLoginId = state => state.listUser.loginData._id;
 export const userSelectId = state => state.listUser.selectId;
-export const userFollowType = state => state.listUser.followType;
 export const userSelectStatus = state => state.listUser.status;
+export const listFollowSelector = state => state.listFollow.data;
+export const followSelectStatus = state => state.listFollow.status;
+export const followSelectType = state => state.listFollow.followType;
 
 export const selectUserLogin = createSelector(
     userLoginSelector,
-     (user, id) => {
+    (user, id) => {
         return user;
     },
 );
@@ -15,7 +18,7 @@ export const selectUserLogin = createSelector(
 export const selectUserByID = createSelector(
     listUserSelector,
     userSelectId,
-     (user, id) => {
+    (user, id) => {
         // for (let i = 0; i < users.length; i++) {
         //     const user = users[i];
         //     if (user._id === id) {
@@ -26,31 +29,39 @@ export const selectUserByID = createSelector(
     },
 );
 
+export const selectMyFollow = createSelector(
+    listFollowSelector,
+    followSelectType,
+    (follows, flType) => {
+        // if (flType == "follower") {
+        //     return follows;
+        // } else {
+        //     let fls = [];
+        //     for (let i = 0; i < follows.length; i++) {
+        //         fls.push(follows[i].idFollowing)
+        //     }
+        //     return fls;
+        // }
+        return follows;
+    },
+);
+
 export const selectFollowByID = createSelector(
-    listUserSelector,
-    userSelectId,
-    userFollowType,
-    (users, id, flType) => {
+    listFollowSelector,
+    followSelectType,
+    (follows, id, flType) => {
         if (flType == "follower") {
-            for (let i = 0; i < users.length; i++) {
-                const user = users[i];
-                if (user._id === id) {
-                    return user.followers;
-                }
+            let fls = [];
+            for (let i = 0; i < follows.length; i++) {
+                fls.push(follows[i].idFollower)
             }
-            // for (let i = 0; i < users.length; i++) {
-            //     const user = users[i];
-            //     if (user.followers.indexOf(id) > -1) {
-            //         return user.followers.filter(e => e == id);
-            //     }
-            // }
+            return fls;
         } else {
-            for (let i = 0; i < users.length; i++) {
-                const user = users[i];
-                if (user._id === id) {
-                    return user.followings;
-                }
+            let fls = [];
+            for (let i = 0; i < follows.length; i++) {
+                fls.push(follows[i].idFollowing)
             }
+            return fls;
         }
 
     },

@@ -1,8 +1,6 @@
 import axios from "axios";
 
-const apiURL = "https://7768-2402-800-61c4-c98-bd5e-d6b-a9d0-aa3c.ngrok-free.app/api";
-
-// axiosAPi.defaults.timeout = 2000;
+const apiURL = "https://9f03-2402-800-61c4-4085-20ae-2b4b-9dfb-e287.ngrok-free.app/api";
 
 // axiosAPi.defaults.withCredentials = true;
 let axiosAPi = axios.create();

@@ -12,8 +12,10 @@ import styles from '../../styles/user.style';
 import LinearGradient from 'react-native-linear-gradient';
 import { createShimmerPlaceholder } from 'react-native-shimmer-placeholder';
 import { onAxiosPut } from '../../api/axios.function';
-import DatePickerModal from '../../component/modals/DatePickerModal';
+import RNMaterialDatetimePicker from "react-native-material-datetime-picker";
+import { AndroidPickerMode } from 'react-native-material-datetime-picker';
 import Moment from 'moment';
+import Toast from 'react-native-toast-message';
 
 const ShimmerPlaceHolder = createShimmerPlaceholder(LinearGradient);
 const infoKeys = ["fullName", "nickName", "birthday", "locationUser", "description"];
@@ -26,8 +28,8 @@ const EditInfo = ({ route }) => {
     const [inputValue, setinputValue] = useState("")
     const [oldValueDisplay, setoldValueDisplay] = useState("");
     const [isLoader, setisLoader] = useState(true);
-    const [isShowPicker, setisShowPicker] = useState(false);
     const [inputDatePicker, setinputDatePicker] = useState(new Date());
+    const [isShowDatePicker, setisShowDatePicker] = useState(false);
     const colorLoader = ['#f0e8d8', '#dbdbdb', '#f0e8d8'];
 
     function onChangeInputValue(input) {
@@ -35,16 +37,23 @@ const EditInfo = ({ route }) => {
     }
 
     function onShowPicker() {
-        setisShowPicker(!isShowPicker);
+        setisShowDatePicker(!isShowDatePicker);
     }
 
     function onChangeInputDate(date) {
         setinputDatePicker(date);
-        setinputValue(Moment(date).format('DD/MM/YYYY'))
+        setinputValue(Moment(date).format('DD/MM/YYYY'));
+        setisShowDatePicker(false);
     }
 
     async function OnSave() {
         let res = null;
+        Toast.show({
+            type: 'loading',
+            text1: "Đang cập nhật " + infoTypes[route.params.infoType] + "...",
+            // autoHide: true,
+            position: 'top'
+        });
         if (route.params.infoType == 2) {
             res = await onAxiosPut('user/updateUser', { typeInfo: infoKeys[route.params.infoType], valueUpdate: inputDatePicker }, 'json');
         } else {
@@ -80,6 +89,16 @@ const EditInfo = ({ route }) => {
             setisLoader(false);
         }
     }, [infoLogin]);
+
+    React.useEffect(() => {
+        if (isShowDatePicker) {
+            if (inputDatePicker == new Date()) {
+                setinputDatePicker(new Date());
+            } else {
+                setinputDatePicker(inputDatePicker);
+            }
+        }
+    }, [isShowDatePicker])
 
     React.useEffect(() => {
         const unsub = navigation.addListener('focus', () => {
@@ -186,7 +205,14 @@ const EditInfo = ({ route }) => {
                         }
                     </View>
             }
-            <DatePickerModal isShow={isShowPicker} datePicked={inputDatePicker} callBackClose={onShowPicker} callBackSetDate={onChangeInputDate} />
+            {isShowDatePicker &&
+                <RNMaterialDatetimePicker
+                    mode={AndroidPickerMode.DATE}
+                    value={inputDatePicker}
+                    minimumDate={new Date("1900-01-01")}
+                    onConfirm={(date) => onChangeInputDate(date)}
+                />
+            }
         </View>
     );
 }

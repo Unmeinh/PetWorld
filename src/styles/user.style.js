@@ -162,6 +162,12 @@ export default StyleSheet.create({
         fontWeight: 'bold',
     },
 
+    pageTextNickName: {
+        fontSize: 17,
+        color: 'rgba(0, 24, 88, 0.75)',
+        fontFamily: 'ProductSans',
+    },
+
     viewButtonHeader: {
         position: 'absolute',
         right: 0,

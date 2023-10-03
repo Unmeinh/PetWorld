@@ -5,6 +5,8 @@ import PropTypes from 'prop-types';
 import Carousel from 'react-native-reanimated-carousel';
 import MaterialTabs from 'react-native-material-tabs';
 import DefaultHeader from './DefaultHeader';
+import {LogBox} from 'react-native';
+LogBox.ignoreLogs(['It looks like you might be using shared value']);
 
 const headerCollapsedHeight = 46;
 const { width: screenWidth } = Dimensions.get('screen');
@@ -20,12 +22,11 @@ const styles = {
 }
 
 class CollapsibleTabs extends Component {
-
     scrolls = [];
 
     constructor(props) {
         super(props);
-        this.headerExpandedHeight = headerCollapsedHeight;
+        this.headerExpandedHeight = 46;
         this.state = {
             scrollY: new Animated.Value(0),
             selectedTab: 0
@@ -40,7 +41,7 @@ class CollapsibleTabs extends Component {
             useNativeDriver: true
         }).start();
 
-        this.carousel.scrollTo({index: index});
+        this.carousel.scrollTo({ index: index });
         this.setState({ selectedTab: index });
     }
 
@@ -82,7 +83,7 @@ class CollapsibleTabs extends Component {
                     }}
                     snapEnabled={false}
                     inactiveSlideScale={1}
-                    renderItem={({item: {component, isFlatList}, index}) => (
+                    renderItem={({ item: { component, isFlatList }, index }) => (
                         isFlatList
                             ? React.cloneElement(component, scrollProps(index))
                             : (
@@ -95,25 +96,25 @@ class CollapsibleTabs extends Component {
                 {/* HEADER */}
                 <Animated.View
                     style={{
-                        transform: [{translateY: headerHeight}],
+                        transform: [{ translateY: headerHeight }],
                         position: 'absolute',
                         left: 0,
                         right: 0,
                         top: 0
                     }}
-                    onLayout={({nativeEvent}) => {
-                        if(this.headerExpandedHeight === headerCollapsedHeight){
+                    onLayout={({ nativeEvent }) => {
+                        if (this.headerExpandedHeight === headerCollapsedHeight) {
                             this.forceUpdate();
                         }
                         this.headerExpandedHeight = nativeEvent.layout.height + 0.1;
                     }}
                 >
                     {collapsibleContent}
-                    <View style={{height: headerCollapsedHeight}}/>
+                    <View style={{ height: headerCollapsedHeight }} />
                     <View style={styles.tabsContainer}>
                         <MaterialTabs
                             {...this.props}
-                            items={map(tabs, ({label}) => label)}
+                            items={map(tabs, ({ label }) => label)}
                             selectedIndex={selectedTab}
                             onChange={index => this.onChangePage(index)}
                         />

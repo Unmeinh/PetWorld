@@ -2,7 +2,7 @@ import axiosAPi from "./axios.config";
 import Toast from "react-native-toast-message";
 import { storageMMKV } from "../storage/storageMMKV";
 
-export async function onAxiosGet(url) {
+export async function onAxiosGet(url, isFeedback) {
     let axios = axiosAPi;
     axios.defaults.headers = {
         "Authorization": (storageMMKV.getString('login.token') != "") ? `Bearer ${storageMMKV.getString('login.token')}` : undefined
@@ -44,12 +44,14 @@ export async function onAxiosGet(url) {
         if (response.status == 200) {
             var data = response.data;
             if (data.success) {
-                Toast.show({
-                    type: 'success',
-                    position: 'top',
-                    text1: String(data.message),
-                    bottomOffset: 20
-                });
+                if (isFeedback && data.message) {
+                    Toast.show({
+                        type: 'success',
+                        position: 'top',
+                        text1: String(data.message),
+                        bottomOffset: 20
+                    });
+                }
                 return data;
             } else {
                 Toast.show({
