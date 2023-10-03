@@ -15,7 +15,10 @@ const userReducer = createSlice({
     reducers: {
         changeStatusPending: (state, action) => {
             state.status = action.payload
-        }
+        },
+        setMessageUser: (state, action) => {
+            state.message = action.payload
+        },
     },
     extraReducers: builder => {
         builder

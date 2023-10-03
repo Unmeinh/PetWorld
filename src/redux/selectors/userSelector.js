@@ -4,9 +4,7 @@ export const userLoginSelector = state => state.listUser.loginData;
 export const userLoginId = state => state.listUser.loginData._id;
 export const userSelectId = state => state.listUser.selectId;
 export const userSelectStatus = state => state.listUser.status;
-export const listFollowSelector = state => state.listFollow.data;
-export const followSelectStatus = state => state.listFollow.status;
-export const followSelectType = state => state.listFollow.followType;
+export const userMessage = state => state.listUser.message;
 
 export const selectUserLogin = createSelector(
     userLoginSelector,
@@ -29,22 +27,22 @@ export const selectUserByID = createSelector(
     },
 );
 
-export const selectMyFollow = createSelector(
-    listFollowSelector,
-    followSelectType,
-    (follows, flType) => {
-        // if (flType == "follower") {
-        //     return follows;
-        // } else {
-        //     let fls = [];
-        //     for (let i = 0; i < follows.length; i++) {
-        //         fls.push(follows[i].idFollowing)
-        //     }
-        //     return fls;
-        // }
-        return follows;
-    },
-);
+// export const selectMyFollow = createSelector(
+//     listFollowSelector,
+//     followSelectType,
+//     (follows, flType) => {
+//         // if (flType == "follower") {
+//         //     return follows;
+//         // } else {
+//         //     let fls = [];
+//         //     for (let i = 0; i < follows.length; i++) {
+//         //         fls.push(follows[i].idFollowing)
+//         //     }
+//         //     return fls;
+//         // }
+//         return follows;
+//     },
+// );
 
 export const selectFollowByID = createSelector(
     listFollowSelector,
