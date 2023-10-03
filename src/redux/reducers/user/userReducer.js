@@ -114,7 +114,6 @@ export const fetchInfoUser = createAsyncThunk(
         return res;
     },
 );
-
 export const fetchFollowUser = createAsyncThunk(
     'user/myDetail',
     async () => {
