@@ -36,7 +36,7 @@ const MyPage = () => {
     const [isShowMenu, setisShowMenu] = useState(false);
     const menuNames = ["Chỉnh sửa thông tin", "Đăng blog mới", "Blog đã tương tác"];
 
-    const menuFunctions = [OpenInfoManager, OpenChangeAvatar];
+    const menuFunctions = [OpenInfoManager, OpenNewBlog];
 
     function OpenInfoManager() {
         setisShowMenu(false);
@@ -48,8 +48,12 @@ const MyPage = () => {
         navigation.navigate('ChangeAvatar');
     }
 
-    async function fetchBlogsUser(id) {
-        const res = await onAxiosGet('/blog/list/user/' + id);
+    function OpenNewBlog() {
+        navigation.navigate('NewBlog', { fetchBlog: () => fetchBlogsUser() });
+    }
+
+    async function fetchBlogsUser() {
+        const res = await onAxiosGet('/blog/list/user/' + infoLogin._id);
         if (res) {
             setblogs(res.data);
         } else {
@@ -72,7 +76,7 @@ const MyPage = () => {
     useEffect(() => {
         if (infoLogin && isLoadingUser) {
             if (uSelectStatus == "being idle") {
-                fetchBlogsUser(infoLogin._id);
+                fetchBlogsUser();
                 setisLoadingBlog(true);
                 setsrcAvatar({ uri: String(infoLogin.avatarUser) });
                 setisLoadingUser(false);
@@ -99,7 +103,7 @@ const MyPage = () => {
                 dispatch(fetchInfoLogin());
                 setsrcAvatar({ uri: String(infoLogin.avatarUser) });
                 if (blogs == undefined) {
-                    fetchBlogsUser(infoLogin._id);
+                    fetchBlogsUser();
                     setisLoadingBlog(true);
                 }
             }
@@ -277,7 +281,7 @@ const MyPage = () => {
                                                             <ItemBlogLoader />
                                                             <ItemBlogLoader />
                                                         </>
-                                                        : <TabBlog user={infoLogin} arr_blog={blogs} />
+                                                        : <TabBlog user={infoLogin} arr_blog={blogs} fetchBlog={fetchBlogsUser}/>
                                                 }
                                             </ScrollView>
                                         </View>

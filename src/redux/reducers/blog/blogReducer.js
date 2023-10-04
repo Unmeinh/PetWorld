@@ -26,7 +26,26 @@ const blogReducer = createSlice({
                     }
                 }
             }
-        }
+        },
+        addBlog: (state, action) => {
+            state.data.unshift(action.payload)
+        },
+        updateBlog: (state, action) => {
+            if (state.data.length > 0) {
+                let i = state.data.findIndex((blog) => String(blog._id) == action.payload[0]);
+                if (i > -1) {
+                    state.data.splice(i, 1, action.payload[1])
+                }
+            }
+        },
+        removeBlog: (state, action) => {
+            if (state.data.length > 0) {
+                let i = state.data.findIndex((blog) => String(blog._id) == action.payload);
+                if (i > -1) {
+                    state.data.splice(i, 1)
+                }
+            }
+        },
     },
     extraReducers: builder => {
         builder
@@ -72,5 +91,5 @@ export const fetchBlogsUser = createAsyncThunk(
     },
 );
 
-export const { changeBlogIsFollow } = blogReducer.actions;
+export const { changeBlogIsFollow, addBlog, updateBlog, removeBlog } = blogReducer.actions;
 export default blogReducer.reducer;

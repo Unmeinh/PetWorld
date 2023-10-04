@@ -157,7 +157,7 @@ export default StyleSheet.create({
         minHeight: WindowHeight - (WindowHeight * 50 / 100)
     },
 
-    textContentNewPost: {
+    textContentNewBlog: {
         width: '100%',
         marginBottom: 10,
         fontSize: 17,

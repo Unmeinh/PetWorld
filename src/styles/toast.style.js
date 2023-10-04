@@ -46,5 +46,12 @@ export default StyleSheet.create({
         color: '#001858',
         left: 7,
         width: '85%',
+    },
+
+    toastButtonText: {
+        fontSize: 13.5,
+        fontWeight: '500',
+        color: '#001858',
+        marginLeft: 7
     }
 });

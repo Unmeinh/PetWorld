@@ -14,7 +14,7 @@ const ShimmerPlaceHolder = createShimmerPlaceholder(LinearGradient);
 const colorLoader = ['#f0e8d8', '#dbdbdb', '#f0e8d8'];
 
 const TabBlog = memo(
-    function TabBlog({ user, arr_blog, }) {
+    function TabBlog({ user, arr_blog, fetchBlog}) {
 
         return (
             <View style={{ flex: 1 }}>
@@ -23,7 +23,7 @@ const TabBlog = memo(
                         ?
                         <FlatList data={arr_blog} scrollEnabled={false}
                             renderItem={({ item, index }) =>
-                                <ItemBlogPage key={item._id} blog={item} />}
+                                <ItemBlogPage key={item._id} blog={item} fetchBlog={fetchBlog}/>}
                             showsVerticalScrollIndicator={false}
                             keyExtractor={(item, index) => index.toString()} />
                         :

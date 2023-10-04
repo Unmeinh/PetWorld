@@ -4,7 +4,7 @@ import {
     SafeAreaView,
     View,
 } from 'react-native';
-import { Toast } from 'react-native-toast-message/lib/src/Toast';
+import Toast from "react-native-toast-message";
 import { ToastLayout } from '../../component/layout/ToastLayout';
 
 const test = () => {

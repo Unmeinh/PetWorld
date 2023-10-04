@@ -1,6 +1,7 @@
 import {
     View, Text,
     Dimensions,
+    TouchableOpacity
 } from 'react-native';
 import React from 'react';
 import styles from '../../styles/toast.style';
@@ -73,7 +74,39 @@ export function ToastLayout() {
                     top: -200
                 }} />
             </>
-        )
+        ),
+
+        alert: ({ text1, props }) => (
+            <View style={[styles.toastContainer, { height: 70 }]}>
+                <Ionicons name='alert-circle' color={'#D65745'} size={35} />
+                <View style={{ width: '85%' }}>
+                    <Text style={styles.toastText}
+                        numberOfLines={2}>
+                        {text1}
+                    </Text>
+                    <View style={{ left: 7, width: '100%', flexDirection: 'row', justifyContent: 'flex-end', bottom: -3.5 }}>
+                        <TouchableOpacity onPress={() => props.cancel()}>
+                            <Text style={[styles.toastButtonText, { color: '#D65745' }]}>
+                                Hủy bỏ
+                            </Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={() => props.confirm()}>
+                            <Text style={styles.toastButtonText}>
+                                Xác nhận
+                            </Text>
+                        </TouchableOpacity>
+                    </View>
+                </View>
+                <View style={styles.viewToastType}>
+                    <LinearGradient start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}
+                        colors={['#D6574559', '#FFFFFF00']}
+                        style={styles.circleToastType}>
+                        <Text> </Text>
+                    </LinearGradient>
+                </View>
+            </View>
+        ),
+
     };
 
     return (

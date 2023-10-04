@@ -30,7 +30,6 @@ const BlogScreen = ({ scrollRef, onScrollView }) => {
   const [isRefreshing, setisRefreshing] = useState(false);
   const [srcAvatar, setsrcAvatar] = useState(require('../../assets/images/loading.png'));
   const [isLoader, setisLoader] = useState(true);
-  console.log("Rendering BlogScreen");
 
   useEffect(() => {
     if (isFocusBlog) {
@@ -56,7 +55,9 @@ const BlogScreen = ({ scrollRef, onScrollView }) => {
 
   useEffect(() => {
     if (blogs != undefined) {
-      setextraBlogs(blogs);
+      let clone = [...extraBlogs];
+      clone = blogs;
+      setextraBlogs(clone);
       if (isRefreshing) {
         setisRefreshing(false);
       }
@@ -95,8 +96,8 @@ const BlogScreen = ({ scrollRef, onScrollView }) => {
     navigation.navigate('MyPage');
   }
 
-  function OpenNewPost() {
-    navigation.navigate('NewPost');
+  function OpenNewBlog() {
+    navigation.navigate('NewBlog');
   }
 
   async function PickingImage() {
@@ -106,7 +107,7 @@ const BlogScreen = ({ scrollRef, onScrollView }) => {
         selectedAssets: 'Images',
         doneTitle: 'Xong',
       });
-      navigation.navigate('NewPost', { arr_Picked: response });
+      navigation.navigate('NewBlog', { arr_Picked: response });
     } catch (error) {
       console.log(error);
     }
@@ -143,7 +144,7 @@ const BlogScreen = ({ scrollRef, onScrollView }) => {
                       <Image source={srcAvatar} onError={() => setsrcAvatar(require('../../assets/images/error.png'))}
                         style={styles.imageAvatar} />
                     </TouchableOpacity>
-                    <TouchableHighlight underlayColor={'rgba(0, 0, 0, 0.2)'} onPress={OpenNewPost} activeOpacity={0.5}>
+                    <TouchableHighlight underlayColor={'rgba(0, 0, 0, 0.2)'} onPress={OpenNewBlog} activeOpacity={0.5}>
                       <Text style={styles.textHint}>Bạn muốn chia sẻ điều gì?</Text>
                     </TouchableHighlight>
                   </View>
@@ -169,7 +170,8 @@ const BlogScreen = ({ scrollRef, onScrollView }) => {
                     <FlatList data={blogs} scrollEnabled={false}
                       extraData={extraBlogs}
                       renderItem={({ item, index }) =>
-                        <ItemBlog key={index} blog={item} info={infoLogin} />}
+                        <ItemBlog key={index} blog={item}
+                        index={index} info={infoLogin} />}
                       showsVerticalScrollIndicator={false}
                       keyExtractor={(item, index) => index.toString()}
                       refreshControl={

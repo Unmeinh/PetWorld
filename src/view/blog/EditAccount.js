@@ -43,7 +43,6 @@ const EditAccount = ({ route }) => {
     function onInputPhoneCountry(input) {
         setinputPhoneCountry(input);
         setisShowPhoneSelect(false);
-        // console.log(input);
     }
 
     function onChangeInputValue(input) {
