@@ -138,6 +138,20 @@ const ItemComment = (row) => {
         }
     }
 
+    function onShowAlert() {
+        setisShowMenu(false);
+        Toast.show({
+            type: 'alert',
+            position: 'top',
+            text1: "Xác nhận xóa bình luận?",
+            props: {
+                cancel: () => Toast.hide(),
+                confirm: onDeleteComment
+            },
+            autoHide: false
+        })
+    }
+
     function onChangeCommentInput(input) {
         if (input.length > 200) {
             Toast.show({
@@ -178,7 +192,7 @@ const ItemComment = (row) => {
         if (isShowMenu) {
             if (String(user._id) == String(loginId)) {
                 setmenuNames(["Sao chép nội dung", "Sửa bình luận", "Xóa bình luận"]);
-                setmenuFunctions([onCopyContent, onEnterEditing, onDeleteComment]);
+                setmenuFunctions([onCopyContent, onEnterEditing, onShowAlert]);
             } else {
                 setmenuNames(["Sao chép nội dung", "Xem trang cá nhân"]);
                 setmenuFunctions([onCopyContent, OpenAccount]);

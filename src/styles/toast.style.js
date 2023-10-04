@@ -52,6 +52,6 @@ export default StyleSheet.create({
         fontSize: 13.5,
         fontWeight: '500',
         color: '#001858',
-        marginLeft: 7
+        marginLeft: 10
     }
 });

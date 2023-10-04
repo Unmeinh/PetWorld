@@ -84,7 +84,7 @@ export function ToastLayout() {
                         numberOfLines={2}>
                         {text1}
                     </Text>
-                    <View style={{ left: 7, width: '100%', flexDirection: 'row', justifyContent: 'flex-end', bottom: -3.5 }}>
+                    <View style={{ left: 7, width: '100%', flexDirection: 'row', justifyContent: 'flex-end', bottom: -5.5 }}>
                         <TouchableOpacity onPress={() => props.cancel()}>
                             <Text style={[styles.toastButtonText, { color: '#D65745' }]}>
                                 Hủy bỏ
