@@ -15,6 +15,11 @@ import auth from '@react-native-firebase/auth';
 import { startOtpListener } from 'react-native-otp-verify';
 import { useNavigation } from '@react-navigation/native';
 import { onSendOTPbyPhoneNumber, onSendOTPbyEmail, onVerifyOTPbyEmail } from '../../function/functionOTP';
+import { LogBox } from 'react-native';
+
+LogBox.ignoreLogs([
+  'Non-serializable values were found in the navigation state',
+]);
 
 export default function ConfirmOTP({ route }) {
     const navigation = useNavigation();
@@ -42,7 +47,6 @@ export default function ConfirmOTP({ route }) {
         setcdSendAgain(30);
         if (inputTypeVerify == "phoneNumber") {
             const response = await onSendOTPbyPhoneNumber(inputValueVerify);
-            console.log(response);
             if (response != undefined && response.success) {
                 setconfirm(response.confirm);
                 setisDisableRequest(false);
@@ -210,7 +214,6 @@ export default function ConfirmOTP({ route }) {
 
     useEffect(() => {
         if (otpRef != null) {
-            console.log(isReadedMessage);
             if (userAuth != null && isReadedMessage) {
                 otpRef.setValue(inputOTP);
                 Toast.show({

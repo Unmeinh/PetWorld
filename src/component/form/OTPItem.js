@@ -68,9 +68,7 @@ const OTPItem = (props, ref) => {
     }
 
     function getOTP() {
-        var otp = inputOTP1 + inputOTP2 + inputOTP3 + inputOTP4 + inputOTP5 + inputOTP6;
-        console.log('otp = ' + otp);
-        
+        var otp = inputOTP1 + inputOTP2 + inputOTP3 + inputOTP4 + inputOTP5 + inputOTP6;  
     }
 
     useImperativeHandle(ref, () => ({

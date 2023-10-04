@@ -16,10 +16,13 @@ import MenuContext from '../../component/menu/MenuContext';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Entypo from 'react-native-vector-icons/Entypo';
 import ShimmerPlaceHolder from '../../component/layout/ShimmerPlaceHolder';
-import { onAxiosGet } from '../../api/axios.function';
+import { onAxiosGet, onAxiosPost } from '../../api/axios.function';
+import { changeBlogIsFollow } from '../../redux/reducers/blog/blogReducer';
+import { useDispatch } from 'react-redux';
 
 const ViewPage = ({ route }) => {
     const navigation = useNavigation();
+    const dispatch = useDispatch();
     const [infoUser, setinfoUser] = useState(undefined);
     const [blogs, setblogs] = useState(undefined);
     const [srcAvatar, setsrcAvatar] = useState(require('../../assets/images/loading.png'));
@@ -191,11 +194,14 @@ const ViewPage = ({ route }) => {
     }
 
     const HeaderView = () => {
-        function OnFollow() {
-            if (isFollowed) {
-                setisFollowed(false);
+        async function OnFollow() {
+            let fl = isFollowed;
+            setisFollowed(!fl);
+            let res = await onAxiosPost('follow/insert', { idFollow: infoUser._id }, 'json', false);
+            if (res) {
+                dispatch(changeBlogIsFollow([infoUser._id, !fl]));
             } else {
-                setisFollowed(true);
+                isFollowed(fl);
             }
         }
 

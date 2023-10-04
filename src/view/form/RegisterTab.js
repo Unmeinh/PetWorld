@@ -125,7 +125,6 @@ export default function RegisterTab(route) {
     function onInputPhoneCountry(input) {
         setinputPhoneCountry(input);
         setisShowPhoneSelect(false);
-        // console.log(input);
     }
 
     const onLayoutPhoneSelect = (event) => {

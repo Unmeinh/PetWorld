@@ -56,7 +56,6 @@ export default function ForgetPassword({ navigation }) {
   function onInputPhoneCountry(input) {
     setinputPhoneCountry(input);
     setisShowPhoneSelect(false);
-    // console.log(input);
   }
 
   async function onContinue() {
@@ -93,7 +92,6 @@ export default function ForgetPassword({ navigation }) {
 
     if (isSelectPhone == true) {
       const response = await onSendOTPbyPhoneNumber(inputPhoneCountry + inputPhoneNumber);
-      console.log(response);
       if (response != undefined && response.success) {
         setTimeout(() => {
           navigation.navigate('ConfirmOTP', { navigate: "ChangePassword", typeVerify: 'phoneNumber', valueVerify: inputPhoneCountry + inputPhoneNumber, authConfirm: response.confirm })
@@ -103,7 +101,6 @@ export default function ForgetPassword({ navigation }) {
       }
     } else {
       const response = await onSendOTPbyEmail(inputEmail);
-      console.log(response);
       if (response) {
         navigation.navigate('ConfirmOTP', { navigate: "ChangePassword", typeVerify: 'email', valueVerify: inputEmail, authConfirm: null })
       } else {

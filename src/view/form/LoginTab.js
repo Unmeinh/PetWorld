@@ -99,7 +99,6 @@ export default function LoginTab(route) {
                 navigation.navigate('NaviTabScreen');
             }
         } else {
-            console.log("Đăng nhập thất bại");
             setisDisableRequest(false);
         }
     }

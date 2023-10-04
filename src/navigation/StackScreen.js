@@ -10,7 +10,8 @@ import ConfirmOTP from '../view/form/ConfirmOTP';
 import ChangePassword from '../view/form/ChangePassword';
 import RegisterPassword from '../view/form/RegisterPassword';
 import ListProductScreen from '../view/shopping/ListProductScreen';
-import NewPost from '../view/blog/NewBlog';
+import NewBlog from '../view/blog/NewBlog';
+import EditBlog from '../view/blog/EditBlog';
 import DetailProduct from '../view/shopping/DetailProduct';
 import ShopScreen from '../view/shopping/ShopScreen';
 import MyPage from '../view/blog/MyPage';
@@ -57,7 +58,8 @@ export default function StackScreen() {
         <Stack.Screen name="ConfirmOTP" component={ConfirmOTP} />
         <Stack.Screen name="ChangePassword" component={ChangePassword} />
         <Stack.Screen name="ListProductScreen" component={ListProductScreen} />
-        <Stack.Screen name="NewPost" component={NewPost} />
+        <Stack.Screen name="NewBlog" component={NewBlog} />
+        <Stack.Screen name="EditBlog" component={EditBlog} />
         <Stack.Screen
           name="DetailProduct"
           component={DetailProduct}
