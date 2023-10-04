@@ -2,7 +2,7 @@ import {StyleSheet, Text, View, Image} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useDispatch} from 'react-redux';
-import {minusProduct, plusProduct} from '../../redux/reducers/shop/CartReduces';
+import {minusProduct, plusProduct,selectItem} from '../../redux/reducers/shop/CartReduces';
 export default function ItemListCart({data, isSelect}) {
   const dispatch = useDispatch();
   const product = data.idProduct
@@ -27,6 +27,9 @@ export default function ItemListCart({data, isSelect}) {
       );
     }
   };
+  const handleSeletedItem = (product,select) => {
+    dispatch(selectItem({idProduct:product._id,isSelected:select ? false : true})) 
+  }
   useEffect(() => {
     setSelectChild(isSelect);
   }, [isSelect]);
@@ -36,7 +39,9 @@ export default function ItemListCart({data, isSelect}) {
         name={iconSelect}
         size={24}
         color={'#F582AE'}
-        onPress={() => setSelectChild(!selectChild)}
+        onPress={() => {
+          handleSeletedItem(product,isSelect)
+        }}
       />
       <Image source={{uri:product?.arrProduct[0]}} style={styles.image} />
       <View style={styles.content}>
@@ -50,7 +55,7 @@ export default function ItemListCart({data, isSelect}) {
               name="minus"
               size={16}
               color={'#001858'}
-              onPress={() => dispatch(minusProduct(product.id))}
+              onPress={() => dispatch(minusProduct(product._id))}
             />
           </Text>
         </View>
@@ -63,7 +68,7 @@ export default function ItemListCart({data, isSelect}) {
               name="plus"
               size={16}
               color={'#001858'}
-              onPress={() => dispatch(plusProduct(product.id))}
+              onPress={() => dispatch(plusProduct(product._id))}
             />
           </Text>
         </View>

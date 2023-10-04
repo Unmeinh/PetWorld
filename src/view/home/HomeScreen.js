@@ -1,14 +1,11 @@
 import {
-  Image,
   Pressable,
   ScrollView,
   StyleSheet,
   Text,
-  TextInput,
   View,
-  Dimensions,
 } from 'react-native';
-import React, {useEffect, useState} from 'react';
+import React, {useEffect} from 'react';
 import {SafeAreaView} from 'react-navigation';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {useSelector} from 'react-redux';
@@ -18,7 +15,8 @@ import {
   categorySelector,
   categoryStatusSelector,
   listStatusProductSelector,
-  listStatusPetsSelector
+  listStatusPetsSelector,
+  listCartSelector
 } from '../../redux/selector';
 import LinearGradient from 'react-native-linear-gradient';
 import {createShimmerPlaceholder} from 'react-native-shimmer-placeholder';
@@ -29,26 +27,24 @@ import { fetchCategorys } from '../../redux/reducers/category/category';
 import { useDispatch } from 'react-redux';
 import { fetchProducts } from '../../redux/reducers/product/ProductReducer';
 import { fetchPets } from '../../redux/reducers/pet/PetReducer';
+import { fetchCart } from '../../redux/reducers/shop/CartReduces';
 
 const ShimmerPlaceHolder = createShimmerPlaceholder(LinearGradient);
-export default function HomeScreen({scrollRef, onScrollView, navigation}) {
-  const [countCart, setCountCart] = useState(0);
+export default function HomeScreen({scrollRef, onScrollView, navigation}) {;
   const dispatch = useDispatch()
   const listPet = useSelector(listPetSelector);
   const listProduct = useSelector(listProductSelector);
   const listCategory = useSelector(categorySelector); 
+  const result = useSelector(listCartSelector);
   const statusCategorys = useSelector(categoryStatusSelector); 
   const statusProducts = useSelector(listStatusProductSelector); 
   const statusPets = useSelector(listStatusPetsSelector); 
   const colorLoader = ['#f0e8d8', '#dbdbdb', '#f0e8d8'];
-  const [isLoader, setisLoader] = useState(() =>true);
   useEffect(() => {
     dispatch(fetchCategorys())
     dispatch(fetchPets())
     dispatch(fetchProducts())
-    setTimeout(() => {
-      setisLoader(false);
-    }, 2000);
+    dispatch(fetchCart())
   }, []);
  
   return (
@@ -70,13 +66,13 @@ export default function HomeScreen({scrollRef, onScrollView, navigation}) {
                 alignItems: 'center',
               }}>
               <Text style={{fontSize: 12, fontFamily: 'ProductSans'}}>
-                {countCart}
+                {result?.length}
               </Text>
             </View>
           </Pressable>
         </SafeAreaView>
 
-        {isLoader ? (
+        {(statusCategorys && statusPets && statusProducts) === 'loading' ? (
           <View style={styles.margin20}>
             <ShimmerPlaceHolder
               shimmerStyle={styles.styleLoader}
@@ -98,7 +94,7 @@ export default function HomeScreen({scrollRef, onScrollView, navigation}) {
           </Pressable>
         )}
         {/* slideshow */}
-        <Slider isLoader={isLoader} />
+        <Slider isLoader={false} />
         {/* category */}
 
         <CategoryList data={listCategory} isLoader={statusCategorys}/>

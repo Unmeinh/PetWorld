@@ -12,7 +12,7 @@ import {useSelector} from 'react-redux';
 import {selectFilterIdSelector} from '../../redux/selector';
 import {SharedElement} from 'react-navigation-shared-element';
 import {useNavigation} from '@react-navigation/native';
-export default function ItemProductVertical({item, disPatchIdProduct}) {
+export default function ItemProductVertical({item, disPatchIdProduct,type}) {
   const navigation = useNavigation();
   const priceDiscount = (price, discount) => {
     if (discount > 0) {
@@ -57,7 +57,7 @@ export default function ItemProductVertical({item, disPatchIdProduct}) {
         underlayColor="#00185830"
         onPress={() => {
           disPatchIdProduct(item._id);
-          navigation.navigate('DetailProduct');
+          navigation.navigate('DetailProduct',{type});
         }}>
         <View
           style={{

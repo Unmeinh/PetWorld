@@ -44,23 +44,23 @@ export const selectUserByID = createSelector(
 //     },
 // );
 
-export const selectFollowByID = createSelector(
-    listFollowSelector,
-    followSelectType,
-    (follows, id, flType) => {
-        if (flType == "follower") {
-            let fls = [];
-            for (let i = 0; i < follows.length; i++) {
-                fls.push(follows[i].idFollower)
-            }
-            return fls;
-        } else {
-            let fls = [];
-            for (let i = 0; i < follows.length; i++) {
-                fls.push(follows[i].idFollowing)
-            }
-            return fls;
-        }
+// export const selectFollowByID = createSelector(
+//     listFollowSelector,
+//     followSelectType,
+//     (follows, id, flType) => {
+//         if (flType == "follower") {
+//             let fls = [];
+//             for (let i = 0; i < follows.length; i++) {
+//                 fls.push(follows[i].idFollower)
+//             }
+//             return fls;
+//         } else {
+//             let fls = [];
+//             for (let i = 0; i < follows.length; i++) {
+//                 fls.push(follows[i].idFollowing)
+//             }
+//             return fls;
+//         }
 
-    },
-);
+//     },
+// );

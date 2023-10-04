@@ -6,31 +6,41 @@ import {
   ScrollView,
   Dimensions,
   Pressable,
+  ActivityIndicator,
 } from 'react-native';
-import React, {useState, useRef} from 'react';
+import React, {useState, useEffect} from 'react';
 import HeaderTitle from '../../component/header/HeaderTitle';
 import UserTag from '../../component/shop/UserTag';
 import ItemCartSummary from '../../component/ListProduct/ItemCartSummary';
-import {useSelector} from 'react-redux';
-import {listCartSelector, listProductSelector} from '../../redux/selector';
+import {useSelector, useDispatch} from 'react-redux';
+import {
+  billSelector,
+  listItemBill,
+  listShopSelector,
+  useLocationSeleted,
+} from '../../redux/selector';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import useCart from '../../hooks/useCart';
 import ModalTicket from '../../component/modals/ModalTicket';
-const data = {
-  name: 'Lương Việt Hoàng',
-  phoneNumber: '08********32',
-  location: 'Cầu diễn, Phú Diễn, Bắc từ Liêm, Hà Nội',
-};
+import {fetchInfoLogin, fetchInfoUserNoMessage} from '../../redux/reducers/user/userReducer';
+import {userSelectStatus} from '../../redux/selectors/userSelector';
 const payment = [
   {id: 1, name: 'Thanh toán khi nhận hàng'},
   {id: 2, name: 'Ví điện tử'},
 ];
 const {width, height} = Dimensions.get('screen');
 export default function SummaryBill({navigation}) {
-  const result = useSelector(listCartSelector);
-  const products = useSelector(listProductSelector);
-  const resultCart = useCart(result, products);
+  const result = useSelector(listItemBill);
+  const [user, district] = useSelector(useLocationSeleted);
+  const status = useSelector(userSelectStatus);
+  const dispatch = useDispatch();
+  const {
+    price: {discount, priceTotal}, ship 
+  } = useSelector(billSelector);
+  
+  const shop = useSelector(listShopSelector);
+  const resultCart = useCart(result, shop);
   function PayMent() {
     const [selectedId, setSelectedId] = useState();
     const Item = ({item, onPress, icon, textColor}) => (
@@ -67,21 +77,24 @@ export default function SummaryBill({navigation}) {
       />
     );
   }
-  function ModalTicketShow(){
-    const [isVisible, setIsVisible] = useState(false)
+  function ModalTicketShow() {
+    const [isVisible, setIsVisible] = useState(false);
     return (
       <View>
-         <Pressable
+        <Pressable
           onPress={() => setIsVisible(!isVisible)}
           style={styles.flexRow}>
           <Icon name="ticket" color="#F582AE" size={22} />
           <Text style={styles.textBold}>Chiết khấu của PetWord</Text>
           <Icon name="chevron-right" size={24} color="#001858" />
         </Pressable>
-        <ModalTicket isVisible={isVisible} setIsVisible={setIsVisible}/>
+        <ModalTicket isVisible={isVisible} setIsVisible={setIsVisible} />
       </View>
-    )
+    );
   }
+  useEffect(() => {
+    dispatch(fetchInfoUserNoMessage());
+  }, []);
   return (
     <View style={styles.container}>
       <HeaderTitle
@@ -89,53 +102,77 @@ export default function SummaryBill({navigation}) {
         nav={navigation}
         colorHeader="#FEF6E4"
       />
-      <ScrollView style={{marginTop: -15}} scrollEnabled={true}>
-        <UserTag data={data} />
-        <FlatList
-          data={resultCart}
-          scrollEnabled={false}
-          keyExtractor={item => item.idShop}
-          renderItem={({item}) => <ItemCartSummary result={item} />}
-        />
-        <View style={styles.line} />
-        <ModalTicketShow/>
-        <View style={styles.line} />
-        <View>
-          <Text style={styles.textBold}>Tóm tắt đơn hàng</Text>
-          <View style={styles.flexRow}>
-            <Text style={styles.textDefault}>Tổng phụ</Text>
-            <Text style={styles.textDefault}>100.100đ</Text>
+      {status === 'loading' ? (
+        <ActivityIndicator color={'#F582AE'} size={'large'} />
+      ) : (
+        <ScrollView style={{marginTop: 0}} scrollEnabled={true}>
+          <UserTag data={user} />
+          <FlatList
+            data={resultCart}
+            scrollEnabled={false}
+            keyExtractor={item => item.idShop._id}
+            renderItem={({item}) => (
+              <ItemCartSummary result={item} locationShop={district}/>
+            )}
+          />
+          <View style={styles.line} />
+          <ModalTicketShow />
+          <View style={styles.line} />
+          <View>
+            <Text style={styles.textBold}>Tóm tắt đơn hàng</Text>
+            <View style={styles.flexRow}>
+              <Text style={styles.textDefault}>Tổng phụ</Text>
+              <Text style={styles.textDefault}>
+                {(priceTotal + discount)?.toLocaleString('vi-VN')} đ
+              </Text>
+            </View>
+            <View style={styles.flexRow}>
+              <Text style={styles.textDefault}>Vận chuyển</Text>
+              <Text style={styles.textDefault}>{ship?.toLocaleString('vi-VN')}đ</Text>
+            </View>
+            <View style={styles.flexRow}>
+              <Text style={[styles.textDefault, styles.textdiscount]}>
+                Tiết kiệm
+              </Text>
+              <Text style={[styles.textDefault, styles.textdiscount]}>
+                {discount.toLocaleString('vi-VN')} đ
+              </Text>
+            </View>
+            <View style={styles.flexRow}>
+              <Text style={styles.textDefault}>Tổng</Text>
+              <Text style={styles.bold}>
+                {priceTotal.toLocaleString('vi-VN')} đ
+              </Text>
+            </View>
           </View>
-          <View style={styles.flexRow}>
-            <Text style={styles.textDefault}>Vận chuyển</Text>
-            <Text style={styles.textDefault}>32.999đ</Text>
-          </View>
-          <View style={styles.flexRow}>
-            <Text style={styles.textDefault}>Tổng</Text>
-            <Text style={styles.bold}>100.100đ</Text>
-          </View>
-        </View>
-        <View style={styles.line} />
-        <Text style={styles.textBold}>Phương thức thanh toán</Text>
-        <PayMent />
-        <View style={styles.line} />
-      </ScrollView>
-      <View style={styles.bottomButton}>
+          <View style={styles.line} />
+          <Text style={styles.textBold}>Phương thức thanh toán</Text>
+          <PayMent />
+          <View style={styles.line} />
+        </ScrollView>  
+      )}
+      {status === 'loading' ? null:<View style={styles.bottomButton}>
         <View style={styles.flexRow}>
           <Text style={styles.bold}>Tổng</Text>
-          <Text style={styles.bold}>1.222.222đ</Text>
+          <Text style={styles.bold}>
+            {priceTotal.toLocaleString('vi-VN')} đ
+          </Text>
         </View>
-        <Pressable style={styles.button}>
+        <Pressable
+          style={styles.button}
+          onPress={() => {
+            if(status !== 'loading')
+            console.log('click')
+            }}>
           <Text style={styles.textButton}>Xác nhận</Text>
         </Pressable>
-      </View>
-    
+      </View>}
+      
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-
   textButton: {fontFamily: 'ProductSansBold', fontSize: 16, color: '#001858'},
   button: {
     height: 40,
@@ -184,5 +221,8 @@ const styles = StyleSheet.create({
     fontFamily: 'ProductSansBold',
     marginLeft: 8,
     fontSize: 15,
+  },
+  textdiscount: {
+    color: '#F582AE',
   },
 });
