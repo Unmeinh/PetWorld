@@ -6,7 +6,7 @@ import {
   Pressable,
   ActivityIndicator,
 } from 'react-native';
-import React,{ useEffect, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import HeaderTitle from '../../component/header/HeaderTitle';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useSelector, useDispatch} from 'react-redux';
@@ -18,10 +18,14 @@ import {
 } from '../../redux/selector';
 import useCart from '../../hooks/useCart';
 import ListCart from '../../component/list/ListCart';
-import {fetchCart, selectAllItemCart, updateCart} from '../../redux/reducers/shop/CartReduces';
+import {
+  fetchCart,
+  selectAllItemCart,
+  updateCart,
+} from '../../redux/reducers/shop/CartReduces';
 import {fetchShops} from '../../redux/reducers/shop/ShopReducer';
-import { usePrice } from '../../hooks/usePrice';
-import { addPrice } from '../../redux/reducers/shop/billSlice';
+import {usePrice} from '../../hooks/usePrice';
+import {addPrice} from '../../redux/reducers/shop/billSlice';
 const {width} = Dimensions.get('screen');
 export default function CartScreen({navigation}) {
   const dispatch = useDispatch();
@@ -29,18 +33,17 @@ export default function CartScreen({navigation}) {
   const resultShops = useSelector(listShopSelector);
   const statusCart = useSelector(listCartStatusSelector);
   const statusShops = useSelector(listShopStatusSelector);
-  const [selectedAll,setSelectedAll] = useState(checkSelected) 
-  const [total,discount] = usePrice(result)
+  const [selectedAll, setSelectedAll] = useState(checkSelected);
+  const [total, discount] = usePrice(result);
   const resultCart = useCart(result, resultShops);
- 
- 
-  function Bottom({total,discount,isSelectAll}) {
+
+  function Bottom({total, discount, isSelectAll}) {
     const [isSelect, setIsSelect] = useState(isSelectAll);
     const iconSelect = isSelect
       ? 'checkbox-marked-circle'
       : 'checkbox-blank-circle-outline';
     return (
-      <View style={styles.bottom} >
+      <View style={styles.bottom}>
         <View style={styles.select}>
           <Text>
             <Icon
@@ -48,7 +51,7 @@ export default function CartScreen({navigation}) {
               size={24}
               color="#F582AE"
               onPress={() => dispatch(selectAllItemCart())}
-              disabled={statusCart === 'loading' ? true:false}
+              disabled={statusCart === 'loading' ? true : false}
             />
           </Text>
           <Text style={[styles.fontFamyly, styles.textSelect]}>
@@ -56,45 +59,45 @@ export default function CartScreen({navigation}) {
           </Text>
         </View>
         <View style={styles.total}>
-          <Text style={[styles.fontFamyly, styles.textTotal]}>{total.toLocaleString('vi-VN')} đ</Text>
+          <Text style={[styles.fontFamyly, styles.textTotal]}>
+            {total.toLocaleString('vi-VN')} đ
+          </Text>
           <Text style={[styles.fontFamyly, styles.textDiscont]}>
             Tiết kiệm {discount.toLocaleString('vi-VN')} đ
           </Text>
         </View>
         <Pressable
           style={styles.button}
-          disabled={statusCart === 'loading' ? true:false}
+          disabled={statusCart === 'loading' ? true : false}
           onPress={() => {
-            dispatch(addPrice({priceTotal:total,discount:discount}))
-            navigation.navigate('SummaryBill')
+            dispatch(addPrice({priceTotal: total, discount: discount}));
+            navigation.navigate('SummaryBill');
           }}>
-          <Text style={[styles.fontFamyly, styles.textButton]}>
-            Thanh toán
-          </Text>
+          <Text style={[styles.fontFamyly, styles.textButton]}>Thanh toán</Text>
         </Pressable>
       </View>
     );
   }
-  function checkSelected(){
+  function checkSelected() {
     const isSelect = result.every(item => item.isSelected === true);
-    return isSelect
+    return isSelect;
   }
   useEffect(() => {
-    if(statusCart == 'idle'){
+    if (statusCart == 'idle') {
       dispatch(fetchCart());
     }
     dispatch(fetchShops());
   }, []);
   useEffect(() => {
-    setSelectedAll(checkSelected())
-  },[result]);
-  
-  useEffect(() =>{
-    const subcriber = navigation.addListener('blur', () =>{
-        dispatch(updateCart(result))
-    })
-    return subcriber
-  },[navigation,result])
+    setSelectedAll(checkSelected());
+  }, [result]);
+
+  useEffect(() => {
+    const subcriber = navigation.addListener('blur', () => {
+      dispatch(updateCart(result));
+    });
+    return subcriber;
+  }, [navigation, result]);
   return (
     <View style={{flex: 1, backgroundColor: '#FEF6E4'}}>
       <HeaderTitle
@@ -108,7 +111,9 @@ export default function CartScreen({navigation}) {
         <ListCart data={resultCart} />
       )}
 
-      <Bottom total={total} discount={discount} isSelectAll={selectedAll} />
+      {resultCart?.length > 0 ? (
+        <Bottom total={total} discount={discount} isSelectAll={selectedAll} />
+      ) : null}
     </View>
   );
 }
