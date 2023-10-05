@@ -1,6 +1,6 @@
 import {useCallback} from 'react';
 
-const useCart = (cart, shops) => {
+const useCart = (cart, shops, user) => {
   if (cart || shops) {
     const groupProductsByShop = {};
       cart.forEach(result => {

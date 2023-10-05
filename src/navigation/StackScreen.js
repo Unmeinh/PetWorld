@@ -33,7 +33,7 @@ import InformationAccount from '../view/account/InformationAccount';
 import Information from '../view/account/Information';
 import NumberPhone from '../view/account/Numberphone';
 import EmailVerification from '../view/account/EmailVerification';
-import OderScreen from '../view/oder/OderScreen';
+import BillScreen from '../view/Bills/BillScreen';
 import PhoneVerification from '../view/account/PhoneVerification';
 import Email from '../view/account/Email';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -43,6 +43,20 @@ import { navigationRef } from './rootNavigation';
 const Stack = createStackNavigator();
 
 export default function StackScreen() {
+  const animated = {
+    gestureEnabled: true,
+    transitionSpec: {
+      open: { animation: 'timing', config: { duration: 300 } },
+      close: { animation: 'timing', config: { duration: 300 } },
+    },
+    cardStyleInterpolator: ({ current: { progress } }) => {
+      return {
+        cardStyle: {
+          opacity: progress,
+        },
+      };
+    },
+  }
   return (
     <NavigationContainer ref={navigationRef}>
       <Stack.Navigator
@@ -63,20 +77,7 @@ export default function StackScreen() {
         <Stack.Screen
           name="DetailProduct"
           component={DetailProduct}
-          options={{
-            gestureEnabled: true,
-            transitionSpec: {
-              open: { animation: 'timing', config: { duration: 300 } },
-              close: { animation: 'timing', config: { duration: 300 } },
-            },
-            cardStyleInterpolator: ({ current: { progress } }) => {
-              return {
-                cardStyle: {
-                  opacity: progress,
-                },
-              };
-            },
-          }}     
+          options={animated}     
         />
         <Stack.Screen name="ShopScreen" component={ShopScreen} />
         <Stack.Screen name="MyPage" component={MyPage} />
@@ -95,7 +96,7 @@ export default function StackScreen() {
         <Stack.Screen name="SettingNotify" component={SettingNotify} />
         <Stack.Screen name="NotifyScreen" component={NotifyScreen} />
         <Stack.Screen name="AccountScreen" component={AccountScreen} />
-        <Stack.Screen name="OderScreen" component={OderScreen} />
+        <Stack.Screen name="BillScreen" component={BillScreen} />
         <Stack.Screen name="InformationAccount" component={InformationAccount} />
         <Stack.Screen name="Information" component={Information} />
         <Stack.Screen name="NumberPhone" component={NumberPhone} />

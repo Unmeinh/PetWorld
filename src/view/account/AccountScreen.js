@@ -71,7 +71,7 @@ export default function AccountScreen({ scrollRef, onScrollView }) {
     setIsPressed(true);
     setTimeout(() => {
       setIsPressed(false);
-      navigation.navigate('OderScreen');
+      navigation.navigate('BillScreen');
     }, 200); // Reset the state after 200ms
   };
 
