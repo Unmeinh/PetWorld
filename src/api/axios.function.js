@@ -2,7 +2,7 @@ import axiosAPi from "./axios.config";
 import Toast from "react-native-toast-message";
 import { storageMMKV } from "../storage/storageMMKV";
 
-export async function onAxiosGet(url) {
+export async function onAxiosGet(url, isFeedback) {
     let axios = axiosAPi;
     axios.defaults.headers = {
         "Authorization": (storageMMKV.getString('login.token') != "") ? `Bearer ${storageMMKV.getString('login.token')}` : undefined
@@ -44,12 +44,14 @@ export async function onAxiosGet(url) {
         if (response.status == 200) {
             var data = response.data;
             if (data.success) {
-                Toast.show({
-                    type: 'success',
-                    position: 'top',
-                    text1: String(data.message),
-                    bottomOffset: 20
-                });
+                if (isFeedback && data.message) {
+                    Toast.show({
+                        type: 'success',
+                        position: 'top',
+                        text1: String(data.message),
+                        bottomOffset: 20
+                    });
+                }
                 return data;
             } else {
                 Toast.show({
@@ -73,7 +75,7 @@ export async function onAxiosGet(url) {
     }
 }
 
-export async function onAxiosPost(url, body, typeBody) {
+export async function onAxiosPost(url, body, typeBody, isFeedback) {
     let axios = axiosAPi;
     if (String(typeBody).toLocaleLowerCase() == 'json') {
         axios.defaults.headers = {
@@ -114,15 +116,23 @@ export async function onAxiosPost(url, body, typeBody) {
                         bottomOffset: 20
                     });
                     return false;
-                } else {
+                }
+                if (String(e.response.data).indexOf("404") > 0) {
                     Toast.show({
                         type: 'error',
                         position: 'top',
-                        text1: String(e.response.data),
+                        text1: "Không tìm thấy api với phương thức post!",
                         bottomOffset: 20
                     });
                     return false;
                 }
+                Toast.show({
+                    type: 'error',
+                    position: 'top',
+                    text1: String(e.response.data),
+                    bottomOffset: 20
+                });
+                return false;
             }
         });
 
@@ -130,12 +140,14 @@ export async function onAxiosPost(url, body, typeBody) {
         if (response.status == 201) {
             var data = response.data;
             if (data.success) {
-                Toast.show({
-                    type: 'success',
-                    position: 'top',
-                    text1: String(data.message),
-                    bottomOffset: 20
-                });
+                if (isFeedback) {
+                    Toast.show({
+                        type: 'success',
+                        position: 'top',
+                        text1: String(data.message),
+                        bottomOffset: 20
+                    });
+                }
                 return data;
             } else {
                 Toast.show({
@@ -156,10 +168,12 @@ export async function onAxiosPost(url, body, typeBody) {
             });
             return false;
         }
+    } else {
+        return false;
     }
 }
 
-export async function onAxiosPut(url, body, typeBody) {
+export async function onAxiosPut(url, body, typeBody, isFeedback) {
     let axios = axiosAPi;
     if (String(typeBody).toLocaleLowerCase() == 'json') {
         axios.defaults.headers = {
@@ -216,12 +230,14 @@ export async function onAxiosPut(url, body, typeBody) {
         if (response.status == 201) {
             var data = response.data;
             if (data.success) {
-                Toast.show({
-                    type: 'success',
-                    position: 'top',
-                    text1: String(data.message),
-                    bottomOffset: 20
-                });
+                if (isFeedback) {
+                    Toast.show({
+                        type: 'success',
+                        position: 'top',
+                        text1: String(data.message),
+                        bottomOffset: 20
+                    });
+                }
                 return data;
             } else {
                 Toast.show({
@@ -245,7 +261,7 @@ export async function onAxiosPut(url, body, typeBody) {
     }
 }
 
-export async function onAxiosDelete(url) {
+export async function onAxiosDelete(url, isFeedback) {
     let axios = axiosAPi;
     axios.defaults.headers = {
         "Authorization": (storageMMKV.getString('login.token') != "") ? `Bearer ${storageMMKV.getString('login.token')}` : undefined
@@ -287,12 +303,14 @@ export async function onAxiosDelete(url) {
         if (response.status == 203) {
             var data = response.data;
             if (data.success) {
-                Toast.show({
-                    type: 'success',
-                    position: 'top',
-                    text1: String(data.message),
-                    bottomOffset: 20
-                });
+                if (isFeedback) {
+                    Toast.show({
+                        type: 'success',
+                        position: 'top',
+                        text1: String(data.message),
+                        bottomOffset: 20
+                    });
+                }
                 return data;
             } else {
                 Toast.show({

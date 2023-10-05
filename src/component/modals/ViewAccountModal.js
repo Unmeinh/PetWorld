@@ -5,44 +5,44 @@ import {
 } from "react-native";
 import React, { useState, useRef, memo } from "react";
 import { useNavigation } from "@react-navigation/native";
+import { useDispatch } from "react-redux";
 import Modal from 'react-native-modal';
 import styles from "../../styles/user.style";
 import Entypo from 'react-native-vector-icons/Entypo';
 import Fontisto from 'react-native-vector-icons/Fontisto';
+import { userLoginId } from '../../redux/selectors/userSelector';
+import { useSelector } from "react-redux";
+import { onAxiosPost } from "../../api/axios.function";
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import LinearGradient from 'react-native-linear-gradient';
-import { createShimmerPlaceholder } from 'react-native-shimmer-placeholder';
-
-const ShimmerPlaceHolder = createShimmerPlaceholder(LinearGradient);
+import ShimmerPlaceHolder from "../layout/ShimmerPlaceHolder";
 
 const ViewAccountModal = (route) => {
     const navigation = useNavigation();
+    const dispatch = useDispatch();
     const infoUser = route.info;
-    const [srcAvatar, setsrcAvatar] = useState(require('../../assets/images/error.png'));
-    const [isFollow, setisFollow] = useState(false);
-    const [blogCount, setblogCount] = useState(0);
-    const [followingCount, setfollowingCount] = useState(0);
-    const [followerCount, setfollowerCount] = useState(0);
+    var loginId = useSelector(userLoginId);
+    const [srcAvatar, setsrcAvatar] = useState(require('../../assets/images/loading.png'));
+    const [isFollow, setisFollow] = useState(route.isFollow);
     const [isLoader, setisLoader] = useState(false);
     const colorLoader = ['#f0e8d8', '#dbdbdb', '#f0e8d8'];
 
-    function getMyID() {
-        return "001";
-    }
-
     function OpenAccount() {
         route.callBack();
-        if (getMyID() == infoUser._id)
+        if (loginId == infoUser._id)
             navigation.push('MyPage');
-        else
+        else {
             navigation.push('ViewPage', { idUser: infoUser._id });
+        }
     }
 
-    function OnFollow() {
-        if (isFollow) {
-            setisFollow(false);
+    async function OnFollow() {
+        let fl = isFollow;
+        setisFollow(!fl);
+        let res = await onAxiosPost('follow/insert', { idFollow: infoUser._id }, 'json', false);
+        if (res) {
+            route.callbackFollow(!fl);
         } else {
-            setisFollow(true);
+            setisFollow(fl);
         }
     }
 
@@ -58,20 +58,28 @@ const ViewAccountModal = (route) => {
     }, [route.isShow]);
 
     React.useEffect(() => {
-        if (isLoader) {
-            setTimeout(() => {
-                setisLoader(false);
-                if (infoUser != undefined) {
-                    setsrcAvatar({ uri: String(infoUser.avatarUser) });
-                }
-            }, 2000);
+        if (infoUser != undefined) {
+            setisLoader(false);
+            setsrcAvatar({ uri: String(infoUser.avatarUser) });
         }
-    }, [isLoader]);
+    }, [infoUser]);
 
     const ModalAccount = () => {
         return (
             <View style={styles.modalUser}>
-                <Image source={srcAvatar} style={styles.modalUserAvatar} />
+                <View>
+                    <Image source={srcAvatar} style={styles.modalUserAvatar} />
+                    <View style={styles.viewContentOnline}>
+                        {
+                            (infoUser.idAccount.online == 0)
+                                ? <View style={styles.contentOnline} />
+                                : <>
+                                    <View style={styles.topOfline} />
+                                    <View style={styles.contentOfline} />
+                                </>
+                        }
+                    </View>
+                </View>
                 <Text style={styles.modalUserName} numberOfLines={1}>{infoUser.fullName}</Text>
                 {
                     (isFollow)
@@ -94,21 +102,21 @@ const ViewAccountModal = (route) => {
                 }
                 <View style={styles.viewRowAroundModal}>
                     <View style={{ alignItems: 'center' }}>
-                        <Text style={styles.textCountModal}>{blogCount}</Text>
+                        <Text style={styles.textCountModal}>{infoUser.blogs}</Text>
                         <Text style={styles.detailCountModal}>Bài viết</Text>
                     </View>
                     <TouchableOpacity style={{ alignItems: 'center' }}
                         onPress={() => OpenListFollow('following')}>
-                        <Text style={styles.textCountModal}>{followingCount}</Text>
+                        <Text style={styles.textCountModal}>{infoUser.followings.length}</Text>
                         <Text style={styles.detailCountModal}>Đang theo dõi</Text>
                     </TouchableOpacity>
                     <TouchableOpacity style={{ alignItems: 'center' }}
                         onPress={() => OpenListFollow('follower')}>
-                        < Text style={styles.textCountModal} > {followerCount}</Text>
+                        < Text style={styles.textCountModal} > {infoUser.followers.length}</Text>
                         <Text style={styles.detailCountModal}>Người theo dõi</Text>
                     </TouchableOpacity>
                 </View>
-                <Text style={styles.textDescModal}>
+                <Text style={styles.textDescModal} numberOfLines={4}>
                     {
                         (infoUser.description != undefined)
                             ? infoUser.description

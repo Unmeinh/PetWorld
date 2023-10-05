@@ -23,13 +23,13 @@ export default StyleSheet.create({
     },
 
     imageAvatar: {
-        height: 45, width: 45,
+        height: 40, width: 40,
         borderRadius: 45 / 2,
-        marginRight: 15,
+        marginRight: 10,
     },
 
     textHint: {
-        fontSize: 16,
+        fontSize: 15,
         fontFamily: 'ProductSans',
         color: 'rgba(0, 0, 0, 0.6)'
     },
@@ -50,11 +50,18 @@ export default StyleSheet.create({
         paddingBottom: 15
     },
 
+    viewBlogCollapse: {
+        flexDirection: 'row',
+        alignItems: "center",
+        flexShrink: 1,
+        width: WindowWidth
+    },
+
     textName: {
-        fontSize: 17,
+        fontSize: 16,
         fontFamily: 'ProductSans',
         color: darkBlue,
-        fontWeight: 'bold'
+        fontWeight: 'bold',
     },
 
     viewRowInteract: {
@@ -88,27 +95,33 @@ export default StyleSheet.create({
     },
 
     textContent: {
-        fontSize: 16,
+        fontSize: 15,
         color: darkBlue,
         fontFamily: 'ProductSans'
     },
 
+    textContentCollapse: {
+        fontSize: 14,
+        fontFamily: 'ProductSans',
+        color: '#001858A6',
+    },
+
     textBlogger: {
-        fontSize: 16,
+        fontSize: 15,
         color: darkBlue,
         fontWeight: 'bold',
         fontFamily: 'ProductSans'
     },
 
     textTime: {
-        fontSize: 13,
+        fontSize: 13.5,
         fontFamily: 'ProductSans',
         color: 'rgba(0, 0, 0, 0.65)',
         paddingLeft: 3, paddingTop: 2
     },
 
     textBelowContent: {
-        fontSize: 15,
+        fontSize: 14.5,
         fontFamily: 'ProductSans',
         color: 'rgba(0, 0, 0, 0.50)',
     },
@@ -144,14 +157,14 @@ export default StyleSheet.create({
         minHeight: WindowHeight - (WindowHeight * 50 / 100)
     },
 
-    textContentNewPost: {
+    textContentNewBlog: {
         width: '100%',
         marginBottom: 10,
         fontSize: 17,
         lineHeight: 22,
         paddingHorizontal: 20,
         color: darkBlue,
-        fontFamily: 'ProductSans'
+        fontFamily: 'ProductSans',
     },
 
     imageContent: {

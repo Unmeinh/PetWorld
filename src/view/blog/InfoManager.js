@@ -27,7 +27,7 @@ const InfoManager = () => {
     const infoLogin = useSelector(selectUserLogin);
     const uSelectStatus = useSelector(userSelectStatus);
     const [pickedImage, setpickedImage] = useState(null);
-    const [srcAvatar, setsrcAvatar] = useState(require('../../assets/images/error.png'))
+    const [srcAvatar, setsrcAvatar] = useState(require('../../assets/images/loading.png'))
     const [isLoader, setisLoader] = useState(true);
     const colorLoader = ['#f0e8d8', '#dbdbdb', '#f0e8d8'];
 
@@ -40,7 +40,7 @@ const InfoManager = () => {
                 isCrop: true,
                 isCropCircle: true,
                 singleSelectedMode: true
-    
+
             });
             setpickedImage(response);
         } catch (error) {
@@ -70,21 +70,21 @@ const InfoManager = () => {
                 Toast.show({
                     type: 'loading',
                     text1: "Đang cập nhật ảnh đại diện...",
-                    // autoHide: false,
+                    // autoHide: true,
                     position: 'top'
                 });
-                // var dataImage = {
-                //     uri: Platform.OS === "android" ? pickedImage.path : pickedImage.path.replace("file://", ""),
-                //     name: pickedImage.fileName,
-                //     type: "multipart/form-data"
-                // };
-                // let formData = new FormData();
-                // formData.append('uploadImages', dataImage);
-                // let res = await onAxiosPut('user/updateAvatar', formData, 'formdata');
-                // if (res.success) {
-                //     setpickedImage(null);
-                //     dispatch(fetchInfoLogin());
-                // }
+                var dataImage = {
+                    uri: Platform.OS === "android" ? pickedImage.path : pickedImage.path.replace("file://", ""),
+                    name: pickedImage.fileName,
+                    type: "multipart/form-data"
+                };
+                let formData = new FormData();
+                formData.append('uploadImages', dataImage);
+                let res = await onAxiosPut('user/updateAvatar', formData, 'formdata');
+                if (res && res.success) {
+                    setpickedImage(null);
+                    dispatch(fetchInfoLogin());
+                }
             }
         })();
     }, [pickedImage]);

@@ -20,21 +20,25 @@ import { fetchInfoLogin } from '../../redux/reducers/user/userReducer';
 import { selectUserLogin, userSelectStatus } from '../../redux/selectors/userSelector';
 import { useNavigation } from '@react-navigation/native';
 import Toast from "react-native-toast-message";
-import { addBlog } from "../../redux/reducers/blog/blogReducer";
-import { onAxiosPost } from '../../api/axios.function';
-import ShimmerPlaceHolder from '../../component/layout/ShimmerPlaceHolder';
+import { updateBlog } from '../../redux/reducers/blog/blogReducer';
+import { onAxiosPut } from '../../api/axios.function';
+import { LogBox } from 'react-native';
 
-const NewBlog = ({ route }) => {
+LogBox.ignoreLogs([
+    'Non-serializable values were found in the navigation state',
+]);
+const EditBlog = ({ route }) => {
     const dispatch = useDispatch();
     const navigation = useNavigation();
     let listImageRef = useRef(null);
+    let oldBlog = route.params.oldBlog;
     const infoLogin = useSelector(selectUserLogin);
     const selectorStatus = useSelector(userSelectStatus);
-    const [arr_Image, setarr_Image] = useState((route.params && route.params.arr_Picked) ? route.params.arr_Picked : []);
-    const [aspectRatio, setaspectRatio] = useState(1 / 1);
+    const [arr_Image, setarr_Image] = useState(oldBlog.imageBlogs);
+    const [aspectRatio, setaspectRatio] = useState((oldBlog.aspectRatio) ? oldBlog.aspectRatio : 1 / 1);
     const [srcAvatar, setsrcAvatar] = useState(require('../../assets/images/loading.png'));
-    const [inputContent, setinputContent] = useState("");
-    const [inputFont, setinputFont] = useState("Default");
+    const [inputContent, setinputContent] = useState(oldBlog.contentBlog);
+    const [inputFont, setinputFont] = useState(oldBlog.contentFont);
     const [isShowModal, setisShowModal] = useState(false);
     const [isLoader, setisLoader] = useState(true);
 
@@ -83,22 +87,28 @@ const NewBlog = ({ route }) => {
         formData.append("aspectRatio", aspectRatio);
 
         if (arr_Image.length > 0) {
+            let imageWithoutPath = [];
             for (let i = 0; i < arr_Image.length; i++) {
-                var dataImage = {
-                    uri: Platform.OS === "android" ? arr_Image[i].path : arr_Image[i].path.replace("file://", ""),
-                    name: arr_Image[i].fileName,
-                    type: "multipart/form-data"
-                };
-                formData.append('uploadImages', dataImage);
+                if (arr_Image[i].path) {
+                    var dataImage = {
+                        uri: Platform.OS === "android" ? arr_Image[i].path : arr_Image[i].path.replace("file://", ""),
+                        name: arr_Image[i].fileName,
+                        type: "multipart/form-data"
+                    };
+                    formData.append('uploadImages', dataImage);
+                } else {
+                    imageWithoutPath.push(arr_Image[i])
+                }
             }
+            formData.append('oldImages', JSON.stringify(imageWithoutPath));
         }
 
-        let res = await onAxiosPost('blog/insert', formData, "formdata", true);
+        let res = await onAxiosPut('blog/update/' + oldBlog._id, formData, "formdata", true);
         if (res) {
             if (route.params.fetchBlog != undefined) {
                 route.params.fetchBlog()
             }
-            dispatch(addBlog(res.data));
+            dispatch(updateBlog([oldBlog._id, res.data]));
             navigation.goBack();
         }
     }
@@ -166,7 +176,7 @@ const NewBlog = ({ route }) => {
 
         return (
             <View style={{ marginBottom: 100 }}>
-                <Image source={{ uri: String(item.path) }}
+                <Image source={{ uri: (item.path) ? String(item.path) : String(item) }}
                     style={{ width: Dimensions.get('window').width, aspectRatio: String(aspectRatio) }}>
                 </Image>
                 <View style={styles.viewButtonIC}>
@@ -205,7 +215,7 @@ const NewBlog = ({ route }) => {
 
     return (
         <View style={{ flex: 1, backgroundColor: '#FEF6E4' }}>
-            <HeaderTitle nav={navigation} titleHeader={'Bài viết mới'} colorHeader={'#FEF6E4'} />
+            <HeaderTitle nav={navigation} titleHeader={'Sửa bài viết'} colorHeader={'#FEF6E4'} />
             {
                 (isLoader)
                     ? <>
@@ -300,4 +310,4 @@ const NewBlog = ({ route }) => {
 }
 
 
-export default NewBlog;
+export default EditBlog;

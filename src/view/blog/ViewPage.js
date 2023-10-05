@@ -2,159 +2,236 @@ import React, { useState, useEffect, useRef, memo } from 'react';
 import {
     Text, Image,
     SafeAreaView,
-    ScrollView,
-    View, Animated,
+    ScrollView, View,
     TouchableOpacity,
-    TouchableHighlight
+    TouchableHighlight,
+    Dimensions
 } from 'react-native';
 import styles from '../../styles/user.style';
 import { CollapsibleTabs } from '../../component/layout/indexCollapsibleTab';
 import { TabInfo, TabBlog } from './TabItemPage';
 import { useNavigation } from '@react-navigation/native';
-import { useSelector, useDispatch } from "react-redux";
-import { selectUserByID, userSelectStatus } from '../../redux/selectors/userSelector';
-import { selectBlogsByUser, blogSelectStatus } from '../../redux/selectors/blogSelector';
-import { fetchInfoUser } from '../../redux/reducers/user/userReducer';
-import { fetchBlogsUser } from '../../redux/reducers/blog/blogReducer';
 import ItemBlogLoader from '../../component/items/ItemBlogLoader';
-import { RefreshControl } from "react-native-gesture-handler";
 import MenuContext from '../../component/menu/MenuContext';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Entypo from 'react-native-vector-icons/Entypo';
-import LinearGradient from 'react-native-linear-gradient';
-import { createShimmerPlaceholder } from 'react-native-shimmer-placeholder';
-
-const ShimmerPlaceHolder = createShimmerPlaceholder(LinearGradient);
+import ShimmerPlaceHolder from '../../component/layout/ShimmerPlaceHolder';
+import { onAxiosGet, onAxiosPost } from '../../api/axios.function';
+import { changeBlogIsFollow } from '../../redux/reducers/blog/blogReducer';
+import { useDispatch } from 'react-redux';
 
 const ViewPage = ({ route }) => {
     const navigation = useNavigation();
     const dispatch = useDispatch();
-    const infoUser = useSelector(selectUserByID);
-    const uSelectStatus = useSelector(userSelectStatus);
-    const arr_blog = useSelector(selectBlogsByUser);
-    const bSelectStatus = useSelector(blogSelectStatus);
-    const [blogCount, setblogCount] = useState(0);
-    const [followingCount, setfollowingCount] = useState(0);
-    const [followerCount, setfollowerCount] = useState(0);
-    const [isFollowing, setisFollowing] = useState(false);
-    const [srcAvatar, setsrcAvatar] = useState(require('../../assets/images/error.png'));
-    const [isLoader, setisLoader] = useState(true);
+    const [infoUser, setinfoUser] = useState(undefined);
+    const [blogs, setblogs] = useState(undefined);
+    const [srcAvatar, setsrcAvatar] = useState(require('../../assets/images/loading.png'));
+    const [isLoadingUser, setisLoadingUser] = useState(true);
+    const [isLoadingBlog, setisLoadingBlog] = useState(true);
+    const [infoTabHeight, setinfoTabHeight] = useState(0);
+    const [isFocusScreen, setisFocusScreen] = useState(false);
     const [isRefreshing, setisRefreshing] = useState(false);
+    const [isFollowed, setisFollowed] = useState(false);
     const [isHeaderCollapse, setisHeaderCollapse] = useState(false);
     const [isShowMenu, setisShowMenu] = useState(false);
-    const colorLoader = ['#f0e8d8', '#dbdbdb', '#f0e8d8'];
-    const menuNames = ["Gửi email", "Báo cáo"];
-    const menuFunctions = [];
+    const menuNames = ["Chia sẻ người dùng", "Gửi email", "Báo cáo"];
+
+    const menuFunctions = [OpenInfoManager, OpenChangeAvatar];
+
+    function OpenInfoManager() {
+        setisShowMenu(false);
+        navigation.navigate('InfoManager');
+    }
+
+    function OpenChangeAvatar() {
+        setisShowMenu(false);
+        navigation.navigate('ChangeAvatar');
+    }
+
+    async function fetchBlogsUser(id) {
+        const res = await onAxiosGet('/blog/list/user/' + id);
+        if (res) {
+            setblogs(res.data);
+        } else {
+            setblogs([]);
+        }
+    }
+
+    async function fetchUser() {
+        const res = await onAxiosGet('/user/userDetail/' + route.params.idUser);
+        if (res) {
+            setinfoUser(res.data);
+        } else {
+            setinfoUser({});
+        }
+    }
+
+    const onLayoutBlog = (event) => {
+        const { x, y, height, width } = event.nativeEvent.layout;
+        if (height <= Dimensions.get('window').height) {
+            if (blogs) {
+                if (blogs.length > 0) {
+                    setinfoTabHeight(height);
+                }
+            } 
+        } else {
+            setinfoTabHeight(Dimensions.get('window').height);
+        }
+    }
 
     //Use effect    
     useEffect(() => {
-        if (bSelectStatus == "being idle") {
-            setisLoader(false);
-        }
-    }, [bSelectStatus]);
-
-    useEffect(() => {
-        if (infoUser != undefined && infoUser != {}) {
+        if (infoUser != undefined && isLoadingUser) {
+            fetchBlogsUser(infoUser._id);
+            setisLoadingBlog(true);
             setsrcAvatar({ uri: String(infoUser.avatarUser) });
+            setisFollowed(infoUser.isFollowed);
+            setisLoadingUser(false);
         }
     }, [infoUser]);
 
     useEffect(() => {
-        const unsub = navigation.addListener('focus', () => {
-            dispatch(fetchBlogsUser(route.params.idUser));
-            dispatch(fetchInfoUser(route.params.idUser));
-            console.log("dispatch");
-            // setisLoader(true);
+        if (blogs != undefined) {
+            setisLoadingBlog(false);
+        }
+    }, [blogs]);
 
-            // return navigation.remove();
+    useEffect(() => {
+        if (isFocusScreen) {
+            if (infoUser == undefined) {
+                setisLoadingUser(true);
+                fetchUser();
+                if (blogs != undefined) {
+                    setisLoadingBlog(false);
+                }
+            } else {
+                setisLoadingUser(false);
+                fetchUser();
+                setsrcAvatar({ uri: String(infoUser.avatarUser) });
+                if (blogs == undefined) {
+                    fetchBlogsUser(infoUser._id);
+                    setisLoadingBlog(true);
+                }
+            }
+        }
+    }, [isFocusScreen]);
+
+    useEffect(() => {
+        const unsubFocus = navigation.addListener('focus', () => {
+            setisFocusScreen(true);
             return () => {
-                unsub.remove();
+                unsubFocus.remove();
             };
         });
 
-        return unsub;
+        const unsubBlur = navigation.addListener('blur', () => {
+            setisFocusScreen(false);
+            return () => {
+                unsubBlur.remove();
+            };
+        });
+
+        const unsubRemove = navigation.addListener('beforeRemove', () => {
+            setisFocusScreen(false);
+            return () => {
+                unsubRemove.remove();
+            };
+        });
+
     }, [navigation]);
 
-    function callBackSetLoader() {
-        setisLoader(false);
+    const LoaderHeader = () => {
+        return (
+            <>
+                <View style={styles.headerExtend}>
+                    <View style={{ flexDirection: 'row', width: '100%', }}>
+                        <ShimmerPlaceHolder
+                            shimmerStyle={styles.pageUserAvatar} />
+                        <ShimmerPlaceHolder
+                            shimmerStyle={{ width: '35%', height: 20, marginLeft: 20, borderRadius: 5 }} />
+                        <View style={styles.viewButtonHeader}>
+                            <ShimmerPlaceHolder
+                                shimmerStyle={{ width: 75, height: 30, borderRadius: 12 }} />
+                            <ShimmerPlaceHolder
+                                shimmerStyle={{ width: 75, height: 30, borderRadius: 12, marginLeft: 10 }} />
+                        </View>
+                    </View>
+                    <View style={styles.viewRowAroundPage}>
+                        <View style={{ alignItems: 'center' }}>
+                            <ShimmerPlaceHolder
+                                shimmerStyle={{ width: 15, height: 15, borderRadius: 5, marginBottom: 5 }} />
+                            <ShimmerPlaceHolder
+                                shimmerStyle={{ width: 50, height: 10, borderRadius: 5 }} />
+                        </View>
+                        <View style={{ alignItems: 'center' }}>
+                            <ShimmerPlaceHolder
+                                shimmerStyle={{ width: 15, height: 15, borderRadius: 5, marginBottom: 5 }} />
+                            <ShimmerPlaceHolder
+                                shimmerStyle={{ width: 70, height: 10, borderRadius: 5 }} />
+                        </View>
+                        <View style={{ alignItems: 'center' }}>
+                            <ShimmerPlaceHolder
+                                shimmerStyle={{ width: 15, height: 15, borderRadius: 5, marginBottom: 5 }} />
+                            <ShimmerPlaceHolder
+                                shimmerStyle={{ width: 70, height: 10, borderRadius: 5 }} />
+                        </View>
+                    </View>
+                    <ShimmerPlaceHolder
+                        shimmerStyle={{ width: '50%', borderRadius: 5, marginVertical: 15, marginHorizontal: 20 }} />
+                </View>
+                <View>
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-around' }}>
+                        <ShimmerPlaceHolder
+                            shimmerStyle={{ width: 70, height: 15, borderRadius: 5, marginVertical: 15 }} />
+                        <ShimmerPlaceHolder
+                            shimmerStyle={{ width: 70, height: 15, borderRadius: 5, marginVertical: 15 }} />
+                    </View>
+                    <View style={{ width: '50%', backgroundColor: "#F582AE", height: 2 }} />
+                    <View style={{ height: 1, width: '100%', backgroundColor: '#FEF6E4', shadowColor: '#000', elevation: 3, zIndex: 100, marginBottom: 10 }} />
+                </View>
+            </>
+        )
     }
 
     const HeaderView = () => {
-        function OnFollow() {
-            if (isFollowing) {
-                setisFollowing(false);
+        async function OnFollow() {
+            let fl = isFollowed;
+            setisFollowed(!fl);
+            let res = await onAxiosPost('follow/insert', { idFollow: infoUser._id }, 'json', false);
+            if (res) {
+                dispatch(changeBlogIsFollow([infoUser._id, !fl]));
             } else {
-                setisFollowing(true);
+                isFollowed(fl);
             }
         }
 
         function OpenListFollow(type) {
-            navigation.push('ListFollow', { idUser: infoUser._id, typeFollow: type });
+            navigation.push('ListFollow', { idUser: infoUser._id, typeFollow: type, typeUser: "user" });
         }
 
         return (
             <View style={styles.headerExtend}>
                 {
-                    (isLoader)
+                    (infoUser)
                         ? <View>
-                            <View style={{ flexDirection: 'row', width: '100%', }}>
-                                <ShimmerPlaceHolder
-                                    shimmerColors={colorLoader}
-                                    shimmerStyle={styles.pageUserAvatar} />
-                                <ShimmerPlaceHolder
-                                    shimmerColors={colorLoader}
-                                    shimmerStyle={{ width: '35%', height: 20, marginLeft: 20, borderRadius: 5 }} />
-                                <View style={styles.viewButtonHeader}>
-                                    <ShimmerPlaceHolder
-                                        shimmerColors={colorLoader}
-                                        shimmerStyle={{ width: 75, height: 30, borderRadius: 12 }} />
-                                    <ShimmerPlaceHolder
-                                        shimmerColors={colorLoader}
-                                        shimmerStyle={{ width: 75, height: 30, borderRadius: 12, marginLeft: 10 }} />
-                                </View>
-                            </View>
-                            <View style={styles.viewRowAroundPage}>
-                                <View style={{ alignItems: 'center' }}>
-                                    <ShimmerPlaceHolder
-                                        shimmerColors={colorLoader}
-                                        shimmerStyle={{ width: 15, height: 15, borderRadius: 5, marginBottom: 5 }} />
-                                    <ShimmerPlaceHolder
-                                        shimmerColors={colorLoader}
-                                        shimmerStyle={{ width: 50, height: 10, borderRadius: 5 }} />
-                                </View>
-                                <View style={{ alignItems: 'center' }}>
-                                    <ShimmerPlaceHolder
-                                        shimmerColors={colorLoader}
-                                        shimmerStyle={{ width: 15, height: 15, borderRadius: 5, marginBottom: 5 }} />
-                                    <ShimmerPlaceHolder
-                                        shimmerColors={colorLoader}
-                                        shimmerStyle={{ width: 70, height: 10, borderRadius: 5 }} />
-                                </View>
-                                <View style={{ alignItems: 'center' }}>
-                                    <ShimmerPlaceHolder
-                                        shimmerColors={colorLoader}
-                                        shimmerStyle={{ width: 15, height: 15, borderRadius: 5, marginBottom: 5 }} />
-                                    <ShimmerPlaceHolder
-                                        shimmerColors={colorLoader}
-                                        shimmerStyle={{ width: 70, height: 10, borderRadius: 5 }} />
-                                </View>
-                            </View>
-                            <ShimmerPlaceHolder
-                                shimmerColors={colorLoader}
-                                shimmerStyle={{ width: '50%', borderRadius: 5, marginVertical: 15, marginHorizontal: 20 }} />
-                        </View>
-                        : <View>
                             <View style={{ flexDirection: 'row', width: '100%', }}>
                                 <Image source={srcAvatar} style={styles.pageUserAvatar}
                                     onError={() => setsrcAvatar(require('../../assets/images/error.png'))} />
                                 <Text style={[styles.pageTextName, { marginLeft: 20 }]}
-                                    numberOfLines={2}>{infoUser.fullName}</Text>
+                                    numberOfLines={2}>{infoUser.fullName}
+                                    {
+                                        (infoUser.nickName == "Chưa thiết lập")
+                                            ? ""
+                                            : <Text style={styles.pageTextNickName}
+                                                numberOfLines={2}> ({infoUser.nickName})</Text>
+                                    }
+                                </Text>
                                 <View style={styles.viewButtonHeader}>
                                     <TouchableHighlight style={styles.buttonHeader}>
                                         <Text style={styles.textButtonHeader}>Nhắn tin</Text>
                                     </TouchableHighlight>
                                     {
-                                        (isFollowing)
+                                        (isFollowed)
                                             ? <TouchableHighlight style={[styles.buttonHeader, { backgroundColor: '#8BD3DD' }]}
                                                 activeOpacity={0.5} underlayColor="#63AAB4"
                                                 onPress={OnFollow}>
@@ -176,17 +253,17 @@ const ViewPage = ({ route }) => {
                             </View>
                             <View style={styles.viewRowAroundPage}>
                                 <View style={{ alignItems: 'center' }}>
-                                    <Text style={styles.textCountPage}>{blogCount}</Text>
+                                    <Text style={styles.textCountPage}>{infoUser.blogs}</Text>
                                     <Text style={styles.detailCountPage}>Bài viết</Text>
                                 </View>
                                 <TouchableOpacity style={{ alignItems: 'center' }}
                                     onPress={() => OpenListFollow('following')}>
-                                    <Text style={styles.textCountPage}>{followingCount}</Text>
+                                    <Text style={styles.textCountPage}>{infoUser.followings.length}</Text>
                                     <Text style={styles.detailCountPage}>Đang theo dõi</Text>
                                 </TouchableOpacity>
                                 <TouchableOpacity style={{ alignItems: 'center' }}
                                     onPress={() => OpenListFollow('follower')}>
-                                    <Text style={styles.textCountPage}>{followerCount}</Text>
+                                    <Text style={styles.textCountPage}>{infoUser.followers.length}</Text>
                                     <Text style={styles.detailCountPage}>Người theo dõi</Text>
                                 </TouchableOpacity>
                             </View>
@@ -198,6 +275,7 @@ const ViewPage = ({ route }) => {
                                 }
                             </Text>
                         </View>
+                        : ""
                 }
             </View>
         )
@@ -224,46 +302,54 @@ const ViewPage = ({ route }) => {
                     </TouchableOpacity>
                 </View>
                 <View style={{ flex: 1, marginTop: 55 }}>
-                    <CollapsibleTabs
-                        collapsibleContent={(<HeaderView />)}
-                        barColor="#FEF6E4"
-                        activeTextColor="#001858"
-                        inactiveTextColor="rgba(0, 24, 88, 0.50)"
-                        indicatorColor="#F582AE"
-                        textStyle={styles.textTabBar}
-                        activeTextStyle={{ fontWeight: 'bold' }}
-                        uppercase={false}
-                        showsVerticalScrollIndicator={true}
-                        tabs={[{
-                            label: 'Blog',
-                            showsVerticalScrollIndicator: true,
-                            component: (
-                                <View >
-                                    <View style={{ height: 1, width: '100%', backgroundColor: '#FEF6E4', shadowColor: '#000', elevation: 3, zIndex: 100, marginBottom: 10 }} />
-                                    <ScrollView>
-                                        {
-                                            (isLoader)
-                                                ? <View>
-                                                    <ItemBlogLoader />
-                                                    <ItemBlogLoader />
-                                                </View>
-                                                : <TabBlog user={infoUser} isLoader={isLoader} arr_blog={arr_blog} />
-                                        }
-                                    </ScrollView>
-                                </View>
-                            )
-                        }, {
-                            label: 'Info',
-                            component: (
-                                <View>
-                                    <View style={{ height: 1, width: '100%', backgroundColor: '#FEF6E4', shadowColor: '#000', elevation: 3, zIndex: 100, marginBottom: 15 }} />
-                                    <ScrollView >
-                                        <TabInfo user={infoUser} isLoader={isLoader} />
-                                    </ScrollView>
-                                </View>
-                            )
-                        }]}
-                    />
+                    {
+                        (isLoadingUser)
+                            ? <ScrollView>
+                                <LoaderHeader key={1} />
+                                <ItemBlogLoader key={2} />
+                                <ItemBlogLoader key={3} />
+                            </ScrollView>
+                            : <CollapsibleTabs
+                                collapsibleContent={(<HeaderView />)}
+                                barColor="#FEF6E4"
+                                activeTextColor="#001858"
+                                inactiveTextColor="rgba(0, 24, 88, 0.50)"
+                                indicatorColor="#F582AE"
+                                textStyle={styles.textTabBar}
+                                activeTextStyle={{ fontWeight: 'bold' }}
+                                uppercase={false}
+                                showsVerticalScrollIndicator={true}
+                                tabs={[{
+                                    label: 'Blog',
+                                    showsVerticalScrollIndicator: true,
+                                    component: (
+                                        <View style={{ flex: 1 }} onLayout={onLayoutBlog}>
+                                            <View style={{ height: 1, width: '100%', backgroundColor: '#FEF6E4', shadowColor: '#000', elevation: 3, zIndex: 100, marginBottom: 10 }} />
+                                            <ScrollView>
+                                                {
+                                                    (isLoadingBlog)
+                                                        ? <>
+                                                            <ItemBlogLoader />
+                                                            <ItemBlogLoader />
+                                                        </>
+                                                        : <TabBlog user={infoUser} arr_blog={blogs} />
+                                                }
+                                            </ScrollView>
+                                        </View>
+                                    )
+                                }, {
+                                    label: 'Info',
+                                    component: (
+                                        <View style={{ flex: 1, height: infoTabHeight }}>
+                                            <View style={{ height: 1, width: '100%', backgroundColor: '#FEF6E4', shadowColor: '#000', elevation: 3, zIndex: 100, marginBottom: 15 }} />
+                                            <ScrollView>
+                                                <TabInfo user={infoUser} isLoader={isLoadingUser} />
+                                            </ScrollView>
+                                        </View>
+                                    )
+                                }]}
+                            />
+                    }
                 </View>
                 {
                     (isShowMenu)

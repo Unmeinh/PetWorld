@@ -47,13 +47,44 @@ export default StyleSheet.create({
         fontSize: 17,
         fontFamily: 'ProductSans',
         color: darkBlue,
-        fontWeight: 'bold'
+        fontWeight: 'bold',
+        marginLeft: 15,
     },
 
     imageAvatar: {
         height: 45, width: 45,
         borderRadius: 45 / 2,
-        marginRight: 15,
+    },
+
+    viewContentOnline: {
+        position: 'absolute',
+        bottom: 1.5, right: 1.5,
+        borderRadius: 10,
+        backgroundColor: '#fff',
+        padding: 1,
+        overflow: 'hidden',
+        borderWidth: 0.15
+    },
+
+    contentOnline: {
+        width: 7, height: 7,
+        borderRadius: 5,
+        backgroundColor: '#00CC00',
+        opacity: 0.5
+    },
+
+    topOfline: {
+        width: 11, height: 4,
+        backgroundColor: '#fff',
+        position: 'absolute',
+        zIndex: 5,
+    },
+
+    contentOfline: {
+        width: 7, height: 7,
+        borderRadius: 5,
+        backgroundColor: '#C0C0C0',
+        paddingBottom: 4.5,
     },
 
     textFollow: {
@@ -70,6 +101,14 @@ export default StyleSheet.create({
 
     //Comment Item
     viewComment: {
+        flexDirection: 'row',
+        paddingHorizontal: 15,
+        paddingTop: 10, paddingBottom: 5,
+        borderBottomColor: "#00185880",
+        borderBottomWidth: 0.5
+    },
+
+    viewCommentFade: {
         flexDirection: 'row',
         paddingHorizontal: 15,
         paddingTop: 10, marginBottom: 10
@@ -91,7 +130,14 @@ export default StyleSheet.create({
         color: darkBlue,
         marginBottom: 7
     },
-    
+
+    textBelowContentComment: {
+        fontSize: 13.5,
+        fontFamily: 'ProductSans',
+        color: 'rgba(0, 0, 0, 0.50)',
+        top: -5,
+    },
+
     viewRowInteract: {
         flexDirection: 'row',
         alignItems: 'flex-end',
@@ -100,8 +146,8 @@ export default StyleSheet.create({
     },
 
     iconInteractComment: {
-        height: 17,
-        width: 17,
+        height: 19,
+        width: 19,
         alignItems: 'center',
         alignContent: 'center',
         borderRadius: 15
@@ -117,7 +163,6 @@ export default StyleSheet.create({
     //Write comment
     viewWriteComment: {
         position: 'absolute',
-        bottom: -20,
         left: -20,
         width: WindowWidth,
         backgroundColor: '#F2F2F2',
@@ -132,7 +177,7 @@ export default StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'space-between',
     },
-    
+
     iconInteract: {
         height: 30,
         width: 30,

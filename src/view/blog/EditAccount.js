@@ -43,7 +43,6 @@ const EditAccount = ({ route }) => {
     function onInputPhoneCountry(input) {
         setinputPhoneCountry(input);
         setisShowPhoneSelect(false);
-        // console.log(input);
     }
 
     function onChangeInputValue(input) {
@@ -52,7 +51,7 @@ const EditAccount = ({ route }) => {
 
     async function onSendVerifyEmail() {
         let res = await onAxiosPost('user/sendVerifyEmail', { email: oldValueDisplay }, 'json');
-        if (res.success) {
+        if (res && res.success) {
             navigation.goBack();
         }
     }
@@ -63,14 +62,14 @@ const EditAccount = ({ route }) => {
 
     async function onRemoveEmail() {
         let res = await onAxiosDelete('user/deleteEmail');
-        if (res.success) {
+        if (res && res.success) {
             navigation.goBack();
         }
     }
 
     async function updatePhoneNumber() {
         let res = await onAxiosPut('user/updateAccount', { typeInfo: infoKeys[route.params.infoType], valueUpdate: inputPhoneCountry + inputValue }, 'json');
-        if (res.success) {
+        if (res && res.success) {
             navigation.navigate('InfoManager');
         }
     }
@@ -106,7 +105,7 @@ const EditAccount = ({ route }) => {
                 return;
             }
             let res = await onAxiosPut('user/updateAccount', { typeInfo: infoKeys[route.params.infoType], valueUpdate: inputValue }, 'json');
-            if (res.success) {
+            if (res != undefined && res && res.success) {
                 navigation.goBack();
             }
         }

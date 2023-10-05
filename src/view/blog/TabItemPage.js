@@ -5,10 +5,6 @@ import {
 } from 'react-native';
 import ItemBlogPage from '../../component/items/ItemBlogPage';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import { useNavigation } from '@react-navigation/native';
-import { useSelector, useDispatch } from "react-redux";
-import { fetchBlogsUser } from '../../redux/reducers/blog/blogReducer';
-import { selectBlogsByUser, blogSelectStatus } from '../../redux/selectors/blogSelector';
 import styles from '../../styles/blog.style';
 import LinearGradient from 'react-native-linear-gradient';
 import { createShimmerPlaceholder } from 'react-native-shimmer-placeholder';
@@ -18,7 +14,7 @@ const ShimmerPlaceHolder = createShimmerPlaceholder(LinearGradient);
 const colorLoader = ['#f0e8d8', '#dbdbdb', '#f0e8d8'];
 
 const TabBlog = memo(
-    function TabBlog({ user, arr_blog, }) {
+    function TabBlog({ user, arr_blog, fetchBlog}) {
 
         return (
             <View style={{ flex: 1 }}>
@@ -27,7 +23,7 @@ const TabBlog = memo(
                         ?
                         <FlatList data={arr_blog} scrollEnabled={false}
                             renderItem={({ item, index }) =>
-                                <ItemBlogPage key={item._id} blog={item} info={user} />}
+                                <ItemBlogPage key={item._id} blog={item} fetchBlog={fetchBlog}/>}
                             showsVerticalScrollIndicator={false}
                             keyExtractor={(item, index) => index.toString()} />
                         :
@@ -43,7 +39,6 @@ const TabBlog = memo(
 
 const TabInfo = memo(
     function TabInfo({ user, isLoader }) {
-        console.log(user);
 
         return (
             <View style={{ paddingHorizontal: 30 }} >

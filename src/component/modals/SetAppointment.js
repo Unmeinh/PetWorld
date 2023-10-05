@@ -16,7 +16,7 @@ const SetAppointment = (route) => {
     const navigation = useNavigation();
     const infoPet = route.info;
     const editable = false;
-    // const [srcAvatar, setsrcAvatar] = useState(require('../../assets/images/error.png'));
+    // const [srcAvatar, setsrcAvatar] = useState(require('../../assets/images/loading.png'));
     const srcAvatar = { uri: 'https://img-1.1cham.com/images/2019/09/14/0488c630f467dec11724f8dfa3a85fae.jpg' };
     const [isLoader, setisLoader] = useState(false);
     const [isShowPicker, setisShowPicker] = useState(false);
