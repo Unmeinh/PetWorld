@@ -57,6 +57,7 @@ const cartSlice = createSlice({
       state.statusAddProductoCart = 'loading'
       state.message = ''
     }).addCase(addProductToCart.fulfilled,(state, action) =>{
+      state.carts = action.payload.data.carts
       state.message = action.payload.message
       state.statusAddProductoCart = 'idle'
     }).addCase(updateCart.pending,(state, action) =>{

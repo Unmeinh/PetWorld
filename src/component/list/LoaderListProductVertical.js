@@ -8,6 +8,7 @@ export default function LoaderListProductVertical() {
     
       data={data}
       scrollEnabled={false}
+      keyExtractor={(item,index) => index}
       renderItem={() => {
         return <View style={styles.container}>
             <ShimmerPlaceHolder shimmerStyle={styles.loaderImage} />

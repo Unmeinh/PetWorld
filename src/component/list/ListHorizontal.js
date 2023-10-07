@@ -46,8 +46,9 @@ function ListHorizontal({data, title, isLoader, type}) {
       ) : (
         <FlatList
           horizontal
+          scrollEnabled={true}
           showsHorizontalScrollIndicator={false}
-          keyExtractor={item => item._id.toString()}
+          keyExtractor={item => item?._id?.toString()}
           data={data}
           renderItem={({item}) => <ItemHorizontal item={item} type={type} />}
         />

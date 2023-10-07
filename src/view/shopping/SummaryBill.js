@@ -31,11 +31,11 @@ const payment = [
   {id: 2, name: 'Ví điện tử'},
 ];
 const {width} = Dimensions.get('screen');
-export default function SummaryBill({navigation}) {
-  const result = useSelector(listItemBill);
+export default function SummaryBill({navigation, route}) {
+  const item = route?.params?.item
+  const result = item ? [item] : useSelector(listItemBill);
   const [user, district] = useSelector(useLocationSeleted);
   const status = useSelector(userSelectStatus);
-  const [loading,setLoading] = useState(false)
   const dispatch = useDispatch();
   const {
     price: {discount, priceTotal},

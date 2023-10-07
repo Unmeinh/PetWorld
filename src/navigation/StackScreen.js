@@ -61,7 +61,9 @@ export default function StackScreen() {
     <NavigationContainer ref={navigationRef}>
       <Stack.Navigator
         screenOptions={() => ({ headerShown: false })}
-        initialRouteName="SlashScreen">
+        initialRouteName="SlashScreen"
+        
+        >
         <Stack.Screen name="SlashScreen" component={SlashScreen} />
         <Stack.Screen name="OrboadScreen" component={OrboadScreen} />
         <Stack.Screen name="LoginScreen" component={LoginScreen} />
