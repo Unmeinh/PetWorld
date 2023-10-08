@@ -35,7 +35,6 @@ export default function SummaryBill({navigation}) {
   const result = useSelector(listItemBill);
   const [user, district] = useSelector(useLocationSeleted);
   const status = useSelector(userSelectStatus);
-  const [loading,setLoading] = useState(false)
   const dispatch = useDispatch();
   const {
     price: {discount, priceTotal},
@@ -46,7 +45,7 @@ export default function SummaryBill({navigation}) {
   const districtSlice = location => {
     let result = '';
     if (location) {
-      const parts = location.split(', ');
+      const parts = location.split(',');
       result = parts[parts.length - 1];
     }
     return result.trim();

@@ -66,7 +66,6 @@ const handleSaveBirthDate = (selectedDate) => {
               style={localStyles.rowUtilities}
               onPress={() => {
                 // Handle the press event here
-                console.log('Item pressed:', item.text);
                 // Example: navigate to another screen
                 if (item.text === 'Số điện thoại') {
                   navigation.navigate('NumberPhone');

@@ -26,7 +26,7 @@ function GridProduct({data}) {
   };
   return (
     <FlatGrid
-      itemDimension={130}
+      itemDimension={150}
       data={data}
       style={styles.gridView}
       // staticDimension={300}
@@ -36,8 +36,7 @@ function GridProduct({data}) {
         <Pressable
           style={styles.itemContainer}
           onPress={() => {
-            dispatch(idProduct(item.id));
-            navigation.navigate('DetailProduct', {item});
+            navigation.push('DetailProduct', {item});
           }}>
           <Image
             source={{
@@ -48,7 +47,7 @@ function GridProduct({data}) {
             style={styles.image}
           />
           <View style={styles.content}>
-            <Text style={styles.itemName}>
+            <Text style={styles.itemName} numberOfLines={1}>
               {item.namePet ? item.namePet : item.nameProduct}
             </Text>
             {priceDiscount(

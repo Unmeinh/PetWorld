@@ -9,6 +9,7 @@ export const selectFilterDetailProduct = state => state.searchFilter.detailProdu
 export const selectStatusDetailProduct = state => state.searchFilter.status;
 export const categorySelector = state => state.category.categorys;
 export const categoryStatusSelector = state => state.category.status;
+export const categoryDataSelector = state => state.category.data;
 export const listShopSelector = state => state.listShop.shops;
 export const listShopStatusSelector = state => state.listShop.status;
 export const listCartSelector = state => state.listCart.carts
@@ -27,7 +28,7 @@ export const useLocationSeleted = createSelector(userLocation,(location) =>{
   if(location){
      user = location.find(item => item.isSelected === true)
     if(user){
-      const parts = user.location.split(', ')
+      const parts = user.location.split(',')
       district = parts[parts.length - 1]
     }
   }

@@ -81,7 +81,6 @@ export default function AccountScreen({ scrollRef, onScrollView }) {
     if (!storageMMKV.getBoolean('login.isLogin') && storageMMKV.getString('login.token') == "null") {
       navigation.navigate('LoginScreen');
     } else {
-      console.log("Lỗi lưu dữ liệu người dùng!");
     }
   }
 

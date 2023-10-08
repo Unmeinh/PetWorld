@@ -1,5 +1,5 @@
 import React from 'react';
-import { NavigationContainer } from '@react-navigation/native';
+import {NavigationContainer} from '@react-navigation/native';
 import SlashScreen from '../view/slashscreen/SlashScreen';
 import OrboadScreen from '../view/orboardscreen/OrboadScreen';
 import LoginScreen from '../view/form/LoginScreen';
@@ -36,74 +36,205 @@ import EmailVerification from '../view/account/EmailVerification';
 import BillScreen from '../view/Bills/BillScreen';
 import PhoneVerification from '../view/account/PhoneVerification';
 import Email from '../view/account/Email';
-import { createStackNavigator } from '@react-navigation/stack';
+import {createStackNavigator} from '@react-navigation/stack';
 import SettingNotify from '../view/notify/SettingNotify';
 import MyPetScreen from '../view/account/MyPetScreen';
-import { navigationRef } from './rootNavigation';
+import {navigationRef} from './rootNavigation';
+import BuyNowScreen from '../view/shopping/BuyNowScreen';
 const Stack = createStackNavigator();
 
 export default function StackScreen() {
   const animated = {
     gestureEnabled: true,
     transitionSpec: {
-      open: { animation: 'timing', config: { duration: 300 } },
-      close: { animation: 'timing', config: { duration: 300 } },
+      open: {animation: 'timing', config: {duration: 300}},
+      close: {animation: 'timing', config: {duration: 300}},
     },
-    cardStyleInterpolator: ({ current: { progress } }) => {
+    cardStyleInterpolator: ({current: {progress}}) => {
       return {
         cardStyle: {
           opacity: progress,
         },
       };
     },
-  }
+  };
   return (
     <NavigationContainer ref={navigationRef}>
       <Stack.Navigator
-        screenOptions={() => ({ headerShown: false })}
+        screenOptions={() => ({headerShown: false})}
         initialRouteName="SlashScreen">
-        <Stack.Screen name="SlashScreen" component={SlashScreen} />
-        <Stack.Screen name="OrboadScreen" component={OrboadScreen} />
-        <Stack.Screen name="LoginScreen" component={LoginScreen} />
-        <Stack.Screen name="NaviTabScreen" component={NaviTabScreen} />
-        <Stack.Screen name="SearchFilters" component={SearchFilters} />
-        <Stack.Screen name="ForgetPassword" component={ForgetPassword} />
-        <Stack.Screen name="RegisterPassword" component={RegisterPassword} />
-        <Stack.Screen name="ConfirmOTP" component={ConfirmOTP} />
-        <Stack.Screen name="ChangePassword" component={ChangePassword} />
-        <Stack.Screen name="ListProductScreen" component={ListProductScreen} />
-        <Stack.Screen name="NewBlog" component={NewBlog} />
-        <Stack.Screen name="EditBlog" component={EditBlog} />
+        <Stack.Screen
+          name="SlashScreen"
+          component={SlashScreen}
+          
+        />
+        <Stack.Screen
+          name="OrboadScreen"
+          component={OrboadScreen}
+          
+        />
+        <Stack.Screen
+          name="LoginScreen"
+          component={LoginScreen}
+          
+        />
+
+        <Stack.Screen
+          name="NaviTabScreen"
+          component={NaviTabScreen}
+          
+        />
+        <Stack.Screen
+          name="SearchFilters"
+          component={SearchFilters}
+          
+        />
+        <Stack.Screen
+          name="ForgetPassword"
+          component={ForgetPassword}
+          
+        />
+        <Stack.Screen
+          name="RegisterPassword"
+          component={RegisterPassword}
+          
+        />
+        <Stack.Screen
+          name="ConfirmOTP"
+          component={ConfirmOTP}
+          
+        />
+        <Stack.Screen
+          name="ChangePassword"
+          component={ChangePassword}
+          
+        />
+        <Stack.Screen
+          name="ListProductScreen"
+          component={ListProductScreen}
+          
+        />
+        <Stack.Screen name="NewBlog" component={NewBlog}  />
+        <Stack.Screen name="EditBlog" component={EditBlog}  />
         <Stack.Screen
           name="DetailProduct"
           component={DetailProduct}
-          options={animated}     
+          
         />
-        <Stack.Screen name="ShopScreen" component={ShopScreen} />
+        <Stack.Screen
+          name="ShopScreen"
+          component={ShopScreen}
+          
+        />
         <Stack.Screen name="MyPage" component={MyPage} />
-        <Stack.Screen name="ViewPage" component={ViewPage} />
-        <Stack.Screen name="ListFollow" component={ListFollow} />
-        <Stack.Screen name="CartScreen" component={CartScreen} />
-        <Stack.Screen name="SummaryBill" component={SummaryBill} />
-        <Stack.Screen name="ListAddress" component={ListAddress} />
-        <Stack.Screen name="AddNewAddress" component={AddNewAddress} />
-        <Stack.Screen name="ChatScreen" component={ChatScreen} />
-        <Stack.Screen name="InfoManager" component={InfoManager} />
-        <Stack.Screen name="EditUser" component={EditUser} />
-        <Stack.Screen name="EditAccount" component={EditAccount} />
-        <Stack.Screen name="AppointmentScreen" component={AppointmentScreen} />
-        <Stack.Screen name="DetailAppointment" component={DetailAppointment} />
-        <Stack.Screen name="SettingNotify" component={SettingNotify} />
-        <Stack.Screen name="NotifyScreen" component={NotifyScreen} />
-        <Stack.Screen name="AccountScreen" component={AccountScreen} />
-        <Stack.Screen name="BillScreen" component={BillScreen} />
-        <Stack.Screen name="InformationAccount" component={InformationAccount} />
-        <Stack.Screen name="Information" component={Information} />
-        <Stack.Screen name="NumberPhone" component={NumberPhone} />
-        <Stack.Screen name="PhoneVerification" component={PhoneVerification} />
-        <Stack.Screen name="Email" component={Email} />
-        <Stack.Screen name="EmailVerification" component={EmailVerification} />
-        <Stack.Screen name="MyPetScreen" component={MyPetScreen} />
+        <Stack.Screen name="ViewPage" component={ViewPage}  />
+        <Stack.Screen
+          name="ListFollow"
+          component={ListFollow}
+          
+        />
+        <Stack.Screen
+          name="CartScreen"
+          component={CartScreen}
+          
+        />
+        <Stack.Screen
+          name="SummaryBill"
+          component={SummaryBill}
+          
+        />
+        <Stack.Screen
+          name="ListAddress"
+          component={ListAddress}
+          
+        />
+        <Stack.Screen
+          name="AddNewAddress"
+          component={AddNewAddress}
+          
+        />
+        <Stack.Screen
+          name="ChatScreen"
+          component={ChatScreen}
+          
+        />
+        <Stack.Screen
+          name="InfoManager"
+          component={InfoManager}
+          
+        />
+        <Stack.Screen name="EditUser" component={EditUser}  />
+        <Stack.Screen
+          name="EditAccount"
+          component={EditAccount}
+          
+        />
+        <Stack.Screen
+          name="AppointmentScreen"
+          component={AppointmentScreen}
+          
+        />
+        <Stack.Screen
+          name="DetailAppointment"
+          component={DetailAppointment}
+          
+        />
+        <Stack.Screen
+          name="SettingNotify"
+          component={SettingNotify}
+          
+        />
+        <Stack.Screen
+          name="NotifyScreen"
+          component={NotifyScreen}
+          
+        />
+        <Stack.Screen
+          name="AccountScreen"
+          component={AccountScreen}
+          
+        />
+        <Stack.Screen
+          name="BillScreen"
+          component={BillScreen}
+          
+        />
+        <Stack.Screen
+          name="InformationAccount"
+          component={InformationAccount}
+          
+        />
+        <Stack.Screen
+          name="Information"
+          component={Information}
+          
+        />
+        <Stack.Screen
+          name="NumberPhone"
+          component={NumberPhone}
+          
+        />
+        <Stack.Screen
+          name="PhoneVerification"
+          component={PhoneVerification}
+          
+        />
+        <Stack.Screen name="Email" component={Email}  />
+        <Stack.Screen
+          name="EmailVerification"
+          component={EmailVerification}
+          
+        />
+        <Stack.Screen
+          name="MyPetScreen"
+          component={MyPetScreen}
+          
+        />
+        <Stack.Screen
+          name="BuyNow"
+          component={BuyNowScreen}
+          
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );
