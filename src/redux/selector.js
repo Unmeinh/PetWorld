@@ -28,7 +28,7 @@ export const useLocationSeleted = createSelector(userLocation,(location) =>{
   if(location){
      user = location.find(item => item.isSelected === true)
     if(user){
-      const parts = user.location.split(', ')
+      const parts = user.location.split(',')
       district = parts[parts.length - 1]
     }
   }

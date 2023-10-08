@@ -433,7 +433,7 @@ function DetailProduct({navigation, route}) {
 
           <TouchableOpacity
             style={[styles.buttonBuy, styles.buttonSheet]}
-            onPress={() => navigation.navigate('SummaryBill', {item: item})}>
+            onPress={() => navigation.navigate('BuyNow', {item: item})}>
             <Text style={[styles.textButton, styles.textButtonBuy]}>
               Mua ngay
             </Text>

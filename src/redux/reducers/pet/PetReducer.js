@@ -19,7 +19,7 @@ const listPetSlice = createSlice({
       })
       .addCase(fetchPets.fulfilled, (state, action) => {
         if (action.payload.success === true) {
-          state.pets = [...state?.pets ?? null,...action.payload.data];
+          state.pets = [...state?.pets,...action.payload.data];
           state.status = 'idle';
         } else {
           state.status = 'loading';

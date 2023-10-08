@@ -39,9 +39,6 @@ function ItemCartSummary({result,locationShop}) {
     const money = district(idShop.locationShop) == locationShop ? 10000 : 30000
     return money
   }
-  // useEffect(() =>{
-  //   dispatch(setShip(showShip()))
-  // },[])
   function dateShip(){
     const step = 2;
     const gap = 2

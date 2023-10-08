@@ -14,3 +14,4 @@ axiosAPi.defaults.headers = {
     "Authorization": (storageMMKV.getString('login.token') != "") ? `Bearer ${storageMMKV.getString('login.token')}` : undefined
 };
 export default axiosAPi;
+    
