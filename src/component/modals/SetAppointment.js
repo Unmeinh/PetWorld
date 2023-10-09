@@ -10,24 +10,85 @@ import styles from "../../styles/appointment.style";
 import ShimmerPlaceHolder from "../layout/ShimmerPlaceHolder";
 import { Pressable } from "react-native";
 import DatePickerModal from '../../component/modals/DatePickerModal';
+import Toast from "react-native-toast-message";
+import { ToastLayout } from "../layout/ToastLayout";
+import { onAxiosPost } from "../../api/axios.function";
 import Moment from "moment";
 
 const SetAppointment = (route) => {
     const navigation = useNavigation();
-    const infoPet = route.info;
     const editable = false;
-    // const [srcAvatar, setsrcAvatar] = useState(require('../../assets/images/loading.png'));
-    const srcAvatar = { uri: 'https://img-1.1cham.com/images/2019/09/14/0488c630f467dec11724f8dfa3a85fae.jpg' };
+    const infoPet = route.pet;
+    const infoShop = route.shop;
+    const [srcAvatar, setsrcAvatar] = useState(require('../../assets/images/loading.png'));
     const [isLoader, setisLoader] = useState(false);
     const [isShowPicker, setisShowPicker] = useState(false);
     const [inputDatePicker, setinputDatePicker] = useState(new Date());
+    const [inputAmount, setinputAmount] = useState(0);
+    const [inputLocation, setinputLocation] = useState("");
 
-    function OnCancel() {
+    function onCancel() {
+        setinputAmount(0);
+        setinputDatePicker(new Date());
+        setinputLocation("");
         route.callBack();
     }
 
-    function OnSave() {
+    async function OnSave() {
+        if (inputAmount <= 0) {
+            Toast.show({
+                type: 'error',
+                text1: 'Số lượng thú cưng đặt cần lớn hơn 0!',
+                position: 'top'
+            })
+            return;
+        }
 
+        if (inputAmount > infoPet.amountPet) {
+            Toast.show({
+                type: 'error',
+                text1: 'Số lượng thú cưng đặt tối đa là ' + infoPet.amountPet + '!',
+                position: 'top'
+            })
+            return;
+        }
+
+        if (inputLocation.trim().length <= 0) {
+            Toast.show({
+                type: 'error',
+                text1: 'Địa điểm hẹn không để trống!',
+                position: 'top'
+            })
+            return;
+        }
+
+        Toast.show({
+            type: 'loading',
+            position: 'top',
+            text1: "Đang đặt lịch hẹn...",
+            autoHide: false
+        })
+        let res = await onAxiosPost('appointment/insert',
+            {
+                amountPet: inputAmount,
+                location: inputLocation,
+                deposits: 0,
+                appointmentDate: inputDatePicker,
+                idPet: infoPet._id,
+                idShop: infoShop._id
+            }, 'json', true);
+        if (res) {
+            setTimeout(() => onCancel(), 500);
+        }
+    }
+
+    function onChangeAmount(input) {
+        let amount = input.replace(/\D/g, '');
+        setinputAmount(amount);
+    }
+
+    function onChangeLocation(input) {
+        setinputLocation(input);
     }
 
     React.useEffect(() => {
@@ -37,75 +98,11 @@ const SetAppointment = (route) => {
     }, [route.isShow]);
 
     React.useEffect(() => {
-        if (isLoader) {
-            setTimeout(() => {
-                setisLoader(false);
-            }, 3000);
+        if (infoPet != undefined) {
+            setisLoader(false);
+            setsrcAvatar({ uri: infoPet.imagesPet[0] })
         }
-    }, [isLoader]);
-
-    const ModalAccount = () => {
-        return (
-            <View style={styles.dialogAppointment}>
-                <Text style={styles.titleDialogApm}>Đặt lịch hẹn</Text>
-                <View style={{ padding: 15, paddingTop: 10 }}>
-                    <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 7 }}>
-                        <Image style={styles.imageItemDialog} source={srcAvatar} />
-                        <View style={{ marginLeft: 15 }}>
-                            <Text style={styles.textNamePetDialog} numberOfLines={1}>
-                                Mèo anh
-                            </Text>
-                            <Text style={styles.textNameShopDialog} numberOfLines={1}>
-                                Shop mèo
-                            </Text>
-                        </View>
-                    </View>
-                    <View style={{ marginTop: 20 }}>
-                        <View style={{ flexDirection: 'row' }}>
-                            <Text style={styles.textPriceDialog} numberOfLines={1}>
-                                Giá thú cưng: <Text style={{ color: 'rgba(0, 24, 88, 0.65)' }}> 400.000 đồng </Text>
-                            </Text>
-                        </View>
-                        <View style={{ flexDirection: 'row', width: '100%', }}>
-                            <View style={{ justifyContent: 'space-around' }}>
-                                <Text style={styles.titleInputDialog}>
-                                    Số lượng đặt:
-                                </Text>
-                                <Text style={styles.titleInputDialog}>
-                                    Ngày hẹn:
-                                </Text>
-                                <Text style={styles.titleInputDialog}>
-                                    Địa điểm hẹn:
-                                </Text>
-                            </View>
-                            <View style={{ flex: 1 }}>
-                                <TextInput style={styles.textInputDialog} keyboardType="number-pad" />
-                                <Pressable onPress={() => setisShowPicker(true)}>
-                                    <TextInput style={[styles.textInputDialog, { color: editable ? '#001858' : '#001858' }]} editable={editable} value={Moment(inputDatePicker).format('DD/MM/YYYY HH:mm')} />
-                                </Pressable>
-                                <TextInput style={styles.textInputDialog} />
-                            </View>
-                        </View>
-                        <View style={{ width: '100%', justifyContent: 'flex-end', flexDirection: 'row', marginTop: 25 }}>
-                            <TouchableHighlight style={[styles.buttonSave, { backgroundColor: '#8E8E8E' }]}
-                                activeOpacity={0.5} underlayColor="#6D6D6D"
-                                onPress={OnCancel}>
-                                <Text style={styles.textButtonSave}>Hủy bỏ</Text>
-                            </TouchableHighlight>
-                            <TouchableHighlight style={[styles.buttonSave, { backgroundColor: '#F582AE' }]}
-                                activeOpacity={0.5} underlayColor="#DC749C"
-                                onPress={OnSave}>
-                                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                    <Text style={styles.textButtonSave}>Đặt hẹn</Text>
-                                </View>
-                            </TouchableHighlight>
-                        </View>
-                    </View>
-                </View>
-                <DatePickerModal isShow={isShowPicker} datePicked={inputDatePicker} callBackClose={() => setisShowPicker(false)} callBackSetDate={(date) => setinputDatePicker(date)} />
-            </View>
-        )
-    }
+    }, [infoPet]);
 
     const ModalLoader = () => {
         return (
@@ -165,19 +162,75 @@ const SetAppointment = (route) => {
             animationOutTiming={350}
             animationInTiming={350}
             isVisible={route.isShow}
-            onBackdropPress={() => {
-                route.callBack();
-            }}
-            onBackButtonPress={() => {
-                route.callBack();
-            }}>
+            onBackdropPress={onCancel}
+            onBackButtonPress={onCancel}>
             <View style={styles.modalDialogContainer} >
                 {
                     (isLoader)
                         ? <ModalLoader />
-                        : <ModalAccount />
+                        :
+                        <View style={styles.dialogAppointment}>
+                            <Text style={styles.titleDialogApm}>Đặt lịch hẹn</Text>
+                            <View style={{ padding: 15, paddingTop: 10 }}>
+                                <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 7 }}>
+                                    <Image style={styles.imageItemDialog} source={srcAvatar} />
+                                    <View style={{ marginLeft: 15 }}>
+                                        <Text style={styles.textNamePetDialog} numberOfLines={1}>
+                                            {infoPet.namePet}
+                                        </Text>
+                                        <Text style={styles.textNameShopDialog} numberOfLines={1}>
+                                            {infoShop.nameShop}
+                                        </Text>
+                                    </View>
+                                </View>
+                                <View style={{ marginTop: 20 }}>
+                                    <View style={{ flexDirection: 'row' }}>
+                                        <Text style={styles.textPriceDialog} numberOfLines={1}>
+                                            Giá thú cưng: <Text style={{ color: 'rgba(0, 24, 88, 0.65)' }}> {Number(infoPet.pricePet).toLocaleString()} đồng </Text>
+                                        </Text>
+                                    </View>
+                                    <View style={{ flexDirection: 'row', width: '100%', }}>
+                                        <View style={{ justifyContent: 'space-around' }}>
+                                            <Text style={styles.titleInputDialog}>
+                                                Số lượng đặt:
+                                            </Text>
+                                            <Text style={styles.titleInputDialog}>
+                                                Ngày hẹn:
+                                            </Text>
+                                            <Text style={styles.titleInputDialog}>
+                                                Địa điểm hẹn:
+                                            </Text>
+                                        </View>
+                                        <View style={{ flex: 1 }}>
+                                            <TextInput style={styles.textInputDialog} keyboardType="number-pad"
+                                                value={inputAmount} onChangeText={onChangeAmount} placeholder="0"/>
+                                            <Pressable onPress={() => setisShowPicker(true)}>
+                                                <TextInput style={[styles.textInputDialog, { color: editable ? '#001858' : '#001858' }]} editable={editable} value={Moment(inputDatePicker).format('DD/MM/YYYY HH:mm')} />
+                                            </Pressable>
+                                            <TextInput style={styles.textInputDialog}
+                                                value={inputLocation} onChangeText={onChangeLocation} placeholder="Vị trí..."/>
+                                        </View>
+                                    </View>
+                                    <View style={{ width: '100%', justifyContent: 'flex-end', flexDirection: 'row', marginTop: 25 }}>
+                                        <TouchableHighlight style={[styles.buttonSave, { backgroundColor: '#8E8E8E' }]}
+                                            activeOpacity={0.5} underlayColor="#6D6D6D"
+                                            onPress={onCancel}>
+                                            <Text style={styles.textButtonSave}>Hủy bỏ</Text>
+                                        </TouchableHighlight>
+                                        <TouchableHighlight style={[styles.buttonSave, { backgroundColor: '#F582AE' }]}
+                                            activeOpacity={0.5} underlayColor="#DC749C"
+                                            onPress={OnSave}>
+                                            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                                                <Text style={styles.textButtonSave}>Đặt hẹn</Text>
+                                            </View>
+                                        </TouchableHighlight>
+                                    </View>
+                                </View>
+                            </View>
+                            <DatePickerModal isShow={isShowPicker} datePicked={inputDatePicker} callBackClose={() => setisShowPicker(false)} callBackSetDate={(date) => setinputDatePicker(date)} />
+                        </View>
                 }
-
+                <ToastLayout />
             </View >
         </Modal >
     );

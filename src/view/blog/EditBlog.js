@@ -23,10 +23,10 @@ import Toast from "react-native-toast-message";
 import { updateBlog } from '../../redux/reducers/blog/blogReducer';
 import { onAxiosPut } from '../../api/axios.function';
 import { LogBox } from 'react-native';
-
 LogBox.ignoreLogs([
     'Non-serializable values were found in the navigation state',
 ]);
+
 const EditBlog = ({ route }) => {
     const dispatch = useDispatch();
     const navigation = useNavigation();

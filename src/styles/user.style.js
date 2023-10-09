@@ -22,6 +22,19 @@ export default StyleSheet.create({
         alignItems: 'center'
     },
 
+    viewOther: {
+        flex: 1,
+        alignItems: 'center',
+        marginTop: 25
+    },
+
+    textHint: {
+        fontSize: 15,
+        fontFamily: 'ProductSans',
+        color: 'rgba(0, 0, 0, 0.6)',
+        marginTop: 15
+    },
+
     //Modal 
     modalUserContainer: {
         flex: 1,

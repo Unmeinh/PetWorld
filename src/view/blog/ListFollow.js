@@ -9,6 +9,7 @@ import styles from '../../styles/user.style';
 import { useNavigation } from '@react-navigation/native';
 import HeaderTitle from '../../component/header/HeaderTitle';
 import Entypo from 'react-native-vector-icons/Entypo';
+import Feather from 'react-native-vector-icons/Feather';
 import { useSelector, useDispatch } from "react-redux";
 import { userLoginId } from '../../redux/selectors/userSelector';
 import { RefreshControl } from "react-native-gesture-handler";
@@ -122,7 +123,7 @@ const ListFollow = ({ route }) => {
             setisFollowed(isFl);
             dispatch(changeBlogIsFollow([user._id, isFl]));
         }
-    
+
         async function OnFollow() {
             let fl = isFollowed;
             setisFollowed(!fl);
@@ -254,9 +255,8 @@ const ListFollow = ({ route }) => {
                                         } />
                                     :
                                     <View style={styles.viewOther}>
-                                        {/* <AutoHeightImage source={require('../../assets/images/no_post.png')}
-                        width={(Dimensions.get("window").width * 75) / 100} /> */}
-                                        <Text style={styles.textHint}>Không có người nào..</Text>
+                                        <Feather name='user-x' size={70} color={'rgba(0, 0, 0, 0.5)'} />
+                                        <Text style={styles.textHint}>Danh sách theo dõi trống..</Text>
                                     </View>
                             }
                         </View>

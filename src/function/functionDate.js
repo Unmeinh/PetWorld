@@ -57,9 +57,40 @@ export function getDateVietnamese(inputDate) {
         return toDateUpperCase(date.fromNow());
     }
     if (date.calendar().split(' ')[1]) {
-        return toDateUpperCase(date.calendar());
+        return toDateUpperCase(date.calendar().substring(0, date.calendar().indexOf('lúc')));
     } else {
-        return date.format("DD/MM/YYYY HH:mm");
+        return date.format("DD/MM/YYYY");
+    }
+}
+
+export function getDateDefault(inputDate) {
+    let date = Moment(inputDate);
+    return "Ngày " + date.format("DD/MM/YYYY");
+}
+
+export function getTimeDefault(inputDate) {
+    let date = Moment(inputDate);
+    return "Lúc " + date.format("HH:mm A");
+}
+
+export function getMonthVietnamese(inputDate) {
+    let date = new Date();
+    if (date.getMonth() == new Date(inputDate).getMonth()) {
+        return "Tháng này";
+    }
+    if (date.getMonth() < new Date(inputDate).getMonth()) {
+        if (new Date(inputDate).getMonth() - date.getMonth() == 1) {
+            return "Tháng sau";
+        } else {
+            return "Tháng " + (new Date(inputDate).getMonth() + 1);
+        }
+    }
+    if (date.getMonth() > new Date(inputDate).getMonth()) {
+        if (date.getMonth() - new Date(inputDate).getMonth() == 1) {
+            return "Tháng trước";
+        } else {
+            return "Tháng " + (new Date(inputDate).getMonth() + 1);
+        }
     }
 }
 
