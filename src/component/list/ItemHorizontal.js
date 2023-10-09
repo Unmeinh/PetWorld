@@ -38,8 +38,7 @@ export default function ItemHorizontal({item,type,route}) {
   return (
     <Pressable
       onPress={() => {
-        dispatch(fetchDetailProduct({id:item._id,type}));
-        navigation.push('DetailProduct',{type});
+        navigation.push('DetailProduct',{type,item});
       }}
       style={{
         width: 110,
@@ -66,6 +65,7 @@ export default function ItemHorizontal({item,type,route}) {
       <View style={{marginLeft: 6, marginTop: 5}}>
         <View>
           <Text
+            numberOfLines={1}
             style={{
               fontFamily: 'ProductSansBold',
               fontSize: 14,

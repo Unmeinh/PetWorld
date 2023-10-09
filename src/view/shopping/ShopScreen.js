@@ -4,26 +4,30 @@ import {
   StyleSheet,
   Text,
   View,
-  TouchableOpacity,
   Image,
-  useWindowDimensions,
 } from 'react-native';
-import React from 'react';
+import React, {useEffect} from 'react';
 import Icon from 'react-native-vector-icons/Ionicons';
-import {TabView, SceneMap, TabBar} from 'react-native-tab-view';
+import {TabView, TabBar} from 'react-native-tab-view';
 import GridProduct from '../../component/ListProduct/GridProduct';
-import {useSelector} from 'react-redux';
-import {listPetSelector, listProductSelector} from '../../redux/selector';
-import {useDispatch} from 'react-redux';
-import { setStatusFilter } from '../../redux/reducers/filters/filtersReducer';
-import { selectStatusDetailProduct } from '../../redux/selector';
+import {useSelector, useDispatch} from 'react-redux';
+import {listCartSelector, listPetSelector} from '../../redux/selector';
+import {
+  fetchPetsByIdShop,
+  setDataPetByShop,
+} from '../../redux/reducers/pet/PetReducer';
+import {
+  fetchProductsByIdShop,
+  setDataProductsByShop,
+} from '../../redux/reducers/product/ProductReducer';
+import {ActivityIndicator} from 'react-native';
 export default function ShopScreen({navigation, route}) {
   const data = route.params.data;
-  const status = useSelector(selectStatusDetailProduct)
-  const dispatch = useDispatch();
-  const listProduct = useSelector(listProductSelector);
-  const listPet = useSelector(listPetSelector);
+  const listProduct = useSelector(state => state.listProduct);
+  const listPet = useSelector(state => state.listPet);
+  const countCart = useSelector(listCartSelector)
   const [index, setIndex] = React.useState(0);
+  const dispatch = useDispatch();
   const [routes] = React.useState([
     {key: 'pet', title: 'Thú cưng'},
     {key: 'product', title: 'Sản Phẩm'},
@@ -31,9 +35,22 @@ export default function ShopScreen({navigation, route}) {
   const renderScene = ({route}) => {
     switch (route.key) {
       case 'pet':
-        return <GridProduct data={listPet} />;
+        return listPet?.statusPetByIdShop === 'loading' ? (
+          <ActivityIndicator size={'large'} color={'#F582AE'} style={{marginTop:10}}/>
+        ) : (
+          <GridProduct
+            data={listPet?.petsByIdShop}
+          />
+        );
+
       case 'product':
-        return <GridProduct data={listProduct} />;
+        return listProduct?.statusProductsShop === 'loading' ? (
+          <ActivityIndicator size={'large'} color={'#F582AE'} style={{marginTop:10}} />
+        ) : (
+          <GridProduct
+          data={listProduct?.productsShop}
+        />
+        );
       default:
         return null;
     }
@@ -58,6 +75,14 @@ export default function ShopScreen({navigation, route}) {
       />
     );
   };
+  useEffect(() => {
+    dispatch(fetchProductsByIdShop(data._id));
+    dispatch(fetchPetsByIdShop(data._id));
+    return () => {
+      dispatch(setDataPetByShop([]));
+      dispatch(setDataProductsByShop([]));
+    };
+  }, []);
   return (
     <>
       <View style={styles.container}>
@@ -68,6 +93,7 @@ export default function ShopScreen({navigation, route}) {
               navigation.goBack();
             }}>
             <Icon name="arrow-back" size={26} color="#001858" />
+            
           </Pressable>
           <Pressable
             style={styles.headerSearch}
@@ -82,10 +108,25 @@ export default function ShopScreen({navigation, route}) {
               navigation.navigate('CartScreen');
             }}>
             <Icon name="cart-outline" size={26} color="#001858" />
+            <View
+              style={{
+                width: 16,
+                height: 16,
+                position: 'absolute',
+                backgroundColor: '#F582AE',
+                borderRadius: 8,
+                justifyContent: 'center',
+                alignItems: 'center',
+                top:-3
+              }}>
+              <Text style={{fontSize: 12, fontFamily: 'ProductSans'}}>
+                {countCart?.length}
+              </Text>
+            </View>
           </Pressable>
         </SafeAreaView>
         <View style={styles.tagShop}>
-          <Image source={{uri:data.avatarShop}} style={styles.image} />
+          <Image source={{uri: data.avatarShop}} style={styles.image} />
           <View style={styles.titleShop}>
             <View style={styles.flexRow}>
               <Text style={styles.textShop}>{data.nameShop}</Text>

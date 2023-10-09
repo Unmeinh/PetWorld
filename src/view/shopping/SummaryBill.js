@@ -23,24 +23,49 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import useCart from '../../hooks/useCart';
 import ModalTicket from '../../component/modals/ModalTicket';
-import {fetchInfoLogin, fetchInfoUserNoMessage} from '../../redux/reducers/user/userReducer';
+import {fetchInfoUserNoMessage} from '../../redux/reducers/user/userReducer';
 import {userSelectStatus} from '../../redux/selectors/userSelector';
+import {createBill} from '../../redux/reducers/shop/billSlice';
 const payment = [
   {id: 1, name: 'Thanh toán khi nhận hàng'},
   {id: 2, name: 'Ví điện tử'},
 ];
-const {width, height} = Dimensions.get('screen');
+const {width} = Dimensions.get('screen');
 export default function SummaryBill({navigation}) {
   const result = useSelector(listItemBill);
   const [user, district] = useSelector(useLocationSeleted);
   const status = useSelector(userSelectStatus);
   const dispatch = useDispatch();
   const {
-    price: {discount, priceTotal}, ship 
+    price: {discount, priceTotal},
   } = useSelector(billSelector);
-  
+
   const shop = useSelector(listShopSelector);
-  const resultCart = useCart(result, shop);
+  const resultCart = useCart(result, shop, user);
+  const districtSlice = location => {
+    let result = '';
+    if (location) {
+      const parts = location.split(',');
+      result = parts[parts.length - 1];
+    }
+    return result.trim();
+  };
+  const moneyShip = () => {
+    let money = 0;
+    if (resultCart) {
+      for (const item of resultCart) {
+        if (
+          districtSlice(item?.idShop?.locationShop) ===
+          districtSlice(user?.location)
+        ) {
+          money += 10000;
+          continue;
+        }
+        money += 30000;
+      }
+    }
+    return money;
+  };
   function PayMent() {
     const [selectedId, setSelectedId] = useState();
     const Item = ({item, onPress, icon, textColor}) => (
@@ -95,6 +120,7 @@ export default function SummaryBill({navigation}) {
   useEffect(() => {
     dispatch(fetchInfoUserNoMessage());
   }, []);
+
   return (
     <View style={styles.container}>
       <HeaderTitle
@@ -112,7 +138,7 @@ export default function SummaryBill({navigation}) {
             scrollEnabled={false}
             keyExtractor={item => item.idShop._id}
             renderItem={({item}) => (
-              <ItemCartSummary result={item} locationShop={district}/>
+              <ItemCartSummary result={item} locationShop={district} />
             )}
           />
           <View style={styles.line} />
@@ -128,7 +154,9 @@ export default function SummaryBill({navigation}) {
             </View>
             <View style={styles.flexRow}>
               <Text style={styles.textDefault}>Vận chuyển</Text>
-              <Text style={styles.textDefault}>{ship?.toLocaleString('vi-VN')}đ</Text>
+              <Text style={styles.textDefault}>
+                {moneyShip()?.toLocaleString('vi-VN')}đ
+              </Text>
             </View>
             <View style={styles.flexRow}>
               <Text style={[styles.textDefault, styles.textdiscount]}>
@@ -141,7 +169,7 @@ export default function SummaryBill({navigation}) {
             <View style={styles.flexRow}>
               <Text style={styles.textDefault}>Tổng</Text>
               <Text style={styles.bold}>
-                {priceTotal.toLocaleString('vi-VN')} đ
+                {(priceTotal + moneyShip()).toLocaleString('vi-VN')} đ
               </Text>
             </View>
           </View>
@@ -149,25 +177,44 @@ export default function SummaryBill({navigation}) {
           <Text style={styles.textBold}>Phương thức thanh toán</Text>
           <PayMent />
           <View style={styles.line} />
-        </ScrollView>  
+        </ScrollView>
       )}
-      {status === 'loading' ? null:<View style={styles.bottomButton}>
-        <View style={styles.flexRow}>
-          <Text style={styles.bold}>Tổng</Text>
-          <Text style={styles.bold}>
-            {priceTotal.toLocaleString('vi-VN')} đ
-          </Text>
-        </View>
-        <Pressable
-          style={styles.button}
-          onPress={() => {
-            if(status !== 'loading')
-            console.log('click')
+      {status === 'loading' ? null : (
+        <View style={styles.bottomButton}>
+          <View style={styles.flexRow}>
+            <Text style={styles.bold}>Tổng</Text>
+            <Text style={styles.bold}>
+              {(priceTotal + moneyShip()).toLocaleString('vi-VN')} đ
+            </Text>
+          </View>
+          <Pressable
+            style={styles.button}
+            onPress={() => {
+              if (status !== 'loading') {
+                dispatch(
+                  createBill({
+                    type: 1,
+                    total: priceTotal + moneyShip(),
+                    paymentMethod: 'Thanh Toán khi nhận hàng',
+                    deliveryStatus: 0,
+                    discountBill: discount,
+                  }),
+                );
+              }
             }}>
-          <Text style={styles.textButton}>Xác nhận</Text>
-        </Pressable>
-      </View>}
-      
+            <Text style={styles.textButton}>Xác nhận</Text>
+          </Pressable>
+        </View>
+      )}
+      {/* {loading ? (
+        <View
+          style={[
+            StyleSheet.absoluteFill,
+            {justifyContent: 'center', alignItems: 'center'},
+          ]}>
+          <ActivityIndicator size={'large'} color={'#F582AE'} />
+        </View>
+      ) : null} */}
     </View>
   );
 }

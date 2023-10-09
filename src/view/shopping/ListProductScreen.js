@@ -1,32 +1,75 @@
-import {StyleSheet, Text, View, TouchableOpacity} from 'react-native';
-import React, {useEffect} from 'react';
+import {Text, View, TouchableOpacity} from 'react-native';
+import React, {useEffect, useState} from 'react';
 import Icon from 'react-native-vector-icons/Ionicons';
 import FilterSelector from '../../component/filters/filterSelector';
 import ListProductVertical from '../../component/ListProduct/ListProductVertical';
-import {listPetSelector,listProductSelector,listStatusPetsSelector,listStatusProductSelector} from '../../redux/selector';
-import { fetchPets, handleStatusPets } from '../../redux/reducers/pet/PetReducer';
-import { fetchProducts, handleStatusProducts } from '../../redux/reducers/product/ProductReducer';
-import { useDispatch,useSelector } from 'react-redux';
+import {fetchPets} from '../../redux/reducers/pet/PetReducer';
+import {fetchProducts} from '../../redux/reducers/product/ProductReducer';
+import {useDispatch, useSelector} from 'react-redux';
 import LoaderListProductVertical from '../../component/list/LoaderListProductVertical';
+import {setDataCategory} from '../../redux/reducers/category/category';
 export default function ListProductScreen({navigation, route}) {
-  const dispatch = useDispatch()
-  const type = route.params.type
-  const list = type === 0 ? useSelector(listPetSelector) : useSelector(listProductSelector) 
-  const status = type === 0 ? useSelector(listStatusPetsSelector) : useSelector(listStatusProductSelector) 
-  useEffect(() =>{
-    if(type === 0){
-      dispatch(fetchPets())
-    }else if(type === 1){
-      dispatch(fetchProducts())
+  const dispatch = useDispatch();
+  const type = route.params.type;
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
+  const [page, setPage] = useState(1);
+  const setData = type => {
+    if (type === 0) {
+      dispatch(fetchPets(page));
+    } else if (type === 1) {
+      dispatch(fetchProducts(page));
     }
-    // return () =>{
-    //   if(type === 0){
-    //     dispatch(handleStatusPets('loading'))
-    //   }else{
-    //     dispatch(handleStatusProducts('loading'))
-    //   }
-    // }
-  },[type])
+  };
+  useEffect(() => {
+    setData(type);
+    return () => {
+      if (type === 3) {
+        dispatch(setDataCategory([]));
+      }
+    };
+  }, [type, page]);
+
+  const renderView = type => {
+    if (type === 0) {
+      const listPet = useSelector(state => state.listPet);
+      return (listPet?.status === 'idle' ) || (listPet?.pets?.length > 0) ? (
+        <ListProductVertical
+          data={listPet.pets}
+          type={type}
+          loadMoreData={loadMoreData}
+          isLoadingMore={isLoadingMore}
+        />
+      ) : (
+        <LoaderListProductVertical />
+      );
+    } else if (type === 1) {
+      const listProduct = useSelector(state => state.listProduct);
+      return (listProduct?.status === 'idle') || (listProduct?.products?.length > 0) ? (
+        <ListProductVertical
+          data={listProduct.products}
+          type={type}
+          loadMoreData={loadMoreData}
+          isLoadingMore={isLoadingMore}
+        />
+      ) : (
+        <LoaderListProductVertical />
+      );
+    } else if (type === 3) {
+      const listCategory = useSelector(state => state.category);
+      return listCategory.statusData === 'idle' ? (
+        <ListProductVertical data={listCategory.data} type={type} />
+      ) : (
+        <LoaderListProductVertical />
+      );
+    }
+  };
+
+  const loadMoreData = () => {
+    if (!isLoadingMore) {
+      setIsLoadingMore(true);
+      setPage(page + 1);
+    }
+  };
   return (
     <View style={{backgroundColor: '#FEF6E4', flex: 1}}>
       <View
@@ -66,9 +109,7 @@ export default function ListProductScreen({navigation, route}) {
           marginTop: 10,
         }}
       />
-      {status === 'idle' ? <ListProductVertical data={list} type={type} /> :<LoaderListProductVertical/>}
+      {renderView(type)}
     </View>
   );
 }
-
-const styles = StyleSheet.create({});

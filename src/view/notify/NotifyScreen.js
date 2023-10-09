@@ -11,7 +11,6 @@ export default function NotifyScreen({ navigation }) {
     try {
       const newToken = await messaging().getToken();
       if (newToken) {
-        console.log(newToken, 'new token');
 
         // Store the new FCM token
         // await AsyncStorage.setItem('fcmtoken', newToken);
@@ -19,7 +18,6 @@ export default function NotifyScreen({ navigation }) {
         // Send token data to Realtime Database
         const databaseRef = database().ref('/tokens');
         await databaseRef.push({ token: newToken });
-        console.log('Token data sent to Realtime Database');
       }
     } catch (error) {
       console.error('Error:', error);
@@ -35,7 +33,7 @@ export default function NotifyScreen({ navigation }) {
           authStatus !== messaging.AuthorizationStatus.AUTHORIZED &&
           authStatus !== messaging.AuthorizationStatus.PROVISIONAL
         ) {
-          console.log('Authorization status not granted:', authStatus);
+        
           return;
         }
 
