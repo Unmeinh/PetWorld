@@ -38,7 +38,6 @@ import {
             style={localStyles.rowUtilities}
             onPress={() => {
               // Handle the press event here
-              console.log('Item pressed:', item.text);
               // Example: navigate to another screen
               if (item.text === 'Thông tin tài khoản') {
                 navigation.navigate('Information');

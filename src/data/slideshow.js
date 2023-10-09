@@ -1,7 +1,7 @@
 export default [
   {
     id: 1,
-    img: 'https://scontent.fhan15-1.fna.fbcdn.net/v/t1.6435-9/116283386_104497301365787_5868493701955420611_n.jpg?_nc_cat=105&ccb=1-7&_nc_sid=e3f864&_nc_ohc=H_01ssHGXTQAX9iRGSD&_nc_ht=scontent.fhan15-1.fna&oh=00_AfBS69pVltV7W1Dm8OBm2dJ8anhDIQ0NXEM9fiUCTBEfkg&oe=6515340C'
+    img: 'https://mygate.com/wp-content/uploads/2023/06/4.jpg'
   },
   {
     id: 2,

@@ -46,7 +46,6 @@ const filtersReducer =  createSlice({
       state.status = action.payload
     },
     checkIdCart: (state, action) => {
-      console.log(action);
       state.idCheckCart = action.payload
     }
   },

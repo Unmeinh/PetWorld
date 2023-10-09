@@ -71,7 +71,7 @@ export default function AccountScreen({ scrollRef, onScrollView }) {
     setIsPressed(true);
     setTimeout(() => {
       setIsPressed(false);
-      navigation.navigate('OderScreen');
+      navigation.navigate('BillScreen');
     }, 200); // Reset the state after 200ms
   };
 
@@ -81,7 +81,6 @@ export default function AccountScreen({ scrollRef, onScrollView }) {
     if (!storageMMKV.getBoolean('login.isLogin') && storageMMKV.getString('login.token') == "null") {
       navigation.navigate('LoginScreen');
     } else {
-      console.log("Lỗi lưu dữ liệu người dùng!");
     }
   }
 
