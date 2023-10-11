@@ -1,7 +1,6 @@
 import {createAsyncThunk, createSlice} from '@reduxjs/toolkit';
 import api from '../../../api/axios.config';
 
-
 const initialState = {
   search: '',
   idCategory: 0,
@@ -26,10 +25,12 @@ const initialState = {
     ],
   },
   detailProduct: {},
-  status: 'loading',
-  idCheckCart:''
+  status: 'idle',
+  idCheckCart: '',
+  listSearch: [],
+  message: '',
 };
-const filtersReducer =  createSlice({
+const filtersReducer = createSlice({
   name: 'filters',
   initialState,
   reducers: {
@@ -43,30 +44,67 @@ const filtersReducer =  createSlice({
       state.idProduct = action.payload;
     },
     setStatusFilter: (state, action) => {
-      state.status = action.payload
+      state.status = action.payload;
     },
     checkIdCart: (state, action) => {
-      state.idCheckCart = action.payload
-    }
+      state.idCheckCart = action.payload;
+    },
   },
   extraReducers: builder => {
-    builder.addCase(fetchDetailProduct.pending , (state, action) => {
-      state.status = 'loading'
-    }).addCase(fetchDetailProduct.fulfilled, (state, action) => {
-      if (action.payload.success === true) {
-        state.detailProduct = action.payload.data;
-        state.status = 'idle';
-      } else {
+    builder
+      .addCase(fetchDetailProduct.pending, (state, action) => {
         state.status = 'loading';
-      }
-    })
-
-  }
+      })
+      .addCase(fetchDetailProduct.fulfilled, (state, action) => {
+        if (action.payload.success === true) {
+          state.detailProduct = action.payload.data;
+          state.status = 'idle';
+        } else {
+          state.status = 'loading';
+        }
+      })
+      .addCase(fetchSearch.pending, (state, action) => {
+        state.status = 'loading';
+        state.listSearch = [];
+      })
+      .addCase(fetchSearch.fulfilled, (state, action) => {
+        if(action.payload === ''){
+          return state.listSearch = []
+        }
+        if (action.payload.success === true) {
+          state.listSearch = action.payload.data;
+          state.status = 'idle';
+        } else {
+          state.status = 'idle';
+        }
+      });
+  },
 });
-export const fetchDetailProduct = createAsyncThunk('detail/fetchDetail', async (action) => {
-  const res = await api.get(`/${action.type === 0 ? 'pet':'product'}/detail/${action.id}`);
-  return res.data;
-});
-export const {searchFilterChanged,selectIdCategory,idProduct,setStatusFilter,checkIdCart} = filtersReducer.actions
-export default filtersReducer.reducer
-
+export const fetchDetailProduct = createAsyncThunk(
+  'detail/fetchDetail',
+  async action => {
+    const res = await api.get(
+      `/${action.type === 0 ? 'pet' : 'product'}/detail/${action.id}`,
+    );
+    return res.data;
+  },
+);
+export const fetchSearch = createAsyncThunk(
+  'detail/fetchSearch',
+  async action => {
+    if (action === '') {
+      return '';
+    } else {
+      const res = await api.get(`/search/${action}`);
+      return res.data;
+    }
+  },
+);
+export const {
+  searchFilterChanged,
+  selectIdCategory,
+  idProduct,
+  setStatusFilter,
+  checkIdCart,
+} = filtersReducer.actions;
+export default filtersReducer.reducer;
