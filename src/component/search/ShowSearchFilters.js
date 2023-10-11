@@ -1,18 +1,29 @@
-import { StyleSheet, Text, View ,FlatList} from 'react-native'
-import React from 'react'
-import ItemSearch from './ItemSearch'
+import {StyleSheet, Text, View, FlatList} from 'react-native';
+import React from 'react';
+import ItemSearch from './ItemSearch';
 
 export default function ShowSearchFilters({data}) {
   return (
-    <View style={{marginLeft:18,marginRight:18}}>
+    <View style={{paddingHorizontal: 20}}>
       <FlatList
         data={data}
-        keyExtractor={(item) => item.id}
-        renderItem={({item}) => <ItemSearch item={item} />
-        }
+        showsVerticalScrollIndicator={false}
+        keyExtractor={item => item._id}
+        renderItem={({item}) => <ItemSearch item={item} />}
+        ListEmptyComponent={() => (
+          <Text
+            style={{
+              textAlign: 'center',
+              margin: 20,
+              fontSize: 16,
+              fontFamily: 'ProductSansBold',
+            }}>
+            Hãy thử tìm kiếm một thứ gì đó!
+          </Text>
+        )}
       />
     </View>
-  )
+  );
 }
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({});

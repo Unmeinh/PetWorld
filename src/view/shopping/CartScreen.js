@@ -19,6 +19,7 @@ import {
 import useCart from '../../hooks/useCart';
 import ListCart from '../../component/list/ListCart';
 import {
+  changeStatus,
   fetchCart,
   selectAllItemCart,
   updateCart,
@@ -34,10 +35,11 @@ export default function CartScreen({navigation}) {
   const resultShops = useSelector(listShopSelector);
   const statusCart = useSelector(listCartStatusSelector);
   const statusShops = useSelector(listShopStatusSelector);
-  const {statusUpdate} = useSelector(state => state.listCart)
+  const {statusUpdate, statusChange} = useSelector(state => state.listCart);
   const [selectedAll, setSelectedAll] = useState(checkSelected);
   const [total, discount] = usePrice(result);
   const resultCart = useCart(result, resultShops);
+  const [actionNavigation,setActionNavigation] = useState('');
   function Bottom({total, discount, isSelectAll}) {
     const [isSelect, setIsSelect] = useState(isSelectAll);
     const iconSelect = isSelect
@@ -71,8 +73,9 @@ export default function CartScreen({navigation}) {
           style={styles.button}
           disabled={statusCart === 'loading' ? true : false}
           onPress={() => {
-            // dispatch(addPrice({priceTotal: total, discount: discount}));
-            dispatch(updateCart({result:result,type:'navigate'}))
+            dispatch(addPrice({priceTotal: total, discount: discount}));
+            dispatch(updateCart(result));
+            setActionNavigation('navigate')
           }}>
           <Text style={[styles.fontFamyly, styles.textButton]}>Thanh toán</Text>
         </Pressable>
@@ -80,7 +83,7 @@ export default function CartScreen({navigation}) {
     );
   }
   function checkSelected() {
-    const isSelect = result.every(item => item.isSelected === true);
+    const isSelect = result?.every(item => item.isSelected === true);
     return isSelect;
   }
   useEffect(() => {
@@ -92,13 +95,38 @@ export default function CartScreen({navigation}) {
   useEffect(() => {
     setSelectedAll(checkSelected());
   }, [result]);
+  useEffect(() => {
+    if (statusChange) {
+      if(actionNavigation === 'navigate'){
+        navigation.navigate('SummaryBill');
+      }
+      if(actionNavigation === 'goback'){
+        navigation.goBack()
+      }
+    }
+  }, [statusChange]);
+  useEffect(() => {
+    const sub = navigation.addListener('blur', () => {
+      dispatch(changeStatus(false));
+      setActionNavigation('')
+    });
+    return sub;
+  }, [navigation]);
   return (
     <View style={{flex: 1, backgroundColor: '#FEF6E4'}}>
       <HeaderTitle
         titleHeader="Giỏ hàng"
         colorHeader={'#FEF6E4'}
         nav={navigation}
-        callback={() => dispatch(updateCart({result:result,type:'goback'}))}
+        callback={() => {
+          if(result?.length > 0){
+            dispatch(updateCart(result))
+            setActionNavigation('goback')
+          }else {
+            navigation.goBack()
+          }
+
+        }}
       />
       {(statusCart && statusShops) === 'loading' ? (
         <ActivityIndicator size={'large'} color={'#F582AE'} />
@@ -109,7 +137,7 @@ export default function CartScreen({navigation}) {
       {resultCart?.length > 0 ? (
         <Bottom total={total} discount={discount} isSelectAll={selectedAll} />
       ) : null}
-      {statusUpdate ===  'loading' ?<Loading/>:null}
+      {statusUpdate === 'loading' ? <Loading /> : null}
     </View>
   );
 }

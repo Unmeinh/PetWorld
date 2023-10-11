@@ -10,6 +10,7 @@ const cartSlice = createSlice({
     idCheckCart: '',
     statusAddProductoCart: 'idle',
     statusUpdate: 'idle',
+    statusChange: false,
   },
   reducers: {
     addCart: (state, action) => {
@@ -56,6 +57,9 @@ const cartSlice = createSlice({
     selectAllItemCart: (state, action) => {
       state.carts.map(item => (item.isSelected = true));
     },
+    changeStatus: (state, action) => {
+      state.statusChange = action.payload;
+    },
   },
   extraReducers: builder => {
     builder
@@ -84,16 +88,11 @@ const cartSlice = createSlice({
       })
       .addCase(updateCart.fulfilled, (state, action) => {
         state.statusUpdate = 'idle';
-        if (action.payload?.data?.success) {
-          if (action.payload?.type === 'goback') {
-            goBack();
-          } else if (action.payload?.type === 'navigate') {
-            navigate('SummaryBill');
-          }
+        if (action.payload?.success) {
+          state.statusChange = true;
         } else {
-          state.message = action.payload?.data?.message;
+          state.message = action.payload?.message;
         }
-        
       });
   },
 });
@@ -110,9 +109,9 @@ export const addProductToCart = createAsyncThunk(
 );
 export const updateCart = createAsyncThunk('cart/update', async action => {
   const res = await api.post('/cart/update', {
-    data: JSON.stringify(action?.result),
+    data: JSON.stringify(action),
   });
-  return {data: res.data, type: action?.type};
+  return res.data;
 });
 export const {
   addCart,
@@ -122,6 +121,7 @@ export const {
   setStatusMessageCart,
   selectAllItemsShop,
   selectAllItemCart,
+  changeStatus,
 } = cartSlice.actions;
 
 export default cartSlice.reducer;
