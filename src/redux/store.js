@@ -6,7 +6,7 @@ import listShopReducer from './reducers/shop/ShopReducer';
 import blogReducer from './reducers/blog/blogReducer';
 import commentReducer from './reducers/comment/commentReducer';
 import listCartReducer from './reducers/shop/CartReduces';
-import searchFilterReducer from './reducers/filters/filtersReducer';
+import filterReducer from './reducers/filters/filtersReducer';
 import userReducer from './reducers/user/userReducer';
 import billSlice from './reducers/shop/billSlice';
 
@@ -14,7 +14,7 @@ const store = configureStore({
   reducer: {
     listPet: listPetReducer,
     listProduct: listProductReducer,
-    searchFilter: searchFilterReducer,
+    searchFilter: filterReducer,
     category: categoryReducer,
     listShop: listShopReducer,
     listBlog: blogReducer,

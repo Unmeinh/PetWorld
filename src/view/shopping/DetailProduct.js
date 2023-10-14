@@ -13,9 +13,7 @@ import {
 import React, { useEffect, useRef, useState } from 'react';
 import {
   listProductSelector,
-  selectFilterDetailProduct,
   selectFilterIdSelector,
-  selectStatusDetailProduct,
   statusAddProductToCart,
   messageCart,
   listCartSelector,
@@ -58,7 +56,7 @@ function DetailProduct({ navigation, route }) {
     if (discount > 0) {
       return (
         <Text style={styles.price}>
-          {(price - (price * discount) / 100).toLocaleString('vi-VN') + 'đ'}{' '}
+          {(price - (price * discount) / 100)?.toLocaleString('vi-VN') + 'đ'}{' '}
           <Text style={styles.discount}>
             {price.toLocaleString('vi-VN') + 'đ'}
           </Text>
@@ -66,7 +64,7 @@ function DetailProduct({ navigation, route }) {
       );
     } else {
       return (
-        <Text style={styles.price}>{price.toLocaleString('vi-VN') + 'đ'}</Text>
+        <Text style={styles.price}>{price?.toLocaleString('vi-VN') + 'đ'}</Text>
       );
     }
   };

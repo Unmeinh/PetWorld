@@ -6,7 +6,7 @@ function ListCart({data}) {
   return (
     <FlatList
       data={data}
-      keyExtractor={item => item._id}
+      keyExtractor={item => item?.idShop?._id}
       renderItem={({item}) => <ItemCartProduct result={item} />}
       ListEmptyComponent={() => {
         return (

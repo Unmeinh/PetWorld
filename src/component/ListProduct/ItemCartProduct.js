@@ -13,7 +13,7 @@ export default function ItemCartProduct({result}) {
     ? 'checkbox-marked-circle'
     : 'checkbox-blank-circle-outline';
   function selectedShop(){
-    const isSelect = cart.every(item => item.isSelected === true);
+    const isSelect = cart?.every(item => item.isSelected === true);
     return isSelect
   }
   useEffect(() =>{

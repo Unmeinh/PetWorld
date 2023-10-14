@@ -7,6 +7,7 @@ import {
   Dimensions,
   Pressable,
   ActivityIndicator,
+  TouchableOpacity,
 } from 'react-native';
 import React, {useState, useEffect} from 'react';
 import HeaderTitle from '../../component/header/HeaderTitle';
@@ -25,7 +26,11 @@ import useCart from '../../hooks/useCart';
 import ModalTicket from '../../component/modals/ModalTicket';
 import {fetchInfoUserNoMessage} from '../../redux/reducers/user/userReducer';
 import {userSelectStatus} from '../../redux/selectors/userSelector';
-import {createBill} from '../../redux/reducers/shop/billSlice';
+import {
+  createBill,
+  setStatusChangeBill,
+} from '../../redux/reducers/shop/billSlice';
+import Loading from '../../component/Loading';
 const payment = [
   {id: 1, name: 'Thanh toán khi nhận hàng'},
   {id: 2, name: 'Ví điện tử'},
@@ -34,12 +39,14 @@ const {width} = Dimensions.get('screen');
 export default function SummaryBill({navigation}) {
   const result = useSelector(listItemBill);
   const [user, district] = useSelector(useLocationSeleted);
-  const status = useSelector(userSelectStatus);
+  const statusUser = useSelector(userSelectStatus);
   const dispatch = useDispatch();
   const {
     price: {discount, priceTotal},
+    statusChange,
+    status,
   } = useSelector(billSelector);
-
+  const [loading, setLoading] = useState(false);
   const shop = useSelector(listShopSelector);
   const resultCart = useCart(result, shop, user);
   const districtSlice = location => {
@@ -120,15 +127,27 @@ export default function SummaryBill({navigation}) {
   useEffect(() => {
     dispatch(fetchInfoUserNoMessage());
   }, []);
-
+  useEffect(() => {
+    if (statusChange) {
+      navigation.navigate('BillScreen', {idName: 3});
+    }
+  }, [statusChange]);
+  useEffect(() => {
+    const sub = navigation.addListener('blur', () => {
+      dispatch(setStatusChangeBill(false));
+    });
+    return sub;
+  }, [navigation]);
   return (
     <View style={styles.container}>
+      {status ? <Loading /> : null}
       <HeaderTitle
         titleHeader="Tóm tắt đơn hàng"
         nav={navigation}
         colorHeader="#FEF6E4"
+        callback={() => navigation.pop(2)}
       />
-      {status === 'loading' ? (
+      {statusUser === 'loading' ? (
         <ActivityIndicator color={'#F582AE'} size={'large'} />
       ) : (
         <ScrollView style={{marginTop: 0}} scrollEnabled={true}>
@@ -179,7 +198,7 @@ export default function SummaryBill({navigation}) {
           <View style={styles.line} />
         </ScrollView>
       )}
-      {status === 'loading' ? null : (
+      {statusUser === 'loading' ? null : (
         <View style={styles.bottomButton}>
           <View style={styles.flexRow}>
             <Text style={styles.bold}>Tổng</Text>
@@ -187,34 +206,23 @@ export default function SummaryBill({navigation}) {
               {(priceTotal + moneyShip()).toLocaleString('vi-VN')} đ
             </Text>
           </View>
-          <Pressable
+          <TouchableOpacity
             style={styles.button}
             onPress={() => {
-              if (status !== 'loading') {
-                dispatch(
-                  createBill({
-                    type: 1,
-                    total: priceTotal + moneyShip(),
-                    paymentMethod: 'Thanh Toán khi nhận hàng',
-                    deliveryStatus: 0,
-                    discountBill: discount,
-                  }),
-                );
-              }
+              dispatch(
+                createBill({
+                  type: 1,
+                  total: priceTotal + moneyShip(),
+                  paymentMethod: 'Thanh Toán khi nhận hàng',
+                  deliveryStatus: 0,
+                  discountBill: discount,
+                }),
+              );
             }}>
             <Text style={styles.textButton}>Xác nhận</Text>
-          </Pressable>
+          </TouchableOpacity>
         </View>
       )}
-      {/* {loading ? (
-        <View
-          style={[
-            StyleSheet.absoluteFill,
-            {justifyContent: 'center', alignItems: 'center'},
-          ]}>
-          <ActivityIndicator size={'large'} color={'#F582AE'} />
-        </View>
-      ) : null} */}
     </View>
   );
 }
