@@ -1,6 +1,7 @@
 apply plugin: "com.android.application"
 apply plugin: "com.facebook.react"
 apply plugin: "com.google.gms.google-services"
+apply plugin: 'kotlin-android'
 
 //  * This is the configuration block to customize your React Native Android app.
 //  * By default you don't need to apply any configuration, just uncomment the lines you need.
@@ -72,6 +73,10 @@ android {
     ndkVersion rootProject.ext.ndkVersion
 
     compileSdkVersion rootProject.ext.compileSdkVersion
+
+    kotlinOptions {
+        jvmTarget = 11
+    }
 
     namespace "com.petworld"
     defaultConfig {

@@ -10,7 +10,7 @@ import {
   ToastAndroid,
   ActivityIndicator,
 } from 'react-native';
-import React, {useEffect, useRef, useState} from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   listProductSelector,
   selectFilterIdSelector,
@@ -18,7 +18,7 @@ import {
   messageCart,
   listCartSelector,
 } from '../../redux/selector';
-import {useDispatch, useSelector} from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import SliderImage from '../../component/detailProduct/SliderImage';
 import Icon from 'react-native-vector-icons/Ionicons';
 import ShopTag from '../../component/shop/ShopTag';
@@ -29,10 +29,11 @@ import {
   setStatusMessageCart,
 } from '../../redux/reducers/shop/CartReduces';
 import ShimmerPlaceHolder from '../../component/layout/ShimmerPlaceHolder';
-const {width} = Dimensions.get('screen');
+import SetAppointment from '../../component/modals/SetAppointment';
+const { width } = Dimensions.get('screen');
 
-function DetailProduct({navigation, route}) {
-  const {item} = route.params;
+function DetailProduct({ navigation, route }) {
+  const { item } = route.params;
   const type = item.type;
   const dispatch = useDispatch();
   const listProduct = useSelector(listProductSelector);
@@ -45,6 +46,7 @@ function DetailProduct({navigation, route}) {
   const [like, setLike] = useState(false);
   const [showDes, setShowDes] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
+  const [isShowSetApm, setisShowSetApm] = useState(false);
   const listImage = item.arrProduct ? item.arrProduct : item.imagesPet;
   const AnimatedIcon = Animated.createAnimatedComponent(Icon);
   const AnimatedPressible = Animated.createAnimatedComponent(Pressable);
@@ -131,6 +133,11 @@ function DetailProduct({navigation, route}) {
       ToastAndroid.show(message, ToastAndroid.SHORT);
     }
   }, [message]);
+
+  function onOpenSetAppointment() {
+    setisShowSetApm(!isShowSetApm);
+  }
+
   return (
     <>
       <Animated.View
@@ -146,14 +153,14 @@ function DetailProduct({navigation, route}) {
             navigation.goBack();
             setIsVisible(!isVisible);
           }}
-          style={[styles.iconBack, {backgroundColor: headerIconBackground}]}>
+          style={[styles.iconBack, { backgroundColor: headerIconBackground }]}>
           <AnimatedIcon name="arrow-back" size={24} color={headerIcon} />
         </AnimatedPressible>
         <AnimatedPressible
           onPress={() => {
             navigation.navigate('CartScreen');
           }}
-          style={[styles.iconBack, {backgroundColor: headerIconBackground}]}>
+          style={[styles.iconBack, { backgroundColor: headerIconBackground }]}>
           <View
             style={{
               width: 16,
@@ -164,10 +171,10 @@ function DetailProduct({navigation, route}) {
               justifyContent: 'center',
               alignItems: 'center',
               top: 2,
-              right:0,
-              zIndex:999
+              right: 0,
+              zIndex: 999
             }}>
-            <Text style={{fontSize: 12, fontFamily: 'ProductSans'}}>
+            <Text style={{ fontSize: 12, fontFamily: 'ProductSans' }}>
               {count}
             </Text>
           </View>
@@ -191,11 +198,11 @@ function DetailProduct({navigation, route}) {
         </View>
       ) : null}
       <ScrollView
-        style={{flex: 1, backgroundColor: '#FEF6E4'}}
+        style={{ flex: 1, backgroundColor: '#FEF6E4' }}
         scrollEnabled={statusDetail === 'idle' ? true : false}
         onScroll={Animated.event(
-          [{nativeEvent: {contentOffset: {y: scrollY}}}],
-          {useNativeDriver: false},
+          [{ nativeEvent: { contentOffset: { y: scrollY } } }],
+          { useNativeDriver: false },
         )}
         scrollEventThrottle={16}>
         <View>
@@ -247,13 +254,13 @@ function DetailProduct({navigation, route}) {
             <ShimmerPlaceHolder shimmerStyle={styles.loaderName} />
           )}
           {statusDetail === 'idle' ? (
-            <View style={{flexDirection: 'row', marginTop: 5}}>
+            <View style={{ flexDirection: 'row', marginTop: 5 }}>
               <Icon name="star-sharp" size={16} color="#fcba03" />
-              <Text style={{color: '#001858', marginLeft: 5}}>
+              <Text style={{ color: '#001858', marginLeft: 5 }}>
                 {item.rate}/5
               </Text>
 
-              <Text style={{marginLeft: 5, marginRight: 5, color: '#ccc'}}>
+              <Text style={{ marginLeft: 5, marginRight: 5, color: '#ccc' }}>
                 |
               </Text>
               <Text
@@ -355,7 +362,7 @@ function DetailProduct({navigation, route}) {
               />
             </>
           )}
-          <View style={[styles.line, {marginTop: 8}]}></View>
+          <View style={[styles.line, { marginTop: 8 }]}></View>
           {statusDetail === 'idle' ? (
             <TouchableOpacity
               onPress={() => setShowDes(!showDes)}
@@ -365,7 +372,7 @@ function DetailProduct({navigation, route}) {
                 justifyContent: 'center',
                 marginTop: 8,
               }}>
-              <Text style={{fontFamily: 'ProductSans', color: '#F582AE'}}>
+              <Text style={{ fontFamily: 'ProductSans', color: '#F582AE' }}>
                 {showDes ? 'Thu gọn' : 'Xem thêm'}
               </Text>
               <Icon name={iconDes} size={24} color="#F582AE" />
@@ -390,7 +397,7 @@ function DetailProduct({navigation, route}) {
               marginTop: 8,
             }}
           />
-          <View style={{marginBottom: 10}}>
+          <View style={{ marginBottom: 10 }}>
             <ListHorizontal
               data={listProduct}
               title="Sản phẩm liên quan"
@@ -407,7 +414,7 @@ function DetailProduct({navigation, route}) {
             <Text style={styles.textButton}> Liên hệ</Text>
           </TouchableOpacity>
           {type === 0 ? (
-            <TouchableOpacity
+            <TouchableOpacity onPress={onOpenSetAppointment}
               style={[styles.buttonBooking, styles.buttonSheet]}>
               <Icon name="bookmarks-outline" size={22} color={'#001858'} />
               <Text style={styles.textButton}>Đặt lịch</Text>
@@ -415,15 +422,15 @@ function DetailProduct({navigation, route}) {
           ) : (
             <TouchableOpacity
               onPress={() => {
-                dispatch(addProductToCart({idProduct: item._id, amount: 1}));
+                dispatch(addProductToCart({ idProduct: item._id, amount: 1 }));
               }}
               style={[
                 styles.buttonBooking,
                 styles.buttonSheet,
-                {flexDirection: category === 1 ? 'row' : 'column'},
+                { flexDirection: category === 1 ? 'row' : 'column' },
               ]}>
               <Icon name="cart-outline" size={24} color={'#001858'} />
-              <Text style={[styles.textButton, {fontSize: 12}]}>
+              <Text style={[styles.textButton, { fontSize: 12 }]}>
                 Thêm vào giỏ hàng
               </Text>
             </TouchableOpacity>
@@ -431,13 +438,19 @@ function DetailProduct({navigation, route}) {
 
           <TouchableOpacity
             style={[styles.buttonBuy, styles.buttonSheet]}
-            onPress={() => navigation.navigate('BuyNow', {item: item})}>
+            onPress={() => navigation.navigate('BuyNow', { item: item })}>
             <Text style={[styles.textButton, styles.textButtonBuy]}>
               Mua ngay
             </Text>
           </TouchableOpacity>
         </View>
       ) : null}
+      {
+        (isShowSetApm && type == 0)
+          ? <SetAppointment isShow={isShowSetApm} callBack={onOpenSetAppointment}
+            pet={item} shop={item.idShop} />
+          : ""
+      }
     </>
   );
 }

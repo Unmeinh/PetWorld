@@ -28,16 +28,17 @@ export default StyleSheet.create({
         marginRight: 10,
     },
 
-    textHint: {
-        fontSize: 15,
-        fontFamily: 'ProductSans',
-        color: 'rgba(0, 0, 0, 0.6)'
-    },
-
     viewOther: {
         flex: 1,
         alignItems: 'center',
         marginTop: 25
+    },
+
+    textHint: {
+        fontSize: 15,
+        fontFamily: 'ProductSans',
+        color: 'rgba(0, 0, 0, 0.6)',
+        marginTop: 15
     },
 
     //Item Blog

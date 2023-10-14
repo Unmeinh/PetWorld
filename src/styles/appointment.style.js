@@ -14,6 +14,19 @@ export default StyleSheet.create({
         backgroundColor: yellowWhite,
         flex: 1
     },
+    
+    viewOther: {
+        flex: 1,
+        alignItems: 'center',
+        marginTop: 25
+    },
+
+    textHint: {
+        fontSize: 16,
+        fontFamily: 'ProductSans',
+        color: 'rgba(0, 0, 0, 0.6)',
+        marginTop: 15
+    },
 
     //AppointmentItem
     circleLineItem: {
@@ -38,8 +51,8 @@ export default StyleSheet.create({
     },
 
     imageItem: {
-        height: 65,
-        width: 65,
+        height: 60,
+        width: 60,
         borderRadius: 50,
     },
 
@@ -55,15 +68,16 @@ export default StyleSheet.create({
         width: WindowWidth - 150,
         color: 'rgba(0, 24, 88, 0.65)',
         fontFamily: 'ProductSans',
-        fontSize: 15,
+        fontSize: 14,
         marginTop: 3
     },
 
     viewDateItem: {
-        marginVertical: 12,
+        marginVertical: 7,
         paddingHorizontal: 20,
         flexDirection: 'row',
         justifyContent: 'space-around',
+        marginTop: 10
     },
 
     textDateItem: {
@@ -187,13 +201,13 @@ export default StyleSheet.create({
         flex: 1,
         width: WindowWidth,
         justifyContent: 'center',
-        alignItems: 'center'
+        alignItems: 'center',
+        left: -20,
     },
 
     dialogAppointment: {
         width: '75%',
         backgroundColor: '#F2F2F2',
-        left: -20,
         borderRadius: 5
     },
 
