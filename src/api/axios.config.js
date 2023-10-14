@@ -1,7 +1,7 @@
 import axios from "axios";
 import { storageMMKV } from "../storage/storageMMKV";
 
-const apiURL = "http://10.0.2.2:3000/api";
+const apiURL = "https://server-pet-world.onrender.com/api";
 
 // axiosAPi.defaults.withCredentials = true;
 let axiosAPi = axios.create();
@@ -14,4 +14,3 @@ axiosAPi.defaults.headers = {
     "Authorization": (storageMMKV.getString('login.token') != "") ? `Bearer ${storageMMKV.getString('login.token')}` : undefined
 };
 export default axiosAPi;
-    

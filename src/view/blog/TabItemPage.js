@@ -14,7 +14,7 @@ const ShimmerPlaceHolder = createShimmerPlaceholder(LinearGradient);
 const colorLoader = ['#f0e8d8', '#dbdbdb', '#f0e8d8'];
 
 const TabBlog = memo(
-    function TabBlog({ user, arr_blog, fetchBlog}) {
+    function TabBlog({ user, arr_blog, fetchBlog }) {
 
         return (
             <View style={{ flex: 1 }}>
@@ -23,13 +23,12 @@ const TabBlog = memo(
                         ?
                         <FlatList data={arr_blog} scrollEnabled={false}
                             renderItem={({ item, index }) =>
-                                <ItemBlogPage key={item._id} blog={item} fetchBlog={fetchBlog}/>}
+                                <ItemBlogPage key={item._id} blog={item} fetchBlog={fetchBlog} />}
                             showsVerticalScrollIndicator={false}
                             keyExtractor={(item, index) => index.toString()} />
                         :
                         <View style={styles.viewOther}>
-                            {/* <AutoHeightImage source={require('../../assets/images/no_post.png')}
-                            width={(Dimensions.get("window").width * 75) / 100} /> */}
+                            <MaterialCommunityIcons name='post-outline' size={70} color={'rgba(0, 0, 0, 0.5)'} />
                             <Text style={styles.textHint}>Không có bài viết nào..</Text>
                         </View>
                 }

@@ -61,61 +61,20 @@ export default function StackScreen() {
   return (
     <NavigationContainer ref={navigationRef}>
       <Stack.Navigator
-        screenOptions={() => ({headerShown: false})}
+        screenOptions={() => ({ headerShown: false })}
         initialRouteName="SlashScreen">
-        <Stack.Screen
-          name="SlashScreen"
-          component={SlashScreen}
-          
-        />
-        <Stack.Screen
-          name="OrboadScreen"
-          component={OrboadScreen}
-          
-        />
-        <Stack.Screen
-          name="LoginScreen"
-          component={LoginScreen}
-          
-        />
-
-        <Stack.Screen
-          name="NaviTabScreen"
-          component={NaviTabScreen}
-          
-        />
-        <Stack.Screen
-          name="SearchFilters"
-          component={SearchFilters}
-          
-        />
-        <Stack.Screen
-          name="ForgetPassword"
-          component={ForgetPassword}
-          
-        />
-        <Stack.Screen
-          name="RegisterPassword"
-          component={RegisterPassword}
-          
-        />
-        <Stack.Screen
-          name="ConfirmOTP"
-          component={ConfirmOTP}
-          
-        />
-        <Stack.Screen
-          name="ChangePassword"
-          component={ChangePassword}
-          
-        />
-        <Stack.Screen
-          name="ListProductScreen"
-          component={ListProductScreen}
-          
-        />
-        <Stack.Screen name="NewBlog" component={NewBlog}  />
-        <Stack.Screen name="EditBlog" component={EditBlog}  />
+        <Stack.Screen name="SlashScreen" component={SlashScreen} />
+        <Stack.Screen name="OrboadScreen" component={OrboadScreen} />
+        <Stack.Screen name="LoginScreen" component={LoginScreen} />
+        <Stack.Screen name="NaviTabScreen" component={NaviTabScreen} />
+        <Stack.Screen name="SearchFilters" component={SearchFilters} />
+        <Stack.Screen name="ForgetPassword" component={ForgetPassword} />
+        <Stack.Screen name="RegisterPassword" component={RegisterPassword} />
+        <Stack.Screen name="ConfirmOTP" component={ConfirmOTP} />
+        <Stack.Screen name="ChangePassword" component={ChangePassword} />
+        <Stack.Screen name="ListProductScreen" component={ListProductScreen} />
+        <Stack.Screen name="NewBlog" component={NewBlog} />
+        <Stack.Screen name="EditBlog" component={EditBlog} />
         <Stack.Screen
           name="DetailProduct"
           component={DetailProduct}

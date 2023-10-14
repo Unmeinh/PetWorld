@@ -10,6 +10,7 @@ import ItemBlog from '../../component/items/ItemBlog';
 import ItemBlogLoader from '../../component/items/ItemBlogLoader';
 import { useNavigation } from '@react-navigation/native';
 import Entypo from 'react-native-vector-icons/Entypo';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { openPicker } from '@baronha/react-native-multiple-image-picker';
 import { useSelector, useDispatch } from "react-redux";
 import { selectUserLogin, userSelectStatus } from '../../redux/selectors/userSelector';
@@ -171,7 +172,7 @@ const BlogScreen = ({ scrollRef, onScrollView }) => {
                       extraData={extraBlogs}
                       renderItem={({ item, index }) =>
                         <ItemBlog key={index} blog={item}
-                        index={index} info={infoLogin} />}
+                          index={index} info={infoLogin} />}
                       showsVerticalScrollIndicator={false}
                       keyExtractor={(item, index) => index.toString()}
                       refreshControl={
@@ -179,8 +180,7 @@ const BlogScreen = ({ scrollRef, onScrollView }) => {
                       } />
                     :
                     <View style={styles.viewOther}>
-                      {/* <AutoHeightImage source={require('../../assets/images/no_post.png')}
-                        width={(Dimensions.get("window").width * 75) / 100} /> */}
+                      <MaterialCommunityIcons name='post-outline' size={70} color={'rgba(0, 0, 0, 0.5)'} />
                       <Text style={styles.textHint}>Không có bài viết nào..</Text>
                     </View>
                 }
