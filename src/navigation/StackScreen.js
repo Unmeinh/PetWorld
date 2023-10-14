@@ -45,7 +45,7 @@ const Stack = createStackNavigator();
 
 export default function StackScreen() {
   const animated = {
-    gestureEnabled: true,
+    gestureEnabled: false,
     transitionSpec: {
       open: {animation: 'timing', config: {duration: 300}},
       close: {animation: 'timing', config: {duration: 300}},
@@ -66,174 +66,186 @@ export default function StackScreen() {
         <Stack.Screen
           name="SlashScreen"
           component={SlashScreen}
-          
+          options={animated}
         />
         <Stack.Screen
           name="OrboadScreen"
           component={OrboadScreen}
-          
+          options={animated}
         />
         <Stack.Screen
           name="LoginScreen"
           component={LoginScreen}
-          
+          options={animated}
         />
-
         <Stack.Screen
           name="NaviTabScreen"
           component={NaviTabScreen}
-          
+          options={animated}
         />
         <Stack.Screen
           name="SearchFilters"
           component={SearchFilters}
-          
+          options={animated}
         />
         <Stack.Screen
           name="ForgetPassword"
           component={ForgetPassword}
-          
+          options={animated}
         />
         <Stack.Screen
           name="RegisterPassword"
           component={RegisterPassword}
-          
+          options={animated}
         />
         <Stack.Screen
           name="ConfirmOTP"
           component={ConfirmOTP}
-          
+          options={animated}
         />
         <Stack.Screen
           name="ChangePassword"
           component={ChangePassword}
-          
+          options={animated}
         />
         <Stack.Screen
           name="ListProductScreen"
           component={ListProductScreen}
-          
+          options={animated}
         />
-        <Stack.Screen name="NewBlog" component={NewBlog}  />
-        <Stack.Screen name="EditBlog" component={EditBlog}  />
+        <Stack.Screen name="NewBlog" component={NewBlog} options={animated} />
+        <Stack.Screen
+          name="EditBlog"
+          component={EditBlog}
+          options={animated}
+        />
         <Stack.Screen
           name="DetailProduct"
           component={DetailProduct}
-          
+          options={animated}
         />
         <Stack.Screen
           name="ShopScreen"
           component={ShopScreen}
-          
+          options={animated}
         />
-        <Stack.Screen name="MyPage" component={MyPage} />
-        <Stack.Screen name="ViewPage" component={ViewPage}  />
+        <Stack.Screen name="MyPage" component={MyPage} options={animated} />
+        <Stack.Screen
+          name="ViewPage"
+          component={ViewPage}
+          options={animated}
+        />
         <Stack.Screen
           name="ListFollow"
           component={ListFollow}
-          
+          options={animated}
         />
         <Stack.Screen
           name="CartScreen"
           component={CartScreen}
-          
+          options={animated}
         />
         <Stack.Screen
           name="SummaryBill"
+          options={animated}
           component={SummaryBill}
-          
         />
         <Stack.Screen
           name="ListAddress"
+          options={animated}
           component={ListAddress}
-          
         />
         <Stack.Screen
           name="AddNewAddress"
+          options={animated}
           component={AddNewAddress}
-          
         />
         <Stack.Screen
           name="ChatScreen"
+          options={animated}
           component={ChatScreen}
-          
         />
         <Stack.Screen
           name="InfoManager"
+          options={animated}
           component={InfoManager}
-          
         />
-        <Stack.Screen name="EditUser" component={EditUser}  />
+        <Stack.Screen
+          name="EditUser"
+          component={EditUser}
+          options={animated}
+        />
         <Stack.Screen
           name="EditAccount"
+          options={animated}
           component={EditAccount}
-          
         />
         <Stack.Screen
           name="AppointmentScreen"
+          options={animated}
           component={AppointmentScreen}
-          
         />
         <Stack.Screen
           name="DetailAppointment"
+          options={animated}
           component={DetailAppointment}
-          
         />
         <Stack.Screen
           name="SettingNotify"
+          options={animated}
           component={SettingNotify}
-          
         />
         <Stack.Screen
           name="NotifyScreen"
+          options={animated}
           component={NotifyScreen}
-          
         />
         <Stack.Screen
           name="AccountScreen"
+          options={animated}
           component={AccountScreen}
-          
         />
         <Stack.Screen
           name="BillScreen"
+          options={animated}
           component={BillScreen}
-          
         />
         <Stack.Screen
           name="InformationAccount"
+          options={animated}
           component={InformationAccount}
-          
         />
         <Stack.Screen
           name="Information"
+          options={animated}
           component={Information}
-          
         />
         <Stack.Screen
           name="NumberPhone"
+          options={animated}
           component={NumberPhone}
-          
         />
         <Stack.Screen
           name="PhoneVerification"
+          options={animated}
           component={PhoneVerification}
-          
         />
-        <Stack.Screen name="Email" component={Email}  />
+
+        <Stack.Screen name="Email" component={Email} options={animated} />
         <Stack.Screen
           name="EmailVerification"
+          options={animated}
           component={EmailVerification}
-          
         />
         <Stack.Screen
           name="MyPetScreen"
+          options={animated}
           component={MyPetScreen}
-          
         />
         <Stack.Screen
           name="BuyNow"
+          options={animated}
           component={BuyNowScreen}
-          
         />
       </Stack.Navigator>
     </NavigationContainer>
