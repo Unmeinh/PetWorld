@@ -4,8 +4,8 @@ import {
 } from "react-native";
 import React, { useState, useRef, memo } from "react";
 import { useNavigation } from "@react-navigation/native";
-import {useDispatch} from 'react-redux';
-import {fetchDetailProduct} from '../../redux/reducers/filters/filtersReducer';
+import { useDispatch } from 'react-redux';
+import { fetchDetailProduct } from '../../redux/reducers/filters/filtersReducer';
 import Modal from 'react-native-modal';
 import styles from "../../styles/appointment.style";
 import { onAxiosDelete, onAxiosPut } from "../../api/axios.function";
@@ -69,8 +69,10 @@ const MenuAppointment = (route) => {
 
     function onOpenPet() {
         let type = 0;
-        dispatch(fetchDetailProduct({ id: route.idPet, type }));
-        navigation.push('DetailProduct', { type });
+        let pet = {...route.pet};
+        pet.idShop = route.shop;
+        dispatch(fetchDetailProduct({ id: route.pet._id, type }));
+        navigation.push('DetailProduct', { type, item: pet });
     }
 
     async function onCancel() {

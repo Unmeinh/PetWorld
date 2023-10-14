@@ -239,7 +239,7 @@ const AppointmentScreen = () => {
                 </View>
                 <View style={{ height: 15 }} />
                 <MenuAppointment isShow={isShowMenu} status={item.status}
-                    idAppt={item._id} idPet={pet._id} callBackHide={onCallbackHide}
+                    idAppt={item._id} pet={pet} shop={shop} callBackHide={onCallbackHide}
                     onCallbackCancel={onCallbackCancel} onCallbackDelete={onCallbackDelete} />
             </View>
         )

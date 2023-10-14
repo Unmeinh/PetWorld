@@ -24,7 +24,7 @@ const SetAppointment = (route) => {
     const [isLoader, setisLoader] = useState(false);
     const [isShowPicker, setisShowPicker] = useState(false);
     const [inputDatePicker, setinputDatePicker] = useState(new Date());
-    const [inputAmount, setinputAmount] = useState(0);
+    const [inputAmount, setinputAmount] = useState("");
     const [inputLocation, setinputLocation] = useState("");
 
     function onCancel() {
@@ -78,7 +78,7 @@ const SetAppointment = (route) => {
                 idShop: infoShop._id
             }, 'json', true);
         if (res) {
-            setTimeout(() => onCancel(), 500);
+            setTimeout(() => onCancel(), 300);
         }
     }
 

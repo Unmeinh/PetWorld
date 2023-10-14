@@ -11,7 +11,6 @@ import { useDispatch } from 'react-redux';
 import { fetchDetailProduct } from '../../redux/reducers/filters/filtersReducer';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import SetAppointment from '../../component/modals/SetAppointment';
 import ShimmerPlaceHolder from '../../component/layout/ShimmerPlaceHolder';
 import { getDateDefault } from '../../function/functionDate';
 import { onAxiosGet, onAxiosDelete, onAxiosPut } from "../../api/axios.function";
@@ -29,7 +28,6 @@ const DetailAppointment = ({ route }) => {
     const [statusApm, setstatusApm] = useState("Đang hẹn");
     const [srcPet, setsrcPet] = useState(require('../../assets/images/loading.png'));
     const [srcAvatar, setsrcAvatar] = useState(require('../../assets/images/loading.png'));
-    const [isShowSetApm, setisShowSetApm] = useState(false);
     const [isLoader, setisLoader] = useState(true);
     const [isFocusScreen, setisFocusScreen] = useState(false);
     const [canCancel, setcanCancel] = useState(false);
@@ -45,8 +43,10 @@ const DetailAppointment = ({ route }) => {
 
     function onOpenPet() {
         let type = 0;
+        let pet = {...appointment.idPet};
+        pet.idShop = appointment.idShop;
         dispatch(fetchDetailProduct({ id: appointment.idPet._id, type }));
-        navigation.push('DetailProduct', { type });
+        navigation.push('DetailProduct', { type, item: pet });
     }
 
     function onOpenShop() {
@@ -429,12 +429,6 @@ const DetailAppointment = ({ route }) => {
                                 </View>
                                 : <>
                                     <DetailItem />
-                                    {
-                                        (isShowSetApm)
-                                            ? <SetAppointment isShow={isShowSetApm} callBack={() => setisShowSetApm(false)} info={"pet"}
-                                                pet={appointment.idPet} shop={appointment.idShop} />
-                                            : ""
-                                    }
                                 </>
                         }
                     </>
