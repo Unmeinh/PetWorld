@@ -13,7 +13,7 @@ export default function Loading() {
 
 const styles = StyleSheet.create({
   container: {
-    zIndex: 999,
+    zIndex: 9999,
     backgroundColor: 'rgba(20, 20, 20,0.5)',
     justifyContent: 'center',
     alignItems: 'center',

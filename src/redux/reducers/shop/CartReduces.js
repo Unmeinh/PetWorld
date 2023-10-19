@@ -1,6 +1,5 @@
 import {createSlice, createAsyncThunk} from '@reduxjs/toolkit';
 import api from '../../../api/axios.config';
-import {goBack, navigate} from '../../../navigation/rootNavigation';
 const cartSlice = createSlice({
   name: 'cart',
   initialState: {
@@ -60,6 +59,15 @@ const cartSlice = createSlice({
     changeStatus: (state, action) => {
       state.statusChange = action.payload;
     },
+    deleteItemCart: (state, action) => {
+      const newCart = []
+      state.carts.map(item =>{
+        if(!item.isSelected){
+          newCart.push(item)
+        }
+      })
+      state.carts = newCart
+    }
   },
   extraReducers: builder => {
     builder
@@ -122,6 +130,7 @@ export const {
   selectAllItemsShop,
   selectAllItemCart,
   changeStatus,
+  deleteItemCart
 } = cartSlice.actions;
 
 export default cartSlice.reducer;

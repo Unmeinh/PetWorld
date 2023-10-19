@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, StyleSheet, Dimensions, Image, Animated, Easing } from 'react-native';
+import { View, StyleSheet, Dimensions, Image, Animated, Easing, StatusBar } from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import { storageMMKV } from '../../storage/storageMMKV';
 import { useNavigation } from '@react-navigation/native';

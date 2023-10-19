@@ -45,7 +45,7 @@ export default function ItemListCart({data, isSelect}) {
       />
       <Image source={{uri:product?.arrProduct[0]}} style={styles.image} />
       <View style={styles.content}>
-        <Text style={styles.nameProduct}>{product.nameProduct}</Text>
+        <Text style={styles.nameProduct} numberOfLines={2}>{product.nameProduct}</Text>
         <Text>{priceDiscount(product.priceProduct, product.discount)}</Text>
       </View>
       <View style={styles.boxCount}>
@@ -81,6 +81,9 @@ const styles = StyleSheet.create({
   boxCount: {
     flexDirection: 'row',
     marginRight: 10,
+    position:'absolute',
+    bottom:6,
+    right:20
   },
   textMount: {
     width: 22,
@@ -111,6 +114,7 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     justifyContent: 'space-around',
     marginLeft: 10,
+    paddingRight: 100,
   },
   container: {
     height: 80,

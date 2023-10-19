@@ -117,7 +117,8 @@ export default function ShopScreen({navigation, route}) {
                 borderRadius: 8,
                 justifyContent: 'center',
                 alignItems: 'center',
-                top:-3
+                top:-3,
+                right: -3,
               }}>
               <Text style={{fontSize: 12, fontFamily: 'ProductSans'}}>
                 {countCart?.length}
