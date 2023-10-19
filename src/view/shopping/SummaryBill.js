@@ -8,6 +8,7 @@ import {
   Pressable,
   ActivityIndicator,
   TouchableOpacity,
+  ToastAndroid,
 } from 'react-native';
 import React, {useState, useEffect} from 'react';
 import HeaderTitle from '../../component/header/HeaderTitle';
@@ -28,16 +29,16 @@ import {fetchInfoUserNoMessage} from '../../redux/reducers/user/userReducer';
 import {userSelectStatus} from '../../redux/selectors/userSelector';
 import {
   createBill,
+  getPayments,
   setStatusChangeBill,
 } from '../../redux/reducers/shop/billSlice';
 import Loading from '../../component/Loading';
-const payment = [
-  {id: 1, name: 'Thanh toán khi nhận hàng'},
-  {id: 2, name: 'Ví điện tử'},
-];
+import { deleteItemCart } from '../../redux/reducers/shop/CartReduces';
+import { convertCart } from '../../function/helper';
 const {width} = Dimensions.get('screen');
 export default function SummaryBill({navigation}) {
   const result = useSelector(listItemBill);
+
   const [user, district] = useSelector(useLocationSeleted);
   const statusUser = useSelector(userSelectStatus);
   const dispatch = useDispatch();
@@ -45,10 +46,12 @@ export default function SummaryBill({navigation}) {
     price: {discount, priceTotal},
     statusChange,
     status,
+    payments,
   } = useSelector(billSelector);
-  const [loading, setLoading] = useState(false);
   const shop = useSelector(listShopSelector);
+
   const resultCart = useCart(result, shop, user);
+  const [selectedId, setSelectedId] = useState(null);
   const districtSlice = location => {
     let result = '';
     if (location) {
@@ -74,7 +77,6 @@ export default function SummaryBill({navigation}) {
     return money;
   };
   function PayMent() {
-    const [selectedId, setSelectedId] = useState();
     const Item = ({item, onPress, icon, textColor}) => (
       <Pressable
         onPress={onPress}
@@ -84,24 +86,28 @@ export default function SummaryBill({navigation}) {
           marginHorizontal: 10,
           alignItems: 'center',
         }}>
-        <Text style={styles.textDefault}>{item.name}</Text>
+        <Text style={styles.textDefault}>{item.nameMethod}</Text>
         <Ionicons name={icon} color="#F582AE" size={22} />
       </Pressable>
     );
 
     const renderItem = ({item}) => {
       const icon =
-        item.id === selectedId
+        item.type === selectedId
           ? 'radio-button-on-outline'
           : 'radio-button-off-outline';
 
       return (
-        <Item item={item} onPress={() => setSelectedId(item.id)} icon={icon} />
+        <Item
+          item={item}
+          onPress={() => setSelectedId(item.type)}
+          icon={icon}
+        />
       );
     };
     return (
       <FlatList
-        data={payment}
+        data={payments}
         scrollEnabled={false}
         renderItem={renderItem}
         keyExtractor={item => item.id}
@@ -124,11 +130,35 @@ export default function SummaryBill({navigation}) {
       </View>
     );
   }
+
+  const checkValidate = () => {
+    if (selectedId === null) {
+      ToastAndroid.show('Bạn chưa chọn phương thức thanh toán',ToastAndroid.SHORT);
+      return false;
+    }
+    return true;
+  };
+
+  const handleSaveBill = () => {
+    if (checkValidate()) {
+      dispatch(
+        createBill({
+          paymentMethods: selectedId,
+          deliveryStatus: 0,
+          location: user.location,
+          products:convertCart(resultCart,district)
+        }),
+      );
+    }
+  };
+
   useEffect(() => {
     dispatch(fetchInfoUserNoMessage());
+    dispatch(getPayments());
   }, []);
   useEffect(() => {
     if (statusChange) {
+      dispatch(deleteItemCart())
       navigation.navigate('BillScreen', {idName: 3});
     }
   }, [statusChange]);
@@ -140,7 +170,6 @@ export default function SummaryBill({navigation}) {
   }, [navigation]);
   return (
     <View style={styles.container}>
-      {status ? <Loading /> : null}
       <HeaderTitle
         titleHeader="Tóm tắt đơn hàng"
         nav={navigation}
@@ -206,23 +235,12 @@ export default function SummaryBill({navigation}) {
               {(priceTotal + moneyShip()).toLocaleString('vi-VN')} đ
             </Text>
           </View>
-          <TouchableOpacity
-            style={styles.button}
-            onPress={() => {
-              dispatch(
-                createBill({
-                  type: 1,
-                  total: priceTotal + moneyShip(),
-                  paymentMethod: 'Thanh Toán khi nhận hàng',
-                  deliveryStatus: 0,
-                  discountBill: discount,
-                }),
-              );
-            }}>
+          <TouchableOpacity style={styles.button} onPress={handleSaveBill}>
             <Text style={styles.textButton}>Xác nhận</Text>
           </TouchableOpacity>
         </View>
       )}
+    {status ? <Loading /> : null}
     </View>
   );
 }

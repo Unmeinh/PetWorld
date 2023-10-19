@@ -30,6 +30,7 @@ import {
 } from '../../redux/reducers/shop/CartReduces';
 import ShimmerPlaceHolder from '../../component/layout/ShimmerPlaceHolder';
 import SetAppointment from '../../component/modals/SetAppointment';
+import Loading from '../../component/Loading';
 const { width } = Dimensions.get('screen');
 
 function DetailProduct({ navigation, route }) {
@@ -120,7 +121,7 @@ function DetailProduct({ navigation, route }) {
   }, [isVisible]);
   useEffect(() => {
     setCount(countCart?.length);
-  }, [navigation, statusAdd]);
+  }, [navigation, statusAdd,countCart]);
   useEffect(() => {
     const unsubscribe = navigation.addListener('blur', () => {
       dispatch(setStatusMessageCart(''));
@@ -182,20 +183,7 @@ function DetailProduct({ navigation, route }) {
         </AnimatedPressible>
       </Animated.View>
       {statusAdd === 'loading' ? (
-        <View
-          style={[
-            StyleSheet.absoluteFillObject,
-            {
-              zIndex: 2,
-              position: 'absolute',
-              alignItems: 'center',
-              justifyContent: 'center',
-            },
-          ]}>
-          {statusAdd == 'loading' ? (
-            <ActivityIndicator size="large" color="#F582AE" />
-          ) : null}
-        </View>
+        <Loading/>
       ) : null}
       <ScrollView
         style={{ flex: 1, backgroundColor: '#FEF6E4' }}

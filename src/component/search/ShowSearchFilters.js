@@ -14,7 +14,7 @@ export default function ShowSearchFilters({data}) {
           <Text
             style={{
               textAlign: 'center',
-              margin: 20,
+              margin: 10,
               fontSize: 16,
               fontFamily: 'ProductSansBold',
             }}>
