@@ -52,7 +52,6 @@ const userReducer = createSlice({
                     state.data = action.payload.data   
                     state.message = action.payload.message
                     state.status = 'being idle';
-                    goBack()
                 }else{
                     state.status = 'loading';
                 }

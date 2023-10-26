@@ -88,11 +88,11 @@ export default function LoginTab(route) {
 
         const response = await onAxiosPost('user/login', newUser, "Json");
         if (response) {
-            storageMMKV.setValue('login.token', String(response.token));
+            await storageMMKV.setValue('login.token', String(response.token));
             if (rememberMe) {
-                storageMMKV.setValue('login.isLogin', true);
+                await storageMMKV.setValue('login.isLogin', true);
             } else {
-                storageMMKV.setValue('login.isLogin', false);
+                await storageMMKV.setValue('login.isLogin', false);
             }
             if (storageMMKV.getString('login.token') == String(response.token)) {
                 Toast.hide();

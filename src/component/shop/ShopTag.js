@@ -10,7 +10,7 @@ export default function ShopTag({data, isLoading}) {
       <View style={styles.tagContainer}>
         {isLoading === 'idle' ? (
           <View style={styles.img}>
-            <Image source={{uri: data.avatarShop}} style={styles.img} />
+            <Image source={{uri: data?.avatarShop}} style={styles.img} />
             {data.status ? <View style={styles.dot} /> : null}
           </View>
         ) : (

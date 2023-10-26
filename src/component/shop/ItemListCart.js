@@ -2,10 +2,14 @@ import {StyleSheet, Text, View, Image} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useDispatch} from 'react-redux';
-import {minusProduct, plusProduct,selectItem} from '../../redux/reducers/shop/CartReduces';
+import {
+  minusProduct,
+  plusProduct,
+  selectItem,
+} from '../../redux/reducers/shop/CartReduces';
 export default function ItemListCart({data, isSelect}) {
   const dispatch = useDispatch();
-  const product = data.idProduct
+  const product = data.idProduct;
   const [selectChild, setSelectChild] = useState(isSelect);
   const iconSelect = selectChild
     ? 'checkbox-marked-circle'
@@ -14,7 +18,7 @@ export default function ItemListCart({data, isSelect}) {
     if (discount > 0) {
       return (
         <Text style={styles.price}>
-          {(price - (price * discount) / 100).toLocaleString('vi-VN') + 'đ'}
+          {(price - (price * discount) / 100)?.toLocaleString('vi-VN') + 'đ'}
           {'\n'}
           <Text style={styles.discount}>
             {price.toLocaleString('vi-VN') + 'đ'}
@@ -23,13 +27,15 @@ export default function ItemListCart({data, isSelect}) {
       );
     } else {
       return (
-        <Text style={styles.price}>{price.toLocaleString('vi-VN') + 'đ'}</Text>
+        <Text style={styles.price}>{price?.toLocaleString('vi-VN') + 'đ'}</Text>
       );
     }
   };
-  const handleSeletedItem = (product,select) => {
-    dispatch(selectItem({idProduct:product._id,isSelected:select ? false : true})) 
-  }
+  const handleSeletedItem = (product, select) => {
+    dispatch(
+      selectItem({idProduct: product._id, isSelected: select ? false : true}),
+    );
+  };
   useEffect(() => {
     setSelectChild(isSelect);
   }, [isSelect]);
@@ -40,13 +46,27 @@ export default function ItemListCart({data, isSelect}) {
         size={24}
         color={'#F582AE'}
         onPress={() => {
-          handleSeletedItem(product,isSelect)
+          handleSeletedItem(product, isSelect);
         }}
       />
-      <Image source={{uri:product?.arrProduct[0]}} style={styles.image} />
+      <Image
+        source={{
+          uri: product?.arrProduct[0]
+            ? product?.arrProduct[0]
+            : product?.imagesPet[0],
+        }}
+        style={styles.image}
+      />
       <View style={styles.content}>
-        <Text style={styles.nameProduct} numberOfLines={2}>{product.nameProduct}</Text>
-        <Text>{priceDiscount(product.priceProduct, product.discount)}</Text>
+        <Text style={styles.nameProduct} numberOfLines={2}>
+          {product?.nameProduct ? product?.nameProduct : product?.namePet}
+        </Text>
+        <Text>
+          {priceDiscount(
+            product?.priceProduct ? product?.priceProduct : product?.pricePet,
+            product?.discount,
+          )}
+        </Text>
       </View>
       <View style={styles.boxCount}>
         <View style={styles.icon}>
@@ -81,9 +101,9 @@ const styles = StyleSheet.create({
   boxCount: {
     flexDirection: 'row',
     marginRight: 10,
-    position:'absolute',
-    bottom:6,
-    right:20
+    position: 'absolute',
+    bottom: 6,
+    right: 20,
   },
   textMount: {
     width: 22,
@@ -127,7 +147,7 @@ const styles = StyleSheet.create({
     width: 70,
     height: 70,
     borderRadius: 4,
-    marginLeft:8
+    marginLeft: 8,
   },
   price: {
     fontFamily: 'ProductSansBold',

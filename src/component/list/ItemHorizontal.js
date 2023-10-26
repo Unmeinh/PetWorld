@@ -75,7 +75,7 @@ export default function ItemHorizontal({item,type,route}) {
           </Text>
         </View>
 
-        <Text style={{flexDirection: 'row'}}>{rateShow(item?.rate)}</Text>
+        <Text style={{flexDirection: 'row'}}>{rateShow(5)}</Text>
         {priceDiscount(
           item.pricePet ? item.pricePet : item.priceProduct,
           item.discount,

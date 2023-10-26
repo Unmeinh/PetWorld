@@ -19,7 +19,11 @@ export default function UserTag({data}) {
           </Text>
           <Text style={styles.textLocation}>{data.location}</Text>
         </View>
-        <EvillCons name="chevron-right" size={35} color="#001858" />
+        <EvillCons name="chevron-right" size={35} color="#001858" style={{
+          position:'absolute',
+          top:20,
+          right:20,
+        }}/>
       </View>
       <View  style={styles.line}>
       <Image
@@ -36,10 +40,10 @@ const styles = StyleSheet.create({
     ,bottom:15
   },
   textLocation: {
-    width: 160,
     fontFamily: 'ProductSans',
     color: '#001858',
     fontSize: 15,
+    paddingRight:50
   },
   textPhone: {
     fontFamily: 'ProductSans',
