@@ -1,6 +1,7 @@
 import {createSlice, createAsyncThunk} from '@reduxjs/toolkit';
 import api from '../../../api/axios.config';
 import axios from 'axios';
+import {GetBills, GetPayments, InsertBill} from '../../../api/RestApi';
 
 const billSlice = createSlice({
   name: 'bill',
@@ -134,40 +135,40 @@ const billSlice = createSlice({
 });
 
 export const createBill = createAsyncThunk('bill/createBill', async data => {
-  const res = await api.post('/bill-product/insert', data);
-  return res.data;
+  const res = await InsertBill(data);
+  return res;
 });
 export const getPayments = createAsyncThunk('bill/getPayment', async () => {
-  const res = await api.get('/server/payments');
-  return res.data;
+  const res = await GetPayments();
+  return res;
 });
 
 export const getBillUnSuccess = createAsyncThunk(
   'bill/getBillUnSuccess',
   async () => {
-    const res = await api.get('/bill-product/listBillProduct?idStatus=0');
-    return res.data;
+    const res = await GetBills(0);
+    return res;
   },
 );
 export const getBillSuccess = createAsyncThunk(
   'bill/getBillSuccess',
   async () => {
-    const res = await api.get('/bill-product/listBillProduct?idStatus=1');
-    return res.data;
+    const res = await GetBills(1);
+    return res;
   },
 );
 export const getBillDelivering = createAsyncThunk(
   'bill/getBillDelivering',
   async () => {
-    const res = await api.get('/bill-product/listBillProduct?idStatus=2');
-    return res.data;
+    const res = await GetBills(2);
+    return res;
   },
 );
 export const getBillDelivered = createAsyncThunk(
   'bill/getBillDelivered',
   async () => {
-    const res = await api.get('/bill-product/listBillProduct?idStatus=3');
-    return res.data;
+    const res = await GetBills(3);
+    return res;
   },
 );
 

@@ -1,16 +1,23 @@
 import {createAsyncThunk, createSlice} from '@reduxjs/toolkit';
 import api from '../../../api/axios.config';
+import {GetProducts, GetProductsByIdShop} from '../../../api/RestApi';
 
 const listProductSlice = createSlice({
   name: 'listproducts',
-  initialState: {status: 'idle', products: [], message: '',productsShop:[],statusProductsShop:'idle'},
+  initialState: {
+    status: 'idle',
+    products: [],
+    message: '',
+    productsShop: [],
+    statusProductsShop: 'idle',
+  },
   reducers: {
-    handleStatusProducts: (state,action) => {
-      state.status = action.payload
+    handleStatusProducts: (state, action) => {
+      state.status = action.payload;
     },
-    setDataProductsByShop: (state,action) => {
-      state.statusProductsShop = action.payload
-    }
+    setDataProductsByShop: (state, action) => {
+      state.statusProductsShop = action.payload;
+    },
   },
   extraReducers: builder => {
     builder
@@ -19,12 +26,13 @@ const listProductSlice = createSlice({
       })
       .addCase(fetchProducts.fulfilled, (state, action) => {
         if (action.payload.success === true) {
-          state.products = [...state.products,...action.payload.data];
+          state.products = [...state.products, ...action.payload.data];
           state.status = 'idle';
         } else {
           state.status = 'loading';
         }
-      }).addCase(fetchProductsByIdShop.pending, (state, action) => {
+      })
+      .addCase(fetchProductsByIdShop.pending, (state, action) => {
         state.statusProductsShop = 'loading';
       })
       .addCase(fetchProductsByIdShop.fulfilled, (state, action) => {
@@ -34,23 +42,24 @@ const listProductSlice = createSlice({
         } else {
           state.statusProductsShop = 'loading';
         }
-      })
-    }
+      });
+  },
 });
 
 export const fetchProducts = createAsyncThunk(
   'products/fetchProducts',
   async (page = 1) => {
-    const res = await api.get(`/product/list/all?page=${page}`);
-    return res.data;
+    const res = await GetProducts(page);
+    return res;
   },
 );
 export const fetchProductsByIdShop = createAsyncThunk(
   'products/fetchProductsByIdShop',
-  async (id) => {
-    const res = await api.get(`/product/list/shop/${id}`);
-    return res.data;
+  async id => {
+    const res = await GetProductsByIdShop(id);
+    return res;
   },
 );
-export const {handleStatusProducts,setDataProductsByShop} = listProductSlice.actions;
+export const {handleStatusProducts, setDataProductsByShop} =
+  listProductSlice.actions;
 export default listProductSlice.reducer;

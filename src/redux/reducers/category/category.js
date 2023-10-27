@@ -1,5 +1,6 @@
 import {createAsyncThunk, createSlice} from '@reduxjs/toolkit';
 import api from '../../../api/axios.config';
+import { GetCategorys, ListProductByCategory } from '../../../api/RestApi';
 const categorySlice = createSlice({
   name: 'category',
   initialState: {
@@ -45,16 +46,15 @@ const categorySlice = createSlice({
 export const fetchCategorys = createAsyncThunk(
   'category/fetchCategory',
   async () => {
-    const res = await api.get('/category/list/all');
-
-    return res.data;
+    const res = await GetCategorys();
+    return res;
   },
 );
 export const fetchDataFromCategory = createAsyncThunk(
   'category/fetchData',
   async id => {
-    const res = await api.get(`/category/list/product&pet/${id}`);
-    return res.data;
+    const res = await ListProductByCategory(id);
+    return res;
   },
 );
 export const {setDataCategory} = categorySlice.actions;

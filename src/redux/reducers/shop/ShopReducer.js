@@ -1,5 +1,6 @@
 import {createSlice, createAsyncThunk} from '@reduxjs/toolkit';
 import api from '../../../api/axios.config';
+import { GetShops } from '../../../api/RestApi';
 const listShopSlice = createSlice({
   name: 'listShop',
   initialState: {status: 'idle', shops: [], message: ''},
@@ -20,7 +21,7 @@ const listShopSlice = createSlice({
   },
 });
 export const fetchShops = createAsyncThunk('shop/fetchShops', async () => {
-  const res = await api.get('/shop');
-  return res.data;
+  const res = await GetShops();
+  return res;
 });
 export default listShopSlice.reducer;

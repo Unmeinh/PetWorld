@@ -1,5 +1,6 @@
 import {createAsyncThunk, createSlice} from '@reduxjs/toolkit';
 import api from '../../../api/axios.config';
+import {GetDetailProduct, SearchProduct} from '../../../api/RestApi';
 
 const initialState = {
   search: '',
@@ -68,8 +69,8 @@ const filtersReducer = createSlice({
         state.listSearch = [];
       })
       .addCase(fetchSearch.fulfilled, (state, action) => {
-        if(action.payload === ''){
-          return state.listSearch = []
+        if (action.payload === '') {
+          return (state.listSearch = []);
         }
         if (action.payload.success === true) {
           state.listSearch = action.payload.data;
@@ -83,20 +84,18 @@ const filtersReducer = createSlice({
 export const fetchDetailProduct = createAsyncThunk(
   'detail/fetchDetail',
   async action => {
-    const res = await api.get(
-      `/${action.type === 0 ? 'pet' : 'product'}/detail/${action.id}`,
-    );
+    const res = await GetDetailProduct(action);
     return res.data;
   },
 );
 export const fetchSearch = createAsyncThunk(
   'detail/fetchSearch',
-  async action => {
-    if (action === '') {
+  async text => {
+    if (text === '') {
       return '';
     } else {
-      const res = await api.get(`/search/${action}`);
-      return res.data;
+      const res = await SearchProduct(text);
+      return res;
     }
   },
 );

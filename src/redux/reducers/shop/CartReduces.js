@@ -1,5 +1,6 @@
 import {createSlice, createAsyncThunk} from '@reduxjs/toolkit';
 import api from '../../../api/axios.config';
+import {GetCart, InsertProductToCart, UpdateCart} from '../../../api/RestApi';
 const cartSlice = createSlice({
   name: 'cart',
   initialState: {
@@ -60,14 +61,14 @@ const cartSlice = createSlice({
       state.statusChange = action.payload;
     },
     deleteItemCart: (state, action) => {
-      const newCart = []
-      state.carts.map(item =>{
-        if(!item.isSelected){
-          newCart.push(item)
+      const newCart = [];
+      state.carts.map(item => {
+        if (!item.isSelected) {
+          newCart.push(item);
         }
-      })
-      state.carts = newCart
-    }
+      });
+      state.carts = newCart;
+    },
   },
   extraReducers: builder => {
     builder
@@ -104,23 +105,25 @@ const cartSlice = createSlice({
       });
   },
 });
+
 export const fetchCart = createAsyncThunk('cart/fetchCart', async () => {
-  const res = await api.get('/cart');
-  return res.data;
+  const res = await GetCart();
+  return res;
 });
+
 export const addProductToCart = createAsyncThunk(
   'cart/addProduct',
   async action => {
-    const res = await api.post('/cart', action);
-    return res.data;
+    const res = await InsertProductToCart(action);
+    return res;
   },
 );
+
 export const updateCart = createAsyncThunk('cart/update', async action => {
-  const res = await api.post('/cart/update', {
-    data: JSON.stringify(action),
-  });
-  return res.data;
+  const res = await UpdateCart({data: JSON.stringify(action)});
+  return res;
 });
+
 export const {
   addCart,
   plusProduct,
@@ -130,7 +133,7 @@ export const {
   selectAllItemsShop,
   selectAllItemCart,
   changeStatus,
-  deleteItemCart
+  deleteItemCart,
 } = cartSlice.actions;
 
 export default cartSlice.reducer;
