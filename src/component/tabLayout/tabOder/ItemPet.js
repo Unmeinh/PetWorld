@@ -33,7 +33,7 @@ export default function ItemPet({data}) {
         <Text>{priceDiscount(data?.price, data?.discount)}</Text>
       </View>
       <View style={styles.boxCount}>
-        <Text style={[styles.textMount]}>Số lượng {data.amount}</Text>
+        <Text style={[styles.textMount]}>Số lượng: {data.amount}</Text>
       </View>
     </View>
   );

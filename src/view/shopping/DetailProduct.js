@@ -236,6 +236,7 @@ function DetailProduct({navigation, route}) {
               style={{
                 flexDirection: 'row',
                 justifyContent: 'space-between',
+                paddingRight:10
               }}>
               <Text
                 style={{

@@ -1,7 +1,12 @@
 import {createSlice, createAsyncThunk} from '@reduxjs/toolkit';
 import api from '../../../api/axios.config';
 import axios from 'axios';
-import {GetBills, GetPayments, InsertBill} from '../../../api/RestApi';
+import {
+  GetBills,
+  GetCountAllBill,
+  GetPayments,
+  InsertBill,
+} from '../../../api/RestApi';
 
 const billSlice = createSlice({
   name: 'bill',
@@ -24,11 +29,12 @@ const billSlice = createSlice({
     billDelivering: [],
     billDelivered: [],
     billLoading: {
-      billUnsuccess: false,
-      billSuccess: false,
-      billDelivering: false,
-      billDelivered: false,
+      billUnsuccess: true,
+      billSuccess: true,
+      billDelivering: true,
+      billDelivered: true,
     },
+    countBill: {},
   },
   reducers: {
     addPrice: (state, action) => {
@@ -130,6 +136,15 @@ const billSlice = createSlice({
         if (action.payload.success) {
           state.billDelivered = action.payload.data;
         }
+      })
+      .addCase(getAllBillCount.pending, (state, action) => {
+        state.status = true;
+      })
+      .addCase(getAllBillCount.fulfilled, (state, action) => {
+        state.status = false;
+        if (action.payload.success) {
+          state.countBill = action.payload.data;
+        }
       });
   },
 });
@@ -171,6 +186,11 @@ export const getBillDelivered = createAsyncThunk(
     return res;
   },
 );
+
+export const getAllBillCount = createAsyncThunk('bill/getCount', async () => {
+  const res = await GetCountAllBill();
+  return res;
+});
 
 export const getProvince = createAsyncThunk('user/province', async () => {
   const res = await axios.get('https://provinces.open-api.vn/api/p/');

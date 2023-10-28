@@ -96,7 +96,7 @@ export default function LoginTab(route) {
             }
             if (storageMMKV.getString('login.token') == String(response.token)) {
                 Toast.hide();
-                navigation.navigate('NaviTabScreen');
+                navigation.replace('NaviTabScreen');
             }
         } else {
             setisDisableRequest(false);

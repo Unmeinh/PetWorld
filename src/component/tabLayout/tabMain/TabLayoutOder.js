@@ -6,21 +6,20 @@ import Tab2 from '../tabOder/Waitingforthegoods';
 import Tab3 from '../tabOder/Delivering';
 import Tab4 from '../tabOder/Delivered';
 
-const TabLayout = () => {
-  const [index, setIndex] = useState(0);
-  console.log(index);
+const TabLayout = ({tab}) => {
+  const [index, setIndex] = useState(tab ? tab : 0);
   const [routes] = useState([
-    {key: 'first', title: 'Chờ xác nhận'},
-    {key: 'second', title: 'Đã xác nhận'},
-    {key: 'third', title: 'Đang giao'},
-    {key: 'fourth', title: 'Đã giao'},
+    {key: '0', title: 'Chờ xác nhận'},
+    {key: '1', title: 'Đã xác nhận'},
+    {key: '2', title: 'Đang giao'},
+    {key: '3', title: 'Đã giao'},
   ]);
 
   const renderScene = SceneMap({
-    first: () => <Tab1 index={index} />,
-    second: () => <Tab2 index={index} />,
-    third: () => <Tab3 index={index} />,
-    fourth: () => <Tab4 index={index} />,
+    0: () => <Tab1 index={index} />,
+    1: () => <Tab2 index={index} />,
+    2: () => <Tab3 index={index} />,
+    3: () => <Tab4 index={index} />,
   });
 
   const renderTabBar = props => (

@@ -1,6 +1,10 @@
 import {createAsyncThunk, createSlice} from '@reduxjs/toolkit';
 import api from '../../../api/axios.config';
-import {GetProducts, GetProductsByIdShop} from '../../../api/RestApi';
+import {
+  GetProducts,
+  GetProductsByIdShop,
+
+} from '../../../api/RestApi';
 
 const listProductSlice = createSlice({
   name: 'listproducts',
@@ -10,6 +14,7 @@ const listProductSlice = createSlice({
     message: '',
     productsShop: [],
     statusProductsShop: 'idle',
+    listProduct: [],
   },
   reducers: {
     handleStatusProducts: (state, action) => {
@@ -42,7 +47,7 @@ const listProductSlice = createSlice({
         } else {
           state.statusProductsShop = 'loading';
         }
-      });
+      })
   },
 });
 

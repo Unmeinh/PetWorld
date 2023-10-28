@@ -3,6 +3,11 @@ import {Get, Post} from './axios.config';
 export const GetProducts = idPage =>
   Get({endPoint: `/product/list/all?page=${idPage}`});
 
+export const GetProductsMulti = (idPage, sort) =>
+  Get({
+    endPoint: `/product/list/all?page=${idPage}${sort ? '?day=' + sort : ''}`,
+  });
+
 export const GetPets = idPage =>
   Get({endPoint: `/pet/list/all?page=${idPage}`});
 
@@ -36,5 +41,7 @@ export const SearchProduct = key => Get({endPoint: `/search/${key}`});
 
 export const GetCategorys = () => Get({endPoint: `/category/list/all`});
 
-export const ListProductByCategory = (id) =>
+export const ListProductByCategory = id =>
   Get({endPoint: `/category/list/product&pet/${id}`});
+
+export const GetCountAllBill = () => Get({endPoint: `bill-product/getCount`});

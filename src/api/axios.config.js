@@ -38,7 +38,8 @@ const getAxiosInstance = () => {
         if (error.response.status === 401) {
         }
       }
-      return Promise.reject(error);
+      return response.data;
+      // return Promise.reject(error);
     },
   );
 
