@@ -1,4 +1,5 @@
 import {
+  Alert,
   Image,
   ScrollView,
   StyleSheet,
@@ -14,11 +15,17 @@ import ItemProduct from '../../component/tabLayout/tabOder/ItemProduct';
 import ItemPet from '../../component/tabLayout/tabOder/ItemPet';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import moment from 'moment';
+import {cancelBill} from '../../redux/reducers/shop/billSlice';
+import {useDispatch, useSelector} from 'react-redux';
+import Loading from '../../component/Loading';
+import {billSelector} from '../../redux/selector';
 export default function DetailBill({route, navigation}) {
+  const {status} = useSelector(billSelector);
+
   const item = route.params?.item;
   const shop = item?.shopInfo[0];
   const type = item?.petInfo?.length > 0 ? 1 : 0;
-
+  const dispatch = useDispatch();
   const getData = () => {
     if (item?.petInfo?.length > 0) {
       return item?.petInfo;
@@ -36,6 +43,8 @@ export default function DetailBill({route, navigation}) {
       return 'Đang giao';
     } else if (item.deliveryStatus === 3) {
       return 'Giao hàng thành công';
+    } else if (item.deliveryStatus === -1) {
+      return 'Đã hủy';
     }
   };
 
@@ -54,9 +63,29 @@ export default function DetailBill({route, navigation}) {
         keyExtractor={item => item?._id}
         renderItem={({item}) => {
           if (type === 0) {
-            return <ItemProduct data={item[0]} />;
+            return (
+              <ItemProduct
+                data={item[0]}
+                callBack={(id, type) =>
+                  navigation.push('DetailProduct', {
+                    id: id,
+                    type: type,
+                  })
+                }
+              />
+            );
           } else {
-            return <ItemPet data={item} />;
+            return (
+              <ItemPet
+                data={item}
+                callBack={(id, type) =>
+                  navigation.push('DetailProduct', {
+                    id: id,
+                    type: type,
+                  })
+                }
+              />
+            );
           }
         }}
       />
@@ -130,55 +159,73 @@ export default function DetailBill({route, navigation}) {
       <View style={styles.line} />
     </>
   );
+
+  const createTwoButtonAlert = id =>
+    Alert.alert('Xác nhận', 'Bạn chắc chắc muốn hủy đơn hàng', [
+      {
+        text: 'Hủy',
+
+        style: 'cancel',
+      },
+      {text: 'Xác nhận', onPress: () => dispatch(cancelBill(id))},
+    ]);
   return (
-    <ScrollView
-      style={{flex: 1,backgroundColor:'#FEF6E4'}}
-      scrollEnabled={true}
-      showsVerticalScrollIndicator={false}
-      contentContainerStyle={styles.container}>
-      <HeaderTitle
-        titleHeader={renderStatus()}
-        nav={navigation}
-        colorHeader="#FEF6E4"
-      />
-      <UserTag data={item?.locationDetail} disabled={true} />
+    <>
+      <ScrollView
+        style={{flex: 1, backgroundColor: '#FEF6E4'}}
+        scrollEnabled={true}
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={styles.container}>
+        <HeaderTitle
+          titleHeader={renderStatus()}
+          nav={navigation}
+          colorHeader="#FEF6E4"
+        />
+        <UserTag data={item?.locationDetail} disabled={true} />
 
-      {/* renderProduct */}
-      {renderListProduct()}
+        {/* renderProduct */}
+        {renderListProduct()}
 
-      {/* renderTotal */}
-      {renderTotal()}
-      {/* renderDetail */}
-      {renderDetail()}
+        {/* renderTotal */}
+        {renderTotal()}
+        {/* renderDetail */}
+        {renderDetail()}
 
-      <TouchableOpacity
-        disabled={item.deliveryStatus === 0 ? false : true}
-        style={[
-          styles.button,
-          {borderColor: item.deliveryStatus === 0 ? '#F582AE' : '#ccc'},
-          {
-            backgroundColor:
-              item.deliveryStatus === 0 ? '#F582AE' : 'transparent',
-          },
-        ]}>
-        <Text
+        <TouchableOpacity
+          disabled={item.deliveryStatus === 0 ? false : true}
+          onPress={() => {
+            if (item.deliveryStatus === 0) {
+              createTwoButtonAlert(item._id);
+            }
+          }}
           style={[
-            styles.textButton,
+            styles.button,
+            {borderColor: item.deliveryStatus === 0 ? '#F582AE' : '#ccc'},
             {
-              color: item.deliveryStatus === 0 ? '#001858' : '#ccc',
+              backgroundColor:
+                item.deliveryStatus === 0 ? '#F582AE' : 'transparent',
             },
           ]}>
-          Hủy đơn hàng
-        </Text>
-      </TouchableOpacity>
-    </ScrollView>
+          <Text
+            style={[
+              styles.textButton,
+              {
+                color: item.deliveryStatus === 0 ? '#001858' : '#ccc',
+              },
+            ]}>
+            Hủy đơn hàng
+          </Text>
+        </TouchableOpacity>
+      </ScrollView>
+      {status ? <Loading /> : null}
+    </>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     backgroundColor: '#FEF6E4',
-    paddingBottom:10
+    paddingBottom: 10,
   },
   container2: {
     flexDirection: 'row',

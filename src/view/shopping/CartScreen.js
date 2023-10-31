@@ -57,7 +57,7 @@ export default function CartScreen({navigation}) {
               disabled={statusCart === 'loading' ? true : false}
             />
           </Text>
-          <Text style={[styles.fontFamyly, styles.textSelect]}>
+          <Text style={[styles.fontFamyly, styles.textSelect,{color:'#001858'}]}>
             Chọn tất cả
           </Text>
         </View>

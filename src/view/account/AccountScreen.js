@@ -168,7 +168,7 @@ export default function AccountScreen({scrollRef, onScrollView}) {
                   }}>
                   Chờ lấy hàng
                 </Text>
-                {countBill['0'] ? (
+                {countBill['1'] ? (
                   <View style={localStyles.count}>
                     <Text style={localStyles.textCount}>{countBill['1']}</Text>
                   </View>

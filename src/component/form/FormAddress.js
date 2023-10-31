@@ -224,6 +224,7 @@ const styles = StyleSheet.create({
     borderColor: 'rgba(101, 101, 101,0.2)',
     fontFamily: 'ProductSans',
     fontSize: 17,
+    color:'rgba(101, 101, 101,0.5)'
   },
   title: {
     fontFamily: 'ProductSansBold',
@@ -246,6 +247,7 @@ const styles = StyleSheet.create({
   },
   textMedium: {
     fontFamily: 'ProductSans',
+    color:'#b3aaaa'
   },
   dropdown: {
     height: 50,

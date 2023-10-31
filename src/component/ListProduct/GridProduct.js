@@ -36,13 +36,11 @@ function GridProduct({data}) {
         <Pressable
           style={styles.itemContainer}
           onPress={() => {
-            navigation.push('DetailProduct', {item});
+            navigation.push('DetailProduct', {id: item._id, type: item.type});
           }}>
           <Image
             source={{
-              uri: item.arrProduct
-                ? item.arrProduct[0]
-                : item.imagesPet[0],
+              uri: item.arrProduct ? item.arrProduct[0] : item.imagesPet[0],
             }}
             style={styles.image}
           />
@@ -55,10 +53,7 @@ function GridProduct({data}) {
               item.discount,
             )}
           </View>
-          <Text
-            style={styles.sold}>
-            Đã bán {item.quantitySold}
-          </Text>
+          <Text style={styles.sold}>Đã bán {item.quantitySold}</Text>
         </Pressable>
       )}
     />
@@ -67,7 +62,7 @@ function GridProduct({data}) {
 
 const styles = StyleSheet.create({
   content: {padding: 3},
-  image: {width: '100%', height: '70%',borderRadius:4},
+  image: {width: '100%', height: '70%', borderRadius: 4},
   gridView: {
     marginTop: 10,
     flex: 1,
@@ -100,6 +95,12 @@ const styles = StyleSheet.create({
     textDecorationLine: 'line-through',
     fontSize: 13,
   },
-  sold:{position: 'absolute', bottom: 7, right: 7, fontSize: 12,fontFamily:'ProductSans'}
+  sold: {
+    position: 'absolute',
+    bottom: 7,
+    right: 7,
+    fontSize: 12,
+    fontFamily: 'ProductSans',
+  },
 });
 export default React.memo(GridProduct);

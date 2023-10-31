@@ -2,11 +2,14 @@ import {createSlice, createAsyncThunk} from '@reduxjs/toolkit';
 import api from '../../../api/axios.config';
 import axios from 'axios';
 import {
+  CancelBill,
   GetBills,
   GetCountAllBill,
   GetPayments,
   InsertBill,
 } from '../../../api/RestApi';
+import Toast from 'react-native-toast-message';
+import {goBack} from '../../../navigation/rootNavigation';
 
 const billSlice = createSlice({
   name: 'bill',
@@ -28,11 +31,13 @@ const billSlice = createSlice({
     billSuccess: [],
     billDelivering: [],
     billDelivered: [],
+    billCancel: [],
     billLoading: {
       billUnsuccess: true,
       billSuccess: true,
       billDelivering: true,
       billDelivered: true,
+      billCancel: true,
     },
     countBill: {},
   },
@@ -59,9 +64,18 @@ const billSlice = createSlice({
         state.status = true;
       })
       .addCase(createBill.fulfilled, (state, action) => {
-        state.statusChange = true;
         state.status = false;
-        state.bills = action.payload;
+        if (action.payload.success) {
+          state.statusChange = true;
+        } else {
+          Toast.show({
+            type: 'error',
+            position: 'top',
+            text1: action.payload?.message,
+            bottomOffset: 20,
+            autoHide: true,
+          });
+        }
       })
       .addCase(getPayments.pending, (state, action) => {
         state.status = true;
@@ -137,6 +151,15 @@ const billSlice = createSlice({
           state.billDelivered = action.payload.data;
         }
       })
+      .addCase(getBillCanncel.pending, (state, action) => {
+        state.billLoading.billCancel = true;
+      })
+      .addCase(getBillCanncel.fulfilled, (state, action) => {
+        state.billLoading.billCancel = false;
+        if (action.payload.success) {
+          state.billCancel = action.payload.data;
+        }
+      })
       .addCase(getAllBillCount.pending, (state, action) => {
         state.status = true;
       })
@@ -144,6 +167,23 @@ const billSlice = createSlice({
         state.status = false;
         if (action.payload.success) {
           state.countBill = action.payload.data;
+        }
+      })
+      .addCase(cancelBill.pending, (state, action) => {
+        state.status = true;
+      })
+      .addCase(cancelBill.fulfilled, (state, action) => {
+        state.status = false;
+        if (action.payload.success) {
+          state.statusChange = true;
+          goBack();
+          Toast.show({
+            type: 'success',
+            position: 'top',
+            text1: action.payload?.message,
+            bottomOffset: 20,
+            autoHide: true,
+          });
         }
       });
   },
@@ -187,6 +227,10 @@ export const getBillDelivered = createAsyncThunk(
   },
 );
 
+export const getBillCanncel = createAsyncThunk('bill/getCanncel', async () => {
+  const res = await GetBills(-1);
+  return res;
+});
 export const getAllBillCount = createAsyncThunk('bill/getCount', async () => {
   const res = await GetCountAllBill();
   return res;
@@ -208,6 +252,12 @@ export const getWards = createAsyncThunk('user/wards', async id => {
   );
   return res.data;
 });
+
+export const cancelBill = createAsyncThunk('bill/cancelBill', async param => {
+  const res = await CancelBill(param);
+  return res;
+});
+
 export const {addPrice, setShip, setStatusChangeBill, clearLocations} =
   billSlice.actions;
 export default billSlice.reducer;

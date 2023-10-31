@@ -36,11 +36,9 @@ const listPetSlice = createSlice({
         state.statusPetByIdShop = 'loading';
       })
       .addCase(fetchPetsByIdShop.fulfilled, (state, action) => {
+        state.statusPetByIdShop = 'idle';
         if (action.payload.success === true) {
           state.petsByIdShop = action.payload.data;
-          state.statusPetByIdShop = 'idle';
-        } else {
-          state.statusPetByIdShop = 'loading';
         }
       });
   },
@@ -57,7 +55,7 @@ export const fetchPetsByIdShop = createAsyncThunk(
   'pets/fetchPetsByIdShop',
   async id => {
     const res = await GetPetByIdShop(id);
-    return res.data;
+    return res;
   },
 );
 export const {handleStatusPets, setDataPetByShop} = listPetSlice.actions;

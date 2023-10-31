@@ -31,6 +31,8 @@ export default function ItemList({item}) {
       return 'Đang giao';
     } else if (item.deliveryStatus === 3) {
       return 'Giao hàng thành công';
+    } else if (item.deliveryStatus === -1) {
+      return 'Đã hủy';
     }
   };
   return (

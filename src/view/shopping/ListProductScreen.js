@@ -3,7 +3,11 @@ import React, {useCallback, useEffect, useState} from 'react';
 import Icon from 'react-native-vector-icons/Ionicons';
 import FilterSelector from '../../component/filters/filterSelector';
 import ListProductVertical from '../../component/ListProduct/ListProductVertical';
-import {GetPets, GetProductsMulti, ListProductByCategory} from '../../api/RestApi';
+import {
+  GetPets,
+  GetProductsMulti,
+  ListProductByCategory,
+} from '../../api/RestApi';
 export default function ListProductScreen({navigation, route}) {
   const param = route.params;
   const [isLoadingMore, setIsLoadingMore] = useState(false);
@@ -19,12 +23,12 @@ export default function ListProductScreen({navigation, route}) {
     } else if (param.type === 0) {
       return GetPets(page);
     } else if (param.type === 3) {
-      return ListProductByCategory(param.id)
+      return ListProductByCategory(param.id);
     }
   };
   const getList = async () => {
     try {
-      const res = await getFetch()
+      const res = await getFetch();
       if (res?.data?.length > 0) {
         setResult([...result, ...res.data]);
         setRefreshing(false);
@@ -39,7 +43,6 @@ export default function ListProductScreen({navigation, route}) {
     }
   };
 
-  
   useEffect(() => {
     if (enableLoading) {
       if (page === 1) {
@@ -47,7 +50,7 @@ export default function ListProductScreen({navigation, route}) {
       }
       getList();
     }
-  }, [page]);
+  }, [page, enableLoading]);
   const onRefresh = useCallback(() => {
     setPage(1);
     setResult([]);

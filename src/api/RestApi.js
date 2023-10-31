@@ -45,3 +45,16 @@ export const ListProductByCategory = id =>
   Get({endPoint: `/category/list/product&pet/${id}`});
 
 export const GetCountAllBill = () => Get({endPoint: `bill-product/getCount`});
+
+export const AddLocationUser = action =>
+  Post({endPoint: `/cart/addLocations`, data: action});
+
+export const GetDetailUser = () => Get({endPoint: `/user/myDetail`});
+export const EditLocationSelect = action =>
+  Post({endPoint: `/cart/editLocations/${action}`});
+
+export const EditLocationUser = action =>
+  Post({endPoint: `/cart/editLocation`, data: action});
+
+export const CancelBill = params =>
+  Get({endPoint: `/bill-product/cancelBill/${params}`});

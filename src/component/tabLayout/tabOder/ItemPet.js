@@ -1,6 +1,6 @@
-import {StyleSheet, Text, View, Image} from 'react-native';
+import {StyleSheet, Text, View, Image, Pressable} from 'react-native';
 import React from 'react';
-export default function ItemPet({data}) {
+export default function ItemPet({data, callBack}) {
   const priceDiscount = (price, discount) => {
     if (discount > 0) {
       return (
@@ -19,7 +19,13 @@ export default function ItemPet({data}) {
     }
   };
   return (
-    <View style={styles.container}>
+    <Pressable
+      style={styles.container}
+      onPress={() => {
+        if (callBack) {
+          callBack(data._id, 0);
+        }
+      }}>
       <Image
         source={{
           uri: data?.imagesPet[0],
@@ -35,7 +41,7 @@ export default function ItemPet({data}) {
       <View style={styles.boxCount}>
         <Text style={[styles.textMount]}>Số lượng: {data.amount}</Text>
       </View>
-    </View>
+    </Pressable>
   );
 }
 

@@ -145,11 +145,13 @@ function DetailProduct({navigation, route}) {
 
   const getDetailProduct = async () => {
     setStatus('loading');
-    const res = await GetDetailProduct({id, type});
-    if (res) {
-      setProduct(res.data);
+    if (id || type) {
+      const res = await GetDetailProduct({id, type});
+      if (res) {
+        setProduct(res.data);
+      }
+      setStatus('idle');
     }
-    setStatus('idle');
   };
 
   useEffect(() => {
@@ -236,7 +238,7 @@ function DetailProduct({navigation, route}) {
               style={{
                 flexDirection: 'row',
                 justifyContent: 'space-between',
-                paddingRight:10
+                paddingRight: 10,
               }}>
               <Text
                 style={{
@@ -257,31 +259,49 @@ function DetailProduct({navigation, route}) {
             <ShimmerPlaceHolder shimmerStyle={styles.loaderName} />
           )}
           {status === 'idle' ? (
-            <View style={{flexDirection: 'row', marginTop: 5}}>
-              <Icon name="star-sharp" size={16} color="#fcba03" />
-              <Text style={{color: '#001858', marginLeft: 5}}>
-                {product?.rate}/5
-              </Text>
+            <View
+              style={{
+                flexDirection: 'row',
+                marginTop: 5,
+                justifyContent: 'space-between',
+              }}>
+              <View style={{flexDirection: 'row'}}>
+                <Icon name="star-sharp" size={16} color="#fcba03" />
+                <Text style={{color: '#001858', marginLeft: 5}}>
+                  {product?.rate}/5
+                </Text>
 
-              <Text style={{marginLeft: 5, marginRight: 5, color: '#ccc'}}>
-                |
-              </Text>
-              <Text
-                style={{
-                  marginLeft: 5,
-                  marginRight: 5,
-                  color: '#73726e',
-                  fontFamily: 'ProductSans',
-                }}>
-                Đã bán
-              </Text>
+                <Text style={{marginLeft: 5, marginRight: 5, color: '#ccc'}}>
+                  |
+                </Text>
+                <Text
+                  style={{
+                    marginLeft: 5,
+                    marginRight: 5,
+                    color: '#73726e',
+                    fontFamily: 'ProductSans',
+                  }}>
+                  Đã bán
+                </Text>
+                <Text
+                  style={{
+                    marginRight: 5,
+                    color: '#001858',
+                    fontFamily: 'ProductSans',
+                  }}>
+                  {product?.quantitySold?.toString()}
+                </Text>
+              </View>
               <Text
                 style={{
                   marginRight: 5,
                   color: '#001858',
                   fontFamily: 'ProductSans',
                 }}>
-                {product?.quantitySold?.toString()}
+                Số lượng:{' '}
+                {typeof product?.amountProduct != 'undefined'
+                  ? product.amountProduct?.toString()
+                  : product.amountPet?.toString()}
               </Text>
             </View>
           ) : (
@@ -426,7 +446,13 @@ function DetailProduct({navigation, route}) {
           ) : (
             <TouchableOpacity
               onPress={() => {
-                dispatch(addProductToCart({idProduct: product._id, amount: 1}));
+                if (product?.amountProduct > 0) {
+                  dispatch(
+                    addProductToCart({idProduct: product._id, amount: 1}),
+                  );
+                } else {
+                  ToastAndroid.show('Sản phẩm đã hết hàng', ToastAndroid.SHORT);
+                }
               }}
               style={[
                 styles.buttonBooking,
@@ -442,7 +468,13 @@ function DetailProduct({navigation, route}) {
 
           <TouchableOpacity
             style={[styles.buttonBuy, styles.buttonSheet]}
-            onPress={() => navigation.navigate('BuyNow', {item: product})}>
+            onPress={() => {
+              if (product?.amountProduct > 0 || product?.amountPet > 0) {
+                navigation.navigate('BuyNow', {item: product});
+              } else {
+                ToastAndroid.show('Sản phẩm đã hết hàng', ToastAndroid.SHORT);
+              }
+            }}>
             <Text style={[styles.textButton, styles.textButtonBuy]}>
               Mua ngay
             </Text>
@@ -530,6 +562,7 @@ const styles = StyleSheet.create({
   },
   lineHeight: {
     lineHeight: 20,
+    color: '#656565',
   },
   price: {
     fontFamily: 'ProductSansBold',

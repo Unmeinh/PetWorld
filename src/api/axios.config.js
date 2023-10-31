@@ -31,6 +31,8 @@ const getAxiosInstance = () => {
       return response.data;
     },
     async error => {
+      return error.response.data;
+
       if (error.response) {
         // console.log("Error response", error.response);
         if (error.response.status === 400) {
@@ -38,8 +40,8 @@ const getAxiosInstance = () => {
         if (error.response.status === 401) {
         }
       }
-      return response.data;
-      // return Promise.reject(error);
+
+      return Promise.reject(error);
     },
   );
 

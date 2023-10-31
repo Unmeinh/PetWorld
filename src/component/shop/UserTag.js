@@ -28,7 +28,6 @@ export default function UserTag({data, disabled}) {
           color="#001858"
           style={{
             position: 'absolute',
-            top: 20,
             right: 20,
           }}
         />
