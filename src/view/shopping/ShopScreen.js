@@ -101,7 +101,7 @@ export default function ShopScreen({navigation, route}) {
               navigation.navigate('SearchFilters');
             }}>
             <Icon name="search" size={26} color="#001858" />
-            <Text>Tìm kiếm trong cửa hàng</Text>
+            <Text style={{color:'#b3aaaa'}} >Tìm kiếm trong cửa hàng</Text>
           </Pressable>
           <Pressable
             onPress={() => {
@@ -138,7 +138,7 @@ export default function ShopScreen({navigation, route}) {
                 <Icon name="star" size={16} color={'#FFC20F'} />
                 <Text>{data.rate}</Text>
               </View>
-              <Text style={{fontFamily: 'ProductSans'}}>
+              <Text style={{fontFamily: 'ProductSans',color:'#001858'}}>
                 Đã bán {data.quantitySold}
               </Text>
             </View>

@@ -10,22 +10,22 @@ export default function ShopTag({data, isLoading}) {
       <View style={styles.tagContainer}>
         {isLoading === 'idle' ? (
           <View style={styles.img}>
-            <Image source={{uri: data.avatarShop}} style={styles.img} />
-            {data.status ? <View style={styles.dot} /> : null}
+            <Image source={{uri: data?.avatarShop}} style={styles.img} />
+            {data?.status ? <View style={styles.dot} /> : null}
           </View>
         ) : (
           <ShimmerPlaceHolder shimmerStyle={styles.img} />
         )}
         {isLoading === 'idle' ? (
           <Text style={styles.title}>
-            {data.nameShop}
+            {data?.nameShop}
             {'\n'}
             <Text style={styles.titleDes}>
-              {data.status ? 'Đang hoạt động' : 'Offline'}
+              {data?.status ? 'Đang hoạt động' : 'Offline'}
             </Text>
             {'\n'}
             <Icon name="location-pin" size={16} color="#656565" />
-            <Text style={styles.titleDes}> {data.locationShop}</Text>
+            <Text style={styles.titleDes}> {data?.locationShop}</Text>
           </Text>
         ) : (
           <ShimmerPlaceHolder shimmerStyle={styles.title} />
@@ -43,10 +43,10 @@ export default function ShopTag({data, isLoading}) {
       {isLoading === 'idle' ? (
         <View style={styles.desContainer}>
           <Text style={styles.textDes}>
-            {data.quantity} <Text style={styles.textDes2}>Sản phẩm</Text>
+            {data?.quantity} <Text style={styles.textDes2}>Sản phẩm</Text>
           </Text>
           <Text style={styles.textDes}>
-            {data.rate} <Text style={styles.textDes2}>Đánh giá</Text>
+            {data?.rate} <Text style={styles.textDes2}>Đánh giá</Text>
           </Text>
         </View>
       ) : (

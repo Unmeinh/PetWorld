@@ -11,7 +11,7 @@ const {width} = Dimensions.get('screen');
 
 export default function PanigationImage({data, scrollx, index, onPress}) {
   return (
-    <View style={styles.container}>
+    <View style={[styles.container]}>
       <FlatList
         data={data}
         horizontal
@@ -50,13 +50,8 @@ export default function PanigationImage({data, scrollx, index, onPress}) {
 
 const styles = StyleSheet.create({
   container: {
-    position: 'absolute',
     bottom: 0,
-    flexDirection: 'row',
-    width: '100%',
     alignItems: 'center',
-    marginHorizontal:20,
-    paddingRight:20,
     justifyContent: 'center',
   },
   dot: {

@@ -41,6 +41,7 @@ import SettingNotify from '../view/notify/SettingNotify';
 import MyPetScreen from '../view/account/MyPetScreen';
 import {navigationRef} from './rootNavigation';
 import BuyNowScreen from '../view/shopping/BuyNowScreen';
+import DetailBill from '../view/shopping/DetailBill';
 const Stack = createStackNavigator();
 
 export default function StackScreen() {
@@ -114,11 +115,7 @@ export default function StackScreen() {
           options={animated}
         />
         <Stack.Screen name="NewBlog" component={NewBlog} options={animated} />
-        <Stack.Screen
-          name="EditBlog"
-          component={EditBlog}
-          options={animated}
-        />
+        <Stack.Screen name="EditBlog" component={EditBlog} options={animated} />
         <Stack.Screen
           name="DetailProduct"
           component={DetailProduct}
@@ -130,11 +127,7 @@ export default function StackScreen() {
           options={animated}
         />
         <Stack.Screen name="MyPage" component={MyPage} options={animated} />
-        <Stack.Screen
-          name="ViewPage"
-          component={ViewPage}
-          options={animated}
-        />
+        <Stack.Screen name="ViewPage" component={ViewPage} options={animated} />
         <Stack.Screen
           name="ListFollow"
           component={ListFollow}
@@ -170,11 +163,7 @@ export default function StackScreen() {
           options={animated}
           component={InfoManager}
         />
-        <Stack.Screen
-          name="EditUser"
-          component={EditUser}
-          options={animated}
-        />
+        <Stack.Screen name="EditUser" component={EditUser} options={animated} />
         <Stack.Screen
           name="EditAccount"
           options={animated}
@@ -246,6 +235,11 @@ export default function StackScreen() {
           name="BuyNow"
           options={animated}
           component={BuyNowScreen}
+        />
+        <Stack.Screen
+          name="DetailBill"
+          options={animated}
+          component={DetailBill}
         />
       </Stack.Navigator>
     </NavigationContainer>

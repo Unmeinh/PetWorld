@@ -10,7 +10,7 @@ import {
   ToastAndroid,
   ActivityIndicator,
 } from 'react-native';
-import React, { useEffect, useRef, useState } from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {
   listProductSelector,
   selectFilterIdSelector,
@@ -18,7 +18,7 @@ import {
   messageCart,
   listCartSelector,
 } from '../../redux/selector';
-import { useDispatch, useSelector } from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import SliderImage from '../../component/detailProduct/SliderImage';
 import Icon from 'react-native-vector-icons/Ionicons';
 import ShopTag from '../../component/shop/ShopTag';
@@ -31,14 +31,16 @@ import {
 import ShimmerPlaceHolder from '../../component/layout/ShimmerPlaceHolder';
 import SetAppointment from '../../component/modals/SetAppointment';
 import Loading from '../../component/Loading';
-const { width } = Dimensions.get('screen');
+import {GetDetailProduct} from '../../api/RestApi';
+const {width} = Dimensions.get('screen');
 
-function DetailProduct({ navigation, route }) {
-  const { item } = route.params;
-  const type = item.type;
+function DetailProduct({navigation, route}) {
+  const {id, type} = route.params;
   const dispatch = useDispatch();
+  const [product, setProduct] = useState({});
+
   const listProduct = useSelector(listProductSelector);
-  const statusDetail = 'idle';
+  const [status, setStatus] = useState('idle');
   const category = useSelector(selectFilterIdSelector);
   const statusAdd = useSelector(statusAddProductToCart);
   const countCart = useSelector(listCartSelector);
@@ -48,7 +50,11 @@ function DetailProduct({ navigation, route }) {
   const [showDes, setShowDes] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
   const [isShowSetApm, setisShowSetApm] = useState(false);
-  const listImage = item.arrProduct ? item.arrProduct : item.imagesPet;
+
+  const listImage = product?.arrProduct
+    ? product?.arrProduct
+    : product?.imagesPet;
+
   const AnimatedIcon = Animated.createAnimatedComponent(Icon);
   const AnimatedPressible = Animated.createAnimatedComponent(Pressable);
   const handleLike = like ? 'heart' : 'heart-outline';
@@ -89,11 +95,11 @@ function DetailProduct({ navigation, route }) {
     outputRange: ['#FEF6E4', '#f582ae'],
     ext0rapolate: 'clamp',
   });
-  const textColor = scrollY.interpolate({
-    inputRange: [0, HEADER_MAX_HEIGHT],
-    outputRange: ['#f582ae', '#001858'],
-    extrapolate: 'clamp',
-  });
+
+  const onOpenSetAppointment = () => {
+    setisShowSetApm(!isShowSetApm);
+  };
+
   useEffect(() => {
     const slideAnimationAni = Animated.timing(slideAnimation, {
       toValue: isVisible ? 1 : 0,
@@ -119,9 +125,11 @@ function DetailProduct({ navigation, route }) {
       opacityAnimation.setValue(0);
     };
   }, [isVisible]);
+
   useEffect(() => {
     setCount(countCart?.length);
-  }, [navigation, statusAdd,countCart]);
+  }, [navigation, statusAdd, countCart]);
+
   useEffect(() => {
     const unsubscribe = navigation.addListener('blur', () => {
       dispatch(setStatusMessageCart(''));
@@ -135,10 +143,20 @@ function DetailProduct({ navigation, route }) {
     }
   }, [message]);
 
-  function onOpenSetAppointment() {
-    setisShowSetApm(!isShowSetApm);
-  }
+  const getDetailProduct = async () => {
+    setStatus('loading');
+    if (id || type) {
+      const res = await GetDetailProduct({id, type});
+      if (res) {
+        setProduct(res.data);
+      }
+      setStatus('idle');
+    }
+  };
 
+  useEffect(() => {
+    getDetailProduct();
+  }, []);
   return (
     <>
       <Animated.View
@@ -154,14 +172,14 @@ function DetailProduct({ navigation, route }) {
             navigation.goBack();
             setIsVisible(!isVisible);
           }}
-          style={[styles.iconBack, { backgroundColor: headerIconBackground }]}>
+          style={[styles.iconBack, {backgroundColor: headerIconBackground}]}>
           <AnimatedIcon name="arrow-back" size={24} color={headerIcon} />
         </AnimatedPressible>
         <AnimatedPressible
           onPress={() => {
             navigation.navigate('CartScreen');
           }}
-          style={[styles.iconBack, { backgroundColor: headerIconBackground }]}>
+          style={[styles.iconBack, {backgroundColor: headerIconBackground}]}>
           <View
             style={{
               width: 16,
@@ -173,28 +191,26 @@ function DetailProduct({ navigation, route }) {
               alignItems: 'center',
               top: 2,
               right: 0,
-              zIndex: 999
+              zIndex: 999,
             }}>
-            <Text style={{ fontSize: 12, fontFamily: 'ProductSans' }}>
+            <Text style={{fontSize: 12, fontFamily: 'ProductSans'}}>
               {count}
             </Text>
           </View>
           <AnimatedIcon name="cart-outline" size={24} color={headerIcon} />
         </AnimatedPressible>
       </Animated.View>
-      {statusAdd === 'loading' ? (
-        <Loading/>
-      ) : null}
+      {statusAdd === 'loading' ? <Loading /> : null}
       <ScrollView
-        style={{ flex: 1, backgroundColor: '#FEF6E4' }}
-        scrollEnabled={statusDetail === 'idle' ? true : false}
+        style={{flex: 1, backgroundColor: '#FEF6E4'}}
+        scrollEnabled={status === 'idle' ? true : false}
         onScroll={Animated.event(
-          [{ nativeEvent: { contentOffset: { y: scrollY } } }],
-          { useNativeDriver: false },
+          [{nativeEvent: {contentOffset: {y: scrollY}}}],
+          {useNativeDriver: false},
         )}
         scrollEventThrottle={16}>
         <View>
-          {statusDetail === 'idle' ? (
+          {status === 'idle' ? (
             <SliderImage data={listImage} />
           ) : (
             <ShimmerPlaceHolder shimmerStyle={styles.loaderImage} />
@@ -207,21 +223,22 @@ function DetailProduct({ navigation, route }) {
               fontSize: 20,
               color: '#F582AE',
             }}>
-            {statusDetail === 'idle' ? (
+            {status === 'idle' ? (
               priceDiscount(
-                item.pricePet ? item.pricePet : item.priceProduct,
-                item.discount,
+                product?.pricePet ? product?.pricePet : product?.priceProduct,
+                product?.discount,
               )
             ) : (
               <ShimmerPlaceHolder shimmerStyle={styles.loaderPrice} />
             )}
           </Text>
 
-          {statusDetail === 'idle' ? (
+          {status === 'idle' ? (
             <View
               style={{
                 flexDirection: 'row',
                 justifyContent: 'space-between',
+                paddingRight: 10,
               }}>
               <Text
                 style={{
@@ -229,7 +246,7 @@ function DetailProduct({ navigation, route }) {
                   fontSize: 20,
                   color: '#001858',
                 }}>
-                {item.namePet ? item.namePet : item.nameProduct}
+                {product?.namePet ? product?.namePet : product?.nameProduct}
               </Text>
               <Icon
                 onPress={() => setLike(!like)}
@@ -241,32 +258,50 @@ function DetailProduct({ navigation, route }) {
           ) : (
             <ShimmerPlaceHolder shimmerStyle={styles.loaderName} />
           )}
-          {statusDetail === 'idle' ? (
-            <View style={{ flexDirection: 'row', marginTop: 5 }}>
-              <Icon name="star-sharp" size={16} color="#fcba03" />
-              <Text style={{ color: '#001858', marginLeft: 5 }}>
-                {item.rate}/5
-              </Text>
+          {status === 'idle' ? (
+            <View
+              style={{
+                flexDirection: 'row',
+                marginTop: 5,
+                justifyContent: 'space-between',
+              }}>
+              <View style={{flexDirection: 'row'}}>
+                <Icon name="star-sharp" size={16} color="#fcba03" />
+                <Text style={{color: '#001858', marginLeft: 5}}>
+                  {product?.rate}/5
+                </Text>
 
-              <Text style={{ marginLeft: 5, marginRight: 5, color: '#ccc' }}>
-                |
-              </Text>
-              <Text
-                style={{
-                  marginLeft: 5,
-                  marginRight: 5,
-                  color: '#73726e',
-                  fontFamily: 'ProductSans',
-                }}>
-                Đã bán
-              </Text>
+                <Text style={{marginLeft: 5, marginRight: 5, color: '#ccc'}}>
+                  |
+                </Text>
+                <Text
+                  style={{
+                    marginLeft: 5,
+                    marginRight: 5,
+                    color: '#73726e',
+                    fontFamily: 'ProductSans',
+                  }}>
+                  Đã bán
+                </Text>
+                <Text
+                  style={{
+                    marginRight: 5,
+                    color: '#001858',
+                    fontFamily: 'ProductSans',
+                  }}>
+                  {product?.quantitySold?.toString()}
+                </Text>
+              </View>
               <Text
                 style={{
                   marginRight: 5,
                   color: '#001858',
                   fontFamily: 'ProductSans',
                 }}>
-                {item?.quantitySold?.toString()}
+                Số lượng:{' '}
+                {typeof product?.amountProduct != 'undefined'
+                  ? product.amountProduct?.toString()
+                  : product.amountPet?.toString()}
               </Text>
             </View>
           ) : (
@@ -293,7 +328,7 @@ function DetailProduct({ navigation, route }) {
               opacity: 0.5,
               marginTop: 8,
             }}></View>
-          {statusDetail === 'idle' ? (
+          {status === 'idle' ? (
             <Text style={styles.textColor}>Thông tin chi tiết</Text>
           ) : (
             <ShimmerPlaceHolder
@@ -301,7 +336,7 @@ function DetailProduct({ navigation, route }) {
             />
           )}
           <View style={styles.line}></View>
-          {statusDetail === 'idle' ? (
+          {status === 'idle' ? (
             <View style={styles.content}>
               {type === 0 ? (
                 <View
@@ -312,14 +347,14 @@ function DetailProduct({ navigation, route }) {
                   }}>
                   <Text style={styles.lineHeight}>
                     Tên thú cưng:
-                    {item.namePet}
+                    {product.namePet}
                     {'\n'}
-                    Kích cỡ: {item.sizePet} {'\n'}Kích thước: rộng{' '}
-                    {item.weightPet} cao {item.heightPet}
+                    Kích cỡ: {product.sizePet} {'\n'}Kích thước: rộng{' '}
+                    {product.weightPet} cao {product.heightPet}
                   </Text>
                   {showDes ? (
                     <Text style={styles.lineHeight}>
-                      Chi tiết: {item.detailPet}
+                      Chi tiết: {product.detailPet}
                     </Text>
                   ) : (
                     <Text>...</Text>
@@ -328,11 +363,11 @@ function DetailProduct({ navigation, route }) {
               ) : (
                 <Text style={styles.lineHeight}>
                   Tên sản phẩm:
-                  {item?.nameProduct}
+                  {product?.nameProduct}
                   {'\n'}
                   {showDes ? (
                     <Text style={styles.lineHeight}>
-                      Chi tiết: {item?.detailProduct}
+                      Chi tiết: {product?.detailProduct}
                     </Text>
                   ) : (
                     <Text>...</Text>
@@ -350,8 +385,8 @@ function DetailProduct({ navigation, route }) {
               />
             </>
           )}
-          <View style={[styles.line, { marginTop: 8 }]}></View>
-          {statusDetail === 'idle' ? (
+          <View style={[styles.line, {marginTop: 8}]}></View>
+          {status === 'idle' ? (
             <TouchableOpacity
               onPress={() => setShowDes(!showDes)}
               style={{
@@ -360,7 +395,7 @@ function DetailProduct({ navigation, route }) {
                 justifyContent: 'center',
                 marginTop: 8,
               }}>
-              <Text style={{ fontFamily: 'ProductSans', color: '#F582AE' }}>
+              <Text style={{fontFamily: 'ProductSans', color: '#F582AE'}}>
                 {showDes ? 'Thu gọn' : 'Xem thêm'}
               </Text>
               <Icon name={iconDes} size={24} color="#F582AE" />
@@ -375,7 +410,7 @@ function DetailProduct({ navigation, route }) {
               marginTop: 8,
             }}
           />
-          <ShopTag data={item.idShop} isLoading={statusDetail} />
+          <ShopTag data={product?.idShop} isLoading={status} />
           <View
             style={{
               width: width,
@@ -385,24 +420,25 @@ function DetailProduct({ navigation, route }) {
               marginTop: 8,
             }}
           />
-          <View style={{ marginBottom: 10 }}>
+          <View style={{marginBottom: 10}}>
             <ListHorizontal
               data={listProduct}
               title="Sản phẩm liên quan"
-              isLoader={statusDetail}
+              isLoader={status}
               type={1}
             />
           </View>
         </Animated.View>
       </ScrollView>
-      {statusDetail === 'idle' ? (
+      {status === 'idle' ? (
         <View style={styles.bottomButton}>
           <TouchableOpacity style={[styles.buttonContact, styles.buttonSheet]}>
             <Icon name="chatbubbles-outline" size={24} color={'#001858'} />
             <Text style={styles.textButton}> Liên hệ</Text>
           </TouchableOpacity>
           {type === 0 ? (
-            <TouchableOpacity onPress={onOpenSetAppointment}
+            <TouchableOpacity
+              onPress={onOpenSetAppointment}
               style={[styles.buttonBooking, styles.buttonSheet]}>
               <Icon name="bookmarks-outline" size={22} color={'#001858'} />
               <Text style={styles.textButton}>Đặt lịch</Text>
@@ -410,15 +446,21 @@ function DetailProduct({ navigation, route }) {
           ) : (
             <TouchableOpacity
               onPress={() => {
-                dispatch(addProductToCart({ idProduct: item._id, amount: 1 }));
+                if (product?.amountProduct > 0) {
+                  dispatch(
+                    addProductToCart({idProduct: product._id, amount: 1}),
+                  );
+                } else {
+                  ToastAndroid.show('Sản phẩm đã hết hàng', ToastAndroid.SHORT);
+                }
               }}
               style={[
                 styles.buttonBooking,
                 styles.buttonSheet,
-                { flexDirection: category === 1 ? 'row' : 'column' },
+                {flexDirection: category === 1 ? 'row' : 'column'},
               ]}>
               <Icon name="cart-outline" size={24} color={'#001858'} />
-              <Text style={[styles.textButton, { fontSize: 12 }]}>
+              <Text style={[styles.textButton, {fontSize: 12}]}>
                 Thêm vào giỏ hàng
               </Text>
             </TouchableOpacity>
@@ -426,19 +468,29 @@ function DetailProduct({ navigation, route }) {
 
           <TouchableOpacity
             style={[styles.buttonBuy, styles.buttonSheet]}
-            onPress={() => navigation.navigate('BuyNow', { item: item })}>
+            onPress={() => {
+              if (product?.amountProduct > 0 || product?.amountPet > 0) {
+                navigation.navigate('BuyNow', {item: product});
+              } else {
+                ToastAndroid.show('Sản phẩm đã hết hàng', ToastAndroid.SHORT);
+              }
+            }}>
             <Text style={[styles.textButton, styles.textButtonBuy]}>
               Mua ngay
             </Text>
           </TouchableOpacity>
         </View>
       ) : null}
-      {
-        (isShowSetApm && type == 0)
-          ? <SetAppointment isShow={isShowSetApm} callBack={onOpenSetAppointment}
-            pet={item} shop={item.idShop} />
-          : ""
-      }
+      {isShowSetApm && type == 0 ? (
+        <SetAppointment
+          isShow={isShowSetApm}
+          callBack={onOpenSetAppointment}
+          pet={product}
+          shop={product.idShop}
+        />
+      ) : (
+        ''
+      )}
     </>
   );
 }
@@ -510,6 +562,7 @@ const styles = StyleSheet.create({
   },
   lineHeight: {
     lineHeight: 20,
+    color: '#656565',
   },
   price: {
     fontFamily: 'ProductSansBold',

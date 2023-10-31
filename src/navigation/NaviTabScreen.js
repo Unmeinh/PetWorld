@@ -18,7 +18,7 @@ import Chats from '../view/chat/Chats';
 const TabArr = [
     { route: 'Home', label: 'Home', icon: 'home', component: HomeScreen, color: '#8BD3DD', alphaClr: '#F3D2C1' },
     { route: 'Blog', label: 'Blog', icon: 'blog', component: BlogScreen, color: '#8BD3DD', alphaClr: '#F3D2C1' },
-    { route: 'Chat', label: 'Chat', icon: 'comment-alt', component: Chats, color: '#8BD3DD', alphaClr: '#F3D2C1' },
+    // { route: 'Chat', label: 'Chat', icon: 'comment-alt', component: Chats, color: '#8BD3DD', alphaClr: '#F3D2C1' },
     { route: 'Notify', label: 'Notify', icon: 'bell', component: NotifyScreen, color: '#8BD3DD', alphaClr: '#F3D2C1' },
     { route: 'Account', label: 'Account', icon: 'id-badge', component: AccountScreen, color: '#8BD3DD', alphaClr: '#F3D2C1' },
 ];
@@ -151,7 +151,7 @@ export default function NaviTabScreen({navigation}) {
                         translateX: startValue,
                     },],
             }}>
-                <PetAISupport />
+                {/* <PetAISupport /> */}
             </Animated.View>
         </View>
 

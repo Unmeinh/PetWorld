@@ -1,10 +1,4 @@
-import {
-  StyleSheet,
-  Text,
-  View,
-  Image,
-  TouchableHighlight,
-} from 'react-native';
+import {StyleSheet, Text, View, Image, TouchableHighlight} from 'react-native';
 import React from 'react';
 import Icon from 'react-native-vector-icons/AntDesign';
 import {SharedElement} from 'react-navigation-shared-element';
@@ -53,7 +47,7 @@ export default function ItemProductVertical({item}) {
         activeOpacity={0.7}
         underlayColor="#00185830"
         onPress={() => {
-          navigation.push('DetailProduct',{item});
+          navigation.push('DetailProduct', {id: item._id, type: item.type});
         }}>
         <View
           style={{
@@ -74,7 +68,7 @@ export default function ItemProductVertical({item}) {
             {discountShow(item?.discount)}
 
             <Text
-            numberOfLines={1}
+              numberOfLines={1}
               style={{
                 fontFamily: 'ProductSansBold',
                 fontSize: 16,

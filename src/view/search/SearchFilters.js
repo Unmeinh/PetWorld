@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   FlatList,
 } from 'react-native';
-import React, {useState, useTransition} from 'react';
+import React, {useEffect, useState, useTransition} from 'react';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {useDispatch, useSelector} from 'react-redux';
 import ShowSearchFilters from '../../component/search/ShowSearchFilters';
@@ -21,8 +21,27 @@ const ShimmerPlaceHolder = createShimmerPlaceholder(LinearGradient);
 export default function SearchFilters({navigation}) {
   const dispatch = useDispatch();
   const listSearch = useSelector(searchFilterSelector);
-  const [isPending, startTransition] = useTransition();
-  const [search,setSearch] = useState('');
+  const [search, setSearch] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [searchTimeout, setSearchTimeout] = useState(null);
+  const handleSearch = text => {
+    setSearch(text);
+
+    setLoading(true);
+    if (searchTimeout) {
+      clearTimeout(searchTimeout);
+    }
+    setSearchTimeout(setTimeout(() => dispatch(fetchSearch(text)), 500));
+    setLoading(false);
+  };
+  useEffect(() => {
+    // Cleanup khi component unmount
+    return () => {
+      if (searchTimeout) {
+        clearTimeout(searchTimeout);
+      }
+    };
+  }, []);
   return (
     <View style={{backgroundColor: '#FEF6E4', height: '100%'}}>
       <SafeAreaView
@@ -51,16 +70,13 @@ export default function SearchFilters({navigation}) {
           <TextInput
             placeholder="Tìm kiếm"
             value={search}
-            onChangeText={text => {
-              setSearch(text)
-              startTransition(() => dispatch(fetchSearch(text)));
-            }}
+            onChangeText={handleSearch}
             style={{flexGrow: 1}}
           />
         </View>
       </SafeAreaView>
 
-      {listSearch?.status === 'loading' || isPending ? (
+      {listSearch?.status === 'loading' || loading ? (
         <FlatList
           data={listfakeloader}
           showsVerticalScrollIndicator={false}

@@ -33,8 +33,8 @@ import {
   setStatusChangeBill,
 } from '../../redux/reducers/shop/billSlice';
 import Loading from '../../component/Loading';
-import { deleteItemCart } from '../../redux/reducers/shop/CartReduces';
-import { convertCart } from '../../function/helper';
+import {deleteItemCart} from '../../redux/reducers/shop/CartReduces';
+import {convertCart} from '../../function/helper';
 const {width} = Dimensions.get('screen');
 export default function SummaryBill({navigation}) {
   const result = useSelector(listItemBill);
@@ -133,7 +133,10 @@ export default function SummaryBill({navigation}) {
 
   const checkValidate = () => {
     if (selectedId === null) {
-      ToastAndroid.show('Bạn chưa chọn phương thức thanh toán',ToastAndroid.SHORT);
+      ToastAndroid.show(
+        'Bạn chưa chọn phương thức thanh toán',
+        ToastAndroid.SHORT,
+      );
       return false;
     }
     return true;
@@ -145,8 +148,12 @@ export default function SummaryBill({navigation}) {
         createBill({
           paymentMethods: selectedId,
           deliveryStatus: 0,
-          location: user.location,
-          products:convertCart(resultCart,district)
+          locationDetail: {
+            fullName: user.fullName,
+            phoneNumber: user.phoneNumber,
+            location: user.location,
+          },
+          products: convertCart(resultCart, district),
         }),
       );
     }
@@ -158,7 +165,7 @@ export default function SummaryBill({navigation}) {
   }, []);
   useEffect(() => {
     if (statusChange) {
-      dispatch(deleteItemCart())
+      dispatch(deleteItemCart());
       navigation.navigate('BillScreen', {idName: 3});
     }
   }, [statusChange]);
@@ -240,7 +247,7 @@ export default function SummaryBill({navigation}) {
           </TouchableOpacity>
         </View>
       )}
-    {status ? <Loading /> : null}
+      {status ? <Loading /> : null}
     </View>
   );
 }

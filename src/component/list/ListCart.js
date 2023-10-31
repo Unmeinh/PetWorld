@@ -17,7 +17,12 @@ function ListCart({data}) {
               alignItems: 'center',
               marginTop: 20,
             }}>
-            <Text style={{fontFamily: 'ProductSansBold', fontSize: 18}}>
+            <Text
+              style={{
+                fontFamily: 'ProductSansBold',
+                fontSize: 18,
+                color: '#001858',
+              }}>
               Không có sản phẩm nào trong giỏ hàng
             </Text>
           </View>
