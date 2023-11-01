@@ -1,4 +1,4 @@
-import {StyleSheet, Text, View, Image} from 'react-native';
+import {StyleSheet, Text, View, Image, Pressable} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useDispatch} from 'react-redux';
@@ -7,8 +7,11 @@ import {
   plusProduct,
   selectItem,
 } from '../../redux/reducers/shop/CartReduces';
+import Toast from 'react-native-toast-message';
+import {useNavigation} from '@react-navigation/native';
 export default function ItemListCart({data, isSelect}) {
   const dispatch = useDispatch();
+  const navigation = useNavigation();
   const product = data.idProduct;
   const [selectChild, setSelectChild] = useState(isSelect);
   const iconSelect = selectChild
@@ -49,25 +52,34 @@ export default function ItemListCart({data, isSelect}) {
           handleSeletedItem(product, isSelect);
         }}
       />
-      <Image
-        source={{
-          uri: product?.arrProduct[0]
-            ? product?.arrProduct[0]
-            : product?.imagesPet[0],
-        }}
-        style={styles.image}
-      />
-      <View style={styles.content}>
-        <Text style={styles.nameProduct} numberOfLines={2}>
-          {product?.nameProduct ? product?.nameProduct : product?.namePet}
-        </Text>
-        <Text>
-          {priceDiscount(
-            product?.priceProduct ? product?.priceProduct : product?.pricePet,
-            product?.discount,
-          )}
-        </Text>
-      </View>
+      <Pressable
+        style={styles.container}
+        onPress={() =>
+          navigation.push('DetailProduct', {
+            id: product._id,
+            type: product.type,
+          })
+        }>
+        <Image
+          source={{
+            uri: product?.arrProduct[0]
+              ? product?.arrProduct[0]
+              : product?.imagesPet[0],
+          }}
+          style={styles.image}
+        />
+        <View style={styles.content}>
+          <Text style={styles.nameProduct} numberOfLines={2}>
+            {product?.nameProduct ? product?.nameProduct : product?.namePet}
+          </Text>
+          <Text>
+            {priceDiscount(
+              product?.priceProduct ? product?.priceProduct : product?.pricePet,
+              product?.discount,
+            )}
+          </Text>
+        </View>
+      </Pressable>
       <View style={styles.boxCount}>
         <View style={styles.icon}>
           <Text>
@@ -88,7 +100,18 @@ export default function ItemListCart({data, isSelect}) {
               name="plus"
               size={16}
               color={'#001858'}
-              onPress={() => dispatch(plusProduct(product._id))}
+              onPress={() => {
+                if (product?.amountProduct > data.amount) {
+                  dispatch(plusProduct(product._id));
+                } else {
+                  Toast.show({
+                    type: 'error',
+                    autoHide: 'true',
+                    text1: 'Số lượng trong kho không đủ',
+                    position: 'top',
+                  });
+                }
+              }}
             />
           </Text>
         </View>

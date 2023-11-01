@@ -15,6 +15,7 @@ const initialState = {
   message: '',
   selectId: '',
   followType: '',
+  setChangeData: false,
 };
 
 const userReducer = createSlice({
@@ -27,7 +28,9 @@ const userReducer = createSlice({
     setMessageUser: (state, action) => {
       state.message = action.payload;
     },
-    setDataUser: (state, action) => {},
+    setChangeData: (state, action) => {
+      state.setChangeData = action.payload;
+    },
   },
   extraReducers: builder => {
     builder
@@ -58,6 +61,7 @@ const userReducer = createSlice({
       })
       .addCase(addLocationUser.fulfilled, (state, action) => {
         if (action.payload.success) {
+          state.setChangeData = true;
           state.data = action.payload.data;
           state.message = action.payload.message;
           state.status = 'being idle';
@@ -70,6 +74,7 @@ const userReducer = createSlice({
       })
       .addCase(editLocationUser.fulfilled, (state, action) => {
         if (action.payload.success) {
+          state.setChangeData = true;
           state.data = action.payload.data;
           state.message = action.payload.message;
           state.status = 'being idle';
@@ -151,5 +156,5 @@ export const fetchInfoUserNoMessage = createAsyncThunk(
     return res;
   },
 );
-export const {setMessageUser} = userReducer.actions;
+export const {setMessageUser,setChangeData} = userReducer.actions;
 export default userReducer.reducer;
