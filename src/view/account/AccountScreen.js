@@ -231,13 +231,12 @@ export default function AccountScreen({scrollRef, onScrollView}) {
                 style={localStyles.rowUtilities}
                 onPress={() => {
                   // Handle the press event here
-                  console.log('Item pressed:', item.text);
                   // Example: navigate to another screen
                   if (item.text === 'Thú cưng của tôi') {
                     navigation.navigate('MyPetScreen');
-                  } else item.text === 'Trợ giúp và yêu cầu hỗ trợ';
+                  } else item.text === 'Đã thích';
                   {
-                    navigation.navigate(''); // Handle other cases
+                    navigation.navigate('Favorite'); // Handle other cases
                   }
                 }}>
                 <View style={localStyles.rowItemUtilities}>

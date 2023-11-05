@@ -43,6 +43,7 @@ import {navigationRef} from './rootNavigation';
 import BuyNowScreen from '../view/shopping/BuyNowScreen';
 import DetailBill from '../view/shopping/DetailBill';
 import MomoPayment from '../payment/MomoPayment';
+import Favorite from '../view/account/Favorite';
 const Stack = createStackNavigator();
 
 export default function StackScreen() {
@@ -247,6 +248,7 @@ export default function StackScreen() {
           options={animated}
           component={MomoPayment}
         />
+        <Stack.Screen name="Favorite" options={animated} component={Favorite} />
       </Stack.Navigator>
     </NavigationContainer>
   );

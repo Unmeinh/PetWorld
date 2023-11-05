@@ -42,6 +42,7 @@
     "react-native-otp-textinput": "^1.1.1",
     "react-native-otp-verify": "^1.1.6",
     "react-native-pager-view": "^6.2.0",
+    "react-native-permissions": "^3.10.1",
     "react-native-progress": "oblador/react-native-progress#pull/258/head",
     "react-native-reanimated": "^3.4.2",
     "react-native-reanimated-carousel": "^3.5.1",
