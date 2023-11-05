@@ -1,13 +1,24 @@
 import React, { useState } from 'react';
+import { useEffect } from 'react';
 import { View, Text } from 'react-native';
 import { TabView, SceneMap, TabBar } from 'react-native-tab-view';
-import Tab1 from '../tabNotify/NotifyAll';
+import { fetchNotices } from '../../../redux/reducers/notice/NoticeReducer';
+import { useSelector, useDispatch } from "react-redux";
+import { listNotice } from '../../../redux/selector';
+import NotifyAll from '../tabNotify/NotifyAll';
 import Tab2 from '../tabNotify/NotifyRemind';
 import Tab3 from '../tabNotify/NotifyRead';
 import Tab4 from '../tabNotify/NotifyUnRead';
 
 
+
 const TabLayout = () => {
+  // const dispatch = useDispatch();
+  // const notices = useSelector(listNotice);
+  // useEffect(() => {
+  //   dispatch(fetchNotices());
+  // }, [dispatch]);
+  // console.log("Notices TabLayout:", notices);
   const [index, setIndex] = useState(0);
   const [routes] = useState([
     { key: 'first', title: 'Tất cả' },
@@ -17,7 +28,7 @@ const TabLayout = () => {
   ]);
 
   const renderScene = SceneMap({
-    first: Tab1,
+    first: NotifyAll,
     second: Tab2,
     third: Tab3,
     fourth: Tab4,

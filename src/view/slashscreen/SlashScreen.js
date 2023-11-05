@@ -193,7 +193,7 @@ export default function SplashScreen() {
             {left: position * (dauchanContainerWidth + stepDistance)},
           ]}>
           <Image
-            source={require('../../assets/images/logoApp/dauchan.png')}
+            source={require('../../assets/images/logoApp/footprint.png')}
             style={[
               styles.dauchanImage,
               {
