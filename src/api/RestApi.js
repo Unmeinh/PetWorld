@@ -58,3 +58,5 @@ export const EditLocationUser = action =>
 
 export const CancelBill = params =>
   Get({endPoint: `/bill-product/cancelBill/${params}`});
+
+export const GetAllNotice = () => Get({endPoint: `notice/list/all`});
