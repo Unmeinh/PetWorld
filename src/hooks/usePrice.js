@@ -1,4 +1,5 @@
 import {useMemo} from 'react';
+import toastStyle from '../styles/toast.style';
 
 export const usePrice = cart => {
   const data = useMemo(() => {
@@ -14,7 +15,8 @@ export const usePrice = cart => {
         }
       });
     }
-    return [total, discount];
+    const result = total - (total - discount)
+    return [result,total - discount];
   },[cart]);
   return data;
 };

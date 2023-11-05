@@ -8,7 +8,7 @@ let axiosAPi = axios.create();
 
 const getToken = async () => {
   const token = await storageMMKV.getString('login.token');
-  return token != '' ? `Bearer ${token}` : undefined;
+  return token != '' ? `Bearer ${token}` : undefined;s
 };
 axiosAPi.defaults.baseURL = apiURL;
 (async () => {

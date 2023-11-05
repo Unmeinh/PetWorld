@@ -1,18 +1,9 @@
-import {
-  StyleSheet,
-  Text,
-  View,
-  TouchableOpacity,
-  Image,
-  TouchableHighlight,
-} from 'react-native';
+import {StyleSheet, Text, View, Image, TouchableHighlight} from 'react-native';
 import React from 'react';
 import Icon from 'react-native-vector-icons/AntDesign';
-import {useSelector} from 'react-redux';
-import {selectFilterIdSelector} from '../../redux/selector';
 import {SharedElement} from 'react-navigation-shared-element';
 import {useNavigation} from '@react-navigation/native';
-export default function ItemProductVertical({item, disPatchIdProduct}) {
+export default function ItemProductVertical({item}) {
   const navigation = useNavigation();
   const priceDiscount = (price, discount) => {
     if (discount > 0) {
@@ -56,8 +47,7 @@ export default function ItemProductVertical({item, disPatchIdProduct}) {
         activeOpacity={0.7}
         underlayColor="#00185830"
         onPress={() => {
-          disPatchIdProduct(item._id);
-          navigation.navigate('DetailProduct');
+          navigation.push('DetailProduct', {id: item._id, type: item.type});
         }}>
         <View
           style={{
@@ -78,6 +68,7 @@ export default function ItemProductVertical({item, disPatchIdProduct}) {
             {discountShow(item?.discount)}
 
             <Text
+              numberOfLines={1}
               style={{
                 fontFamily: 'ProductSansBold',
                 fontSize: 16,

@@ -2,27 +2,32 @@ import {
   StyleSheet,
   Text,
   View,
-  FlatList,
   Dimensions,
   Pressable,
   ActivityIndicator,
 } from 'react-native';
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import HeaderTitle from '../../component/header/HeaderTitle';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useSelector, useDispatch} from 'react-redux';
 import {
   listCartSelector,
-  listProductSelector,
   listShopSelector,
   listCartStatusSelector,
   listShopStatusSelector,
 } from '../../redux/selector';
 import useCart from '../../hooks/useCart';
 import ListCart from '../../component/list/ListCart';
-import {fetchCart} from '../../redux/reducers/shop/CartReduces';
+import {
+  changeStatus,
+  fetchCart,
+  selectAllItemCart,
+  updateCart,
+} from '../../redux/reducers/shop/CartReduces';
 import {fetchShops} from '../../redux/reducers/shop/ShopReducer';
-import { usePrice } from '../../hooks/usePrice';
+import {usePrice} from '../../hooks/usePrice';
+import {addPrice} from '../../redux/reducers/shop/billSlice';
+import Loading from '../../component/Loading';
 const {width} = Dimensions.get('screen');
 export default function CartScreen({navigation}) {
   const dispatch = useDispatch();
@@ -30,14 +35,13 @@ export default function CartScreen({navigation}) {
   const resultShops = useSelector(listShopSelector);
   const statusCart = useSelector(listCartStatusSelector);
   const statusShops = useSelector(listShopStatusSelector);
-  const [total,discount] = usePrice(result)
+  const {statusUpdate, statusChange} = useSelector(state => state.listCart);
+  const [selectedAll, setSelectedAll] = useState(checkSelected);
+  const [total, discount] = usePrice(result);
   const resultCart = useCart(result, resultShops);
-  useEffect(() => {
-    dispatch(fetchCart());
-    dispatch(fetchShops());
-  }, []);
-  function Bottom({total,discount}) {
-    const [isSelect, setIsSelect] = useState(() => false);
+  const [actionNavigation,setActionNavigation] = useState('');
+  function Bottom({total, discount, isSelectAll}) {
+    const [isSelect, setIsSelect] = useState(isSelectAll);
     const iconSelect = isSelect
       ? 'checkbox-marked-circle'
       : 'checkbox-blank-circle-outline';
@@ -49,43 +53,91 @@ export default function CartScreen({navigation}) {
               name={iconSelect}
               size={24}
               color="#F582AE"
-              onPress={() => setIsSelect(!isSelect)}
+              onPress={() => dispatch(selectAllItemCart())}
+              disabled={statusCart === 'loading' ? true : false}
             />
           </Text>
-          <Text style={[styles.fontFamyly, styles.textSelect]}>
+          <Text style={[styles.fontFamyly, styles.textSelect,{color:'#001858'}]}>
             Chọn tất cả
           </Text>
         </View>
         <View style={styles.total}>
-          <Text style={[styles.fontFamyly, styles.textTotal]}>{discount.toLocaleString('vi-VN')} đ</Text>
+          <Text style={[styles.fontFamyly, styles.textTotal]}>
+            {total.toLocaleString('vi-VN')} đ
+          </Text>
           <Text style={[styles.fontFamyly, styles.textDiscont]}>
-            Tiết kiệm {(total-discount).toLocaleString('vi-VN')} đ
+            Tiết kiệm {discount.toLocaleString('vi-VN')} đ
           </Text>
         </View>
         <Pressable
           style={styles.button}
-          onPress={() => navigation.navigate('SummaryBill')}>
-          <Text style={[styles.fontFamyly, styles.textButton]}>
-            Thanh toán (3)
-          </Text>
+          disabled={statusCart === 'loading' ? true : false}
+          onPress={() => {
+            dispatch(addPrice({priceTotal: total, discount: discount}));
+            dispatch(updateCart(result));
+            setActionNavigation('navigate')
+          }}>
+          <Text style={[styles.fontFamyly, styles.textButton]}>Thanh toán</Text>
         </Pressable>
       </View>
     );
   }
+  function checkSelected() {
+    const isSelect = result?.every(item => item.isSelected === true);
+    return isSelect;
+  }
+  useEffect(() => {
+    if (statusCart == 'idle') {
+      dispatch(fetchCart());
+    }
+    dispatch(fetchShops());
+  }, []);
+  useEffect(() => {
+    setSelectedAll(checkSelected());
+  }, [result]);
+  useEffect(() => {
+    if (statusChange) {
+      if(actionNavigation === 'navigate'){
+        navigation.navigate('SummaryBill');
+      }
+      if(actionNavigation === 'goback'){
+        navigation.goBack()
+      }
+    }
+  }, [statusChange]);
+  useEffect(() => {
+    const sub = navigation.addListener('blur', () => {
+      dispatch(changeStatus(false));
+      setActionNavigation('')
+    });
+    return sub;
+  }, [navigation]);
   return (
     <View style={{flex: 1, backgroundColor: '#FEF6E4'}}>
       <HeaderTitle
         titleHeader="Giỏ hàng"
         colorHeader={'#FEF6E4'}
         nav={navigation}
+        callback={() => {
+          if(result?.length > 0){
+            dispatch(updateCart(result))
+            setActionNavigation('goback')
+          }else {
+            navigation.goBack()
+          }
+
+        }}
       />
       {(statusCart && statusShops) === 'loading' ? (
-        <ActivityIndicator size={'large'} />
+        <ActivityIndicator size={'large'} color={'#F582AE'} />
       ) : (
         <ListCart data={resultCart} />
       )}
 
-      <Bottom total={total} discount={discount}/>
+      {resultCart?.length > 0 ? (
+        <Bottom total={total} discount={discount} isSelectAll={selectedAll} />
+      ) : null}
+      {statusUpdate === 'loading' ? <Loading /> : null}
     </View>
   );
 }

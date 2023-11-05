@@ -44,11 +44,13 @@ export default function FilterSelector() {
   };
   const modalSelect = id => {
     if (id == 0) {
-      return [
-        <FiltersBy data={filterBy} />,
-        <FiltersOrder data={filterOrder} />,
-        <FiltersPrice data={filterByPrice} />,
-      ];
+      return (
+        <>
+          <FiltersBy data={filterBy} />
+          <FiltersOrder data={filterOrder} />
+          <FiltersPrice data={filterByPrice} />
+        </>
+      );
     } else if (id == 1) {
       return <FiltersBy data={filterBy} />;
     } else if (id == 2) {

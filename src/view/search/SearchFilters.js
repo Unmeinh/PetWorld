@@ -5,25 +5,43 @@ import {
   SafeAreaView,
   TextInput,
   TouchableOpacity,
-  Dimensions,
   FlatList,
 } from 'react-native';
-import React, {useTransition,useState} from 'react';
+import React, {useEffect, useState, useTransition} from 'react';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {useDispatch, useSelector} from 'react-redux';
-import {listFilterSelector} from '../../redux/selector';
 import ShowSearchFilters from '../../component/search/ShowSearchFilters';
 import LinearGradient from 'react-native-linear-gradient';
 import {createShimmerPlaceholder} from 'react-native-shimmer-placeholder';
 import listfakeloader from '../../data/listfakeloader';
-import { searchFilterChanged } from '../../redux/reducers/filters/filtersReducer';
+import {fetchSearch} from '../../redux/reducers/filters/filtersReducer';
+import {searchFilterSelector} from '../../redux/selector';
 const ShimmerPlaceHolder = createShimmerPlaceholder(LinearGradient);
 
 export default function SearchFilters({navigation}) {
   const dispatch = useDispatch();
-  const [searchFilter, setsearchFilter] = useState('');
-  const listSearch = useSelector(listFilterSelector);
-  const [isPending, startTransition] = useTransition();
+  const listSearch = useSelector(searchFilterSelector);
+  const [search, setSearch] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [searchTimeout, setSearchTimeout] = useState(null);
+  const handleSearch = text => {
+    setSearch(text);
+
+    setLoading(true);
+    if (searchTimeout) {
+      clearTimeout(searchTimeout);
+    }
+    setSearchTimeout(setTimeout(() => dispatch(fetchSearch(text)), 500));
+    setLoading(false);
+  };
+  useEffect(() => {
+    // Cleanup khi component unmount
+    return () => {
+      if (searchTimeout) {
+        clearTimeout(searchTimeout);
+      }
+    };
+  }, []);
   return (
     <View style={{backgroundColor: '#FEF6E4', height: '100%'}}>
       <SafeAreaView
@@ -51,21 +69,18 @@ export default function SearchFilters({navigation}) {
           }}>
           <TextInput
             placeholder="Tìm kiếm"
-            value={searchFilter}
-            onChangeText={text => {
-              setsearchFilter(text);
-              startTransition(() => {
-                dispatch(searchFilterChanged(text));
-              });
-            }}
-            style={{flexGrow: 1}}></TextInput>
+            value={search}
+            onChangeText={handleSearch}
+            style={{flexGrow: 1}}
+          />
         </View>
       </SafeAreaView>
 
-      {isPending ? (
+      {listSearch?.status === 'loading' || loading ? (
         <FlatList
           data={listfakeloader}
-          renderItem={({item}) => {
+          showsVerticalScrollIndicator={false}
+          renderItem={item => {
             return (
               <View style={styles.loaderContainer}>
                 <ShimmerPlaceHolder
@@ -80,7 +95,7 @@ export default function SearchFilters({navigation}) {
           }}
         />
       ) : (
-        <ShowSearchFilters data={listSearch} />
+        <ShowSearchFilters data={search ? listSearch.listSearch : []} />
       )}
     </View>
   );
@@ -92,7 +107,7 @@ const styles = StyleSheet.create({
   },
   loader: {
     width: '100%',
-    height: 10,
+    height: 20,
     borderRadius: 8,
     marginBottom: 20,
   },

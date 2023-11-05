@@ -6,33 +6,77 @@ import {
   ScrollView,
   Dimensions,
   Pressable,
+  ActivityIndicator,
+  TouchableOpacity,
+  ToastAndroid,
 } from 'react-native';
-import React, {useState, useRef} from 'react';
+import React, {useState, useEffect} from 'react';
 import HeaderTitle from '../../component/header/HeaderTitle';
 import UserTag from '../../component/shop/UserTag';
 import ItemCartSummary from '../../component/ListProduct/ItemCartSummary';
-import {useSelector} from 'react-redux';
-import {listCartSelector, listProductSelector} from '../../redux/selector';
+import {useSelector, useDispatch} from 'react-redux';
+import {
+  billSelector,
+  listItemBill,
+  listShopSelector,
+  useLocationSeleted,
+} from '../../redux/selector';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import useCart from '../../hooks/useCart';
 import ModalTicket from '../../component/modals/ModalTicket';
-const data = {
-  name: 'Lương Việt Hoàng',
-  phoneNumber: '08********32',
-  location: 'Cầu diễn, Phú Diễn, Bắc từ Liêm, Hà Nội',
-};
-const payment = [
-  {id: 1, name: 'Thanh toán khi nhận hàng'},
-  {id: 2, name: 'Ví điện tử'},
-];
-const {width, height} = Dimensions.get('screen');
+import {fetchInfoUserNoMessage} from '../../redux/reducers/user/userReducer';
+import {userSelectStatus} from '../../redux/selectors/userSelector';
+import {
+  createBill,
+  getPayments,
+  setStatusChangeBill,
+} from '../../redux/reducers/shop/billSlice';
+import Loading from '../../component/Loading';
+import {deleteItemCart} from '../../redux/reducers/shop/CartReduces';
+import {convertCart} from '../../function/helper';
+const {width} = Dimensions.get('screen');
 export default function SummaryBill({navigation}) {
-  const result = useSelector(listCartSelector);
-  const products = useSelector(listProductSelector);
-  const resultCart = useCart(result, products);
+  const result = useSelector(listItemBill);
+
+  const [user, district] = useSelector(useLocationSeleted);
+  const statusUser = useSelector(userSelectStatus);
+  const dispatch = useDispatch();
+  const {
+    price: {discount, priceTotal},
+    statusChange,
+    status,
+    payments,
+  } = useSelector(billSelector);
+  const shop = useSelector(listShopSelector);
+
+  const resultCart = useCart(result, shop, user);
+  const [selectedId, setSelectedId] = useState(null);
+  const districtSlice = location => {
+    let result = '';
+    if (location) {
+      const parts = location.split(',');
+      result = parts[parts.length - 1];
+    }
+    return result.trim();
+  };
+  const moneyShip = () => {
+    let money = 0;
+    if (resultCart) {
+      for (const item of resultCart) {
+        if (
+          districtSlice(item?.idShop?.locationShop) ===
+          districtSlice(user?.location)
+        ) {
+          money += 10000;
+          continue;
+        }
+        money += 30000;
+      }
+    }
+    return money;
+  };
   function PayMent() {
-    const [selectedId, setSelectedId] = useState();
     const Item = ({item, onPress, icon, textColor}) => (
       <Pressable
         onPress={onPress}
@@ -42,24 +86,28 @@ export default function SummaryBill({navigation}) {
           marginHorizontal: 10,
           alignItems: 'center',
         }}>
-        <Text style={styles.textDefault}>{item.name}</Text>
+        <Text style={styles.textDefault}>{item.nameMethod}</Text>
         <Ionicons name={icon} color="#F582AE" size={22} />
       </Pressable>
     );
 
     const renderItem = ({item}) => {
       const icon =
-        item.id === selectedId
+        item.type === selectedId
           ? 'radio-button-on-outline'
           : 'radio-button-off-outline';
 
       return (
-        <Item item={item} onPress={() => setSelectedId(item.id)} icon={icon} />
+        <Item
+          item={item}
+          onPress={() => setSelectedId(item.type)}
+          icon={icon}
+        />
       );
     };
     return (
       <FlatList
-        data={payment}
+        data={payments}
         scrollEnabled={false}
         renderItem={renderItem}
         keyExtractor={item => item.id}
@@ -67,75 +115,144 @@ export default function SummaryBill({navigation}) {
       />
     );
   }
-  function ModalTicketShow(){
-    const [isVisible, setIsVisible] = useState(false)
+  function ModalTicketShow() {
+    const [isVisible, setIsVisible] = useState(false);
     return (
       <View>
-         <Pressable
+        <Pressable
           onPress={() => setIsVisible(!isVisible)}
           style={styles.flexRow}>
           <Icon name="ticket" color="#F582AE" size={22} />
           <Text style={styles.textBold}>Chiết khấu của PetWord</Text>
           <Icon name="chevron-right" size={24} color="#001858" />
         </Pressable>
-        <ModalTicket isVisible={isVisible} setIsVisible={setIsVisible}/>
+        <ModalTicket isVisible={isVisible} setIsVisible={setIsVisible} />
       </View>
-    )
+    );
   }
+
+  const checkValidate = () => {
+    if (selectedId === null) {
+      ToastAndroid.show(
+        'Bạn chưa chọn phương thức thanh toán',
+        ToastAndroid.SHORT,
+      );
+      return false;
+    }
+    return true;
+  };
+
+  const handleSaveBill = () => {
+    if (checkValidate()) {
+      dispatch(
+        createBill({
+          paymentMethods: selectedId,
+          deliveryStatus: 0,
+          locationDetail: {
+            fullName: user.fullName,
+            phoneNumber: user.phoneNumber,
+            location: user.location,
+          },
+          products: convertCart(resultCart, district),
+        }),
+      );
+    }
+  };
+
+  useEffect(() => {
+    dispatch(fetchInfoUserNoMessage());
+    dispatch(getPayments());
+  }, []);
+  useEffect(() => {
+    if (statusChange) {
+      dispatch(deleteItemCart());
+      navigation.navigate('BillScreen', {idName: 3});
+    }
+  }, [statusChange]);
+  useEffect(() => {
+    const sub = navigation.addListener('blur', () => {
+      dispatch(setStatusChangeBill(false));
+    });
+    return sub;
+  }, [navigation]);
   return (
     <View style={styles.container}>
       <HeaderTitle
         titleHeader="Tóm tắt đơn hàng"
         nav={navigation}
         colorHeader="#FEF6E4"
+        callback={() => navigation.pop(2)}
       />
-      <ScrollView style={{marginTop: -15}} scrollEnabled={true}>
-        <UserTag data={data} />
-        <FlatList
-          data={resultCart}
-          scrollEnabled={false}
-          keyExtractor={item => item.idShop}
-          renderItem={({item}) => <ItemCartSummary result={item} />}
-        />
-        <View style={styles.line} />
-        <ModalTicketShow/>
-        <View style={styles.line} />
-        <View>
-          <Text style={styles.textBold}>Tóm tắt đơn hàng</Text>
-          <View style={styles.flexRow}>
-            <Text style={styles.textDefault}>Tổng phụ</Text>
-            <Text style={styles.textDefault}>100.100đ</Text>
+      {statusUser === 'loading' ? (
+        <ActivityIndicator color={'#F582AE'} size={'large'} />
+      ) : (
+        <ScrollView style={{marginTop: 0}} scrollEnabled={true}>
+          <UserTag data={user} />
+          <FlatList
+            data={resultCart}
+            scrollEnabled={false}
+            keyExtractor={item => item.idShop._id}
+            renderItem={({item}) => (
+              <ItemCartSummary result={item} locationShop={district} />
+            )}
+          />
+          <View style={styles.line} />
+          <ModalTicketShow />
+          <View style={styles.line} />
+          <View>
+            <Text style={styles.textBold}>Tóm tắt đơn hàng</Text>
+            <View style={styles.flexRow}>
+              <Text style={styles.textDefault}>Tổng phụ</Text>
+              <Text style={styles.textDefault}>
+                {(priceTotal + discount)?.toLocaleString('vi-VN')} đ
+              </Text>
+            </View>
+            <View style={styles.flexRow}>
+              <Text style={styles.textDefault}>Vận chuyển</Text>
+              <Text style={styles.textDefault}>
+                {moneyShip()?.toLocaleString('vi-VN')}đ
+              </Text>
+            </View>
+            <View style={styles.flexRow}>
+              <Text style={[styles.textDefault, styles.textdiscount]}>
+                Tiết kiệm
+              </Text>
+              <Text style={[styles.textDefault, styles.textdiscount]}>
+                {discount.toLocaleString('vi-VN')} đ
+              </Text>
+            </View>
+            <View style={styles.flexRow}>
+              <Text style={styles.textDefault}>Tổng</Text>
+              <Text style={styles.bold}>
+                {(priceTotal + moneyShip()).toLocaleString('vi-VN')} đ
+              </Text>
+            </View>
           </View>
+          <View style={styles.line} />
+          <Text style={styles.textBold}>Phương thức thanh toán</Text>
+          <PayMent />
+          <View style={styles.line} />
+        </ScrollView>
+      )}
+      {statusUser === 'loading' ? null : (
+        <View style={styles.bottomButton}>
           <View style={styles.flexRow}>
-            <Text style={styles.textDefault}>Vận chuyển</Text>
-            <Text style={styles.textDefault}>32.999đ</Text>
+            <Text style={styles.bold}>Tổng</Text>
+            <Text style={styles.bold}>
+              {(priceTotal + moneyShip()).toLocaleString('vi-VN')} đ
+            </Text>
           </View>
-          <View style={styles.flexRow}>
-            <Text style={styles.textDefault}>Tổng</Text>
-            <Text style={styles.bold}>100.100đ</Text>
-          </View>
+          <TouchableOpacity style={styles.button} onPress={handleSaveBill}>
+            <Text style={styles.textButton}>Xác nhận</Text>
+          </TouchableOpacity>
         </View>
-        <View style={styles.line} />
-        <Text style={styles.textBold}>Phương thức thanh toán</Text>
-        <PayMent />
-        <View style={styles.line} />
-      </ScrollView>
-      <View style={styles.bottomButton}>
-        <View style={styles.flexRow}>
-          <Text style={styles.bold}>Tổng</Text>
-          <Text style={styles.bold}>1.222.222đ</Text>
-        </View>
-        <Pressable style={styles.button}>
-          <Text style={styles.textButton}>Xác nhận</Text>
-        </Pressable>
-      </View>
-    
+      )}
+      {status ? <Loading /> : null}
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-
   textButton: {fontFamily: 'ProductSansBold', fontSize: 16, color: '#001858'},
   button: {
     height: 40,
@@ -184,5 +301,8 @@ const styles = StyleSheet.create({
     fontFamily: 'ProductSansBold',
     marginLeft: 8,
     fontSize: 15,
+  },
+  textdiscount: {
+    color: '#F582AE',
   },
 });

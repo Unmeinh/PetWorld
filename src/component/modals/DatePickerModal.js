@@ -1,8 +1,7 @@
 import {
-    Text, Pressable,
-    View, TouchableHighlight,
+    View,
 } from "react-native";
-import React, { useState, useRef, memo } from "react";
+import React, { useState, memo } from "react";
 import RNMaterialDatetimePicker from "react-native-material-datetime-picker";
 import { AndroidPickerMode, AndroidTimeInputMode } from 'react-native-material-datetime-picker';
 

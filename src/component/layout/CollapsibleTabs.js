@@ -1,13 +1,15 @@
-import React, {Component} from 'react';
-import {View, Dimensions, Animated, ScrollView} from 'react-native';
-import {map, min} from 'lodash';
+import React, { Component } from 'react';
+import { View, Dimensions, Animated, ScrollView, Text } from 'react-native';
+import { map, min } from 'lodash';
 import PropTypes from 'prop-types';
-import Carousel from 'react-native-snap-carousel';
+import Carousel from 'react-native-reanimated-carousel';
 import MaterialTabs from 'react-native-material-tabs';
 import DefaultHeader from './DefaultHeader';
+import {LogBox} from 'react-native';
+LogBox.ignoreLogs(['It looks like you might be using shared value']);
 
 const headerCollapsedHeight = 46;
-const {width: screenWidth} = Dimensions.get('screen');
+const { width: screenWidth } = Dimensions.get('screen');
 
 const styles = {
     tabsContainer: {
@@ -20,12 +22,11 @@ const styles = {
 }
 
 class CollapsibleTabs extends Component {
-
     scrolls = [];
 
-    constructor(props){
+    constructor(props) {
         super(props);
-        this.headerExpandedHeight = headerCollapsedHeight;
+        this.headerExpandedHeight = 46;
         this.state = {
             scrollY: new Animated.Value(0),
             selectedTab: 0
@@ -33,30 +34,30 @@ class CollapsibleTabs extends Component {
     }
 
     onChangePage(index) {
-        const {scrollY} = this.state;
+        const { scrollY } = this.state;
         Animated.timing(scrollY, {
             toValue: min([this.scrolls[index] || 0, this.headerExpandedHeight]),
             duration: 200,
             useNativeDriver: true
         }).start();
 
-        this.carousel.snapToItem(index);
-        this.setState({selectedTab: index});
+        this.carousel.scrollTo({ index: index });
+        this.setState({ selectedTab: index });
     }
 
     render() {
-        const {selectedTab, scrollY} = this.state;
-        const {collapsibleContent, tabs} = this.props;
-        const {headerExpandedHeight} = this;
+        const { selectedTab, scrollY } = this.state;
+        const { collapsibleContent, tabs } = this.props;
+        const { headerExpandedHeight } = this;
 
         const headerHeight = scrollY.interpolate({
-            inputRange: [0, headerExpandedHeight-headerCollapsedHeight],
-            outputRange: [0, -(headerExpandedHeight-headerCollapsedHeight)],
+            inputRange: [0, headerExpandedHeight - headerCollapsedHeight],
+            outputRange: [0, -(headerExpandedHeight - headerCollapsedHeight)],
             extrapolate: 'clamp'
         });
 
         const scrollProps = index => ({
-            contentContainerStyle: {paddingTop: headerExpandedHeight},
+            contentContainerStyle: { paddingTop: headerExpandedHeight },
             scrollEventThrottle: 16,
             onScroll: Animated.event([{
                 nativeEvent: {
@@ -66,21 +67,23 @@ class CollapsibleTabs extends Component {
                 }
             }], {
                 useNativeDriver: false,
-                listener: ({nativeEvent}) =>  (this.scrolls[index] = nativeEvent.contentOffset.y)
+                listener: ({ nativeEvent }) => (this.scrolls[index] = nativeEvent.contentOffset.y)
             })
         });
-        
+
         return (
-            <View style={{flex: 1}}>
+            <View style={{ flex: 1 }}>
                 <Carousel
                     ref={ref => this.carousel = ref}
                     onSnapToItem={index => this.onChangePage(index)}
-                    style={{flex: 1}}
                     data={tabs}
-                    itemWidth={screenWidth}
-                    sliderWidth={screenWidth}
+                    width={screenWidth}
+                    panGestureHandlerProps={{
+                        activeOffsetX: [-10, 10],
+                    }}
+                    snapEnabled={false}
                     inactiveSlideScale={1}
-                    renderItem={({item: {component, isFlatList}, index}) => (
+                    renderItem={({ item: { component, isFlatList }, index }) => (
                         isFlatList
                             ? React.cloneElement(component, scrollProps(index))
                             : (
@@ -93,25 +96,25 @@ class CollapsibleTabs extends Component {
                 {/* HEADER */}
                 <Animated.View
                     style={{
-                        transform: [{translateY: headerHeight}],
+                        transform: [{ translateY: headerHeight }],
                         position: 'absolute',
                         left: 0,
                         right: 0,
                         top: 0
                     }}
-                    onLayout={({nativeEvent}) => {
-                        if(this.headerExpandedHeight === headerCollapsedHeight){
+                    onLayout={({ nativeEvent }) => {
+                        if (this.headerExpandedHeight === headerCollapsedHeight) {
                             this.forceUpdate();
                         }
                         this.headerExpandedHeight = nativeEvent.layout.height + 0.1;
                     }}
                 >
                     {collapsibleContent}
-                    <View style={{height: headerCollapsedHeight}}/>
+                    <View style={{ height: headerCollapsedHeight }} />
                     <View style={styles.tabsContainer}>
                         <MaterialTabs
                             {...this.props}
-                            items={map(tabs, ({label}) => label)}
+                            items={map(tabs, ({ label }) => label)}
                             selectedIndex={selectedTab}
                             onChange={index => this.onChangePage(index)}
                         />
@@ -123,7 +126,7 @@ class CollapsibleTabs extends Component {
 }
 
 CollapsibleTabs.defaultProps = {
-    collapsibleContent: (<DefaultHeader/>)
+    collapsibleContent: (<DefaultHeader />)
 };
 
 CollapsibleTabs.propTypes = {

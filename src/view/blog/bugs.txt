@@ -11,3 +11,5 @@ Cách gỡ 1: https://github.com/aksonov/react-native-router-flux
 Cách gỡ 2: https://stackoverflow.com/questions/58354787/stacknavigatior-navigating-to-a-screen-which-is-already-in-stack
 4. Màn hình cũ vẫn chạy trong background
 Cách gỡ 1: https://stackoverflow.com/questions/66412508/how-can-i-quit-definetively-a-screen-when-navigating-to-another-one-in-react-nat
+5. It looks like you might be using shared value's .value inside reanimated inline style. If you want a component to update when shared value changes you should use the shared value directly instead of its current state represented by `.value`. See documentation here: https://docs.swmansion.com/react-native-reanimated/docs/fundamentals/animations#animations-in-inline-styles
+6. tđn chỗ input comment của comment nó mất focussssssss

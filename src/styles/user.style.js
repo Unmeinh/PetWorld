@@ -22,6 +22,19 @@ export default StyleSheet.create({
         alignItems: 'center'
     },
 
+    viewOther: {
+        flex: 1,
+        alignItems: 'center',
+        marginTop: 25
+    },
+
+    textHint: {
+        fontSize: 15,
+        fontFamily: 'ProductSans',
+        color: 'rgba(0, 0, 0, 0.6)',
+        marginTop: 15
+    },
+
     //Modal 
     modalUserContainer: {
         flex: 1,
@@ -40,6 +53,36 @@ export default StyleSheet.create({
     modalUserAvatar: {
         width: 75, height: 75,
         borderRadius: 50
+    },
+
+    viewContentOnline: {
+        position: 'absolute',
+        bottom: 3, right: 5,
+        borderRadius: 10,
+        backgroundColor: '#fff',
+        padding: 1,
+        overflow: 'hidden',
+        borderWidth: 0.15
+    },
+
+    contentOnline: {
+        width: 9, height: 9,
+        borderRadius: 5,
+        backgroundColor: '#00CC00'
+    },
+
+    topOfline: {
+        width: 11, height: 5,
+        backgroundColor: '#fff',
+        position: 'absolute',
+        zIndex: 5,
+    },
+
+    contentOfline: {
+        width: 9, height: 9,
+        borderRadius: 5,
+        backgroundColor: '#C0C0C0',
+        paddingBottom: 4.5,
     },
 
     modalUserName: {
@@ -162,6 +205,12 @@ export default StyleSheet.create({
         fontWeight: 'bold',
     },
 
+    pageTextNickName: {
+        fontSize: 17,
+        color: 'rgba(0, 24, 88, 0.75)',
+        fontFamily: 'ProductSans',
+    },
+
     viewButtonHeader: {
         position: 'absolute',
         right: 0,
@@ -268,6 +317,12 @@ export default StyleSheet.create({
         justifyContent: 'space-between'
     },
 
+    itemManager: {
+        flexDirection: 'row',
+        alignItems: 'flex-end',
+        width: WindowWidth - 85
+    },
+
     buttonChangeImage: {
         position: 'absolute',
         right: 9, bottom: 5,
@@ -303,19 +358,27 @@ export default StyleSheet.create({
         fontFamily: 'ProductSans'
     },
 
+    titleItemVerify: {
+        position: 'absolute',
+        left: 0, bottom: -2,
+        flexDirection: 'row',
+        alignItems: 'center'
+    },
+
     textItemEdit: {
-        color: 'rgba(0, 0, 0, 0.70)',
-        fontSize: 15,
+        color: 'rgba(0, 0, 0, 0.60)',
+        fontSize: 17,
         fontFamily: 'ProductSans',
-        marginTop: 3,
+        marginTop: 5,
     },
 
     inputEdit: {
-        color: '#000',
+        color: darkBlue,
+        fontSize: 17,
         padding: 0,
         width: '95%',
-        fontSize: 15,
         marginTop: 3,
+        paddingVertical: 5,
         paddingHorizontal: 13,
         borderWidth: 1,
         borderTopColor: yellowWhite,
@@ -323,6 +386,49 @@ export default StyleSheet.create({
         borderRightColor: yellowWhite,
         borderBottomColor: 'rgba(0, 0, 0, 0.50)',
         borderRadius: 15,
+        fontFamily: 'ProductSans',
+    },
+
+    inputPhoneEdit: {
+        flexDirection: 'row',
+        backgroundColor: yellowWhite,
+        width: WindowWidth - 70,
+        overflow: 'hidden',
+        marginTop: 13,
+        borderWidth: 1,
+        borderTopColor: yellowWhite,
+        borderLeftColor: yellowWhite,
+        borderRightColor: yellowWhite,
+        borderBottomColor: 'rgba(0, 0, 0, 0.50)',
+        borderRadius: 15,
+    },
+
+    inputPhoneCountry: {
+        color: darkBlue,
+        fontSize: 17,
+        fontFamily: 'ProductSans',
+        backgroundColor: yellowWhite,
+        width: 68,
+        paddingLeft: 15,
+        paddingHorizontal: 0,
+        paddingVertical: 5,
+        borderRightColor: darkBlue,
+        borderRightWidth: 1
+    },
+
+    inputPhoneValue: {
+        color: darkBlue,
+        width: (WindowWidth - 70) - 68,
+        fontSize: 17,
+        padding: 0,
+        paddingLeft: 5,
+        paddingRight: 13,
+        fontFamily: 'ProductSans',
+    },
+
+    dropdownSelect: {
+        position: 'absolute',
+        top: '35%', left: 5
     },
 
     buttonSave: {
@@ -332,5 +438,18 @@ export default StyleSheet.create({
         marginLeft: 10,
         shadowColor: "#000",
         elevation: 9,
+    },
+
+    buttonEditAccount: {
+        backgroundColor: lightBrown,
+        paddingHorizontal: 15,
+        paddingVertical: 7,
+        borderRadius: 10,
+        borderWidth: 1.5,
+        marginLeft: 10,
+        marginTop: 13,
+        shadowColor: "#000",
+        elevation: 9,
+        alignItems: 'center',
     },
 });

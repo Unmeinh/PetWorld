@@ -1,19 +1,24 @@
-import {StyleSheet, Text, View, FlatList} from 'react-native';
+import {StyleSheet, Text, View} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import {useSelector} from 'react-redux';
-import {listShopSelector} from '../../redux/selector';
 import {Image} from 'react-native-animatable';
 import ItemListCart from '../shop/ItemListCart';
 import {useDispatch} from 'react-redux';
-import {selectItem} from '../../redux/reducers/shop/CartReduces';
+import { selectAllItemsShop } from '../../redux/reducers/shop/CartReduces';
 export default function ItemCartProduct({result}) {
   const dispatch = useDispatch();
   const {idShop,cart} = result
-  const [isSelect, setIsSelect] = useState(false);
+  const [isSelect, setIsSelect] = useState(selectedShop);
   const iconSelect = isSelect
     ? 'checkbox-marked-circle'
     : 'checkbox-blank-circle-outline';
+  function selectedShop(){
+    const isSelect = cart?.every(item => item.isSelected === true);
+    return isSelect
+  }
+  useEffect(() =>{
+    setIsSelect(selectedShop())
+  },[result])
   return (
     <>
       <View style={styles.container}>
@@ -23,7 +28,7 @@ export default function ItemCartProduct({result}) {
           color={'#F582AE'}
           onPress={() => {
             setIsSelect(!isSelect);
-            dispatch(selectItem(result.products));
+            dispatch(selectAllItemsShop({idShop:idShop._id,isSelect}));
           }}
         />
         {idShop.avatarShop ? (
@@ -33,7 +38,7 @@ export default function ItemCartProduct({result}) {
         <Icon name="chevron-right" size={24} />
       </View>
       {cart ? cart.map(product => (
-        <ItemListCart data={product} key={product._id} isSelect={isSelect} />
+        <ItemListCart data={product} key={product.idProduct._id} isSelect={product.isSelected} />
       )) : null}
       
     </>

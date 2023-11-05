@@ -1,6 +1,7 @@
 apply plugin: "com.android.application"
 apply plugin: "com.facebook.react"
 apply plugin: "com.google.gms.google-services"
+apply plugin: 'kotlin-android'
 
 //  * This is the configuration block to customize your React Native Android app.
 //  * By default you don't need to apply any configuration, just uncomment the lines you need.
@@ -73,6 +74,10 @@ android {
 
     compileSdkVersion rootProject.ext.compileSdkVersion
 
+    kotlinOptions {
+        jvmTarget = 11
+    }
+
     namespace "com.petworld"
     defaultConfig {
         applicationId "com.petworld"
@@ -88,6 +93,14 @@ android {
             keyAlias 'androiddebugkey'
             keyPassword 'android'
         }
+        release {
+            if (project.hasProperty('MYAPP_UPLOAD_STORE_FILE')) {
+                storeFile file(MYAPP_UPLOAD_STORE_FILE)
+                storePassword MYAPP_UPLOAD_STORE_PASSWORD
+                keyAlias MYAPP_UPLOAD_KEY_ALIAS
+                keyPassword MYAPP_UPLOAD_KEY_PASSWORD
+            }
+        }
     }
     buildTypes {
         debug {
@@ -99,6 +112,7 @@ android {
             signingConfig signingConfigs.debug
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
+             signingConfig signingConfigs.release
         }
     }
 }

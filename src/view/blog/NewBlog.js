@@ -4,33 +4,35 @@ import {
     TouchableOpacity,
     TouchableHighlight,
     TextInput,
-    Dimensions, ToastAndroid,
+    Dimensions,
     FlatList
 } from 'react-native';
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import styles from '../../styles/blog.style';
 
-import AutoHeightImage from 'react-native-auto-height-image';
 import HeaderTitle from '../../component/header/HeaderTitle';
 import FontModal from '../../component/modals/FontModal';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import * as ImagePicker from 'react-native-image-picker';
 import { openPicker } from '@baronha/react-native-multiple-image-picker';
 import Feather from 'react-native-vector-icons/Feather';
 import { useSelector, useDispatch } from 'react-redux';
-import { getInfoLogin, fetchInfoLogin, fetchInfoUser } from '../../redux/reducers/user/userReducer';
-import { selectUserByID, userSelectStatus } from '../../redux/selectors/userSelector';
-import { axiosFormData, axiosJSON } from '../../api/axios.config';
-import { Toast } from 'react-native-toast-message/lib/src/Toast';
-import { ToastLayout } from '../../component/layout/ToastLayout';
+import { fetchInfoLogin } from '../../redux/reducers/user/userReducer';
+import { selectUserLogin, userSelectStatus } from '../../redux/selectors/userSelector';
+import { useNavigation } from '@react-navigation/native';
+import Toast from "react-native-toast-message";
+import { addBlog } from "../../redux/reducers/blog/blogReducer";
+import { onAxiosPost } from '../../api/axios.function';
+import ShimmerPlaceHolder from '../../component/layout/ShimmerPlaceHolder';
 
-const NewPost = ({ route, navigation }) => {
+const NewBlog = ({ route }) => {
     const dispatch = useDispatch();
-    const infoLogin = useSelector(selectUserByID);
+    const navigation = useNavigation();
+    let listImageRef = useRef(null);
+    const infoLogin = useSelector(selectUserLogin);
     const selectorStatus = useSelector(userSelectStatus);
-    const [arr_Image, setarr_Image] = useState([]);
+    const [arr_Image, setarr_Image] = useState((route.params && route.params.arr_Picked) ? route.params.arr_Picked : []);
     const [aspectRatio, setaspectRatio] = useState(1 / 1);
-    const [srcAvatar, setsrcAvatar] = useState(require('../../assets/images/error.png'));
+    const [srcAvatar, setsrcAvatar] = useState(require('../../assets/images/loading.png'));
     const [inputContent, setinputContent] = useState("");
     const [inputFont, setinputFont] = useState("Default");
     const [isShowModal, setisShowModal] = useState(false);
@@ -58,14 +60,6 @@ const NewPost = ({ route, navigation }) => {
         }
     }
 
-    const UploadNotification = () => {
-
-    }
-
-    const AfterPost = async () => {
-
-    }
-
     const UploadPost = async () => {
         var newBlog = {
             idUser: infoLogin._id,
@@ -76,80 +70,50 @@ const NewPost = ({ route, navigation }) => {
             return;
         }
 
+        Toast.show({
+            type: 'loading',
+            text1: 'Đang đăng bài...',
+            position: 'top',
+            autoHide: false
+        })
         var formData = new FormData();
         formData.append("idUser", infoLogin._id);
-        formData.append("contentBlog", newBlog.contentBlog);
+        formData.append("contentBlog", inputContent);
         formData.append("contentFont", inputFont);
+        formData.append("aspectRatio", aspectRatio);
 
         if (arr_Image.length > 0) {
             for (let i = 0; i < arr_Image.length; i++) {
-                console.log(arr_Image[i]);
                 var dataImage = {
                     uri: Platform.OS === "android" ? arr_Image[i].path : arr_Image[i].path.replace("file://", ""),
                     name: arr_Image[i].fileName,
                     type: "multipart/form-data"
                 };
-                console.log(dataImage);
                 formData.append('uploadImages', dataImage);
             }
         }
 
-        axiosFormData.post('blog/insert', formData)
-            .then((response) => {
-                console.log(response);
-                if (response.status == 201) {
-                    var data = response.data;
-                    if (data.success) {
-                        Toast.show({
-                            type: 'success',
-                            position: 'top',
-                            text1: String(data.message),
-                            bottomOffset: 20
-                        });
-                    }
-                } else {
-                    var data = response.data;
-                    Toast.show({
-                        type: 'error',
-                        position: 'top',
-                        text1: String(data.message),
-                        bottomOffset: 20
-                    });
-                }
-            })
-            .catch((e) => {
-                // var data = response.data;
-                console.log(e.response.data.message);
-                Toast.show({
-                    type: 'error',
-                    position: 'top',
-                    text1: String(e.response.data.message),
-                    bottomOffset: 20
-                });
-            });
+        let res = await onAxiosPost('blog/insert', formData, "formdata", true);
+        if (res) {
+            if (route.params.fetchBlog != undefined) {
+                route.params.fetchBlog()
+            }
+            dispatch(addBlog(res.data));
+            navigation.goBack();
+        }
     }
 
     async function PickingImage() {
-        // ImagePicker.launchImageLibrary({
-        //     mediaType: 'photo',
-        //     includeBase64: false,
-        //     // maxHeight: 200,
-        //     // maxWidth: 200,
-        //     quality: 1,
-        //     selectionLimit: 100,
-        // },
-        //     (response) => {
-        //         console.log(response);
-        //         setipImageUrl(response.assets[0].uri)
-        //     },
-        // )
-
-        var response = await openPicker({
-            mediaType: 'image',
-            selectedAssets: 'Images',
-            doneTitle: 'Xong',
-        });
-        setarr_Image(response);
+        try {
+            var response = await openPicker({
+                mediaType: 'image',
+                selectedAssets: 'Images',
+                doneTitle: 'Xong',
+            });
+            setarr_Image([...arr_Image, ...response]);
+        } catch (error) {
+            console.log(error);
+        }
     }
 
     const ShowFontModal = () => {
@@ -167,10 +131,25 @@ const NewPost = ({ route, navigation }) => {
         }
     }
 
-    const ImageUpload = ({ item }) => {
+    const ImageUpload = ({ item, callBack }) => {
         function RemoveImage() {
-            var i = arr_Image.indexOf(item);
-            arr_Image.splice(i, 1);
+            let i = arr_Image.indexOf(item);
+            let length = arr_Image.length;
+            if (length <= 1) {
+                let images = [...arr_Image];
+                images = []
+                setarr_Image(images);
+            } else {
+                let images = [...arr_Image];
+                images.splice(i, 1)
+                if (i == (length - 1)) {
+                    listImageRef.current.scrollToIndex({
+                        animated: true,
+                        index: (i - 1),
+                    });
+                }
+                setarr_Image(images);
+            }
         }
 
         function ChangeAspect() {
@@ -186,7 +165,7 @@ const NewPost = ({ route, navigation }) => {
         }
 
         return (
-            <View style={{ marginBottom: 250 }}>
+            <View style={{ marginBottom: 100 }}>
                 <Image source={{ uri: String(item.path) }}
                     style={{ width: Dimensions.get('window').width, aspectRatio: String(aspectRatio) }}>
                 </Image>
@@ -204,14 +183,8 @@ const NewPost = ({ route, navigation }) => {
         )
     }
 
-    React.useEffect(() => {
+    useEffect(() => {
         const unsub = navigation.addListener('focus', async () => {
-            // var res = await axiosJSON.get('/user/detail')
-            //     .catch((e) => console.error(e.response.data))
-            // if (res.data != undefined) {
-            //     dispatch(getInfoLogin(res.data.data));
-            // }
-            // dispatch(fetchInfoUser("64e6246094b5cf941a244f94"));
             dispatch(fetchInfoLogin());
             return () => {
                 unsub.remove();
@@ -222,28 +195,11 @@ const NewPost = ({ route, navigation }) => {
     }, [navigation]);
 
     useEffect(() => {
-        if (infoLogin != undefined && isLoader) {
-            console.log(infoLogin);
-            setsrcAvatar({ uri: String(infoLogin.avatarUser) });
-            setisLoader(false);
-        }
-    }, [infoLogin]);
-
-    useEffect(() => {
         if (selectorStatus == "being idle") {
-            setisLoader(false);
             if (infoLogin != undefined && isLoader) {
-                console.log(infoLogin);
                 setsrcAvatar({ uri: String(infoLogin.avatarUser) });
                 setisLoader(false);
             }
-            // setTimeout(() => {
-            //     setisLoader(false);
-            //     // if (infoLogin != undefined) {
-            //     //     console.log(infoLogin);
-            //     //     setsrcAvatar({ uri: String(infoLogin.avatarUser) });
-            //     // }
-            // }, 1000);
         }
     }, [selectorStatus]);
 
@@ -251,74 +207,97 @@ const NewPost = ({ route, navigation }) => {
         <View style={{ flex: 1, backgroundColor: '#FEF6E4' }}>
             <HeaderTitle nav={navigation} titleHeader={'Bài viết mới'} colorHeader={'#FEF6E4'} />
             {
-                (infoLogin != undefined)
-                    ? <View style={[styles.viewInfoHead, { paddingTop: 15 }]}>
-                        <View style={styles.viewRowCenter}>
-                            <Image source={srcAvatar} onError={() => setsrcAvatar(require('../../assets/images/error.png'))}
-                                style={styles.imageAvatar} />
-                            <Text style={styles.textName}>{infoLogin.fullName}</Text>
+                (isLoader)
+                    ? <>
+                        <View style={[styles.viewInfoHead, { paddingTop: 15 }]}>
+                            <View style={styles.viewRowCenter}>
+                                <ShimmerPlaceHolder shimmerStyle={styles.imageAvatar} />
+                                <ShimmerPlaceHolder shimmerStyle={[styles.textName, { width: 100, borderRadius: 5 }]} />
+                            </View>
+                            <ShimmerPlaceHolder shimmerStyle={{ width: 70, height: 25, borderRadius: 5 }} />
                         </View>
-                        <TouchableHighlight style={styles.buttonUpload}
-                            activeOpacity={0.5} underlayColor="#DC749C"
-                            onPress={UploadPost}>
-                            <Text style={styles.textButtonUpload}>Đăng</Text>
-                        </TouchableHighlight>
-                    </View>
-                    : ""
+                        <ScrollView style={{ paddingHorizontal: 20, paddingTop: 10 }} showsVerticalScrollIndicator={false}>
+                            <ShimmerPlaceHolder shimmerStyle={{ width: '45%', height: 17, borderRadius: 5 }} />
+                        </ScrollView>
+
+                        <View style={styles.navBelow}>
+                            <ShimmerPlaceHolder shimmerStyle={[styles.viewRowCenter, { height: 50 }]} />
+                            <ShimmerPlaceHolder shimmerStyle={[styles.viewRowCenter, { height: 50 }]} />
+                            <View style={styles.lineNavBelow}></View>
+                        </View>
+
+                        <FontModal isShow={isShowModal} callBack={CallBackFontModal} font={inputFont} />
+                    </>
+                    : <>
+                        {
+                            (infoLogin != undefined)
+                                ? <View style={[styles.viewInfoHead, { paddingTop: 15 }]}>
+                                    <View style={styles.viewRowCenter}>
+                                        <Image source={srcAvatar} onError={() => setsrcAvatar(require('../../assets/images/error.png'))}
+                                            style={styles.imageAvatar} />
+                                        <Text style={styles.textName}>{infoLogin.fullName}</Text>
+                                    </View>
+                                    <TouchableHighlight style={styles.buttonUpload}
+                                        activeOpacity={0.5} underlayColor="#DC749C"
+                                        onPress={UploadPost}>
+                                        <Text style={styles.textButtonUpload}>Đăng</Text>
+                                    </TouchableHighlight>
+                                </View>
+                                : ""
+                        }
+                        <ScrollView style={styles.viewContent} showsVerticalScrollIndicator={false}>
+                            {
+                                (arr_Image.length > 0)
+                                    ?
+                                    <>
+                                        <View>
+                                            <TextInput style={[styles.textContentNewBlog,
+                                            { fontFamily: (String(inputFont) == 'Default') ? "" : String(inputFont) }]}
+                                                multiline={true}
+                                                placeholder='Bức ảnh này có gì?' value={inputContent}
+                                                onChangeText={(input) => { setinputContent(input) }} />
+                                        </View>
+                                        <View style={{ flex: 1 }}>
+                                            <FlatList
+                                                horizontal ref={listImageRef}
+                                                pagingEnabled
+                                                showsHorizontalScrollIndicator={false}
+                                                data={arr_Image}
+                                                renderItem={({ item }) => <ImageUpload item={item} />}
+                                            />
+                                        </View>
+                                    </>
+                                    :
+                                    <View>
+                                        <TextInput style={[styles.textContentNewBlog,
+                                        { fontFamily: (String(inputFont) == 'Default') ? "" : String(inputFont), marginBottom: 50 }]}
+                                            multiline={true}
+                                            placeholder='Bạn muốn chia sẻ điều gì?' value={inputContent}
+                                            onChangeText={(input) => { setinputContent(input) }} />
+                                    </View>
+                            }
+                        </ScrollView>
+
+                        {/* Nav below */}
+                        <View style={styles.navBelow}>
+                            <TouchableOpacity style={styles.viewRowCenter}
+                                onPress={PickingImage}>
+                                <MaterialCommunityIcons name='file-image-plus-outline' size={22} color={'#001858'} />
+                                <Text style={styles.textInNavBelow}>Hình ảnh</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity style={styles.viewRowCenter} onPress={ShowFontModal}>
+                                <MaterialCommunityIcons name='format-font' size={22} color={'#001858'} />
+                                <Text style={styles.textInNavBelow}>Phông chữ</Text>
+                            </TouchableOpacity>
+                            <View style={styles.lineNavBelow}></View>
+                        </View>
+
+                        <FontModal isShow={isShowModal} callBack={CallBackFontModal} font={inputFont} />
+                    </>
             }
-            <ScrollView style={styles.viewContent} showsVerticalScrollIndicator={false}>
-                {
-                    (inputContent == "" && arr_Image.length > 0)
-                        ?
-                        <View>
-                            <TextInput style={[styles.textContentNewPost,
-                            { fontFamily: (String(inputFont) == 'Default') ? "" : String(inputFont) }]}
-                                multiline={true}
-                                placeholder='Bức ảnh này có gì?' value={inputContent}
-                                onChangeText={(input) => { setinputContent(input) }} />
-                        </View>
-                        :
-                        <View>
-                            <TextInput style={[styles.textContentNewPost,
-                            { fontFamily: (String(inputFont) == 'Default') ? "" : String(inputFont) }]}
-                                multiline={true}
-                                placeholder='Bạn muốn chia sẻ điều gì?' value={inputContent}
-                                onChangeText={(input) => { setinputContent(input) }} />
-                        </View>
-                }
-                {
-                    (arr_Image.length > 0)
-                        ?
-                        <FlatList
-                            horizontal
-                            pagingEnabled
-                            showsHorizontalScrollIndicator={false}
-                            data={arr_Image}
-                            renderItem={({ item }) => <ImageUpload item={item} />}
-                        />
-                        : ""
-                }
-            </ScrollView>
-
-            {/* Nav below */}
-            <View style={styles.navBelow}>
-                <TouchableOpacity style={styles.viewRowCenter}
-                    onPress={PickingImage}>
-                    <MaterialCommunityIcons name='file-image-plus-outline' size={22} color={'#001858'} />
-                    <Text style={styles.textInNavBelow}>Hình ảnh</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.viewRowCenter} onPress={ShowFontModal}>
-                    <MaterialCommunityIcons name='format-font' size={22} color={'#001858'} />
-                    <Text style={styles.textInNavBelow}>Phông chữ</Text>
-                </TouchableOpacity>
-                <View style={styles.lineNavBelow}></View>
-            </View>
-
-            <FontModal isShow={isShowModal} callBack={CallBackFontModal} font={inputFont} />
-            <ToastLayout />
         </View>
     );
 }
 
 
-export default NewPost;
+export default NewBlog;

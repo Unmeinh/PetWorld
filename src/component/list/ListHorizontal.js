@@ -13,23 +13,23 @@ function ListHorizontal({data, title, isLoader, type}) {
     <View style={{marginTop: 18}}>
       <View style={styles.title}>
         {isLoader === 'loading'
-          ? [
+          ? <>
               <ShimmerPlaceHolder
                 shimmerColors={colorLoader}
                 shimmerStyle={styles.loaderText}
-              />,
+              />
               <ShimmerPlaceHolder
                 shimmerColors={colorLoader}
                 shimmerStyle={styles.loaderText}
-              />,
-            ]
-          : [
-              <Text style={styles.fontStyle}>{title}</Text>,
+              />
+            </>
+          : <>
+              <Text style={styles.fontStyle}>{title}</Text>
               <Pressable
                 onPress={() => navigation.navigate('ListProductScreen',{type})}>
                 <Text style={styles.fontAll}>Xem thêm</Text>
-              </Pressable>,
-            ]}
+              </Pressable>
+              </>}
       </View>
       {isLoader === 'loading' ? (
         <FlatList
@@ -46,7 +46,9 @@ function ListHorizontal({data, title, isLoader, type}) {
       ) : (
         <FlatList
           horizontal
+          scrollEnabled={true}
           showsHorizontalScrollIndicator={false}
+          keyExtractor={item => item?._id?.toString()}
           data={data}
           renderItem={({item}) => <ItemHorizontal item={item} type={type} />}
         />

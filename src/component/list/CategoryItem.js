@@ -1,19 +1,15 @@
-import { Text, TouchableOpacity, View} from 'react-native';
+import {Text, TouchableOpacity, View} from 'react-native';
 import React from 'react';
-import {useDispatch} from 'react-redux';
-import { useNavigation } from '@react-navigation/native';
-import { selectIdCategory } from '../../redux/reducers/filters/filtersReducer';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
+import {useNavigation} from '@react-navigation/native';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 export default function CategoryItem({item}) {
-  const dispatch = useDispatch()
-  const navigation = useNavigation()
+  const navigation = useNavigation();
   return (
     <TouchableOpacity
       onPress={() => {
-        dispatch(selectIdCategory(item.id))
-        navigation.navigate('ListProductScreen')
+        navigation.navigate('ListProductScreen', {type: 3,id: item._id});
       }}
-      style={{marginLeft:20}}>
+      style={{marginLeft: 20,justifyContent:'center',alignItems:'center'}}>
       <View
         style={{
           width: 70,

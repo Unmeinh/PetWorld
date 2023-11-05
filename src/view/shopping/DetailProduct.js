@@ -7,36 +7,54 @@ import {
   Dimensions,
   Animated,
   Pressable,
+  ToastAndroid,
+  ActivityIndicator,
 } from 'react-native';
 import React, {useEffect, useRef, useState} from 'react';
 import {
   listProductSelector,
-  selectFilterDetailProduct,
   selectFilterIdSelector,
-  selectStatusDetailProduct,
+  statusAddProductToCart,
+  messageCart,
+  listCartSelector,
 } from '../../redux/selector';
 import {useDispatch, useSelector} from 'react-redux';
 import SliderImage from '../../component/detailProduct/SliderImage';
 import Icon from 'react-native-vector-icons/Ionicons';
 import ShopTag from '../../component/shop/ShopTag';
 import ListHorizontal from '../../component/list/ListHorizontal';
-import {addCart, addProductToCart} from '../../redux/reducers/shop/CartReduces';
+import {
+  addCart,
+  addProductToCart,
+  setStatusMessageCart,
+} from '../../redux/reducers/shop/CartReduces';
 import ShimmerPlaceHolder from '../../component/layout/ShimmerPlaceHolder';
-import { setStatusFilter } from '../../redux/reducers/filters/filtersReducer';
+import SetAppointment from '../../component/modals/SetAppointment';
+import Loading from '../../component/Loading';
+import {GetDetailProduct} from '../../api/RestApi';
 const {width} = Dimensions.get('screen');
 
-function DetailProduct({navigation}) {
+function DetailProduct({navigation, route}) {
+  const {id, type} = route.params;
   const dispatch = useDispatch();
-  const resultDetail = useSelector(selectFilterDetailProduct);
+  const [product, setProduct] = useState({});
+
   const listProduct = useSelector(listProductSelector);
-  const statusDetail = useSelector(selectStatusDetailProduct);
+  const [status, setStatus] = useState('idle');
   const category = useSelector(selectFilterIdSelector);
+  const statusAdd = useSelector(statusAddProductToCart);
+  const countCart = useSelector(listCartSelector);
+  const [count, setCount] = useState(countCart?.length);
+  const message = useSelector(messageCart);
   const [like, setLike] = useState(false);
   const [showDes, setShowDes] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
-  const listImage = resultDetail.arrProduct
-    ? resultDetail.arrProduct
-    : resultDetail.imagesPet;
+  const [isShowSetApm, setisShowSetApm] = useState(false);
+
+  const listImage = product?.arrProduct
+    ? product?.arrProduct
+    : product?.imagesPet;
+
   const AnimatedIcon = Animated.createAnimatedComponent(Icon);
   const AnimatedPressible = Animated.createAnimatedComponent(Pressable);
   const handleLike = like ? 'heart' : 'heart-outline';
@@ -45,7 +63,7 @@ function DetailProduct({navigation}) {
     if (discount > 0) {
       return (
         <Text style={styles.price}>
-          {(price - (price * discount) / 100).toLocaleString('vi-VN') + 'đ'}{' '}
+          {(price - (price * discount) / 100)?.toLocaleString('vi-VN') + 'đ'}{' '}
           <Text style={styles.discount}>
             {price.toLocaleString('vi-VN') + 'đ'}
           </Text>
@@ -53,7 +71,7 @@ function DetailProduct({navigation}) {
       );
     } else {
       return (
-        <Text style={styles.price}>{price.toLocaleString('vi-VN') + 'đ'}</Text>
+        <Text style={styles.price}>{price?.toLocaleString('vi-VN') + 'đ'}</Text>
       );
     }
   };
@@ -75,8 +93,13 @@ function DetailProduct({navigation}) {
   const headerIcon = scrollY.interpolate({
     inputRange: [0, HEADER_MAX_HEIGHT],
     outputRange: ['#FEF6E4', '#f582ae'],
-    extrapolate: 'clamp',
+    ext0rapolate: 'clamp',
   });
+
+  const onOpenSetAppointment = () => {
+    setisShowSetApm(!isShowSetApm);
+  };
+
   useEffect(() => {
     const slideAnimationAni = Animated.timing(slideAnimation, {
       toValue: isVisible ? 1 : 0,
@@ -102,21 +125,38 @@ function DetailProduct({navigation}) {
       opacityAnimation.setValue(0);
     };
   }, [isVisible]);
-  // useEffect(() => {
-  //   // return () =>{
-  //   //   dispatch(setStatusFilter('loading'))
-  //   // }
-  // }, [navigation]);
-  const handleAddCart = (idProduct, idUser, mount) => {
-    dispatch(
-      addCart({
-        idProduct,
-        idUser,
-        mount,
-        createAt: Date.now(),
-      }),
-    );
+
+  useEffect(() => {
+    setCount(countCart?.length);
+  }, [navigation, statusAdd, countCart]);
+
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('blur', () => {
+      dispatch(setStatusMessageCart(''));
+    });
+    return unsubscribe;
+  }, [navigation]);
+
+  useEffect(() => {
+    if (message) {
+      ToastAndroid.show(message, ToastAndroid.SHORT);
+    }
+  }, [message]);
+
+  const getDetailProduct = async () => {
+    setStatus('loading');
+    if (id || type) {
+      const res = await GetDetailProduct({id, type});
+      if (res) {
+        setProduct(res.data);
+      }
+      setStatus('idle');
+    }
   };
+
+  useEffect(() => {
+    getDetailProduct();
+  }, []);
   return (
     <>
       <Animated.View
@@ -140,20 +180,37 @@ function DetailProduct({navigation}) {
             navigation.navigate('CartScreen');
           }}
           style={[styles.iconBack, {backgroundColor: headerIconBackground}]}>
+          <View
+            style={{
+              width: 16,
+              height: 16,
+              position: 'absolute',
+              backgroundColor: '#F582AE',
+              borderRadius: 8,
+              justifyContent: 'center',
+              alignItems: 'center',
+              top: 2,
+              right: 0,
+              zIndex: 999,
+            }}>
+            <Text style={{fontSize: 12, fontFamily: 'ProductSans'}}>
+              {count}
+            </Text>
+          </View>
           <AnimatedIcon name="cart-outline" size={24} color={headerIcon} />
         </AnimatedPressible>
       </Animated.View>
-
+      {statusAdd === 'loading' ? <Loading /> : null}
       <ScrollView
         style={{flex: 1, backgroundColor: '#FEF6E4'}}
-        scrollEnabled={statusDetail === 'idle' ? true : false}
+        scrollEnabled={status === 'idle' ? true : false}
         onScroll={Animated.event(
           [{nativeEvent: {contentOffset: {y: scrollY}}}],
           {useNativeDriver: false},
         )}
         scrollEventThrottle={16}>
         <View>
-          {statusDetail === 'idle' ? (
+          {status === 'idle' ? (
             <SliderImage data={listImage} />
           ) : (
             <ShimmerPlaceHolder shimmerStyle={styles.loaderImage} />
@@ -166,23 +223,22 @@ function DetailProduct({navigation}) {
               fontSize: 20,
               color: '#F582AE',
             }}>
-            {statusDetail === 'idle' ? (
+            {status === 'idle' ? (
               priceDiscount(
-                resultDetail.pricePet
-                  ? resultDetail.pricePet
-                  : resultDetail.priceProduct,
-                resultDetail.discount,
+                product?.pricePet ? product?.pricePet : product?.priceProduct,
+                product?.discount,
               )
             ) : (
               <ShimmerPlaceHolder shimmerStyle={styles.loaderPrice} />
             )}
           </Text>
 
-          {statusDetail === 'idle' ? (
+          {status === 'idle' ? (
             <View
               style={{
                 flexDirection: 'row',
                 justifyContent: 'space-between',
+                paddingRight: 10,
               }}>
               <Text
                 style={{
@@ -190,9 +246,7 @@ function DetailProduct({navigation}) {
                   fontSize: 20,
                   color: '#001858',
                 }}>
-                {resultDetail.namePet
-                  ? resultDetail.namePet
-                  : resultDetail.nameProduct}
+                {product?.namePet ? product?.namePet : product?.nameProduct}
               </Text>
               <Icon
                 onPress={() => setLike(!like)}
@@ -204,32 +258,50 @@ function DetailProduct({navigation}) {
           ) : (
             <ShimmerPlaceHolder shimmerStyle={styles.loaderName} />
           )}
-          {statusDetail === 'idle' ? (
-            <View style={{flexDirection: 'row', marginTop: 5}}>
-              <Icon name="star-sharp" size={16} color="#fcba03" />
-              <Text style={{color: '#001858', marginLeft: 5}}>
-                {resultDetail.rate}/5
-              </Text>
+          {status === 'idle' ? (
+            <View
+              style={{
+                flexDirection: 'row',
+                marginTop: 5,
+                justifyContent: 'space-between',
+              }}>
+              <View style={{flexDirection: 'row'}}>
+                <Icon name="star-sharp" size={16} color="#fcba03" />
+                <Text style={{color: '#001858', marginLeft: 5}}>
+                  {product?.rate}/5
+                </Text>
 
-              <Text style={{marginLeft: 5, marginRight: 5, color: '#ccc'}}>
-                |
-              </Text>
-              <Text
-                style={{
-                  marginLeft: 5,
-                  marginRight: 5,
-                  color: '#73726e',
-                  fontFamily: 'ProductSans',
-                }}>
-                Đã bán
-              </Text>
+                <Text style={{marginLeft: 5, marginRight: 5, color: '#ccc'}}>
+                  |
+                </Text>
+                <Text
+                  style={{
+                    marginLeft: 5,
+                    marginRight: 5,
+                    color: '#73726e',
+                    fontFamily: 'ProductSans',
+                  }}>
+                  Đã bán
+                </Text>
+                <Text
+                  style={{
+                    marginRight: 5,
+                    color: '#001858',
+                    fontFamily: 'ProductSans',
+                  }}>
+                  {product?.quantitySold?.toString()}
+                </Text>
+              </View>
               <Text
                 style={{
                   marginRight: 5,
                   color: '#001858',
                   fontFamily: 'ProductSans',
                 }}>
-                {resultDetail.quantitySold}
+                Số lượng:{' '}
+                {typeof product?.amountProduct != 'undefined'
+                  ? product.amountProduct?.toString()
+                  : product.amountPet?.toString()}
               </Text>
             </View>
           ) : (
@@ -256,7 +328,7 @@ function DetailProduct({navigation}) {
               opacity: 0.5,
               marginTop: 8,
             }}></View>
-          {statusDetail === 'idle' ? (
+          {status === 'idle' ? (
             <Text style={styles.textColor}>Thông tin chi tiết</Text>
           ) : (
             <ShimmerPlaceHolder
@@ -264,36 +336,44 @@ function DetailProduct({navigation}) {
             />
           )}
           <View style={styles.line}></View>
-          {statusDetail === 'idle' ? (
+          {status === 'idle' ? (
             <View style={styles.content}>
-              <View
-                style={{
-                  fontFamily: 'ProductSans',
-                  color: '#656565',
-                  flexDirection: 'column',
-                }}>
-                <Text style={styles.lineHeight}>
-                  Tên thú cưng:{' '}
-                  {resultDetail.namePet
-                    ? resultDetail.namePet
-                    : resultDetail.nameProduct + '\n'}
-                  Giống: Lai Mĩ{'\n'}Tuổi: 18 tháng
-                </Text>
-                {showDes ? (
+              {type === 0 ? (
+                <View
+                  style={{
+                    fontFamily: 'ProductSans',
+                    color: '#656565',
+                    flexDirection: 'column',
+                  }}>
                   <Text style={styles.lineHeight}>
-                    Mô tả: Lorem ipsum dolor sit amet, consectetur adipiscing
-                    elit, sed do eiusmod tempor incididunt ut labore et dolore
-                    magna aliqua. Ut enim ad minim veniam, quis nostrud
-                    exercitation ullamco laboris nisi ut aliquip ex ea commodo
-                    consequat. Duis aute irure dolor in reprehenderit in
-                    voluptate velit esse cillum dolore eu fugiat nulla pariatur.
-                    Excepteur sint occaecat cupidatat non proident, sunt in
-                    culpa qui officia deserunt mollit anim id est laborum.
+                    Tên thú cưng:
+                    {product.namePet}
+                    {'\n'}
+                    Kích cỡ: {product.sizePet} {'\n'}Kích thước: rộng{' '}
+                    {product.weightPet} cao {product.heightPet}
                   </Text>
-                ) : (
-                  <Text>...</Text>
-                )}
-              </View>
+                  {showDes ? (
+                    <Text style={styles.lineHeight}>
+                      Chi tiết: {product.detailPet}
+                    </Text>
+                  ) : (
+                    <Text>...</Text>
+                  )}
+                </View>
+              ) : (
+                <Text style={styles.lineHeight}>
+                  Tên sản phẩm:
+                  {product?.nameProduct}
+                  {'\n'}
+                  {showDes ? (
+                    <Text style={styles.lineHeight}>
+                      Chi tiết: {product?.detailProduct}
+                    </Text>
+                  ) : (
+                    <Text>...</Text>
+                  )}
+                </Text>
+              )}
             </View>
           ) : (
             <>
@@ -306,19 +386,21 @@ function DetailProduct({navigation}) {
             </>
           )}
           <View style={[styles.line, {marginTop: 8}]}></View>
-          <TouchableOpacity
-            onPress={() => setShowDes(!showDes)}
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              justifyContent: 'center',
-              marginTop: 8,
-            }}>
-            <Text style={{fontFamily: 'ProductSans', color: '#F582AE'}}>
-              {showDes ? 'Thu gọn' : 'Xem thêm'}
-            </Text>
-            <Icon name={iconDes} size={24} color="#F582AE" />
-          </TouchableOpacity>
+          {status === 'idle' ? (
+            <TouchableOpacity
+              onPress={() => setShowDes(!showDes)}
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'center',
+                marginTop: 8,
+              }}>
+              <Text style={{fontFamily: 'ProductSans', color: '#F582AE'}}>
+                {showDes ? 'Thu gọn' : 'Xem thêm'}
+              </Text>
+              <Icon name={iconDes} size={24} color="#F582AE" />
+            </TouchableOpacity>
+          ) : null}
           <View
             style={{
               width: width,
@@ -328,7 +410,7 @@ function DetailProduct({navigation}) {
               marginTop: 8,
             }}
           />
-          <ShopTag data={resultDetail.idShop} isLoading={statusDetail}/>
+          <ShopTag data={product?.idShop} isLoading={status} />
           <View
             style={{
               width: width,
@@ -342,42 +424,73 @@ function DetailProduct({navigation}) {
             <ListHorizontal
               data={listProduct}
               title="Sản phẩm liên quan"
-              isLoader={statusDetail}
+              isLoader={status}
+              type={1}
             />
           </View>
         </Animated.View>
       </ScrollView>
-     {statusDetail === 'idle' ?  <View style={styles.bottomButton}>
-        <TouchableOpacity style={[styles.buttonContact, styles.buttonSheet]}>
-          <Icon name="chatbubbles-outline" size={24} color={'#001858'} />
-          <Text style={styles.textButton}> Liên hệ</Text>
-        </TouchableOpacity>
-        {category === 1 ? (
-          <TouchableOpacity style={[styles.buttonBooking, styles.buttonSheet]}>
-            <Icon name="bookmarks-outline" size={22} color={'#001858'} />
-            <Text style={styles.textButton}>Đặt lịch</Text>
+      {status === 'idle' ? (
+        <View style={styles.bottomButton}>
+          <TouchableOpacity style={[styles.buttonContact, styles.buttonSheet]}>
+            <Icon name="chatbubbles-outline" size={24} color={'#001858'} />
+            <Text style={styles.textButton}> Liên hệ</Text>
           </TouchableOpacity>
-        ) : (
+          {type === 0 ? (
+            <TouchableOpacity
+              onPress={onOpenSetAppointment}
+              style={[styles.buttonBooking, styles.buttonSheet]}>
+              <Icon name="bookmarks-outline" size={22} color={'#001858'} />
+              <Text style={styles.textButton}>Đặt lịch</Text>
+            </TouchableOpacity>
+          ) : (
+            <TouchableOpacity
+              onPress={() => {
+                if (product?.amountProduct > 0) {
+                  dispatch(
+                    addProductToCart({idProduct: product._id, amount: 1}),
+                  );
+                } else {
+                  ToastAndroid.show('Sản phẩm đã hết hàng', ToastAndroid.SHORT);
+                }
+              }}
+              style={[
+                styles.buttonBooking,
+                styles.buttonSheet,
+                {flexDirection: category === 1 ? 'row' : 'column'},
+              ]}>
+              <Icon name="cart-outline" size={24} color={'#001858'} />
+              <Text style={[styles.textButton, {fontSize: 12}]}>
+                Thêm vào giỏ hàng
+              </Text>
+            </TouchableOpacity>
+          )}
+
           <TouchableOpacity
-            onPress={() => dispatch(addProductToCart({idProduct:resultDetail._id, amount:1}))}
-            style={[
-              styles.buttonBooking,
-              styles.buttonSheet,
-              {flexDirection: category === 1 ? 'row' : 'column'},
-            ]}>
-            <Icon name="cart-outline" size={24} color={'#001858'} />
-            <Text style={[styles.textButton, {fontSize: 12}]}>
-              Thêm vào giỏ hàng
+            style={[styles.buttonBuy, styles.buttonSheet]}
+            onPress={() => {
+              if (product?.amountProduct > 0 || product?.amountPet > 0) {
+                navigation.navigate('BuyNow', {item: product});
+              } else {
+                ToastAndroid.show('Sản phẩm đã hết hàng', ToastAndroid.SHORT);
+              }
+            }}>
+            <Text style={[styles.textButton, styles.textButtonBuy]}>
+              Mua ngay
             </Text>
           </TouchableOpacity>
-        )}
-
-        <TouchableOpacity style={[styles.buttonBuy, styles.buttonSheet]}>
-          <Text style={[styles.textButton, styles.textButtonBuy]}>
-            Mua ngay
-          </Text>
-        </TouchableOpacity>
-      </View>:null}
+        </View>
+      ) : null}
+      {isShowSetApm && type == 0 ? (
+        <SetAppointment
+          isShow={isShowSetApm}
+          callBack={onOpenSetAppointment}
+          pet={product}
+          shop={product.idShop}
+        />
+      ) : (
+        ''
+      )}
     </>
   );
 }
@@ -427,6 +540,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'flex-end',
+    zIndex: 2,
   },
   content: {
     marginRight: 16,
@@ -448,6 +562,7 @@ const styles = StyleSheet.create({
   },
   lineHeight: {
     lineHeight: 20,
+    color: '#656565',
   },
   price: {
     fontFamily: 'ProductSansBold',
@@ -487,4 +602,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default  DetailProduct;
+export default DetailProduct;

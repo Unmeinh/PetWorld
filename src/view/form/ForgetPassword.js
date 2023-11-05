@@ -56,32 +56,42 @@ export default function ForgetPassword({ navigation }) {
   function onInputPhoneCountry(input) {
     setinputPhoneCountry(input);
     setisShowPhoneSelect(false);
-    // console.log(input);
   }
 
   async function onContinue() {
     var regEmail = /^(\w+@[a-zA-Z]+\.[a-zA-Z]{2,})$/;
-    var regPhone = /^(\+\d{10,})$/;
+    var regPhone = /^(\+\d{9,})$/;
 
     if (isSelectPhone == false && isSelectEmail == false) {
-      ToastAndroid.show('Phương thức xác minh chưa được chọn!', ToastAndroid.SHORT);
+      Toast.show({
+        type: 'error',
+        text1: 'Phương thức xác minh chưa được chọn!',
+        position: 'top',
+      })
       return;
     }
 
     if (!(inputPhoneCountry + inputPhoneNumber).match(regPhone) && isSelectPhone == true) {
-      ToastAndroid.show('Số điện thoại chưa đúng định dạng!', ToastAndroid.SHORT);
+      Toast.show({
+        type: 'error',
+        text1: 'Số điện thoại cần đúng định dạng!\nVí dụ: +123456789',
+        position: 'top',
+      })
       return;
     }
 
     if (!inputEmail.match(regEmail) && isSelectEmail == true) {
-      ToastAndroid.show('Email chưa đúng định dạng!', ToastAndroid.SHORT);
+      Toast.show({
+        type: 'error',
+        text1: 'Email cần đúng định dạng!\nVí dụ: abc@def.xyz',
+        position: 'top',
+      })
       return;
     }
     setisDisableRequest(true);
 
     if (isSelectPhone == true) {
       const response = await onSendOTPbyPhoneNumber(inputPhoneCountry + inputPhoneNumber);
-      console.log(response);
       if (response != undefined && response.success) {
         setTimeout(() => {
           navigation.navigate('ConfirmOTP', { navigate: "ChangePassword", typeVerify: 'phoneNumber', valueVerify: inputPhoneCountry + inputPhoneNumber, authConfirm: response.confirm })
@@ -91,7 +101,6 @@ export default function ForgetPassword({ navigation }) {
       }
     } else {
       const response = await onSendOTPbyEmail(inputEmail);
-      console.log(response);
       if (response) {
         navigation.navigate('ConfirmOTP', { navigate: "ChangePassword", typeVerify: 'email', valueVerify: inputEmail, authConfirm: null })
       } else {

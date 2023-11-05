@@ -26,7 +26,7 @@ function GridProduct({data}) {
   };
   return (
     <FlatGrid
-      itemDimension={130}
+      itemDimension={150}
       data={data}
       style={styles.gridView}
       // staticDimension={300}
@@ -36,19 +36,16 @@ function GridProduct({data}) {
         <Pressable
           style={styles.itemContainer}
           onPress={() => {
-            dispatch(idProduct(item.id));
-            navigation.navigate('DetailProduct', {item});
+            navigation.push('DetailProduct', {id: item._id, type: item.type});
           }}>
           <Image
             source={{
-              uri: item.arrProduct
-                ? item.arrProduct[0]
-                : item.imagesPet[0],
+              uri: item.arrProduct ? item.arrProduct[0] : item.imagesPet[0],
             }}
             style={styles.image}
           />
           <View style={styles.content}>
-            <Text style={styles.itemName}>
+            <Text style={styles.itemName} numberOfLines={1}>
               {item.namePet ? item.namePet : item.nameProduct}
             </Text>
             {priceDiscount(
@@ -56,10 +53,7 @@ function GridProduct({data}) {
               item.discount,
             )}
           </View>
-          <Text
-            style={styles.sold}>
-            Đã bán {item.quantitySold}
-          </Text>
+          <Text style={styles.sold}>Đã bán {item.quantitySold}</Text>
         </Pressable>
       )}
     />
@@ -68,7 +62,7 @@ function GridProduct({data}) {
 
 const styles = StyleSheet.create({
   content: {padding: 3},
-  image: {width: '100%', height: '70%',borderRadius:4},
+  image: {width: '100%', height: '70%', borderRadius: 4},
   gridView: {
     marginTop: 10,
     flex: 1,
@@ -101,6 +95,12 @@ const styles = StyleSheet.create({
     textDecorationLine: 'line-through',
     fontSize: 13,
   },
-  sold:{position: 'absolute', bottom: 7, right: 7, fontSize: 12,fontFamily:'ProductSans'}
+  sold: {
+    position: 'absolute',
+    bottom: 7,
+    right: 7,
+    fontSize: 12,
+    fontFamily: 'ProductSans',
+  },
 });
 export default React.memo(GridProduct);

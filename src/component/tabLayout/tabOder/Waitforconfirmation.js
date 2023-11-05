@@ -1,45 +1,63 @@
-import React from 'react';
-import { View, Text, FlatList, Image,StyleSheet } from 'react-native';
-import ListItem from '../../list/ListItemOder';
+import React, {useEffect} from 'react';
+import {View, Text, FlatList, Image, StyleSheet} from 'react-native';
+import {useDispatch, useSelector} from 'react-redux';
+import {billSelector} from '../../../redux/selector';
+import Loading from '../../Loading';
+import {
+  getBillUnSuccess,
+  setStatusChangeBill,
+} from '../../../redux/reducers/shop/billSlice';
+import ItemList from './itemList';
 
-const data = [
-  {
-    id: '1',
-    namePrd: 'Bóng bay',
-    distance:' Khoảng cách :0.5km',
-    intomoney:'Thành tiền : 44.000.000.000',
-    // image: require('../../assets/image/product/demo1.png'),
-    endow:'Uu đãi lên đến 100k',
-    quatity:'số lượng : 11',
-    status:'Chờ xác nhận',
-    detailedStatus:'Đơn hàng đang chờ xác nhận',
-    price:'4.000.000',
-    cost:'4.500.000',
-  },
-  
-];
+const Waitforconfirmation = ({index}) => {
+  const dispatch = useDispatch();
+  const {billUnsuccess, billLoading, statusChange} = useSelector(billSelector);
 
-const Waitforconfirmation = () => {
-
-const renderItem = ({ item }) => <ListItem item={item} />;
-
+  useEffect(() => {
+    if (index === 0 && billUnsuccess.length === 0) {
+      dispatch(getBillUnSuccess());
+    }
+  }, [index]);
+  useEffect(() => {
+    if (statusChange) {
+      dispatch(getBillUnSuccess());
+      dispatch(setStatusChangeBill(false));
+    }
+  }, [statusChange]);
   return (
     <View style={styles.container}>
-      <FlatList
-        data={data}
-        renderItem={renderItem}
-        keyExtractor={(item) => item.id}
-      />
+      {billLoading.billUnsuccess ? null : (
+        <FlatList
+          data={billUnsuccess}
+          showsVerticalScrollIndicator={false}
+          renderItem={({item}) => <ItemList item={item} />}
+          keyExtractor={item => item._id}
+          ListEmptyComponent={() => {
+            return (
+              <View
+                style={{
+                  flex: 1,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  marginTop: 20,
+                }}>
+                <Text style={{fontFamily: 'ProductSansBold', fontSize: 18}}>
+                  Không có thông tin
+                </Text>
+              </View>
+            );
+          }}
+        />
+      )}
+      {billLoading.billUnsuccess ? <Loading /> : null}
     </View>
   );
 };
 const styles = StyleSheet.create({
-    container: {
-     padding:10,
-      flex: 1,// Add a border of 10
-      borderRadius:10,// Border color can be changed to your desired color
-    },
-  });
-  
+  container: {
+    flex: 1, // Add a border of 10
+    borderRadius: 10, // Border color can be changed to your desired color
+  },
+});
 
 export default Waitforconfirmation;
