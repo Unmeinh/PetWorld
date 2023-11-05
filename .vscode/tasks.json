@@ -31,5 +31,15 @@
                 "panel": "new"
             }
         },
+        {
+            "label": "build-release",
+            "type": "shell",
+            "command": "yarn android --mode release",
+            "group": "none",
+            "presentation": {
+                "reveal": "always",
+                "panel": "new"
+            }
+        },
     ]
 }

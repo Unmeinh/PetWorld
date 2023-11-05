@@ -1,4 +1,5 @@
-export const BASE_URL = 'http://10.0.2.2:3000';
+export const BASE_URL = "https://server-pet-world.onrender.com/api"
+
 
 // payment momo
 export const PANENT_CODE_MOMO = 'MOMOBKUN20180529';

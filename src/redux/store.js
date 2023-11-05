@@ -24,7 +24,7 @@ const store = configureStore({
     listUser: userReducer,
     listCart: listCartReducer,
     bill: billSlice,
-    noticeReducer: noticeReducer,
+    listNotice: noticeReducer,
   },
 });
 

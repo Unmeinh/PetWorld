@@ -65,7 +65,7 @@ export default function StackScreen() {
     <NavigationContainer ref={navigationRef}>
       <Stack.Navigator
         screenOptions={() => ({headerShown: false})}
-        initialRouteName="MomoPayment">
+        initialRouteName="SlashScreen">
         <Stack.Screen
           name="SlashScreen"
           component={SlashScreen}
