@@ -13,7 +13,7 @@ export const listShopSelector = state => state.listShop.shops;
 export const listShopStatusSelector = state => state.listShop.status;
 export const listCartSelector = state => state.listCart.carts
 export const listCartStatusSelector = state => state.listCart.status
-
+export const listNotice= state => state.listNotice;
 export const listFilterSelector = createSelector(
   listPetSelector,
   searchFilterSelector,

@@ -34,4 +34,28 @@ export const fetchNotices = createAsyncThunk(
     }
   },
 );
+// export const updateNotices = createAsyncThunk(
+//   'notices/fetchNotices',
+//   async (idNotice) => {
+//     try {
+//       const res = await api.get('notice/update'+idNotice);
+//       return res.data;
+//     } catch (error) {
+//       console.error('Error fetching notices:', error);
+//       throw error; 
+//     }
+//   },
+// );
+// export const deleteNotices = createAsyncThunk(
+//   'notices/fetchNotices',
+//   async (idNotice) => {
+//     try {
+//       const res = await api.get('notice/delete'+idNotice);
+//       return res.data;
+//     } catch (error) {
+//       console.error('Error fetching notices:', error);
+//       throw error;
+//     }
+//   },
+// );
 export default listNoticeSlice.reducer;

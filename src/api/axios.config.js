@@ -2,7 +2,7 @@ import axios from "axios";
 import { storageMMKV } from "../storage/storageMMKV";
 
 const tokenHeader =  (storageMMKV.getString('login.token') != "") ? `Bearer ${storageMMKV.getString('login.token')}` : undefined;
-const apiURL = "https://6249-2402-800-61c4-c98-e13a-86c6-99e-31c2.ngrok-free.app/api";
+const apiURL = "https://1f2f-2402-800-617f-ac20-8988-305-bf76-9d62.ngrok-free.app/api";
 
 const axiosJSON = axios.create();
 

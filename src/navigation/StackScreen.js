@@ -37,6 +37,7 @@ import Email from '../view/account/Email';
 import { createStackNavigator } from '@react-navigation/stack';
 import SettingNotify from '../view/notify/SettingNotify';
 import MyPetScreen from '../view/account/MyPetScreen';
+import Favorite from '../view/account/Favorite';
 const Stack = createStackNavigator();
 
 export default function StackScreen() {
@@ -96,6 +97,7 @@ export default function StackScreen() {
         <Stack.Screen name="NumberPhone" component={NumberPhone} />
         <Stack.Screen name="PhoneVerification" component={PhoneVerification} />
         <Stack.Screen name="Email" component={Email} />
+        <Stack.Screen name="Favorite" component={Favorite} />
         <Stack.Screen name="EmailVerification" component={EmailVerification} />
         <Stack.Screen name="MyPetScreen" component={MyPetScreen} />
       </Stack.Navigator>

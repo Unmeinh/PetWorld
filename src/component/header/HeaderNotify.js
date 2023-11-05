@@ -1,13 +1,22 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { TouchableOpacity, Text, View, Image, StyleSheet, Dimensions } from 'react-native';
 import Modal from 'react-native-modal';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useNavigation } from '@react-navigation/native';
-
+import { useDispatch, useSelector } from 'react-redux';
+import { updateNotices } from '../../redux/reducers/notice/NoticeReducer';
+import { listNotice } from '../../redux/selector';
 const { width, height } = Dimensions.get('window');
 
 export default function HeaderNotify({ titleHeader, colorHeader }) {
   const [isPressed, setIsPressed] = useState(false);
+  // const dispatch = useDispatch();
+  // const notices = useSelector(listNotice);
+
+  // useEffect(() => {
+  //   console.log('Dữ liệu đã update từ Redux:', notices);
+  // }, [notices]);
+
   const navigation = useNavigation();
   const handlePress = () => {
     setIsPressed(true);
@@ -22,12 +31,11 @@ export default function HeaderNotify({ titleHeader, colorHeader }) {
     setIsDialogVisible(!isDialogVisible);
   };
 
- 
-
-
   const [isModalVisible, setModalVisible] = useState(false);
 
   const toggleModal = () => {
+   
+    dispatch(updateNotices());
     setModalVisible(!isModalVisible);
   };
 
@@ -57,27 +65,20 @@ export default function HeaderNotify({ titleHeader, colorHeader }) {
       >
         Thông báo
       </Text>
-      
-      
-      
       <View style={{ flexDirection: 'row', alignItems: 'center', marginLeft: 10 }}>
         <TouchableOpacity onPress={toggleModal}>
-        <Ionicons name='checkmark-done' size={24} color={'#001858'} style={{ marginRight: 5 }} />
+          <Ionicons name='checkmark-done' size={24} color={'#001858'} style={{ marginRight: 5 }} />
         </TouchableOpacity>
-      
-
-        <TouchableOpacity onPress={handlePress} >
+        <TouchableOpacity onPress={handlePress}>
           <Ionicons name='settings-outline' size={24} color={'#001858'} style={{ marginLeft: 5 }} />
         </TouchableOpacity>
       </View>
 
-
-
-
       <Modal isVisible={isModalVisible}>
         <View style={styles.modalContainer}>
-          <Text style={{    color: '#001858',
-      fontFamily: 'ProductSans', marginBottom: 20,alignItems: 'center', }}>Đánh dấu tất cả thông báo đã đọc thành công</Text>
+          <Text style={{ color: '#001858', fontFamily: 'ProductSans', marginBottom: 20, alignItems: 'center' }}>
+            Đánh dấu tất cả thông báo đã đọc thành công
+          </Text>
           {/* Add your settings options here */}
           <TouchableOpacity onPress={toggleModal} style={styles.closeButton}>
             <Text style={{ color: 'red', fontSize: 16 }}>Đóng</Text>

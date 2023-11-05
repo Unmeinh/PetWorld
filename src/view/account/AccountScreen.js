@@ -172,8 +172,8 @@ export default function AccountScreen({ scrollRef, onScrollView }) {
               // Example: navigate to another screen
               if (item.text === 'Thú cưng của tôi') {
                 navigation.navigate('MyPetScreen');
-              } else (item.text === 'Trợ giúp và yêu cầu hỗ trợ') 
-              { navigation.navigate('');// Handle other cases
+              } else (item.text === 'Đã thích') 
+              { navigation.navigate('Favorite');// Handle other cases
               }
             }}
           >
@@ -224,7 +224,11 @@ export default function AccountScreen({ scrollRef, onScrollView }) {
               // Example: navigate to another screen
               if (item.text === 'Tài khoản') {
                 navigation.navigate('InformationAccount');
-            }}}
+            }
+            else if (item.text === 'Đã thích'){
+                navigation.navigate('InformationAccount')
+            }
+          }}
           >
 
 

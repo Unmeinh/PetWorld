@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useEffect } from 'react';
 import { View, Text, Image,  Dimensions, StyleSheet,TouchableOpacity } from 'react-native';
@@ -20,7 +19,7 @@ const ListItem = ({ item }) => {
   useEffect(() => {
     dispatch(fetchNotices());
   }, []);
-  console.log("Notices in ListItem:", notices);
+  // console.log("Notices in ListItem:", notices);
   const toggleDialog = () => {
     setIsDialogVisible(!isDialogVisible);
   };
