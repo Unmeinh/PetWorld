@@ -42,10 +42,7 @@ import MyPetScreen from '../view/account/MyPetScreen';
 import {navigationRef} from './rootNavigation';
 import BuyNowScreen from '../view/shopping/BuyNowScreen';
 import DetailBill from '../view/shopping/DetailBill';
-<<<<<<< HEAD
-=======
 import Favorite from '../view/account/Favorite';
->>>>>>> origin/branch_quythu2
 const Stack = createStackNavigator();
 
 export default function StackScreen() {
