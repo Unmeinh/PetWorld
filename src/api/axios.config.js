@@ -1,41 +1,96 @@
-import axios from "axios";
-import { storageMMKV } from "../storage/storageMMKV";
+import axios from 'axios';
+import {storageMMKV} from '../storage/storageMMKV';
 
-const tokenHeader =  (storageMMKV.getString('login.token') != "") ? `Bearer ${storageMMKV.getString('login.token')}` : undefined;
-const apiURL = "https://1f2f-2402-800-617f-ac20-8988-305-bf76-9d62.ngrok-free.app/api";
+const apiURL = 'https://server-pet-world.onrender.com/api';
 
-const axiosJSON = axios.create();
+// axiosAPi.defaults.withCredentials = true;
+let axiosAPi = axios.create();
 
-axiosJSON.defaults.baseURL = apiURL;
-
-axiosJSON.defaults.headers = {
+const getToken = async () => {
+  const token = await storageMMKV.getString('login.token');
+  return token != '' ? `Bearer ${token}` : undefined;
+};
+axiosAPi.defaults.baseURL = apiURL;
+(async () => {
+  axiosAPi.defaults.headers = {
     Accept: 'application/json',
     'Content-Type': 'application/json',
-    "Content-Type": "application/x-www-form-urlencoded",
-    "Authorization" : tokenHeader
+    'Content-Type': 'application/x-www-form-urlencoded',
+    Authorization: await getToken(),
+  };
+})();
+
+const getAxiosInstance = () => {
+  const axiosInstance = axios.create({
+    baseURL: apiURL,
+  });
+  axiosInstance.interceptors.response.use(
+    response => {
+      if (response.status === 200) {
+      }
+      return response.data;
+    },
+    async error => {
+      return error.response.data;
+
+      if (error.response) {
+        // console.log("Error response", error.response);
+        if (error.response.status === 400) {
+        }
+        if (error.response.status === 401) {
+        }
+      }
+
+      return Promise.reject(error);
+    },
+  );
+
+  //  request interceptor
+  axiosInstance.interceptors.request.use(
+    config => {
+      return config;
+    },
+    error => {
+      return Promise.reject(error);
+    },
+  );
+  return axiosInstance;
 };
 
-const axiosFormData = axios.create();
-
-axiosFormData.defaults.baseURL = apiURL;
-
-axiosFormData.defaults.headers = {
-    Accept: 'application/json',
+const fetch = async ({method, endPoint, data, params, header}) => {
+  let headers = {
     'Content-Type': 'application/json',
-    'Content-Type': 'multipart/form-data',
-    "Authorization" : tokenHeader
+    Accept: 'application/json',
+  };
+  const token = await storageMMKV.getString('login.token');
+  if (token) {
+    headers['Authorization'] = `Bearer ${token}`;
+  }
+  return getAxiosInstance()({
+    method: method,
+    url: endPoint,
+    data: data,
+    params: params,
+    headers: {...headers, ...header},
+  });
+};
+export const Get = ({endPoint, data, params, header}) => {
+  return fetch({
+    method: 'GET',
+    endPoint: endPoint,
+    data: data,
+    params: params,
+    header: header,
+  });
+};
+export const Post = ({endPoint, data, params, header}) => {
+  return fetch({
+    method: 'POST',
+    endPoint: endPoint,
+    data: data,
+    params: params,
+    header: header,
+  });
 };
 
-// axiosJSON.defaults.timeout = 2000;
-
-// axiosJSON.defaults.withCredentials = true;
-const axiosGet = axios.create();
-
-axiosGet.defaults.baseURL = apiURL;
-
-axiosGet.defaults.headers = {
-    "Authorization" : tokenHeader
-};
-
-export {axiosJSON, axiosFormData};
-export default axiosGet;
+export default axiosAPi;

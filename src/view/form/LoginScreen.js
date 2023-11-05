@@ -16,12 +16,9 @@ export default function LoginScreen() {
     try {
       const result = await request(PERMISSIONS.ANDROID.NOTIFICATIONS);
       if (result === RESULTS.GRANTED) {
-        console.log('Quyền truy cập thông báo đã được cấp.');
       } else {
-        console.log('Quyền truy cập thông báo không được cấp.');
       }
     } catch (error) {
-      console.error('Lỗi khi yêu cầu quyền truy cập thông báo:', error);
     }
   };
   

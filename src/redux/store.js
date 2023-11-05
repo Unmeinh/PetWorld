@@ -4,24 +4,27 @@ import listProductReducer from './reducers/product/ProductReducer';
 import categoryReducer from './reducers/category/category';
 import listShopReducer from './reducers/shop/ShopReducer';
 import blogReducer from './reducers/blog/blogReducer';
-import listCommentReducer from './reducers/comment/ListCommentReducer';
+import commentReducer from './reducers/comment/commentReducer';
 import listCartReducer from './reducers/shop/CartReduces';
-import searchFilterReducer from './reducers/filters/filtersReducer';
+import filterReducer from './reducers/filters/filtersReducer';
 import userReducer from './reducers/user/userReducer';
+import billSlice from './reducers/shop/billSlice';
 import noticeReducer from './reducers/notice/NoticeReducer';
+
 
 const store = configureStore({
   reducer: {
     listPet: listPetReducer,
     listProduct: listProductReducer,
-    searchFilter: searchFilterReducer,
+    searchFilter: filterReducer,
     category: categoryReducer,
     listShop: listShopReducer,
     listBlog: blogReducer,
-    listComment: listCommentReducer,
+    listComment: commentReducer,
     listUser: userReducer,
     listCart: listCartReducer,
-    listNotice:noticeReducer,
+    bill: billSlice,
+    noticeReducer: noticeReducer,
   },
 });
 
