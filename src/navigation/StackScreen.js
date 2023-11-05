@@ -42,6 +42,7 @@ import MyPetScreen from '../view/account/MyPetScreen';
 import {navigationRef} from './rootNavigation';
 import BuyNowScreen from '../view/shopping/BuyNowScreen';
 import DetailBill from '../view/shopping/DetailBill';
+import MomoPayment from '../payment/MomoPayment';
 const Stack = createStackNavigator();
 
 export default function StackScreen() {
@@ -63,7 +64,7 @@ export default function StackScreen() {
     <NavigationContainer ref={navigationRef}>
       <Stack.Navigator
         screenOptions={() => ({headerShown: false})}
-        initialRouteName="SlashScreen">
+        initialRouteName="MomoPayment">
         <Stack.Screen
           name="SlashScreen"
           component={SlashScreen}
@@ -240,6 +241,11 @@ export default function StackScreen() {
           name="DetailBill"
           options={animated}
           component={DetailBill}
+        />
+        <Stack.Screen
+          name="MomoPayment"
+          options={animated}
+          component={MomoPayment}
         />
       </Stack.Navigator>
     </NavigationContainer>
