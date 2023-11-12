@@ -21,7 +21,11 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import ModalTicket from '../../component/modals/ModalTicket';
 import {fetchInfoUserNoMessage} from '../../redux/reducers/user/userReducer';
 import {userSelectStatus} from '../../redux/selectors/userSelector';
-import {createBill, getPayments, setStatusChangeBill} from '../../redux/reducers/shop/billSlice';
+import {
+  createBill,
+  getPayments,
+  setStatusChangeBill,
+} from '../../redux/reducers/shop/billSlice';
 import moment from 'moment';
 import Loading from '../../component/Loading';
 const {width} = Dimensions.get('screen');
@@ -30,7 +34,8 @@ export default function SummaryBill({navigation, route}) {
   const [user, district] = useSelector(useLocationSeleted);
   const statusUser = useSelector(userSelectStatus);
   const [date, setDate] = useState(dateShip());
-  const {statusChange, status, payments} = useSelector(billSelector);
+  const {statusChange, status, payments, successBill} =
+    useSelector(billSelector);
   const [selectedId, setSelectedId] = useState(null);
 
   const districtProduct = location => {
@@ -146,7 +151,11 @@ export default function SummaryBill({navigation, route}) {
     }
     return (money = 0);
   };
-
+  const generateRandomCode = () => {
+    return Array.from({length: 30}, () =>
+      Math.random().toString(36).charAt(2).toUpperCase(),
+    ).join('');
+  };
   const checkValidate = () => {
     if (selectedId === null) {
       ToastAndroid.show(
@@ -158,6 +167,32 @@ export default function SummaryBill({navigation, route}) {
     return true;
   };
   useEffect(() => {
+    if (successBill) {
+      dispatch(
+        createBill({
+          paymentMethod: selectedId,
+          deliveryStatus: 0,
+          detailCard: null,
+          locationDetail: {
+            fullName: user.fullName,
+            phoneNumber: user.phoneNumber,
+            location: user.location,
+          },
+          products: [
+            {
+              idShop: item?.idShop?._id,
+              items: [
+                {
+                  idProduct: item._id,
+                  amount: 1,
+                },
+              ],
+              moneyShip: showShip(),
+            },
+          ],
+        }),
+      );
+    }
     dispatch(getPayments());
     dispatch(fetchInfoUserNoMessage());
   }, []);
@@ -315,30 +350,38 @@ export default function SummaryBill({navigation, route}) {
             style={styles.button}
             onPress={() => {
               if (checkValidate()) {
-                dispatch(
-                  createBill({
-                    paymentMethod: selectedId,
-                    deliveryStatus: 0,
-                    detailCard: null,
-                    locationDetail: {
-                      fullName: user.fullName,
-                      phoneNumber: user.phoneNumber,
-                      location: user.location,
-                    },
-                    products: [
-                      {
-                        idShop: item?.idShop?._id,
-                        items: [
-                          {
-                            idProduct: item._id,
-                            amount: 1,
-                          },
-                        ],
-                        moneyShip: showShip(),
+                if (selectedId === 1) {
+                  const code = generateRandomCode();
+                  navigation.navigate('MomoPayment', {
+                    code: code,
+                    amount: showTotal(),
+                  });
+                } else {
+                  dispatch(
+                    createBill({
+                      paymentMethod: selectedId,
+                      deliveryStatus: 0,
+                      detailCard: null,
+                      locationDetail: {
+                        fullName: user.fullName,
+                        phoneNumber: user.phoneNumber,
+                        location: user.location,
                       },
-                    ],
-                  }),
-                );
+                      products: [
+                        {
+                          idShop: item?.idShop?._id,
+                          items: [
+                            {
+                              idProduct: item._id,
+                              amount: 1,
+                            },
+                          ],
+                          moneyShip: showShip(),
+                        },
+                      ],
+                    }),
+                  );
+                }
               }
             }}>
             <Text style={styles.textButton}>Xác nhận</Text>

@@ -40,6 +40,7 @@ const billSlice = createSlice({
       billCancel: true,
     },
     countBill: {},
+    successBill: false,
   },
   reducers: {
     addPrice: (state, action) => {
@@ -56,6 +57,9 @@ const billSlice = createSlice({
       state.wards = [];
       state.district = [];
       state.province = [];
+    },
+    setSuccessBill: (state, action) => {
+      state.successBill = action.payload;
     },
   },
   extraReducers: bulder => {
@@ -258,6 +262,11 @@ export const cancelBill = createAsyncThunk('bill/cancelBill', async param => {
   return res;
 });
 
-export const {addPrice, setShip, setStatusChangeBill, clearLocations} =
-  billSlice.actions;
+export const {
+  addPrice,
+  setShip,
+  setStatusChangeBill,
+  clearLocations,
+  setSuccessBill,
+} = billSlice.actions;
 export default billSlice.reducer;

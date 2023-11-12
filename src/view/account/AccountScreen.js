@@ -68,11 +68,7 @@ export default function AccountScreen({scrollRef, onScrollView}) {
   const dispatch = useDispatch();
   const {countBill, status} = useSelector(state => state.bill);
   const handlePress = () => {
-    setIsPressed(true);
-    setTimeout(() => {
-      setIsPressed(false);
-      navigation.navigate('BillScreen');
-    }, 200); // Reset the state after 200ms
+    navigation.navigate('BillScreen');
   };
 
   function onLogout() {

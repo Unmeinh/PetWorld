@@ -53,7 +53,7 @@ function GridProduct({data}) {
               item.discount,
             )}
           </View>
-          <Text style={styles.sold}>Đã bán {item.quantitySold}</Text>
+          <Text style={styles.sold}>Đã bán {item.quantitySold }</Text>
         </Pressable>
       )}
     />

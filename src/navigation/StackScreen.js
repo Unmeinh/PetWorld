@@ -42,7 +42,7 @@ import MyPetScreen from '../view/account/MyPetScreen';
 import {navigationRef} from './rootNavigation';
 import BuyNowScreen from '../view/shopping/BuyNowScreen';
 import DetailBill from '../view/shopping/DetailBill';
-import MomoPayment from '../payment/MomoPayment';
+import MomoPayment from '../view/payment/MomoPayment';
 import Favorite from '../view/account/Favorite';
 const Stack = createStackNavigator();
 

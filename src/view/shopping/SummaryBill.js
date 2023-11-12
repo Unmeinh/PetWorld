@@ -31,14 +31,14 @@ import {
   createBill,
   getPayments,
   setStatusChangeBill,
+  setSuccessBill,
 } from '../../redux/reducers/shop/billSlice';
 import Loading from '../../component/Loading';
 import {deleteItemCart} from '../../redux/reducers/shop/CartReduces';
 import {convertCart} from '../../function/helper';
 const {width} = Dimensions.get('screen');
-export default function SummaryBill({navigation}) {
+export default function SummaryBill({navigation, route}) {
   const result = useSelector(listItemBill);
-
   const [user, district] = useSelector(useLocationSeleted);
   const statusUser = useSelector(userSelectStatus);
   const dispatch = useDispatch();
@@ -47,9 +47,9 @@ export default function SummaryBill({navigation}) {
     statusChange,
     status,
     payments,
+    successBill,
   } = useSelector(billSelector);
   const shop = useSelector(listShopSelector);
-
   const resultCart = useCart(result, shop, user);
   const [selectedId, setSelectedId] = useState(null);
   const districtSlice = location => {
@@ -142,8 +142,8 @@ export default function SummaryBill({navigation}) {
     return true;
   };
 
-  const handleSaveBill = () => {
-    if (checkValidate()) {
+  useEffect(() => {
+    if (successBill) {
       dispatch(
         createBill({
           paymentMethods: selectedId,
@@ -156,10 +156,8 @@ export default function SummaryBill({navigation}) {
           products: convertCart(resultCart, district),
         }),
       );
+      dispatch(setSuccessBill(false));
     }
-  };
-
-  useEffect(() => {
     dispatch(fetchInfoUserNoMessage());
     dispatch(getPayments());
   }, []);
@@ -175,6 +173,59 @@ export default function SummaryBill({navigation}) {
     });
     return sub;
   }, [navigation]);
+
+  ///randomcode
+
+  const generateRandomCode = () => {
+    return Array.from({length: 30}, () =>
+      Math.random().toString(36).charAt(2).toUpperCase(),
+    ).join('');
+  };
+
+  // const startRandomCodeGeneration = () => {
+  //   // Run the function initially
+  //   generateRandomCode();
+
+  //   // Set up interval to run the function every 5 minutes
+  //   const id = setInterval(() => {
+  //     generateRandomCode();
+  //   }, 5 * 60 * 1000);
+
+  //   // Save the interval ID to state
+  //   setIntervalId(id);
+  // };
+
+  // const stopRandomCodeGeneration = () => {
+  //   // Clear the interval using the stored ID
+  //   clearInterval(intervalId);
+  // };
+  // console.log(randomCode);
+
+  const handleSaveBill = () => {
+    if (checkValidate()) {
+      if (selectedId === 1) {
+        const code = generateRandomCode();
+        navigation.navigate('MomoPayment', {
+          code: code,
+          amount: priceTotal + moneyShip(),
+        });
+      } else {
+        dispatch(
+          createBill({
+            paymentMethods: selectedId,
+            deliveryStatus: 0,
+            locationDetail: {
+              fullName: user.fullName,
+              phoneNumber: user.phoneNumber,
+              location: user.location,
+            },
+            products: convertCart(resultCart, district),
+          }),
+        );
+      }
+    }
+  };
+
   return (
     <View style={styles.container}>
       <HeaderTitle
