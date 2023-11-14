@@ -25,6 +25,7 @@ import {
   createBill,
   getPayments,
   setStatusChangeBill,
+  setSuccessBill,
 } from '../../redux/reducers/shop/billSlice';
 import moment from 'moment';
 import Loading from '../../component/Loading';
@@ -167,6 +168,11 @@ export default function SummaryBill({navigation, route}) {
     return true;
   };
   useEffect(() => {
+    dispatch(getPayments());
+    dispatch(fetchInfoUserNoMessage());
+  }, []);
+
+  useEffect(() => {
     if (successBill) {
       dispatch(
         createBill({
@@ -192,10 +198,9 @@ export default function SummaryBill({navigation, route}) {
           ],
         }),
       );
+      dispatch(setSuccessBill(false));
     }
-    dispatch(getPayments());
-    dispatch(fetchInfoUserNoMessage());
-  }, []);
+  }, [successBill]);
   useEffect(() => {
     if (statusChange) {
       navigation.navigate('BillScreen', {idName: 3});

@@ -143,6 +143,11 @@ export default function SummaryBill({navigation, route}) {
   };
 
   useEffect(() => {
+    dispatch(fetchInfoUserNoMessage());
+    dispatch(getPayments());
+  }, []);
+
+  useEffect(() => {
     if (successBill) {
       dispatch(
         createBill({
@@ -158,9 +163,7 @@ export default function SummaryBill({navigation, route}) {
       );
       dispatch(setSuccessBill(false));
     }
-    dispatch(fetchInfoUserNoMessage());
-    dispatch(getPayments());
-  }, []);
+  }, [successBill]);
   useEffect(() => {
     if (statusChange) {
       dispatch(deleteItemCart());

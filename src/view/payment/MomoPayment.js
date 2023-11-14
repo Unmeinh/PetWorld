@@ -1,5 +1,5 @@
 import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import WebView from 'react-native-webview';
 import axios from 'axios';
 import {
@@ -27,6 +27,7 @@ export default function MomoPayment({navigation, route}) {
   var autoCapture = true;
   const [data, setData] = useState({});
   const [loading, setLoading] = useState(false);
+  const [currrentUrl, setCurrrentUrl] = useState('');
   const handlePayment = async () => {
     setLoading(true);
     let key = '';
@@ -63,15 +64,15 @@ export default function MomoPayment({navigation, route}) {
   useEffect(() => {
     handlePayment();
   }, []);
-
-  const handleNavigationStateChange = navState => {
-    // Cập nhật URL hiện tại khi trạng thái đổi
-    if (navState.url === 'https://test-payment.momo.vn/v2/gateway/action') {
-    } else if (navState.url === `${NOTIFY_URL}account/login`) {
+  
+  useEffect(() => {
+    if (currrentUrl?.url === 'https://test-payment.momo.vn/v2/gateway/action') {
+    } else if (currrentUrl?.url === `${NOTIFY_URL}account/login`) {
       dispatch(setSuccessBill(true));
       navigation.goBack();
     }
-  };
+  }, [currrentUrl.url]);
+  console.log("CurrentURL",currrentUrl);
   return (
     <>
       {loading ? (
@@ -86,7 +87,7 @@ export default function MomoPayment({navigation, route}) {
           javaScriptEnabled={true}
           domStorageEnabled={true}
           automaticallyAdjustContentInsets={false}
-          onNavigationStateChange={handleNavigationStateChange}
+          onNavigationStateChange={(navstate) => setCurrrentUrl(navstate)}
           onLoadProgress={({nativeEvent}) => {
             if (nativeEvent.progress === 1) {
               setLoading(false);
