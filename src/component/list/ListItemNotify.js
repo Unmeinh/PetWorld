@@ -13,10 +13,6 @@ import Modal from 'react-native-modal';
 import {getDateTimeVietnamese} from '../../function/functionDate';
 const {width, height} = Dimensions.get('window');
 const ListItem = ({item, callBack}) => {
-  // const [isDialogVisible, setIsDialogVisible] = useState(false);
-  // const toggleDialog = () => {
-  //   setIsDialogVisible(!isDialogVisible);
-  // };
   return (
     <TouchableOpacity onPress={() => callBack(item, true)}>
       <View style={styles.container}>

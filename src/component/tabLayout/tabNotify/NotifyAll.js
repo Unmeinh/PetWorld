@@ -25,7 +25,7 @@ const NotifyAll = () => {
   const notices = useSelector(listNotice);
   const [showModal, setShowModal] = useState(false);
   const [item, setItem] = useState({});
-
+  
   const showModalAndSetItem = (item, show) => {
     setItem(item);
     setShowModal(show);
@@ -33,18 +33,23 @@ const NotifyAll = () => {
   return (
     <View style={styles.container}>
       {notices.status === 'idle' ? (
+        
         <FlatList
           data={notices.notices}
+          
           renderItem={({item}) => (
             <ListItem item={item} callBack={showModalAndSetItem} />
           )}
           keyExtractor={item => item._id}
+          
           ListEmptyComponent={() => (
             <View>
               <Text>Không có thông báo nào.</Text>
+              
             </View>
           )}
         />
+       
       ) : (
         <ActivityIndicator />
       )}
