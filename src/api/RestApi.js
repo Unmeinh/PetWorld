@@ -59,4 +59,12 @@ export const EditLocationUser = action =>
 export const CancelBill = params =>
   Get({endPoint: `/bill-product/cancelBill/${params}`});
 
-export const GetAllNotice = () => Get({endPoint: `notice/list/all`});
+export const GetAllNotice = status => 
+Get({endPoint: `notice/list/all/${status}`});
+
+export const GetAllFavorite = () => 
+Get({endPoint: `favorite/list`});
+export const AddFavorite = () => 
+Get({endPoint: `favorite/insert`});
+export const DeleteFavorite = () => 
+Get({endPoint: `favorite/delete`});

@@ -10,7 +10,7 @@ import filterReducer from './reducers/filters/filtersReducer';
 import userReducer from './reducers/user/userReducer';
 import billSlice from './reducers/shop/billSlice';
 import noticeReducer from './reducers/notice/NoticeReducer';
-
+import favoriteReducer from './reducers/favorite/FavoriteReducer';
 
 const store = configureStore({
   reducer: {
@@ -25,6 +25,7 @@ const store = configureStore({
     listCart: listCartReducer,
     bill: billSlice,
     listNotice: noticeReducer,
+    listFavorite: favoriteReducer,
   },
 });
 

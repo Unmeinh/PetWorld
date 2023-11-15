@@ -32,6 +32,7 @@ import ShimmerPlaceHolder from '../../component/layout/ShimmerPlaceHolder';
 import SetAppointment from '../../component/modals/SetAppointment';
 import Loading from '../../component/Loading';
 import {GetDetailProduct} from '../../api/RestApi';
+import { AddFavorite,DeleteFavorite } from '../../api/RestApi';
 const {width} = Dimensions.get('screen');
 
 function DetailProduct({navigation, route}) {
@@ -57,7 +58,23 @@ function DetailProduct({navigation, route}) {
 
   const AnimatedIcon = Animated.createAnimatedComponent(Icon);
   const AnimatedPressible = Animated.createAnimatedComponent(Pressable);
-  const handleLike = like ? 'heart' : 'heart-outline';
+  
+  const favoriteItem = useSelector(state => selectFavoriteById(state, product._id));
+  const handleLike = async () => {
+    try {
+      if (like) {
+        if (favoriteItem) {
+          await dispatch(deleteFavorite(favoriteItem.id)); 
+        }
+      } else {
+      
+        await dispatch(addFavorite(product)); 
+      }
+      setLike(!like); 
+    } catch (error) {
+      console.error('Error handling like:', error);
+    }
+  };
   const iconDes = showDes ? 'chevron-up-outline' : 'chevron-down-outline';
   const priceDiscount = (price, discount) => {
     if (discount > 0) {

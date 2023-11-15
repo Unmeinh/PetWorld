@@ -13,12 +13,7 @@ import Tab4 from '../tabNotify/NotifyUnRead';
 
 
 const TabLayout = () => {
-  // const dispatch = useDispatch();
-  // const notices = useSelector(listNotice);
-  // useEffect(() => {
-  //   dispatch(fetchNotices());
-  // }, [dispatch]);
-  // console.log("Notices TabLayout:", notices);
+
   const [index, setIndex] = useState(0);
   const [routes] = useState([
     { key: 'first', title: 'Tất cả' },
