@@ -35,4 +35,5 @@ export const useLocationSeleted = createSelector(userLocation,(location) =>{
 })
 export const filterAll = state => state.searchFilter.filterProduct;
 export const listNotice= state => state.listNotice;
+export const listFavorite= state => state.listFavorite;
 
