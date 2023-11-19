@@ -17,19 +17,24 @@ const ListItem = ({item, callBack}) => {
     <TouchableOpacity onPress={() => callBack(item, true)}>
       <View style={styles.container}>
         <View style={styles.leftContainer}>
-          <Image source={item?.image} style={styles.image} />
+          <Image
+            source={item?.image[0] ?? require('../../assets/ic_launcher.png')}
+            style={styles.image}
+          />
         </View>
         <View style={styles.middleContainer}>
           <View style={styles.header}>
             <Text style={styles.title}>{item?.content}</Text>
-            <View style={styles.timeContainer}>
-              <Feather name="clock" size={13} color={'#001858'} />
-              <Text style={styles.time}>
-                {getDateTimeVietnamese(item?.createdAt)}
-              </Text>
-            </View>
           </View>
-          <Text style={styles.content}>{item?.content}</Text>
+          <Text style={styles.content} numberOfLines={1}>
+            {item?.detail}
+          </Text>
+          <View style={styles.timeContainer}>
+            <Feather name="clock" size={13} color={'#001858'} />
+            <Text style={styles.time} numberOfLines={1}>
+              {getDateTimeVietnamese(item?.createdAt)}
+            </Text>
+          </View>
         </View>
         <View style={styles.rightContainer}>
           <Feather name="more-horizontal" size={30} color={'#001858'} />
@@ -65,8 +70,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center', // Căn giữa theo chiều ngang
   },
   image: {
-    width: 30,
-    height: 30,
+    width: 40,
+    height: 40,
   },
   header: {
     flexDirection: 'row',
@@ -78,7 +83,6 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: 'black',
     marginRight: 5,
-    width: 180,
     color: '#001858',
     fontFamily: 'ProductSans',
   },
@@ -88,7 +92,8 @@ const styles = StyleSheet.create({
   },
 
   time: {
-    fontSize: 13,
+    fontSize: 10,
+    marginLeft: 4,
     color: 'black',
     color: '#001858',
     fontFamily: 'ProductSans',

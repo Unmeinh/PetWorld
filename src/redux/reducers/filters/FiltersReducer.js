@@ -1,6 +1,10 @@
 import {createAsyncThunk, createSlice} from '@reduxjs/toolkit';
 import api from '../../../api/axios.config';
-import {GetDetailProduct, SearchProduct} from '../../../api/RestApi';
+import {
+  GetDetailProduct,
+  SeachProductForShop,
+  SearchProduct,
+} from '../../../api/RestApi';
 
 const initialState = {
   search: '',
@@ -78,6 +82,21 @@ const filtersReducer = createSlice({
         } else {
           state.status = 'idle';
         }
+      })
+      .addCase(fetchProductForShop.pending, (state, action) => {
+        state.status = 'loading';
+        state.listSearch = [];
+      })
+      .addCase(fetchProductForShop.fulfilled, (state, action) => {
+        if (action.payload === '') {
+          return (state.listSearch = []);
+        }
+        if (action.payload?.success === true) {
+          state.listSearch = action.payload.data;
+          state.status = 'idle';
+        } else {
+          state.status = 'idle';
+        }
       });
   },
 });
@@ -95,6 +114,18 @@ export const fetchSearch = createAsyncThunk(
       return '';
     } else {
       const res = await SearchProduct(text);
+      return res;
+    }
+  },
+);
+
+export const fetchProductForShop = createAsyncThunk(
+  'detail/fetchProductForShop',
+  async data => {
+    if (data.text === '') {
+      return '';
+    } else {
+      const res = await SeachProductForShop(data?.idShop, data?.keyWords);
       return res;
     }
   },

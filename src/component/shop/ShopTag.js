@@ -92,6 +92,8 @@ const styles = StyleSheet.create({
     borderColor: '#F582AE',
     justifyContent: 'center',
     alignItems: 'center',
+    position:'absolute',
+    right:0
   },
   titleButton: {
     fontFamily: 'ProductSans',

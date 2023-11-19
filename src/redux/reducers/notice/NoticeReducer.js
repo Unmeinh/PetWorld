@@ -1,4 +1,4 @@
- import {createAsyncThunk, createSlice} from '@reduxjs/toolkit';
+import {createAsyncThunk, createSlice} from '@reduxjs/toolkit';
 import api from '../../../api/axios.config';
 import {GetAllNotice} from '../../../api/RestApi';
 
@@ -26,18 +26,18 @@ export const fetchNotices = createAsyncThunk(
     return res;
   },
 );
-// export const updateNotices = createAsyncThunk(
-//   'notices/fetchNotices',
-//   async (idNotice) => {
-//     try {
-//       const res = await api.get('notice/update'+idNotice);
-//       return res.data;
-//     } catch (error) {
-//       console.error('Error fetching notices:', error);
-//       throw error;
-//     }
-//   },
-// );
+export const updateNotices = createAsyncThunk(
+  'notices/fetchNotices',
+  async () => {
+    try {
+      const res = await api.get('notice/update');
+      return res.data;
+    } catch (error) {
+      console.error('Error fetching notices:', error);
+      throw error;
+    }
+  },
+);
 // export const deleteNotices = createAsyncThunk(
 //   'notices/fetchNotices',
 //   async (idNotice) => {

@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {
   View,
   Text,
@@ -10,6 +10,7 @@ import {
   Image,
   TouchableOpacity,
   Dimensions,
+  RefreshControl,
 } from 'react-native';
 import {fetchNotices} from '../../../redux/reducers/notice/NoticeReducer';
 import {useSelector, useDispatch} from 'react-redux';
@@ -17,42 +18,89 @@ import {listNotice} from '../../../redux/selector';
 import ListItem from '../../list/ListItemNotify';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Feather from 'react-native-vector-icons/Feather';
+import {GetAllNotice} from '../../../api/RestApi';
+import {getDateTimeVietnamese} from '../../../function/functionDate';
+import EmptyNotice from './EmptyNotice';
 const {width, height} = Dimensions.get('window');
-
-
 
 const NotifyRemind = () => {
   const notices = useSelector(listNotice);
   const [showModal, setShowModal] = useState(false);
   const [item, setItem] = useState({});
-  
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
+  const [page, setPage] = useState(1);
+  const [sort, setSort] = useState(null);
+  const [result, setResult] = useState([]);
+  const [refreshing, setRefreshing] = useState(false);
+  const [enableLoading, setEnableLoading] = useState(true);
+
   const showModalAndSetItem = (item, show) => {
     setItem(item);
     setShowModal(show);
   };
+
+  const getList = async () => {
+    try {
+      const res = await GetAllNotice(1, page);
+      if (res?.data?.length > 0) {
+        setResult([...result, ...res.data]);
+        setRefreshing(false);
+        setIsLoadingMore(false);
+      } else {
+        setEnableLoading(false);
+        setRefreshing(false);
+        setIsLoadingMore(false);
+      }
+    } catch (error) {
+      console.error('Error', error);
+    }
+  };
+  useEffect(() => {
+    if (enableLoading) {
+      if (page === 1) {
+        setRefreshing(true);
+      }
+      getList();
+    }
+  }, [page, enableLoading]);
+  const onRefresh = useCallback(() => {
+    setPage(1);
+    setResult([]);
+    setEnableLoading(true);
+  }, []);
+  const loadMoreData = async () => {
+    if (enableLoading) {
+      if (!isLoadingMore) {
+        setIsLoadingMore(true);
+        setPage(page + 1);
+      }
+    }
+  };
   return (
     <View style={styles.container}>
-      {notices.status === 'idle' ? (
-        
-        <FlatList
-          data={notices.notices}
-          
-          renderItem={({item}) => (
-            <ListItem item={item} callBack={showModalAndSetItem} />
-          )}
-          keyExtractor={item => item._id}
-          
-          ListEmptyComponent={() => (
-            <View>
-              <Text>Không có thông báo nào.</Text>
-              
-            </View>
-          )}
-        />
-       
-      ) : (
-        <ActivityIndicator />
-      )}
+      <FlatList
+        data={result}
+        renderItem={({item}) => (
+          <ListItem item={item} callBack={showModalAndSetItem} />
+        )}
+        keyExtractor={item => item._id}
+        showsVerticalScrollIndicator={false}
+        ListEmptyComponent={() => (isLoadingMore ? null : <EmptyNotice />)}
+        ListFooterComponent={
+          isLoadingMore ? (
+            <ActivityIndicator
+              size="large"
+              color={'#F582AE'}
+              style={{marginBottom: 10}}
+            />
+          ) : null
+        }
+        onEndReachedThreshold={0.1}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
+        onEndReached={loadMoreData}
+      />
       {item ? (
         <Modal
           animationType="slide"
@@ -67,7 +115,7 @@ const NotifyRemind = () => {
             showModalAndSetItem({}, false);
           }}>
           <View style={styles.modalContainer}>
-            <ScrollView style={{flex: 1}}>
+            <ScrollView style={{flex: 1}} contentContainerStyle={{flex: 1}}>
               <Icon
                 onPress={() => showModalAndSetItem({}, false)}
                 name="close"
@@ -79,24 +127,28 @@ const NotifyRemind = () => {
                   <Text style={styles.titleModal}>{item?.title}</Text>
                   <View style={styles.timeModal}>
                     <Feather name="clock" size={24} color={'#001858'} />
-                    <Text style={styles.modalTime}>{item?.time}</Text>
+                    <Text style={styles.modalTime}>
+                      {getDateTimeVietnamese(item?.createdAt)}
+                    </Text>
                   </View>
                 </View>
                 <Text style={styles.modalContent}>{item?.content}</Text>
               </View>
               <Text style={styles.modalDetail}>{item?.detail}</Text>
-
-              <Image source={item?.image} style={styles.modalImage} />
+              <Image
+                source={require('../../../assets/ic_launcher.png')}
+                style={styles.modalImage}
+              />
               <Text
                 style={{
                   color: '#001858',
                   fontFamily: 'ProductSans',
                 }}>
-                From PertWord with love 😘
+                From OurPet with love 😘
               </Text>
 
               <TouchableOpacity
-                onPress={() => showModalAndSetItem({}, false)}
+                onPress={() => showModalAndSetItem(item, false)}
                 style={styles.closeButton}>
                 <Text style={styles.closeButtonText}>Đóng</Text>
               </TouchableOpacity>
@@ -113,9 +165,9 @@ const styles = StyleSheet.create({
     backgroundColor: '#FEF6E490',
     flexDirection: 'row',
     padding: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: '#EAEAEA',
-    borderRadius: 10,
+    // borderBottomWidth: 1,
+    // borderBottomColor: '#EAEAEA',
+    // borderRadius: 10,
   },
   leftContainer: {
     width: 40, // Chiều rộng cố định
@@ -124,7 +176,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center', // Căn giữa theo chiều ngang
   },
   middleContainer: {
-    flex: 1,
+    // flex: 1,
   },
   rightContainer: {
     marginTop: 2,
@@ -172,15 +224,15 @@ const styles = StyleSheet.create({
   modalContainer: {
     backgroundColor: 'rgba(254, 246, 228,1)',
     flex: 1,
-    position: 'absolute',
-    width: width,
-    height: height,
+    // position: 'absolute',
+    // width: width,
+    // height: height,
 
-    top: -20,
-    bottom: -20,
-    left: -20,
-    right: 0,
-    padding: 10,
+    // top: -20,
+    // bottom: -20,
+    // left: -20,
+    // right: 0,
+    padding: 20,
   },
   titleModal: {
     fontSize: 20,
@@ -203,7 +255,6 @@ const styles = StyleSheet.create({
     fontFamily: 'ProductSans',
   },
   timeModal: {
-    marginLeft: 50,
     flexDirection: 'row',
     alignItems: 'center',
     alignContent: 'center',
@@ -218,25 +269,25 @@ const styles = StyleSheet.create({
     alignContent: 'center',
   },
   modalImage: {
-    width: 150,
-    height: 150,
+    width: 120,
+    height: 120,
     marginBottom: 10,
   },
   closeButton: {
+    flex: 1,
+    width: '100%',
+    height: 40,
     backgroundColor: '#F582AE',
-    paddingVertical: 10,
-    paddingHorizontal: 20,
     borderRadius: 8,
-    alignItems: 'center', // Canh giữa theo chiều ngang
+    position: 'absolute',
+    bottom: 10,
     justifyContent: 'center',
-    marginTop: 100,
-    marginBottom: 20,
+    alignItems: 'center',
   },
   closeButtonText: {
     color: '#001858',
     fontSize: 16,
     fontFamily: 'ProductSans',
-    alignContent: 'center',
   },
 });
 

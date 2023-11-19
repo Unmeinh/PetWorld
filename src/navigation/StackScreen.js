@@ -42,8 +42,9 @@ import MyPetScreen from '../view/account/MyPetScreen';
 import {navigationRef} from './rootNavigation';
 import BuyNowScreen from '../view/shopping/BuyNowScreen';
 import DetailBill from '../view/shopping/DetailBill';
-import MomoPayment from '../payment/MomoPayment';
+import MomoPayment from '../view/payment/MomoPayment';
 import Favorite from '../view/account/Favorite';
+import SearchFiltersShop from '../view/search/SearchFiltersShop';
 const Stack = createStackNavigator();
 
 export default function StackScreen() {
@@ -249,6 +250,11 @@ export default function StackScreen() {
           component={MomoPayment}
         />
         <Stack.Screen name="Favorite" options={animated} component={Favorite} />
+        <Stack.Screen
+          name="SearchFiltersShop"
+          options={animated}
+          component={SearchFiltersShop}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );

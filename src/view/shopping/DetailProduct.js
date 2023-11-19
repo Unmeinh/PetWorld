@@ -9,6 +9,7 @@ import {
   Pressable,
   ToastAndroid,
   ActivityIndicator,
+  Image,
 } from 'react-native';
 import React, {useEffect, useRef, useState} from 'react';
 import {
@@ -32,7 +33,8 @@ import ShimmerPlaceHolder from '../../component/layout/ShimmerPlaceHolder';
 import SetAppointment from '../../component/modals/SetAppointment';
 import Loading from '../../component/Loading';
 import {GetDetailProduct} from '../../api/RestApi';
-import { AddFavorite,DeleteFavorite } from '../../api/RestApi';
+import {AddFavorite, DeleteFavorite} from '../../api/RestApi';
+import {selectFavoriteByID} from '../../redux/actions/favoriteAction';
 const {width} = Dimensions.get('screen');
 
 function DetailProduct({navigation, route}) {
@@ -58,19 +60,19 @@ function DetailProduct({navigation, route}) {
 
   const AnimatedIcon = Animated.createAnimatedComponent(Icon);
   const AnimatedPressible = Animated.createAnimatedComponent(Pressable);
-  
-  const favoriteItem = useSelector(state => selectFavoriteById(state, product._id));
+  const iconlike = like ? 'heart-outline' : 'heart';
+  // const favoriteItem = useSelector(state =>
+  //   selectFavoriteByID(state, product?._id),
+  // );
   const handleLike = async () => {
     try {
       if (like) {
-        if (favoriteItem) {
-          await dispatch(deleteFavorite(favoriteItem.id)); 
-        }
-      } else {
-      
-        await dispatch(addFavorite(product)); 
+        await dispatch(AddFavorite({idProduct: product?._id}));
+        // if (favoriteItem) {
+        //   await dispatch(DeleteFavorite(favoriteItem.id));
+        // }
       }
-      setLike(!like); 
+      setLike(!like);
     } catch (error) {
       console.error('Error handling like:', error);
     }
@@ -173,340 +175,392 @@ function DetailProduct({navigation, route}) {
 
   useEffect(() => {
     getDetailProduct();
+    return () => {
+      setProduct({});
+    };
   }, []);
   return (
     <>
-      <Animated.View
-        style={[
-          styles.header,
-          {
-            height: HEADER_MAX_HEIGHT,
-            backgroundColor: headerBackgroundColor,
-          },
-        ]}>
-        <AnimatedPressible
-          onPress={() => {
-            navigation.goBack();
-            setIsVisible(!isVisible);
-          }}
-          style={[styles.iconBack, {backgroundColor: headerIconBackground}]}>
-          <AnimatedIcon name="arrow-back" size={24} color={headerIcon} />
-        </AnimatedPressible>
-        <AnimatedPressible
-          onPress={() => {
-            navigation.navigate('CartScreen');
-          }}
-          style={[styles.iconBack, {backgroundColor: headerIconBackground}]}>
-          <View
-            style={{
-              width: 16,
-              height: 16,
-              position: 'absolute',
-              backgroundColor: '#F582AE',
-              borderRadius: 8,
-              justifyContent: 'center',
-              alignItems: 'center',
-              top: 2,
-              right: 0,
-              zIndex: 999,
-            }}>
-            <Text style={{fontSize: 12, fontFamily: 'ProductSans'}}>
-              {count}
-            </Text>
-          </View>
-          <AnimatedIcon name="cart-outline" size={24} color={headerIcon} />
-        </AnimatedPressible>
-      </Animated.View>
-      {statusAdd === 'loading' ? <Loading /> : null}
-      <ScrollView
-        style={{flex: 1, backgroundColor: '#FEF6E4'}}
-        scrollEnabled={status === 'idle' ? true : false}
-        onScroll={Animated.event(
-          [{nativeEvent: {contentOffset: {y: scrollY}}}],
-          {useNativeDriver: false},
-        )}
-        scrollEventThrottle={16}>
-        <View>
-          {status === 'idle' ? (
-            <SliderImage data={listImage} />
-          ) : (
-            <ShimmerPlaceHolder shimmerStyle={styles.loaderImage} />
-          )}
-        </View>
-        <View style={styles.content}>
-          <Text
-            style={{
-              fontFamily: 'ProductSansBold',
-              fontSize: 20,
-              color: '#F582AE',
-            }}>
-            {status === 'idle' ? (
-              priceDiscount(
-                product?.pricePet ? product?.pricePet : product?.priceProduct,
-                product?.discount,
-              )
-            ) : (
-              <ShimmerPlaceHolder shimmerStyle={styles.loaderPrice} />
-            )}
+      {product?.status !== 0 && status === 'idle' ? (
+        <View
+          style={{
+            flex: 1,
+            backgroundColor: '#F3D2C1',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}>
+          <Image source={require('../../assets/error.png')} />
+          <Text style={[styles.textButton, {marginTop: 10}]}>
+            Hiện sản phẩm này không còn bán
           </Text>
-
-          {status === 'idle' ? (
-            <View
-              style={{
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-                paddingRight: 10,
-              }}>
+          <Pressable
+            style={{
+              width: '30%',
+              height: 30,
+              backgroundColor: '#F582AE',
+              alignItems: 'center',
+              justifyContent: 'center',
+              borderRadius: 8,
+              marginTop: 10,
+            }}
+            onPress={() => {
+              navigation.goBack();
+              setIsVisible(!isVisible);
+            }}>
+            <Text style={styles.textButton}>Thoát</Text>
+          </Pressable>
+        </View>
+      ) : (
+        <>
+          <Animated.View
+            style={[
+              styles.header,
+              {
+                height: HEADER_MAX_HEIGHT,
+                backgroundColor: headerBackgroundColor,
+              },
+            ]}>
+            <AnimatedPressible
+              onPress={() => {
+                navigation.goBack();
+                setIsVisible(!isVisible);
+              }}
+              style={[
+                styles.iconBack,
+                {backgroundColor: headerIconBackground},
+              ]}>
+              <AnimatedIcon name="arrow-back" size={24} color={headerIcon} />
+            </AnimatedPressible>
+            <AnimatedPressible
+              onPress={() => {
+                navigation.navigate('CartScreen');
+              }}
+              style={[
+                styles.iconBack,
+                {backgroundColor: headerIconBackground},
+              ]}>
+              <View
+                style={{
+                  width: 16,
+                  height: 16,
+                  position: 'absolute',
+                  backgroundColor: '#F582AE',
+                  borderRadius: 8,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  top: 2,
+                  right: 0,
+                  zIndex: 999,
+                }}>
+                <Text style={{fontSize: 12, fontFamily: 'ProductSans'}}>
+                  {count}
+                </Text>
+              </View>
+              <AnimatedIcon name="cart-outline" size={24} color={headerIcon} />
+            </AnimatedPressible>
+          </Animated.View>
+          {statusAdd === 'loading' ? <Loading /> : null}
+          <ScrollView
+            style={{flex: 1, backgroundColor: '#FEF6E4'}}
+            scrollEnabled={status === 'idle' ? true : false}
+            onScroll={Animated.event(
+              [{nativeEvent: {contentOffset: {y: scrollY}}}],
+              {useNativeDriver: false},
+            )}
+            scrollEventThrottle={16}>
+            <View>
+              {status === 'idle' ? (
+                <SliderImage data={listImage} />
+              ) : (
+                <ShimmerPlaceHolder shimmerStyle={styles.loaderImage} />
+              )}
+            </View>
+            <View style={styles.content}>
               <Text
                 style={{
                   fontFamily: 'ProductSansBold',
                   fontSize: 20,
-                  color: '#001858',
+                  color: '#F582AE',
                 }}>
-                {product?.namePet ? product?.namePet : product?.nameProduct}
+                {status === 'idle' ? (
+                  priceDiscount(
+                    product?.pricePet
+                      ? product?.pricePet
+                      : product?.priceProduct,
+                    product?.discount,
+                  )
+                ) : (
+                  <ShimmerPlaceHolder shimmerStyle={styles.loaderPrice} />
+                )}
               </Text>
-              <Icon
-                onPress={() => setLike(!like)}
-                name={handleLike}
-                size={24}
-                color="#F582AE"
-              />
-            </View>
-          ) : (
-            <ShimmerPlaceHolder shimmerStyle={styles.loaderName} />
-          )}
-          {status === 'idle' ? (
-            <View
-              style={{
-                flexDirection: 'row',
-                marginTop: 5,
-                justifyContent: 'space-between',
-              }}>
-              <View style={{flexDirection: 'row'}}>
-                <Icon name="star-sharp" size={16} color="#fcba03" />
-                <Text style={{color: '#001858', marginLeft: 5}}>
-                  {product?.rate}/5
-                </Text>
 
-                <Text style={{marginLeft: 5, marginRight: 5, color: '#ccc'}}>
-                  |
-                </Text>
-                <Text
-                  style={{
-                    marginLeft: 5,
-                    marginRight: 5,
-                    color: '#73726e',
-                    fontFamily: 'ProductSans',
-                  }}>
-                  Đã bán
-                </Text>
-                <Text
-                  style={{
-                    marginRight: 5,
-                    color: '#001858',
-                    fontFamily: 'ProductSans',
-                  }}>
-                  {product?.quantitySold?.toString()}
-                </Text>
-              </View>
-              <Text
-                style={{
-                  marginRight: 5,
-                  color: '#001858',
-                  fontFamily: 'ProductSans',
-                }}>
-                Số lượng:{' '}
-                {typeof product?.amountProduct != 'undefined'
-                  ? product.amountProduct?.toString()
-                  : product.amountPet?.toString()}
-              </Text>
-            </View>
-          ) : (
-            <ShimmerPlaceHolder shimmerStyle={styles.loaderName} />
-          )}
-        </View>
-        <Animated.View
-          style={{
-            opacity: opacityAnimation,
-            transform: [
-              {
-                translateY: slideAnimation.interpolate({
-                  inputRange: [0, 1],
-                  outputRange: [300, 0],
-                }),
-              },
-            ],
-          }}>
-          <View
-            style={{
-              width: width,
-              height: 8,
-              backgroundColor: '#ccc',
-              opacity: 0.5,
-              marginTop: 8,
-            }}></View>
-          {status === 'idle' ? (
-            <Text style={styles.textColor}>Thông tin chi tiết</Text>
-          ) : (
-            <ShimmerPlaceHolder
-              shimmerStyle={[styles.loaderName, styles.textColor]}
-            />
-          )}
-          <View style={styles.line}></View>
-          {status === 'idle' ? (
-            <View style={styles.content}>
-              {type === 0 ? (
+              {status === 'idle' ? (
                 <View
                   style={{
-                    fontFamily: 'ProductSans',
-                    color: '#656565',
-                    flexDirection: 'column',
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                    paddingRight: 10,
                   }}>
-                  <Text style={styles.lineHeight}>
-                    Tên thú cưng:
-                    {product.namePet}
-                    {'\n'}
-                    Kích cỡ: {product.sizePet} {'\n'}Kích thước: rộng{' '}
-                    {product.weightPet} cao {product.heightPet}
+                  <Text
+                    style={{
+                      fontFamily: 'ProductSansBold',
+                      fontSize: 20,
+                      color: '#001858',
+                    }}>
+                    {product?.namePet ? product?.namePet : product?.nameProduct}
                   </Text>
-                  {showDes ? (
-                    <Text style={styles.lineHeight}>
-                      Chi tiết: {product.detailPet}
+                  <Icon
+                    onPress={handleLike}
+                    name={iconlike}
+                    size={24}
+                    color="#F582AE"
+                  />
+                </View>
+              ) : (
+                <ShimmerPlaceHolder shimmerStyle={styles.loaderName} />
+              )}
+              {status === 'idle' ? (
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    marginTop: 5,
+                    justifyContent: 'space-between',
+                  }}>
+                  <View style={{flexDirection: 'row'}}>
+                    <Icon name="star-sharp" size={16} color="#fcba03" />
+                    <Text style={{color: '#001858', marginLeft: 5}}>
+                      {product?.rate}/5
                     </Text>
+
+                    <Text
+                      style={{marginLeft: 5, marginRight: 5, color: '#ccc'}}>
+                      |
+                    </Text>
+                    <Text
+                      style={{
+                        marginLeft: 5,
+                        marginRight: 5,
+                        color: '#73726e',
+                        fontFamily: 'ProductSans',
+                      }}>
+                      Đã bán
+                    </Text>
+                    <Text
+                      style={{
+                        marginRight: 5,
+                        color: '#001858',
+                        fontFamily: 'ProductSans',
+                      }}>
+                      {product?.quantitySold?.toString()}
+                    </Text>
+                  </View>
+                  <Text
+                    style={{
+                      marginRight: 5,
+                      color: '#001858',
+                      fontFamily: 'ProductSans',
+                    }}>
+                    Số lượng:{' '}
+                    {typeof product?.amountProduct != 'undefined'
+                      ? product.amountProduct?.toString()
+                      : product.amountPet?.toString()}
+                  </Text>
+                </View>
+              ) : (
+                <ShimmerPlaceHolder shimmerStyle={styles.loaderName} />
+              )}
+            </View>
+            <Animated.View
+              style={{
+                opacity: opacityAnimation,
+                transform: [
+                  {
+                    translateY: slideAnimation.interpolate({
+                      inputRange: [0, 1],
+                      outputRange: [300, 0],
+                    }),
+                  },
+                ],
+              }}>
+              <View
+                style={{
+                  width: width,
+                  height: 8,
+                  backgroundColor: '#ccc',
+                  opacity: 0.5,
+                  marginTop: 8,
+                }}></View>
+              {status === 'idle' ? (
+                <Text style={styles.textColor}>Thông tin chi tiết</Text>
+              ) : (
+                <ShimmerPlaceHolder
+                  shimmerStyle={[styles.loaderName, styles.textColor]}
+                />
+              )}
+              <View style={styles.line}></View>
+              {status === 'idle' ? (
+                <View style={styles.content}>
+                  {type === 0 ? (
+                    <View
+                      style={{
+                        fontFamily: 'ProductSans',
+                        color: '#656565',
+                        flexDirection: 'column',
+                      }}>
+                      <Text style={styles.lineHeight}>
+                        Tên thú cưng:
+                        {product.namePet}
+                        {'\n'}
+                        Kích cỡ: {product.sizePet} {'\n'}Kích thước: rộng{' '}
+                        {product.weightPet} cao {product.heightPet}
+                      </Text>
+                      {showDes ? (
+                        <Text style={styles.lineHeight}>
+                          Chi tiết: {product.detailPet}
+                        </Text>
+                      ) : (
+                        <Text>...</Text>
+                      )}
+                    </View>
                   ) : (
-                    <Text>...</Text>
+                    <Text style={styles.lineHeight}>
+                      Tên sản phẩm:
+                      {product?.nameProduct}
+                      {'\n'}
+                      {showDes ? (
+                        <Text style={styles.lineHeight}>
+                          Chi tiết: {product?.detailProduct}
+                        </Text>
+                      ) : (
+                        <Text>...</Text>
+                      )}
+                    </Text>
                   )}
                 </View>
               ) : (
-                <Text style={styles.lineHeight}>
-                  Tên sản phẩm:
-                  {product?.nameProduct}
-                  {'\n'}
-                  {showDes ? (
-                    <Text style={styles.lineHeight}>
-                      Chi tiết: {product?.detailProduct}
-                    </Text>
-                  ) : (
-                    <Text>...</Text>
-                  )}
-                </Text>
+                <>
+                  <ShimmerPlaceHolder
+                    shimmerStyle={[styles.loaderName, styles.textColor]}
+                  />
+                  <ShimmerPlaceHolder
+                    shimmerStyle={[styles.loaderName, styles.textColor]}
+                  />
+                </>
               )}
-            </View>
-          ) : (
-            <>
-              <ShimmerPlaceHolder
-                shimmerStyle={[styles.loaderName, styles.textColor]}
+              <View style={[styles.line, {marginTop: 8}]}></View>
+              {status === 'idle' ? (
+                <TouchableOpacity
+                  onPress={() => setShowDes(!showDes)}
+                  style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    marginTop: 8,
+                  }}>
+                  <Text style={{fontFamily: 'ProductSans', color: '#F582AE'}}>
+                    {showDes ? 'Thu gọn' : 'Xem thêm'}
+                  </Text>
+                  <Icon name={iconDes} size={24} color="#F582AE" />
+                </TouchableOpacity>
+              ) : null}
+              <View
+                style={{
+                  width: width,
+                  height: 8,
+                  backgroundColor: '#ccc',
+                  opacity: 0.5,
+                  marginTop: 8,
+                }}
               />
-              <ShimmerPlaceHolder
-                shimmerStyle={[styles.loaderName, styles.textColor]}
+              <ShopTag data={product?.idShop} isLoading={status} />
+              <View
+                style={{
+                  width: width,
+                  height: 8,
+                  backgroundColor: '#ccc',
+                  opacity: 0.5,
+                  marginTop: 8,
+                }}
               />
-            </>
-          )}
-          <View style={[styles.line, {marginTop: 8}]}></View>
+              <View style={{marginBottom: 10}}>
+                <ListHorizontal
+                  data={listProduct}
+                  title="Sản phẩm liên quan"
+                  isLoader={status}
+                  type={1}
+                />
+              </View>
+            </Animated.View>
+          </ScrollView>
           {status === 'idle' ? (
-            <TouchableOpacity
-              onPress={() => setShowDes(!showDes)}
-              style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                justifyContent: 'center',
-                marginTop: 8,
-              }}>
-              <Text style={{fontFamily: 'ProductSans', color: '#F582AE'}}>
-                {showDes ? 'Thu gọn' : 'Xem thêm'}
-              </Text>
-              <Icon name={iconDes} size={24} color="#F582AE" />
-            </TouchableOpacity>
-          ) : null}
-          <View
-            style={{
-              width: width,
-              height: 8,
-              backgroundColor: '#ccc',
-              opacity: 0.5,
-              marginTop: 8,
-            }}
-          />
-          <ShopTag data={product?.idShop} isLoading={status} />
-          <View
-            style={{
-              width: width,
-              height: 8,
-              backgroundColor: '#ccc',
-              opacity: 0.5,
-              marginTop: 8,
-            }}
-          />
-          <View style={{marginBottom: 10}}>
-            <ListHorizontal
-              data={listProduct}
-              title="Sản phẩm liên quan"
-              isLoader={status}
-              type={1}
-            />
-          </View>
-        </Animated.View>
-      </ScrollView>
-      {status === 'idle' ? (
-        <View style={styles.bottomButton}>
-          <TouchableOpacity style={[styles.buttonContact, styles.buttonSheet]}>
-            <Icon name="chatbubbles-outline" size={24} color={'#001858'} />
-            <Text style={styles.textButton}> Liên hệ</Text>
-          </TouchableOpacity>
-          {type === 0 ? (
-            <TouchableOpacity
-              onPress={onOpenSetAppointment}
-              style={[styles.buttonBooking, styles.buttonSheet]}>
-              <Icon name="bookmarks-outline" size={22} color={'#001858'} />
-              <Text style={styles.textButton}>Đặt lịch</Text>
-            </TouchableOpacity>
-          ) : (
-            <TouchableOpacity
-              onPress={() => {
-                if (product?.amountProduct > 0) {
-                  dispatch(
-                    addProductToCart({idProduct: product._id, amount: 1}),
-                  );
-                } else {
-                  ToastAndroid.show('Sản phẩm đã hết hàng', ToastAndroid.SHORT);
-                }
-              }}
-              style={[
-                styles.buttonBooking,
-                styles.buttonSheet,
-                {flexDirection: category === 1 ? 'row' : 'column'},
-              ]}>
-              <Icon name="cart-outline" size={24} color={'#001858'} />
-              <Text style={[styles.textButton, {fontSize: 12}]}>
-                Thêm vào giỏ hàng
-              </Text>
-            </TouchableOpacity>
-          )}
+            <View style={styles.bottomButton}>
+              <TouchableOpacity
+                style={[styles.buttonContact, styles.buttonSheet]}>
+                <Icon name="chatbubbles-outline" size={24} color={'#001858'} />
+                <Text style={styles.textButton}> Liên hệ</Text>
+              </TouchableOpacity>
+              {type === 0 ? (
+                <TouchableOpacity
+                  onPress={onOpenSetAppointment}
+                  style={[styles.buttonBooking, styles.buttonSheet]}>
+                  <Icon name="bookmarks-outline" size={22} color={'#001858'} />
+                  <Text style={styles.textButton}>Đặt lịch</Text>
+                </TouchableOpacity>
+              ) : (
+                <TouchableOpacity
+                  onPress={() => {
+                    if (product?.amountProduct > 0) {
+                      dispatch(
+                        addProductToCart({idProduct: product._id, amount: 1}),
+                      );
+                    } else {
+                      ToastAndroid.show(
+                        'Sản phẩm đã hết hàng',
+                        ToastAndroid.SHORT,
+                      );
+                    }
+                  }}
+                  style={[
+                    styles.buttonBooking,
+                    styles.buttonSheet,
+                    {flexDirection: category === 1 ? 'row' : 'column'},
+                  ]}>
+                  <Icon name="cart-outline" size={24} color={'#001858'} />
+                  <Text style={[styles.textButton, {fontSize: 12}]}>
+                    Thêm vào giỏ hàng
+                  </Text>
+                </TouchableOpacity>
+              )}
 
-          <TouchableOpacity
-            style={[styles.buttonBuy, styles.buttonSheet]}
-            onPress={() => {
-              if (product?.amountProduct > 0 || product?.amountPet > 0) {
-                navigation.navigate('BuyNow', {item: product});
-              } else {
-                ToastAndroid.show('Sản phẩm đã hết hàng', ToastAndroid.SHORT);
-              }
-            }}>
-            <Text style={[styles.textButton, styles.textButtonBuy]}>
-              Mua ngay
-            </Text>
-          </TouchableOpacity>
-        </View>
-      ) : null}
-      {isShowSetApm && type == 0 ? (
-        <SetAppointment
-          isShow={isShowSetApm}
-          callBack={onOpenSetAppointment}
-          pet={product}
-          shop={product.idShop}
-        />
-      ) : (
-        ''
+              <TouchableOpacity
+                style={[styles.buttonBuy, styles.buttonSheet]}
+                onPress={() => {
+                  if (product?.amountProduct > 0 || product?.amountPet > 0) {
+                    navigation.navigate('BuyNow', {item: product});
+                  } else {
+                    ToastAndroid.show(
+                      'Sản phẩm đã hết hàng',
+                      ToastAndroid.SHORT,
+                    );
+                  }
+                }}>
+                <Text style={[styles.textButton, styles.textButtonBuy]}>
+                  Mua ngay
+                </Text>
+              </TouchableOpacity>
+            </View>
+          ) : null}
+          {isShowSetApm && type == 0 ? (
+            <SetAppointment
+              isShow={isShowSetApm}
+              callBack={onOpenSetAppointment}
+              pet={product}
+              shop={product.idShop}
+            />
+          ) : (
+            ''
+          )}
+        </>
       )}
     </>
   );
@@ -549,7 +603,7 @@ const styles = StyleSheet.create({
   },
   buttonBuy: {
     backgroundColor: '#F582AE',
-    flexBasis: 200,
+    flexBasis: 150,
   },
   bottomButton: {
     width: width,

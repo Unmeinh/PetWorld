@@ -38,6 +38,7 @@ const userReducer = createSlice({
         state.status = 'loading';
       })
       .addCase(fetchInfoLogin.fulfilled, (state, action) => {
+   
         if (action.payload.success === true) {
           state.loginData = action.payload.data;
           state.status = 'being idle';
@@ -156,5 +157,5 @@ export const fetchInfoUserNoMessage = createAsyncThunk(
     return res;
   },
 );
-export const {setMessageUser,setChangeData} = userReducer.actions;
+export const {setMessageUser, setChangeData} = userReducer.actions;
 export default userReducer.reducer;
