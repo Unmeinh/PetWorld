@@ -77,10 +77,10 @@ function ItemCartSummary({result,locationShop}) {
           );
         }}
       />
-      <View style={styles.discountOfShop}>
+      {/* <View style={styles.discountOfShop}>
         <Text style={styles.styleDiscount}>Chiết khấu từ shop</Text>
         <Icon name="chevron-right" size={24} color={'#001858'} />
-      </View>
+      </View> */}
       <View style={styles.discountOfShop}>
         <View style={{marginTop:10}}>
           <Text style={styles.styleDiscount}>Vận chuyển tiêu chuẩn</Text>

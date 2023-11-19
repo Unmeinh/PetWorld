@@ -14,7 +14,6 @@ const Favorite = ({navigation}) => {
       setDataReady(true);
     });
   }, []);
-  console.log('dl1',favorites);
 
   return (
     <View style={{ backgroundColor: '#FEF6E4', flex: 1 }}>

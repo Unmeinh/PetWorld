@@ -59,12 +59,14 @@ export const EditLocationUser = action =>
 export const CancelBill = params =>
   Get({endPoint: `/bill-product/cancelBill/${params}`});
 
-export const GetAllNotice = status => 
-Get({endPoint: `notice/list/all/${status}`});
+export const GetAllNotice = status =>
+  Get({endPoint: `notice/list/all/${status}`});
 
-export const GetAllFavorite = () => 
-Get({endPoint: `favorite/list`});
-export const AddFavorite = () => 
-Get({endPoint: `favorite/insert`});
-export const DeleteFavorite = () => 
-Get({endPoint: `favorite/delete`});
+export const GetAllFavorite = () => Get({endPoint: `favorite/list`});
+export const AddFavorite = id => Post({endPoint: `favorite/insert`, data: id});
+export const DeleteFavorite = () => Get({endPoint: `favorite/delete`});
+
+export const GetDetailShop = id => Get({endPoint: `/shop/detail/${id}`});
+
+export const SeachProductForShop = (idShop, keyWords) =>
+  Get({endPoint: `/search/shop/${keyWords}?idShop=${idShop}`});

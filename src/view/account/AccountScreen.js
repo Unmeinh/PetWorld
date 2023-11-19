@@ -27,11 +27,13 @@ const listItems = [
     iconType: 'Ionicons',
     icon: 'paw-outline',
     text: 'Thú cưng của tôi',
+    nameScreen: 'MyPetScreen',
   },
   {
     iconType: 'AntDesign',
     icon: 'hearto',
     text: 'Đã thích',
+    nameScreen: 'Favorite',
   },
   {
     iconType: 'MaterialIcons',
@@ -42,6 +44,7 @@ const listItems = [
     iconType: 'Feather',
     icon: 'calendar',
     text: 'Đặt lịch của tôi',
+    nameScreen: 'AppointmentScreen',
   },
   {
     iconType: 'Feather',
@@ -68,11 +71,7 @@ export default function AccountScreen({scrollRef, onScrollView}) {
   const dispatch = useDispatch();
   const {countBill, status} = useSelector(state => state.bill);
   const handlePress = () => {
-    setIsPressed(true);
-    setTimeout(() => {
-      setIsPressed(false);
-      navigation.navigate('BillScreen');
-    }, 200); // Reset the state after 200ms
+    navigation.navigate('BillScreen');
   };
 
   function onLogout() {
@@ -230,14 +229,7 @@ export default function AccountScreen({scrollRef, onScrollView}) {
                 key={index}
                 style={localStyles.rowUtilities}
                 onPress={() => {
-                  // Handle the press event here
-                  // Example: navigate to another screen
-                  if (item.text === 'Thú cưng của tôi') {
-                    navigation.navigate('MyPetScreen');
-                  } else item.text === 'Đã thích';
-                  {
-                    navigation.navigate('Favorite'); // Handle other cases
-                  }
+                  navigation.navigate(item.nameScreen)
                 }}>
                 <View style={localStyles.rowItemUtilities}>
                   {item.iconType === 'Fontisto' && (

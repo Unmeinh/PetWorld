@@ -12,6 +12,7 @@ import * as Animatable from 'react-native-animatable';
 import {storageMMKV} from '../../storage/storageMMKV';
 import {useNavigation} from '@react-navigation/native';
 import {onAxiosGet} from '../../api/axios.function';
+import LottieView from 'lottie-react-native';
 
 export default function SplashScreen() {
   const navigation = useNavigation();
@@ -157,8 +158,8 @@ export default function SplashScreen() {
   }, [navigation]);
 
   return (
-    <View style={styles.container}>
-      {logoVisible && (
+    <View style={{flex:1,paddingBottom:100,backgroundColor:'#FEF6E4'}}>
+      {/* {logoVisible && (
         <Animatable.Image
           animation={{
             from: {scale: 0},
@@ -171,8 +172,9 @@ export default function SplashScreen() {
             {width: logoSize, height: logoSize, bottom: bottomPosition},
           ]}
         />
-      )}
-      {nameVisible && (
+      )} */}
+
+      {/* {nameVisible && (
         <Animatable.View
           animation="fadeIn"
           duration={1000}
@@ -183,7 +185,14 @@ export default function SplashScreen() {
             resizeMode="contain"
           />
         </Animatable.View>
-      )}
+      )} */}
+
+      <LottieView
+        source={require('../../assets/logo.json')}
+        autoPlay
+        loop
+        style={styles.container}
+      />
       {dauchanPositions.map((position, index) => (
         <View
           onLayout={onLayoutPaw}
@@ -223,6 +232,7 @@ const styles = StyleSheet.create({
   dauchanContainer: {
     position: 'absolute',
     bottom: 0,
+    zIndex: 9999,
   },
   dauchanImage: {
     width: 24,
