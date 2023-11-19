@@ -29,6 +29,21 @@ function GridProduct({data}) {
       itemDimension={150}
       data={data}
       style={styles.gridView}
+      ListEmptyComponent={() => {
+        <View
+          style={{
+            flex: 1,
+            justifyContent: 'center',
+            alignItems: 'center',
+            marginTop: 100,
+          }}>
+          <Image source={require('../../assets/EmptyBox.png')} />
+          <Text
+            style={{fontFamily: 'ProductSans', fontSize: 16, marginTop: 10}}>
+            Không tìm thấy thông tin sản phẩm
+          </Text>
+        </View>;
+      }}
       // staticDimension={300}
       // fixed
       spacing={10}
@@ -53,7 +68,7 @@ function GridProduct({data}) {
               item.discount,
             )}
           </View>
-          <Text style={styles.sold}>Đã bán {item.quantitySold }</Text>
+          <Text style={styles.sold}>Đã bán {item.quantitySold}</Text>
         </Pressable>
       )}
     />

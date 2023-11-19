@@ -250,8 +250,8 @@ export default function SummaryBill({navigation, route}) {
               <ItemCartSummary result={item} locationShop={district} />
             )}
           />
-          <View style={styles.line} />
-          <ModalTicketShow />
+          {/* <View style={styles.line} />
+          <ModalTicketShow /> */}
           <View style={styles.line} />
           <View>
             <Text style={styles.textBold}>Tóm tắt đơn hàng</Text>

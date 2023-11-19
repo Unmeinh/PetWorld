@@ -260,10 +260,10 @@ export default function SummaryBill({navigation, route}) {
                 </Text>
               </View>
             </View>
-            <View style={styles.discountOfShop}>
+            {/* <View style={styles.discountOfShop}>
               <Text style={styles.styleDiscount}>Chiết khấu từ shop</Text>
               <Icon name="chevron-right" size={24} color={'#001858'} />
-            </View>
+            </View> */}
             <View style={styles.discountOfShop}>
               <View style={{marginTop: 10}}>
                 <Text style={styles.styleDiscount}>Vận chuyển tiêu chuẩn</Text>
@@ -297,8 +297,8 @@ export default function SummaryBill({navigation, route}) {
               </View>
             </View>
           </View>
-          <View style={styles.line} />
-          <ModalTicketShow />
+          {/* <View style={styles.line} />
+          <ModalTicketShow /> */}
           <View style={styles.line} />
           <View>
             <Text style={styles.textBold}>Tóm tắt đơn hàng</Text>

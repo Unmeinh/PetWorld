@@ -11,6 +11,7 @@ import ItemProductVertical from './ItemProductVertical';
 import {useDispatch} from 'react-redux';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import LottieView from 'lottie-react-native';
+import {Image} from 'react-native';
 
 export default function ListProductVertical({
   data,
@@ -31,14 +32,11 @@ export default function ListProductVertical({
       onEndReached={loadMoreData}
       ListEmptyComponent={() => {
         return isLoadingMore || refreshing ? null : (
-          <>
-            <LottieView
-              source={require('../../assets/imageEmpty.json')}
-              autoPlay
-              loop
-              style={styles.container}
-            />
-          </>
+          <View
+            style={{flex: 1, justifyContent: 'center', alignItems: 'center',marginTop:100}}>
+            <Image source={require('../../assets/EmptyBox.png')} />
+            <Text style={{fontFamily:'ProductSans',fontSize:16,marginTop:10}}>Không tìm thấy thông tin sản phẩm</Text>
+          </View>
         );
       }}
       ListFooterComponent={
@@ -61,7 +59,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    height:300,
-    width:300
+    height: 300,
+    width: 300,
   },
 });
