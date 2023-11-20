@@ -90,7 +90,7 @@ const DetailAppointment = ({ route }) => {
             let res = await onAxiosPut('appointment/update',
                 {
                     idAppt: appointment._id,
-                    status: "3"
+                    status: 3
                 }, 'json', true)
             if (res) {
                 setcanCancel(false);
@@ -123,7 +123,7 @@ const DetailAppointment = ({ route }) => {
             if (appointment != "null") {
                 setsrcPet({ uri: String(appointment.idPet.imagesPet[0]) })
                 setsrcAvatar({ uri: String(appointment.idShop.avatarShop) })
-                switch (appointment.status) {
+                switch (String(appointment.status)) {
                     case "-1":
                         setcanCancel(true);
                         setstatusApm("Chờ xác nhận")
@@ -300,7 +300,7 @@ const DetailAppointment = ({ route }) => {
                                 <TouchableHighlight style={[styles.buttonSave, { backgroundColor: '#8E8E8E' }]}
                                     activeOpacity={0.5} underlayColor="#6D6D6D"
                                     onPress={goBack}>
-                                    <Text style={styles.textButtonSave}>Quay lại</Text>
+                                    <Text style={styles.textButtonSave}> Quay lại  </Text>
                                 </TouchableHighlight>
                                 {
                                     (canCancel)

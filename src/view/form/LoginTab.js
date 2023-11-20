@@ -7,16 +7,15 @@ import {
   TouchableOpacity,
   ToastAndroid,
 } from 'react-native';
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import styles from '../../styles/form.style';
 import Entypo from 'react-native-vector-icons/Entypo';
 import Feather from 'react-native-vector-icons/Feather';
 import LinearGradient from 'react-native-linear-gradient';
-import {useNavigation} from '@react-navigation/native';
-import {storageMMKV} from '../../storage/storageMMKV';
+import { useNavigation } from '@react-navigation/native';
+import { storageMMKV } from '../../storage/storageMMKV';
 import Toast from 'react-native-toast-message';
-import {onAxiosPost} from '../../api/axios.function';
-import Loading from '../../component/Loading';
+import { onAxiosPost } from '../../api/axios.function';
 
 export default function LoginTab(route) {
   const navigation = useNavigation();
@@ -24,8 +23,6 @@ export default function LoginTab(route) {
   const [rememberMe, setrememberMe] = useState(false);
   const [inputUsername, setinputUsername] = useState(route.user);
   const [inputPassword, setinputPassword] = useState('');
-  const [isDisableRequest, setisDisableRequest] = useState(false);
-  const [loading, setLoading] = useState(false);
 
   function onChangePassToggle() {
     if (passToggle == true) {
@@ -80,11 +77,14 @@ export default function LoginTab(route) {
       return;
     }
 
-    setisDisableRequest(true);
+    Toast.show({
+      type: 'loading',
+      position: 'top',
+      text1: "Đang đăng nhập...",
+      autoHide: false
+    });
 
-    setLoading(true);
-
-    const response = await onAxiosPost('user/login', newUser, 'Json');
+    const response = await onAxiosPost('user/login', newUser, 'Json', true);
     if (response) {
       await storageMMKV.setValue('login.token', String(response.token));
       if (rememberMe) {
@@ -96,24 +96,21 @@ export default function LoginTab(route) {
         Toast.hide();
         navigation.replace('NaviTabScreen');
       }
-    } else {
-      setisDisableRequest(false);
     }
-    setLoading(false);
   }
 
   return (
     <View style={styles.container}>
       <Image
-        style={{position: 'absolute', right: 0}}
+        style={{ position: 'absolute', right: 0 }}
         source={require('../../assets/images/form/topRightPaw.png')}
       />
       <Image
         style={styles.pawBottomLeft}
         source={require('../../assets/images/form/bottomLeftPaw.png')}
       />
-      <View style={{marginTop: 75}}>
-        <View style={{flexDirection: 'row', alignItems: 'center'}}>
+      <View style={{ marginTop: 75 }}>
+        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
           <Text style={styles.textEnable}>Đăng nhập</Text>
           <Text style={styles.slash}>/</Text>
           <TouchableHighlight
@@ -124,12 +121,12 @@ export default function LoginTab(route) {
           </TouchableHighlight>
         </View>
 
-        <View style={{flexDirection: 'row', marginLeft: 20, marginTop: 5}}>
+        <View style={{ flexDirection: 'row', marginLeft: 20, marginTop: 5 }}>
           <Text style={styles.textLeftGreetingLI}>Chào mừng</Text>
           <Text style={styles.textRightGreeting}> bạn trở lại!</Text>
         </View>
 
-        <View style={{marginTop: 30}}>
+        <View style={{ marginTop: 30 }}>
           <View>
             <Text
               style={[
@@ -182,8 +179,8 @@ export default function LoginTab(route) {
               )}
             </View>
           </View>
-          <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-            <View style={{flexDirection: 'row'}}>
+          <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+            <View style={{ flexDirection: 'row' }}>
               {rememberMe ? (
                 <TouchableOpacity
                   style={styles.checkboxRM}
@@ -213,7 +210,7 @@ export default function LoginTab(route) {
               }}
               activeOpacity={0.5}
               underlayColor="#00185830"
-              style={{marginTop: 15}}>
+              style={{ marginTop: 15 }}>
               <Text
                 style={{
                   color: '#001858',
@@ -230,15 +227,14 @@ export default function LoginTab(route) {
             style={styles.buttonConfirm}
             activeOpacity={0.5}
             underlayColor="#DC749C"
-            onPress={onSignIn}
-            disabled={isDisableRequest}>
+            onPress={onSignIn}>
             <Text style={styles.textButtonConfirm}>Đăng nhập</Text>
           </TouchableHighlight>
 
           <View style={styles.viewContinue}>
             <LinearGradient
-              start={{x: 0, y: 0}}
-              end={{x: 1, y: 0}}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 0 }}
               colors={[
                 'rgba(46, 93, 220, 0)',
                 'rgba(115, 117, 124, 0.7)',
@@ -249,8 +245,8 @@ export default function LoginTab(route) {
             </LinearGradient>
             <Text style={styles.textContinue}>Hoặc tiếp tục với</Text>
             <LinearGradient
-              start={{x: 1, y: 0}}
-              end={{x: 0, y: 0}}
+              start={{ x: 1, y: 0 }}
+              end={{ x: 0, y: 0 }}
               colors={[
                 'rgba(46, 93, 220, 0)',
                 'rgba(115, 117, 124, 0.7)',
@@ -261,34 +257,33 @@ export default function LoginTab(route) {
             </LinearGradient>
           </View>
 
-          <View style={{width: '100%', marginTop: 25, alignItems: 'center'}}>
-            <View style={{flexDirection: 'row'}}>
+          <View style={{ width: '100%', marginTop: 25, alignItems: 'center' }}>
+            <View style={{ flexDirection: 'row' }}>
               <TouchableOpacity style={styles.borderIcon}>
                 <Image
                   source={require('../../assets/images/form/google.png')}
-                  style={{height: 30, width: 30}}
+                  style={{ height: 30, width: 30 }}
                 />
               </TouchableOpacity>
 
               <TouchableOpacity
-                style={[styles.borderIcon, {marginLeft: 15, marginRight: 15}]}>
+                style={[styles.borderIcon, { marginLeft: 15, marginRight: 15 }]}>
                 <Image
                   source={require('../../assets/images/form/facebook.png')}
-                  style={{height: 30, width: 30}}
+                  style={{ height: 30, width: 30 }}
                 />
               </TouchableOpacity>
 
               <TouchableOpacity style={styles.borderIcon}>
                 <Image
                   source={require('../../assets/images/form/twitter.png')}
-                  style={{height: 30, width: 30}}
+                  style={{ height: 30, width: 30 }}
                 />
               </TouchableOpacity>
             </View>
           </View>
         </View>
       </View>
-      {loading ? <Loading /> : null}
     </View>
   );
 }

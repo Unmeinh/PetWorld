@@ -15,6 +15,7 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { onAxiosGet } from '../../api/axios.function';
 import { getMonthVietnamese, getTimeDefault, getDateDefault } from '../../function/functionDate';
+import Toast from 'react-native-toast-message';
 
 const AppointmentScreen = () => {
     const navigation = useNavigation();
@@ -143,10 +144,18 @@ const AppointmentScreen = () => {
         const [isDeleted, setisDeleted] = useState(false);
 
         function onViewDetail() {
-            navigation.navigate('DetailAppointment', {
-                idApm: item._id,
-                onCallbackDelete: () => onCallbackDelete()
-            });
+            if (pet) {
+                navigation.navigate('DetailAppointment', {
+                    idApm: item._id,
+                    onCallbackDelete: () => onCallbackDelete()
+                });
+            } else {
+                Toast.show({
+                    type: 'error',
+                    position: 'top',
+                    text1: 'Lịch hẹn bị lỗi dữ liệu!\nKhông thể xem chi tiết!'
+                })
+            }
         }
 
         function onCallbackCancel() {
@@ -161,7 +170,15 @@ const AppointmentScreen = () => {
 
         function onShowMenu() {
             if (!isShowMenu) {
-                setisShowMenu(true);
+                if (pet) {
+                    setisShowMenu(true);
+                } else {
+                    Toast.show({
+                        type: 'error',
+                        position: 'top',
+                        text1: 'Lịch hẹn bị lỗi dữ liệu!\nKhông thể tương tác!'
+                    })
+                }
             }
         }
 
@@ -209,10 +226,10 @@ const AppointmentScreen = () => {
                             onError={() => setsrcAvatar(require('../../assets/images/error.png'))} />
                         <View style={{ marginLeft: 15 }}>
                             <Text style={styles.textNamePetItem} numberOfLines={1}>
-                                {pet.namePet}
+                                {(pet?.namePet) ? pet.namePet : "Lỗi dữ liệu"}
                             </Text>
                             <Text style={styles.textNameShopItem} numberOfLines={1}>
-                                {shop.nameShop}
+                                {(shop?.nameShop) ? shop.nameShop : "Lỗi dữ liệu"}
                             </Text>
                         </View>
                     </View>

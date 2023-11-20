@@ -10,9 +10,9 @@ import styles from '../../styles/form.style';
 import HeaderTitle from '../../component/header/HeaderTitle';
 import Entypo from 'react-native-vector-icons/Entypo';
 import { useNavigation } from '@react-navigation/native';
-import { axiosJSON } from '../../api/axios.config';
 import Toast from 'react-native-toast-message';
 import { ToastLayout } from '../../component/layout/ToastLayout';
+import { onAxiosPost } from '../../api/axios.function';
 
 export default function RegisterPassword({ route }) {
   const navigation = useNavigation();
@@ -67,50 +67,13 @@ export default function RegisterPassword({ route }) {
       type: 'loading',
       position: 'top',
       text1: "Đang đăng ký tài khoản...",
-      bottomOffset: 20,
       autoHide: false
     });
 
-    var response = await axiosJSON.post('/user/register', objData)
-      .catch((e) => {
-        Toast.show({
-          type: 'error',
-          position: 'top',
-          text1: String(e.response.data.message),
-          bottomOffset: 20
-        });
-
-      });
-    if (response != undefined) {
-      if (response.status == 201) {
-        var data = response.data;
-        try {
-          if (data.success) {
-            Toast.show({
-              type: 'success',
-              position: 'top',
-              text1: String(data.message),
-              bottomOffset: 20
-            });
-            setTimeout(() =>
-              navigation.navigate('LoginScreen'), 1000)
-          }
-        } catch (error) {
-          console.log(error);
-        }
-      } else {
-        var data = response.data;
-        try {
-          Toast.show({
-            type: 'error',
-            position: 'top',
-            text1: String(data.message),
-            bottomOffset: 20
-          });
-        } catch (error) {
-          console.log(error);
-        }
-      }
+    var response = await onAxiosPost('/user/register', objData, 'json', true)
+    if (response) {
+      setTimeout(() =>
+        navigation.navigate('LoginScreen'), 1000)
     }
   }
 

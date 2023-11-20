@@ -1,6 +1,6 @@
 import Toast from 'react-native-toast-message';
-import { axiosJSON } from '../api/axios.config';
 import auth from '@react-native-firebase/auth';
+import { onAxiosPost } from '../api/axios.function';
 
 async function onSendOTPbyPhoneNumber(phone) {
     Toast.show({
@@ -31,88 +31,20 @@ async function onSendOTPbyEmail(email) {
         bottomOffset: 20,
         autoHide: false
     });
-    var response = await axiosJSON.post('user/sendResetPasswordEmail', { email: email })
-        .catch((e) => {
-            Toast.show({
-                type: 'error',
-                position: 'top',
-                text1: String(e.response.data.message),
-                bottomOffset: 20
-            });
-            return false;
-        });
-    if (response != undefined) {
-        if (response.status == 200) {
-            var data = response.data;
-            try {
-                if (data.success) {
-                    Toast.show({
-                        type: 'success',
-                        position: 'top',
-                        text1: String(data.message),
-                        bottomOffset: 20
-                    });
-
-                    return true;
-                }
-            } catch (error) {
-                console.log(error);
-            }
-        } else {
-            var data = response.data;
-            try {
-                Toast.show({
-                    type: 'error',
-                    position: 'top',
-                    text1: String(data.message),
-                    bottomOffset: 20
-                });
-            } catch (error) {
-                console.log(error);
-            }
-            return false;
-        }
+    var response = await onAxiosPost('user/sendResetPasswordEmail', { email: email }, 'json', true)
+    if (response) {
+        return true;
+    } else {
+        return false;
     }
 }
 
 async function onVerifyOTPbyEmail(email, otp) {
-    var response = await axiosJSON.post('user/verifyResetPasswordCode', { email: email, otp: otp })
-        .catch((e) => {
-            // var data = response.data;
-            Toast.show({
-                type: 'error',
-                position: 'top',
-                text1: String(e.response.data.message),
-                bottomOffset: 20
-            });
-            return false;
-        });
-    if (response != undefined) {
-        if (response.status == 200) {
-            var data = response.data;
-            if (data.success) {
-                Toast.show({
-                    type: 'success',
-                    position: 'top',
-                    text1: 'Thành công',
-                    bottomOffset: 20
-                });
-                return true;
-            }
-        } else {
-            var data = response.data;
-            try {
-                Toast.show({
-                    type: 'error',
-                    position: 'top',
-                    text1: String(data.message),
-                    bottomOffset: 20
-                });
-            } catch (error) {
-                console.log(error);
-            }
-            return false;
-        }
+    var response = await onAxiosPost('user/verifyResetPasswordCode', { email: email, otp: otp }, 'json', true)
+    if (response) {
+        return true;
+    } else {
+        return false;
     }
 }
 
