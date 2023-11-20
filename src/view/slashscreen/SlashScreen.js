@@ -1,9 +1,18 @@
-import React, { useEffect, useState } from 'react';
-import { View, StyleSheet, Dimensions, Image, Animated, Easing } from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {
+  View,
+  StyleSheet,
+  Dimensions,
+  Image,
+  Animated,
+  Easing,
+  StatusBar,
+} from 'react-native';
 import * as Animatable from 'react-native-animatable';
-import { storageMMKV } from '../../storage/storageMMKV';
-import { useNavigation } from '@react-navigation/native';
-import { onAxiosGet } from '../../api/axios.function';
+import {storageMMKV} from '../../storage/storageMMKV';
+import {useNavigation} from '@react-navigation/native';
+import {onAxiosGet} from '../../api/axios.function';
+import LottieView from 'lottie-react-native';
 
 export default function SplashScreen() {
   const navigation = useNavigation();
@@ -21,7 +30,9 @@ export default function SplashScreen() {
 
   const dauchanContainerWidth = 24;
   const stepDistance = 3.7; // Khoảng cách giữa các bước chân
-  const totalSteps = Math.ceil(screenWidth / (dauchanContainerWidth + stepDistance)); // Tổng số bước chân cần di chuyển
+  const totalSteps = Math.ceil(
+    screenWidth / (dauchanContainerWidth + stepDistance),
+  ); // Tổng số bước chân cần di chuyển
 
   const stepAnimation = new Animated.Value(0);
   const [dauchanPositions, setDauchanPositions] = useState([]);
@@ -37,7 +48,7 @@ export default function SplashScreen() {
           duration: 200,
           easing: Easing.linear,
           useNativeDriver: true,
-        }).start(({ finished }) => {
+        }).start(({finished}) => {
           if (finished) {
             setDauchanPositions([...dauchanPositions, dauchanPositions.length]);
           }
@@ -59,12 +70,11 @@ export default function SplashScreen() {
 
       moveDauchan();
       hideLogo();
-
-    } 
+    }
   }, [dauchanPositions]);
 
   function onLayoutPaw(event) {
-    const { x, y, height, width } = event.nativeEvent.layout;
+    const {x, y, height, width} = event.nativeEvent.layout;
     if (x >= Dimensions.get('window').width) {
       // setisRunningAnimated(false);
       stepAnimation.setValue(0);
@@ -79,38 +89,38 @@ export default function SplashScreen() {
           if (storageMMKV.getBoolean('login.isLogin')) {
             if (storageMMKV.checkKey('login.token')) {
               if (storageMMKV.getString('login.token')) {
-                let res = await onAxiosGet('/user/autoLogin')
+                let res = await onAxiosGet('/user/autoLogin');
                 if (res) {
                   if (res.success) {
-                    navigation.navigate('NaviTabScreen');
+                    navigation.replace('NaviTabScreen');
                   } else {
-                    storageMMKV.setValue('login.token', "");
-                    navigation.navigate('LoginScreen');
+                    storageMMKV.setValue('login.token', '');
+                    navigation.replace('LoginScreen');
                   }
                 }
               } else {
-                storageMMKV.setValue('login.token', "");
-                navigation.navigate('LoginScreen');
+                storageMMKV.setValue('login.token', '');
+                navigation.replace('LoginScreen');
               }
             } else {
-              storageMMKV.setValue('login.token', "");
-              navigation.navigate('LoginScreen');
+              storageMMKV.setValue('login.token', '');
+              navigation.replace('LoginScreen');
             }
           } else {
-            storageMMKV.setValue('login.token', "");
-            navigation.navigate('LoginScreen');
+            storageMMKV.setValue('login.token', '');
+            navigation.replace('LoginScreen');
           }
         } else {
-          storageMMKV.setValue('login.token', "");
-          navigation.navigate('LoginScreen');
+          storageMMKV.setValue('login.token', '');
+          navigation.replace('LoginScreen');
         }
       } else {
-        storageMMKV.setValue('login.token', "");
-        navigation.navigate('OrboadScreen');
+        storageMMKV.setValue('login.token', '');
+        navigation.replace('OrboadScreen');
       }
     } else {
-      storageMMKV.setValue('login.token', "");
-      navigation.navigate('OrboadScreen');
+      storageMMKV.setValue('login.token', '');
+      navigation.replace('OrboadScreen');
     }
   }
 
@@ -148,34 +158,51 @@ export default function SplashScreen() {
   }, [navigation]);
 
   return (
-    <View style={styles.container}>
-      {logoVisible && (
+    <View style={{flex:1,paddingBottom:100,backgroundColor:'#FEF6E4'}}>
+      {/* {logoVisible && (
         <Animatable.Image
           animation={{
-            from: { scale: 0 },
-            to: { scale: 1 },
+            from: {scale: 0},
+            to: {scale: 1},
           }}
           duration={3000}
           source={require('../../assets/images/logoApp/logo.png')}
           style={[
             styles.logo,
-            { width: logoSize, height: logoSize, bottom: bottomPosition },
+            {width: logoSize, height: logoSize, bottom: bottomPosition},
           ]}
         />
-      )}
-      {nameVisible && (
-        <Animatable.View animation="fadeIn" duration={1000} style={[styles.nameImageContainer, { bottom: nameBottomPosition }]}>
+      )} */}
+
+      {/* {nameVisible && (
+        <Animatable.View
+          animation="fadeIn"
+          duration={1000}
+          style={[styles.nameImageContainer, {bottom: nameBottomPosition}]}>
           <Image
             source={require('../../assets/images/logoApp/name.png')}
-            style={{ width: nameImageWidth, height: nameImageHeight }}
+            style={{width: nameImageWidth, height: nameImageHeight}}
             resizeMode="contain"
           />
         </Animatable.View>
-      )}
+      )} */}
+
+      <LottieView
+        source={require('../../assets/logo.json')}
+        autoPlay
+        loop
+        style={styles.container}
+      />
       {dauchanPositions.map((position, index) => (
-        <View onLayout={onLayoutPaw} key={position} style={[styles.dauchanContainer, { left: position * (dauchanContainerWidth + stepDistance) }]}>
+        <View
+          onLayout={onLayoutPaw}
+          key={position}
+          style={[
+            styles.dauchanContainer,
+            {left: position * (dauchanContainerWidth + stepDistance)},
+          ]}>
           <Image
-            source={require('../../assets/images/logoApp/dauchan.png')}
+            source={require('../../assets/images/logoApp/footprint.png')}
             style={[
               styles.dauchanImage,
               {
@@ -205,6 +232,7 @@ const styles = StyleSheet.create({
   dauchanContainer: {
     position: 'absolute',
     bottom: 0,
+    zIndex: 9999,
   },
   dauchanImage: {
     width: 24,

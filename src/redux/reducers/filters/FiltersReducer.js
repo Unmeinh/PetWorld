@@ -1,5 +1,10 @@
 import {createAsyncThunk, createSlice} from '@reduxjs/toolkit';
 import api from '../../../api/axios.config';
+import {
+  GetDetailProduct,
+  SeachProductForShop,
+  SearchProduct,
+} from '../../../api/RestApi';
 
 const initialState = {
   search: '',
@@ -68,10 +73,25 @@ const filtersReducer = createSlice({
         state.listSearch = [];
       })
       .addCase(fetchSearch.fulfilled, (state, action) => {
-        if(action.payload === ''){
-          return state.listSearch = []
+        if (action.payload === '') {
+          return (state.listSearch = []);
         }
         if (action.payload.success === true) {
+          state.listSearch = action.payload.data;
+          state.status = 'idle';
+        } else {
+          state.status = 'idle';
+        }
+      })
+      .addCase(fetchProductForShop.pending, (state, action) => {
+        state.status = 'loading';
+        state.listSearch = [];
+      })
+      .addCase(fetchProductForShop.fulfilled, (state, action) => {
+        if (action.payload === '') {
+          return (state.listSearch = []);
+        }
+        if (action.payload?.success === true) {
           state.listSearch = action.payload.data;
           state.status = 'idle';
         } else {
@@ -83,20 +103,30 @@ const filtersReducer = createSlice({
 export const fetchDetailProduct = createAsyncThunk(
   'detail/fetchDetail',
   async action => {
-    const res = await api.get(
-      `/${action.type === 0 ? 'pet' : 'product'}/detail/${action.id}`,
-    );
+    const res = await GetDetailProduct(action);
     return res.data;
   },
 );
 export const fetchSearch = createAsyncThunk(
   'detail/fetchSearch',
-  async action => {
-    if (action === '') {
+  async text => {
+    if (text === '') {
       return '';
     } else {
-      const res = await api.get(`/search/${action}`);
-      return res.data;
+      const res = await SearchProduct(text);
+      return res;
+    }
+  },
+);
+
+export const fetchProductForShop = createAsyncThunk(
+  'detail/fetchProductForShop',
+  async data => {
+    if (data.text === '') {
+      return '';
+    } else {
+      const res = await SeachProductForShop(data?.idShop, data?.keyWords);
+      return res;
     }
   },
 );

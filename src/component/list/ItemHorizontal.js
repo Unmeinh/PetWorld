@@ -6,9 +6,10 @@ import {useDispatch} from 'react-redux';
 import {fetchDetailProduct} from '../../redux/reducers/filters/filtersReducer';
 import Animated from 'react-native-reanimated';
 
-export default function ItemHorizontal({item,type,route}) {
+export default function ItemHorizontal({item, type, route}) {
   const navigation = useNavigation();
   const dispatch = useDispatch();
+
   const rateShow = rate => {
     let result = [];
     if (rate) {
@@ -38,7 +39,7 @@ export default function ItemHorizontal({item,type,route}) {
   return (
     <Pressable
       onPress={() => {
-        navigation.push('DetailProduct',{type,item});
+        navigation.push('DetailProduct', {id: item._id, type: item.type});
       }}
       style={{
         width: 110,
@@ -59,7 +60,6 @@ export default function ItemHorizontal({item,type,route}) {
           borderBottomRightRadius: 10,
           borderBottomLeftRadius: 10,
         }}
-        sharedTransitionTag={`detail_${item._id}`}
       />
 
       <View style={{marginLeft: 6, marginTop: 5}}>
@@ -75,7 +75,7 @@ export default function ItemHorizontal({item,type,route}) {
           </Text>
         </View>
 
-        <Text style={{flexDirection: 'row'}}>{rateShow(item?.rate)}</Text>
+        <Text style={{flexDirection: 'row'}}>{rateShow(5)}</Text>
         {priceDiscount(
           item.pricePet ? item.pricePet : item.priceProduct,
           item.discount,

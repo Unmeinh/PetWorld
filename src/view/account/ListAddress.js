@@ -1,4 +1,12 @@
-import {StyleSheet, Text, View, FlatList, Pressable, Alert, ActivityIndicator} from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  View,
+  FlatList,
+  Pressable,
+  Alert,
+  ActivityIndicator,
+} from 'react-native';
 import React, {useEffect} from 'react';
 import HeaderTitle from '../../component/header/HeaderTitle';
 import Icon from 'react-native-vector-icons/Feather';
@@ -6,8 +14,13 @@ import {statusUserSelector, userLocation} from '../../redux/selector';
 import {useDispatch, useSelector} from 'react-redux';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {userMessage} from '../../redux/selectors/userSelector';
-import {editLocationSelect, editLocationUser, setMessageUser} from '../../redux/reducers/user/userReducer';
+import {
+  editLocationSelect,
+  editLocationUser,
+  setMessageUser,
+} from '../../redux/reducers/user/userReducer';
 import {addLocationUser} from '../../redux/reducers/user/userReducer';
+import Loading from '../../component/Loading';
 export default function ListAddress({navigation}) {
   const location = useSelector(userLocation);
   const status = useSelector(statusUserSelector);
@@ -21,11 +34,11 @@ export default function ListAddress({navigation}) {
     });
     return subcriber;
   }, [navigation]);
-  const createTwoButtonAlert = (id) =>
+  const createTwoButtonAlert = id =>
     Alert.alert('Xác nhận', 'Bạn chắc chắc muốn đổi địa chỉ giao hàng', [
       {
         text: 'Hủy',
-        
+
         style: 'cancel',
       },
       {text: 'Xác nhận', onPress: () => dispatch(editLocationSelect(id))},
@@ -39,7 +52,10 @@ export default function ListAddress({navigation}) {
       />
       <Pressable
         onPress={() =>
-          navigation.navigate('AddNewAddress', {action: addLocationUser,title:'Thêm thông tin địa chỉ'})
+          navigation.navigate('AddNewAddress', {
+            action: addLocationUser,
+            title: 'Thêm thông tin địa chỉ',
+          })
         }
         style={styles.addNewAddress}>
         <Icon name="plus" color="#001858" size={24} />
@@ -54,9 +70,11 @@ export default function ListAddress({navigation}) {
             ? 'checkbox-marked-circle'
             : 'checkbox-blank-circle-outline';
           return (
-            <Pressable style={styles.list} onPress={()=>{
-              createTwoButtonAlert(item._id)
-            }}>
+            <Pressable
+              style={styles.list}
+              onPress={() => {
+                createTwoButtonAlert(item._id);
+              }}>
               <MaterialCommunityIcons
                 name={iconSelect}
                 size={24}
@@ -81,7 +99,7 @@ export default function ListAddress({navigation}) {
                   navigation.navigate('AddNewAddress', {
                     data: item,
                     action: editLocationUser,
-                    title:'Sửa thông tin địa chỉ'
+                    title: 'Sửa thông tin địa chỉ',
                   })
                 }>
                 Chỉnh sửa
@@ -90,7 +108,7 @@ export default function ListAddress({navigation}) {
           );
         }}
       />
-      {status === 'loading' ? <View style={[StyleSheet.absoluteFillObject,{justifyContent:'center',alignItems:'center',zIndex:999}]}><ActivityIndicator size={'large'} color={'#F582AE'}/></View>:''}
+      {status === 'loading' ? <Loading /> : null}
     </View>
   );
 }

@@ -10,8 +10,19 @@ function ListCart({data}) {
       renderItem={({item}) => <ItemCartProduct result={item} />}
       ListEmptyComponent={() => {
         return (
-          <View style={{flex:1,justifyContent:'center', alignItems: 'center',marginTop:20}}>
-            <Text style={{fontFamily: 'ProductSansBold', fontSize: 18}}>
+          <View
+            style={{
+              flex: 1,
+              justifyContent: 'center',
+              alignItems: 'center',
+              marginTop: 20,
+            }}>
+            <Text
+              style={{
+                fontFamily: 'ProductSansBold',
+                fontSize: 18,
+                color: '#001858',
+              }}>
               Không có sản phẩm nào trong giỏ hàng
             </Text>
           </View>

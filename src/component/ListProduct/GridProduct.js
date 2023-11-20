@@ -29,6 +29,21 @@ function GridProduct({data}) {
       itemDimension={150}
       data={data}
       style={styles.gridView}
+      ListEmptyComponent={() => {
+        <View
+          style={{
+            flex: 1,
+            justifyContent: 'center',
+            alignItems: 'center',
+            marginTop: 100,
+          }}>
+          <Image source={require('../../assets/EmptyBox.png')} />
+          <Text
+            style={{fontFamily: 'ProductSans', fontSize: 16, marginTop: 10}}>
+            Không tìm thấy thông tin sản phẩm
+          </Text>
+        </View>;
+      }}
       // staticDimension={300}
       // fixed
       spacing={10}
@@ -36,13 +51,11 @@ function GridProduct({data}) {
         <Pressable
           style={styles.itemContainer}
           onPress={() => {
-            navigation.push('DetailProduct', {item});
+            navigation.push('DetailProduct', {id: item._id, type: item.type});
           }}>
           <Image
             source={{
-              uri: item.arrProduct
-                ? item.arrProduct[0]
-                : item.imagesPet[0],
+              uri: item.arrProduct ? item.arrProduct[0] : item.imagesPet[0],
             }}
             style={styles.image}
           />
@@ -55,10 +68,7 @@ function GridProduct({data}) {
               item.discount,
             )}
           </View>
-          <Text
-            style={styles.sold}>
-            Đã bán {item.quantitySold}
-          </Text>
+          <Text style={styles.sold}>Đã bán {item.quantitySold}</Text>
         </Pressable>
       )}
     />
@@ -67,7 +77,7 @@ function GridProduct({data}) {
 
 const styles = StyleSheet.create({
   content: {padding: 3},
-  image: {width: '100%', height: '70%',borderRadius:4},
+  image: {width: '100%', height: '70%', borderRadius: 4},
   gridView: {
     marginTop: 10,
     flex: 1,
@@ -100,6 +110,12 @@ const styles = StyleSheet.create({
     textDecorationLine: 'line-through',
     fontSize: 13,
   },
-  sold:{position: 'absolute', bottom: 7, right: 7, fontSize: 12,fontFamily:'ProductSans'}
+  sold: {
+    position: 'absolute',
+    bottom: 7,
+    right: 7,
+    fontSize: 12,
+    fontFamily: 'ProductSans',
+  },
 });
 export default React.memo(GridProduct);

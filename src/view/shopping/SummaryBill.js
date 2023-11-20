@@ -8,6 +8,7 @@ import {
   Pressable,
   ActivityIndicator,
   TouchableOpacity,
+  ToastAndroid,
 } from 'react-native';
 import React, {useState, useEffect} from 'react';
 import HeaderTitle from '../../component/header/HeaderTitle';
@@ -28,15 +29,15 @@ import {fetchInfoUserNoMessage} from '../../redux/reducers/user/userReducer';
 import {userSelectStatus} from '../../redux/selectors/userSelector';
 import {
   createBill,
+  getPayments,
   setStatusChangeBill,
+  setSuccessBill,
 } from '../../redux/reducers/shop/billSlice';
 import Loading from '../../component/Loading';
-const payment = [
-  {id: 1, name: 'Thanh toán khi nhận hàng'},
-  {id: 2, name: 'Ví điện tử'},
-];
+import {deleteItemCart} from '../../redux/reducers/shop/CartReduces';
+import {convertCart} from '../../function/helper';
 const {width} = Dimensions.get('screen');
-export default function SummaryBill({navigation}) {
+export default function SummaryBill({navigation, route}) {
   const result = useSelector(listItemBill);
   const [user, district] = useSelector(useLocationSeleted);
   const statusUser = useSelector(userSelectStatus);
@@ -45,10 +46,12 @@ export default function SummaryBill({navigation}) {
     price: {discount, priceTotal},
     statusChange,
     status,
+    payments,
+    successBill,
   } = useSelector(billSelector);
-  const [loading, setLoading] = useState(false);
   const shop = useSelector(listShopSelector);
   const resultCart = useCart(result, shop, user);
+  const [selectedId, setSelectedId] = useState(null);
   const districtSlice = location => {
     let result = '';
     if (location) {
@@ -74,7 +77,6 @@ export default function SummaryBill({navigation}) {
     return money;
   };
   function PayMent() {
-    const [selectedId, setSelectedId] = useState();
     const Item = ({item, onPress, icon, textColor}) => (
       <Pressable
         onPress={onPress}
@@ -84,24 +86,28 @@ export default function SummaryBill({navigation}) {
           marginHorizontal: 10,
           alignItems: 'center',
         }}>
-        <Text style={styles.textDefault}>{item.name}</Text>
+        <Text style={styles.textDefault}>{item.nameMethod}</Text>
         <Ionicons name={icon} color="#F582AE" size={22} />
       </Pressable>
     );
 
     const renderItem = ({item}) => {
       const icon =
-        item.id === selectedId
+        item.type === selectedId
           ? 'radio-button-on-outline'
           : 'radio-button-off-outline';
 
       return (
-        <Item item={item} onPress={() => setSelectedId(item.id)} icon={icon} />
+        <Item
+          item={item}
+          onPress={() => setSelectedId(item.type)}
+          icon={icon}
+        />
       );
     };
     return (
       <FlatList
-        data={payment}
+        data={payments}
         scrollEnabled={false}
         renderItem={renderItem}
         keyExtractor={item => item.id}
@@ -124,11 +130,43 @@ export default function SummaryBill({navigation}) {
       </View>
     );
   }
+
+  const checkValidate = () => {
+    if (selectedId === null) {
+      ToastAndroid.show(
+        'Bạn chưa chọn phương thức thanh toán',
+        ToastAndroid.SHORT,
+      );
+      return false;
+    }
+    return true;
+  };
+
   useEffect(() => {
     dispatch(fetchInfoUserNoMessage());
+    dispatch(getPayments());
   }, []);
+
+  useEffect(() => {
+    if (successBill) {
+      dispatch(
+        createBill({
+          paymentMethods: selectedId,
+          deliveryStatus: 0,
+          locationDetail: {
+            fullName: user.fullName,
+            phoneNumber: user.phoneNumber,
+            location: user.location,
+          },
+          products: convertCart(resultCart, district),
+        }),
+      );
+      dispatch(setSuccessBill(false));
+    }
+  }, [successBill]);
   useEffect(() => {
     if (statusChange) {
+      dispatch(deleteItemCart());
       navigation.navigate('BillScreen', {idName: 3});
     }
   }, [statusChange]);
@@ -138,9 +176,61 @@ export default function SummaryBill({navigation}) {
     });
     return sub;
   }, [navigation]);
+
+  ///randomcode
+
+  const generateRandomCode = () => {
+    return Array.from({length: 30}, () =>
+      Math.random().toString(36).charAt(2).toUpperCase(),
+    ).join('');
+  };
+
+  // const startRandomCodeGeneration = () => {
+  //   // Run the function initially
+  //   generateRandomCode();
+
+  //   // Set up interval to run the function every 5 minutes
+  //   const id = setInterval(() => {
+  //     generateRandomCode();
+  //   }, 5 * 60 * 1000);
+
+  //   // Save the interval ID to state
+  //   setIntervalId(id);
+  // };
+
+  // const stopRandomCodeGeneration = () => {
+  //   // Clear the interval using the stored ID
+  //   clearInterval(intervalId);
+  // };
+  // console.log(randomCode);
+
+  const handleSaveBill = () => {
+    if (checkValidate()) {
+      if (selectedId === 1) {
+        const code = generateRandomCode();
+        navigation.navigate('MomoPayment', {
+          code: code,
+          amount: priceTotal + moneyShip(),
+        });
+      } else {
+        dispatch(
+          createBill({
+            paymentMethods: selectedId,
+            deliveryStatus: 0,
+            locationDetail: {
+              fullName: user.fullName,
+              phoneNumber: user.phoneNumber,
+              location: user.location,
+            },
+            products: convertCart(resultCart, district),
+          }),
+        );
+      }
+    }
+  };
+
   return (
     <View style={styles.container}>
-      {status ? <Loading /> : null}
       <HeaderTitle
         titleHeader="Tóm tắt đơn hàng"
         nav={navigation}
@@ -160,8 +250,8 @@ export default function SummaryBill({navigation}) {
               <ItemCartSummary result={item} locationShop={district} />
             )}
           />
-          <View style={styles.line} />
-          <ModalTicketShow />
+          {/* <View style={styles.line} />
+          <ModalTicketShow /> */}
           <View style={styles.line} />
           <View>
             <Text style={styles.textBold}>Tóm tắt đơn hàng</Text>
@@ -206,23 +296,12 @@ export default function SummaryBill({navigation}) {
               {(priceTotal + moneyShip()).toLocaleString('vi-VN')} đ
             </Text>
           </View>
-          <TouchableOpacity
-            style={styles.button}
-            onPress={() => {
-              dispatch(
-                createBill({
-                  type: 1,
-                  total: priceTotal + moneyShip(),
-                  paymentMethod: 'Thanh Toán khi nhận hàng',
-                  deliveryStatus: 0,
-                  discountBill: discount,
-                }),
-              );
-            }}>
+          <TouchableOpacity style={styles.button} onPress={handleSaveBill}>
             <Text style={styles.textButton}>Xác nhận</Text>
           </TouchableOpacity>
         </View>
       )}
+      {status ? <Loading /> : null}
     </View>
   );
 }

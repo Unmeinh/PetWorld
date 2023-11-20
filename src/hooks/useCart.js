@@ -1,9 +1,8 @@
-import {useCallback} from 'react';
 
-const useCart = (cart, shops, user) => {
+const useCart = (cart, shops) => {
   if (cart || shops) {
     const groupProductsByShop = {};
-      cart.forEach(result => {
+      cart?.forEach(result => {
         const {idProduct, amount,isSelected} = result;
         const shop = shops.find(shop => shop._id === idProduct.idShop);
         if (shop) {

@@ -11,5 +11,35 @@
                 "panel": "new"
             }
         },
+        {
+            "label": "change env-dev",
+            "type": "shell",
+            "command": "shell_scripts/change_env.sh dev",
+            "group": "none",
+            "presentation": {
+                "reveal": "always",
+                "panel": "new"
+            }
+        },
+        {
+            "label": "change env-prod",
+            "type": "shell",
+            "command": "shell_scripts/change_env.sh prod",
+            "group": "none",
+            "presentation": {
+                "reveal": "always",
+                "panel": "new"
+            }
+        },
+        {
+            "label": "build-release",
+            "type": "shell",
+            "command": "yarn android --mode release",
+            "group": "none",
+            "presentation": {
+                "reveal": "always",
+                "panel": "new"
+            }
+        },
     ]
 }

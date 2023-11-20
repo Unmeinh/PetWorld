@@ -8,30 +8,36 @@ import {
   Pressable,
   ActivityIndicator,
   Image,
+  ToastAndroid,
 } from 'react-native';
 import React, {useState, useEffect} from 'react';
 import HeaderTitle from '../../component/header/HeaderTitle';
 import UserTag from '../../component/shop/UserTag';
 import ItemCartSummary from '../../component/ListProduct/ItemCartSummary';
 import {useSelector, useDispatch} from 'react-redux';
-import {useLocationSeleted} from '../../redux/selector';
+import {billSelector, useLocationSeleted} from '../../redux/selector';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import ModalTicket from '../../component/modals/ModalTicket';
 import {fetchInfoUserNoMessage} from '../../redux/reducers/user/userReducer';
 import {userSelectStatus} from '../../redux/selectors/userSelector';
-import {createBill} from '../../redux/reducers/shop/billSlice';
+import {
+  createBill,
+  getPayments,
+  setStatusChangeBill,
+  setSuccessBill,
+} from '../../redux/reducers/shop/billSlice';
 import moment from 'moment';
-const payment = [
-  {id: 1, name: 'Thanh toán khi nhận hàng'},
-  {id: 2, name: 'Ví điện tử'},
-];
+import Loading from '../../component/Loading';
 const {width} = Dimensions.get('screen');
 export default function SummaryBill({navigation, route}) {
   const item = route?.params?.item;
   const [user, district] = useSelector(useLocationSeleted);
-  const status = useSelector(userSelectStatus);
+  const statusUser = useSelector(userSelectStatus);
   const [date, setDate] = useState(dateShip());
+  const {statusChange, status, payments, successBill} =
+    useSelector(billSelector);
+  const [selectedId, setSelectedId] = useState(null);
 
   const districtProduct = location => {
     let result = '';
@@ -61,7 +67,6 @@ export default function SummaryBill({navigation, route}) {
   }
   const dispatch = useDispatch();
   function PayMent() {
-    const [selectedId, setSelectedId] = useState();
     const Item = ({item, onPress, icon, textColor}) => (
       <Pressable
         onPress={onPress}
@@ -71,24 +76,28 @@ export default function SummaryBill({navigation, route}) {
           marginHorizontal: 10,
           alignItems: 'center',
         }}>
-        <Text style={styles.textDefault}>{item.name}</Text>
+        <Text style={styles.textDefault}>{item.nameMethod}</Text>
         <Ionicons name={icon} color="#F582AE" size={22} />
       </Pressable>
     );
 
     const renderItem = ({item}) => {
       const icon =
-        item.id === selectedId
+        item.type === selectedId
           ? 'radio-button-on-outline'
           : 'radio-button-off-outline';
 
       return (
-        <Item item={item} onPress={() => setSelectedId(item.id)} icon={icon} />
+        <Item
+          item={item}
+          onPress={() => setSelectedId(item.type)}
+          icon={icon}
+        />
       );
     };
     return (
       <FlatList
-        data={payment}
+        data={payments}
         scrollEnabled={false}
         renderItem={renderItem}
         keyExtractor={item => item.id}
@@ -143,9 +152,66 @@ export default function SummaryBill({navigation, route}) {
     }
     return (money = 0);
   };
+  const generateRandomCode = () => {
+    return Array.from({length: 30}, () =>
+      Math.random().toString(36).charAt(2).toUpperCase(),
+    ).join('');
+  };
+  const checkValidate = () => {
+    if (selectedId === null) {
+      ToastAndroid.show(
+        'Bạn chưa chọn phương thức thanh toán',
+        ToastAndroid.SHORT,
+      );
+      return false;
+    }
+    return true;
+  };
   useEffect(() => {
+    dispatch(getPayments());
     dispatch(fetchInfoUserNoMessage());
   }, []);
+
+  useEffect(() => {
+    if (successBill) {
+      dispatch(
+        createBill({
+          paymentMethod: selectedId,
+          deliveryStatus: 0,
+          detailCard: null,
+          locationDetail: {
+            fullName: user.fullName,
+            phoneNumber: user.phoneNumber,
+            location: user.location,
+          },
+          products: [
+            {
+              idShop: item?.idShop?._id,
+              items: [
+                {
+                  idProduct: item._id,
+                  amount: 1,
+                },
+              ],
+              moneyShip: showShip(),
+            },
+          ],
+        }),
+      );
+      dispatch(setSuccessBill(false));
+    }
+  }, [successBill]);
+  useEffect(() => {
+    if (statusChange) {
+      navigation.navigate('BillScreen', {idName: 3});
+    }
+  }, [statusChange]);
+  useEffect(() => {
+    const sub = navigation.addListener('blur', () => {
+      dispatch(setStatusChangeBill(false));
+    });
+    return sub;
+  }, [navigation]);
   return (
     <View style={styles.container}>
       <HeaderTitle
@@ -153,7 +219,7 @@ export default function SummaryBill({navigation, route}) {
         nav={navigation}
         colorHeader="#FEF6E4"
       />
-      {status === 'loading' ? (
+      {statusUser === 'loading' ? (
         <ActivityIndicator color={'#F582AE'} size={'large'} />
       ) : (
         <ScrollView style={{marginTop: 0}} scrollEnabled={true}>
@@ -194,10 +260,10 @@ export default function SummaryBill({navigation, route}) {
                 </Text>
               </View>
             </View>
-            <View style={styles.discountOfShop}>
+            {/* <View style={styles.discountOfShop}>
               <Text style={styles.styleDiscount}>Chiết khấu từ shop</Text>
               <Icon name="chevron-right" size={24} color={'#001858'} />
-            </View>
+            </View> */}
             <View style={styles.discountOfShop}>
               <View style={{marginTop: 10}}>
                 <Text style={styles.styleDiscount}>Vận chuyển tiêu chuẩn</Text>
@@ -231,8 +297,8 @@ export default function SummaryBill({navigation, route}) {
               </View>
             </View>
           </View>
-          <View style={styles.line} />
-          <ModalTicketShow />
+          {/* <View style={styles.line} />
+          <ModalTicketShow /> */}
           <View style={styles.line} />
           <View>
             <Text style={styles.textBold}>Tóm tắt đơn hàng</Text>
@@ -277,7 +343,7 @@ export default function SummaryBill({navigation, route}) {
           <View style={styles.line} />
         </ScrollView>
       )}
-      {status === 'loading' ? null : (
+      {statusUser === 'loading' ? null : (
         <View style={styles.bottomButton}>
           <View style={styles.flexRow}>
             <Text style={styles.bold}>Tổng</Text>
@@ -288,42 +354,46 @@ export default function SummaryBill({navigation, route}) {
           <Pressable
             style={styles.button}
             onPress={() => {
-              if (status !== 'loading') {
-                dispatch(
-                  createBill({
-                    type: 0,
-                    total: showTotal(),
-                    paymentMethod: 'Thanh Toán khi nhận hàng',
-                    deliveryStatus: 0,
-                    discountBill: showSave(
-                      item?.priceProduct ? item?.priceProduct : item?.pricePet,
-                      item?.discount,
-                    ),
-                    products: {
-                      idProduct: item._id,
-                      amount: 1,
-                      price: item?.priceProduct
-                        ? item?.priceProduct
-                        : item?.pricePet,
-                      discount: item?.discount,
-                    },
-                  }),
-                );
+              if (checkValidate()) {
+                if (selectedId === 1) {
+                  const code = generateRandomCode();
+                  navigation.navigate('MomoPayment', {
+                    code: code,
+                    amount: showTotal(),
+                  });
+                } else {
+                  dispatch(
+                    createBill({
+                      paymentMethod: selectedId,
+                      deliveryStatus: 0,
+                      detailCard: null,
+                      locationDetail: {
+                        fullName: user.fullName,
+                        phoneNumber: user.phoneNumber,
+                        location: user.location,
+                      },
+                      products: [
+                        {
+                          idShop: item?.idShop?._id,
+                          items: [
+                            {
+                              idProduct: item._id,
+                              amount: 1,
+                            },
+                          ],
+                          moneyShip: showShip(),
+                        },
+                      ],
+                    }),
+                  );
+                }
               }
             }}>
             <Text style={styles.textButton}>Xác nhận</Text>
           </Pressable>
         </View>
       )}
-      {/* {loading ? (
-          <View
-            style={[
-              StyleSheet.absoluteFill,
-              {justifyContent: 'center', alignItems: 'center'},
-            ]}>
-            <ActivityIndicator size={'large'} color={'#F582AE'} />
-          </View>
-        ) : null} */}
+      {status ? <Loading /> : null}
     </View>
   );
 }
@@ -434,8 +504,8 @@ const styles = StyleSheet.create({
   boxCount: {
     flexDirection: 'row',
     marginRight: 10,
-    position:'absolute',
-    right:10
+    position: 'absolute',
+    right: 10,
   },
   price: {
     fontFamily: 'ProductSansBold',
