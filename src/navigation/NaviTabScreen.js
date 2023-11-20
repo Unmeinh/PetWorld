@@ -9,8 +9,8 @@ import * as Animatable from 'react-native-animatable';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import HomeScreen from '../view/home/HomeScreen';
 import BlogScreen from '../view/blog/BlogScreen';
-import NotifyScreen from '../view/notify/Notify';
-// import NotifyScreen from '../view/notify/NotifyScreen';
+// import NotifyScreen from '../view/notify/Notify';
+import NotifyScreen from '../view/notify/NotifyScreen';
 import AccountScreen from '../view/account/AccountScreen';
 import PetAISupport from '../component/layout/PetAISupport';
 import Chats from '../view/chat/Chats';
@@ -18,7 +18,7 @@ import Chats from '../view/chat/Chats';
 const TabArr = [
     { route: 'Home', label: 'Home', icon: 'home', component: HomeScreen, color: '#8BD3DD', alphaClr: '#F3D2C1' },
     { route: 'Blog', label: 'Blog', icon: 'blog', component: BlogScreen, color: '#8BD3DD', alphaClr: '#F3D2C1' },
-    { route: 'Chat', label: 'Chat', icon: 'comment-alt', component: Chats, color: '#8BD3DD', alphaClr: '#F3D2C1' },
+    // { route: 'Chat', label: 'Chat', icon: 'comment-alt', component: Chats, color: '#8BD3DD', alphaClr: '#F3D2C1' },
     { route: 'Notify', label: 'Notify', icon: 'bell', component: NotifyScreen, color: '#8BD3DD', alphaClr: '#F3D2C1' },
     { route: 'Account', label: 'Account', icon: 'id-badge', component: AccountScreen, color: '#8BD3DD', alphaClr: '#F3D2C1' },
 ];
@@ -151,7 +151,7 @@ export default function NaviTabScreen({navigation}) {
                         translateX: startValue,
                     },],
             }}>
-                <PetAISupport />
+                {/* <PetAISupport /> */}
             </Animated.View>
         </View>
 

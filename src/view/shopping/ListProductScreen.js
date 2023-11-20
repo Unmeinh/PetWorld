@@ -1,73 +1,67 @@
 import {Text, View, TouchableOpacity} from 'react-native';
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import Icon from 'react-native-vector-icons/Ionicons';
 import FilterSelector from '../../component/filters/filterSelector';
 import ListProductVertical from '../../component/ListProduct/ListProductVertical';
-import {fetchPets} from '../../redux/reducers/pet/PetReducer';
-import {fetchProducts} from '../../redux/reducers/product/ProductReducer';
-import {useDispatch, useSelector} from 'react-redux';
-import LoaderListProductVertical from '../../component/list/LoaderListProductVertical';
-import {setDataCategory} from '../../redux/reducers/category/category';
+import {
+  GetPets,
+  GetProductsMulti,
+  ListProductByCategory,
+} from '../../api/RestApi';
 export default function ListProductScreen({navigation, route}) {
-  const dispatch = useDispatch();
-  const type = route.params.type;
+  const param = route.params;
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [page, setPage] = useState(1);
-  const setData = type => {
-    if (type === 0) {
-      dispatch(fetchPets(page));
-    } else if (type === 1) {
-      dispatch(fetchProducts(page));
+  const [sort, setSort] = useState(null);
+  const [result, setResult] = useState([]);
+  const [refreshing, setRefreshing] = useState(false);
+  const [enableLoading, setEnableLoading] = useState(true);
+
+  const getFetch = () => {
+    if (param.type === 1) {
+      return GetProductsMulti(page, sort);
+    } else if (param.type === 0) {
+      return GetPets(page);
+    } else if (param.type === 3) {
+      return ListProductByCategory(param.id);
     }
   };
-  useEffect(() => {
-    setData(type);
-    return () => {
-      if (type === 3) {
-        dispatch(setDataCategory([]));
+  const getList = async () => {
+    try {
+      const res = await getFetch();
+      if (res?.data?.length > 0) {
+        setResult([...result, ...res.data]);
+        setRefreshing(false);
+        setIsLoadingMore(false);
+      } else {
+        setEnableLoading(false);
+        setRefreshing(false);
+        setIsLoadingMore(false);
       }
-    };
-  }, [type, page]);
-
-  const renderView = type => {
-    if (type === 0) {
-      const listPet = useSelector(state => state.listPet);
-      return (listPet?.status === 'idle' ) || (listPet?.pets?.length > 0) ? (
-        <ListProductVertical
-          data={listPet.pets}
-          type={type}
-          loadMoreData={loadMoreData}
-          isLoadingMore={isLoadingMore}
-        />
-      ) : (
-        <LoaderListProductVertical />
-      );
-    } else if (type === 1) {
-      const listProduct = useSelector(state => state.listProduct);
-      return (listProduct?.status === 'idle') || (listProduct?.products?.length > 0) ? (
-        <ListProductVertical
-          data={listProduct.products}
-          type={type}
-          loadMoreData={loadMoreData}
-          isLoadingMore={isLoadingMore}
-        />
-      ) : (
-        <LoaderListProductVertical />
-      );
-    } else if (type === 3) {
-      const listCategory = useSelector(state => state.category);
-      return listCategory.statusData === 'idle' ? (
-        <ListProductVertical data={listCategory.data} type={type} />
-      ) : (
-        <LoaderListProductVertical />
-      );
+    } catch (error) {
+      console.error('Error', error);
     }
   };
 
-  const loadMoreData = () => {
-    if (!isLoadingMore) {
-      setIsLoadingMore(true);
-      setPage(page + 1);
+  useEffect(() => {
+    if (enableLoading) {
+      if (page === 1) {
+        setRefreshing(true);
+      }
+      getList();
+    }
+  }, [page, enableLoading]);
+  const onRefresh = useCallback(() => {
+    setPage(1);
+    setResult([]);
+    setEnableLoading(true);
+  }, []);
+  const loadMoreData = async () => {
+    if (enableLoading) {
+      if (!isLoadingMore) {
+        setIsLoadingMore(true);
+        setPage(page + 1);
+      }
     }
   };
   return (
@@ -109,7 +103,15 @@ export default function ListProductScreen({navigation, route}) {
           marginTop: 10,
         }}
       />
-      {renderView(type)}
+      <View style={{paddingRight: 10, flex: 1}}>
+        <ListProductVertical
+          data={result}
+          isLoadingMore={isLoadingMore}
+          onRefresh={onRefresh}
+          loadMoreData={loadMoreData}
+          refreshing={refreshing}
+        />
+      </View>
     </View>
   );
 }

@@ -9,6 +9,8 @@ import listCartReducer from './reducers/shop/CartReduces';
 import filterReducer from './reducers/filters/filtersReducer';
 import userReducer from './reducers/user/userReducer';
 import billSlice from './reducers/shop/billSlice';
+import noticeReducer from './reducers/notice/NoticeReducer';
+import favoriteReducer from './reducers/favorite/FavoriteReducer';
 
 const store = configureStore({
   reducer: {
@@ -21,7 +23,9 @@ const store = configureStore({
     listComment: commentReducer,
     listUser: userReducer,
     listCart: listCartReducer,
-    bill: billSlice
+    bill: billSlice,
+    listNotice: noticeReducer,
+    listFavorite: favoriteReducer,
   },
 });
 

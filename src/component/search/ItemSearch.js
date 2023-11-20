@@ -8,7 +8,9 @@ export default function ItemSearch({item}) {
   return (
     <View>
       <TouchableOpacity
-        onPress={() => navigation.push('DetailProduct', {item})}>
+        onPress={() =>
+          navigation.push('DetailProduct', {id: item?._id, type: item?.type})
+        }>
         <Text
           style={{
             fontFamily: 'ProductSans',

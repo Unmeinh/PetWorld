@@ -5,6 +5,8 @@ import TabLayoutOder from '../../component/tabLayout/tabMain/TabLayoutOder';
 
 export default function BillScreen({navigation, route}) {
   const id = route?.params?.idName;
+  const index = route?.params?.index;
+  
   return (
     <View style={{backgroundColor: 'rgba(254, 246, 228, 0.90)', flex: 1}}>
       <HeaderTitleAccount
@@ -14,7 +16,7 @@ export default function BillScreen({navigation, route}) {
         goBack={id}
       />
       <View style={styles.container}>
-        <TabLayoutOder />
+        <TabLayoutOder tab={index} />
       </View>
       {/* <Button title="Gửi Token lên Firebase" onPress={sendTokenToFirebase} /> */}
     </View>
