@@ -9,10 +9,6 @@ import {useSelector, useDispatch} from 'react-redux';
 import {listNotice} from '../../redux/selector';
 export default function NotifyScreen({navigation}) {
   const dispatch = useDispatch();
-  const notices = useSelector(listNotice);
-  useEffect(() => {
-    dispatch(fetchNotices());
-  }, [dispatch]);
   return (
     <View style={{backgroundColor: 'rgba(254, 246, 228, 0.90)', flex: 1}}>
       <HeaderNotify

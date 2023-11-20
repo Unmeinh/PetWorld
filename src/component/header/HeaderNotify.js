@@ -10,7 +10,7 @@ const { width, height } = Dimensions.get('window');
 
 export default function HeaderNotify({ titleHeader, colorHeader }) {
   const [isPressed, setIsPressed] = useState(false);
-  // const dispatch = useDispatch();
+  const dispatch = useDispatch();
   // const notices = useSelector(listNotice);
 
   // useEffect(() => {

@@ -59,8 +59,8 @@ export const EditLocationUser = action =>
 export const CancelBill = params =>
   Get({endPoint: `/bill-product/cancelBill/${params}`});
 
-export const GetAllNotice = status =>
-  Get({endPoint: `notice/list/all/${status}`});
+export const GetAllNotice = (status, page) =>
+  Get({endPoint: `notice/list/all/${status}?page=${page}`});
 
 export const GetAllFavorite = () => Get({endPoint: `favorite/list`});
 export const AddFavorite = id => Post({endPoint: `favorite/insert`, data: id});
