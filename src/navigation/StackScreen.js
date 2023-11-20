@@ -25,6 +25,7 @@ import ChatScreen from '../view/chat/ChatScreen';
 import InfoManager from '../view/blog/InfoManager';
 import EditUser from '../view/blog/EditUser';
 import EditAccount from '../view/blog/EditAccount';
+import EditPassword from '../view/blog/EditPassword';
 import AppointmentScreen from '../view/appointment/AppointmentScreen';
 import DetailAppointment from '../view/appointment/DetailAppointment';
 import NotifyScreen from '../view/notify/NotifyScreen';
@@ -171,6 +172,11 @@ export default function StackScreen() {
           name="EditAccount"
           options={animated}
           component={EditAccount}
+        />
+        <Stack.Screen
+          name="EditPassword"
+          options={animated}
+          component={EditPassword}
         />
         <Stack.Screen
           name="AppointmentScreen"

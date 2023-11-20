@@ -10,9 +10,9 @@ import PhoneSelect from '../../component/modals/PhoneSelect';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { onSendOTPbyPhoneNumber } from '../../function/functionOTP';
 import Toast from 'react-native-toast-message';
-import { axiosJSON } from '../../api/axios.config';
 import { useNavigation } from '@react-navigation/native';
 import { ToastLayout } from '../../component/layout/ToastLayout';
+import { onAxiosPost } from '../../api/axios.function';
 
 export default function RegisterTab(route) {
     const navigation = useNavigation();
@@ -22,7 +22,6 @@ export default function RegisterTab(route) {
     const [inputPhoneNumber, setinputPhoneNumber] = useState("");
     const [isShowPhoneSelect, setisShowPhoneSelect] = useState(false);
     const [widthPhoneSelect, setwidthPhoneSelect] = useState(0);
-    const [isDisableRequest, setisDisableRequest] = useState(false);
 
     function onChangeTab() {
         route.callback(inputUsername);
@@ -64,7 +63,6 @@ export default function RegisterTab(route) {
         if (checkValidate() == false) {
             return;
         }
-        setisDisableRequest(true);
         Toast.show({
             type: 'loading',
             position: 'top',
@@ -80,40 +78,14 @@ export default function RegisterTab(route) {
             phoneNumber: phoneCountry + inputPhoneNumber,
         }
 
-        var res = await axiosJSON.post('/user/checkPhoneNumber', { phoneNumber: newUser.phoneNumber })
-            .catch((e) => {
-                Toast.show({
-                    type: 'error',
-                    position: 'top',
-                    text1: String(e.response.data.message),
-                    bottomOffset: 20
-                });
-                setisDisableRequest(false);
-                return;
-            });
-        if (res != undefined) {
-            var data = res.data;
-            if (res.status == 200) {
-                if (data.success) {
-                    const response = await onSendOTPbyPhoneNumber(inputPhoneCountry + inputPhoneNumber);
-                    if (response != undefined && response.success) {
-                        setTimeout(() => {
-                            navigation.navigate('ConfirmOTP', { navigate: "RegisterPassword", objUser: newUser, typeVerify: 'phoneNumber', valueVerify: inputPhoneCountry + inputPhoneNumber, authConfirm: response.confirm })
-                        }, 500)
-                    } else {
-                        setisDisableRequest(false);
-                    }
-                } else {
-                    Toast.show({
-                        type: 'error',
-                        position: 'top',
-                        text1: String(data.message),
-                        bottomOffset: 20
-                    });
-                    setisDisableRequest(false);
-                    return;
-                }
-            }
+        var res = await onAxiosPost('/user/checkPhoneNumber', { phoneNumber: newUser.phoneNumber }, 'json', true);
+        if (res && res?.success) {
+            const response = await onSendOTPbyPhoneNumber(inputPhoneCountry + inputPhoneNumber);
+            if (response && response.success) {
+                setTimeout(() => {
+                    navigation.navigate('ConfirmOTP', { navigate: "RegisterPassword", objUser: newUser, typeVerify: 'phoneNumber', valueVerify: inputPhoneCountry + inputPhoneNumber, authConfirm: response.confirm })
+                }, 500)
+            } 
         }
     }
 
@@ -200,7 +172,7 @@ export default function RegisterTab(route) {
 
                 <TouchableHighlight style={[styles.buttonConfirm, { marginTop: 45 }]}
                     activeOpacity={0.5} underlayColor="#DC749C"
-                    onPress={onSignUp} disabled={isDisableRequest}>
+                    onPress={onSignUp} >
                     <Text style={styles.textButtonConfirm}>Đăng ký</Text>
                 </TouchableHighlight>
 

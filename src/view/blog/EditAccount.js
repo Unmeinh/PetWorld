@@ -87,13 +87,11 @@ const EditAccount = ({ route }) => {
             }
 
             const response = await onSendOTPbyPhoneNumber(inputPhoneCountry + inputValue);
-            if (response != undefined && response.success) {
+            if (response && response.success) {
                 setTimeout(() => {
                     navigation.navigate('ConfirmOTP', { function: updatePhoneNumber, typeVerify: 'phoneNumber', valueVerify: inputPhoneCountry + inputValue, authConfirm: response.confirm })
                 }, 500)
-            } else {
-                // setisDisableRequest(false);
-            }
+            } 
         } else {
             var regEmail = /^(\w+@[a-zA-Z]+\.[a-zA-Z]{2,})$/;
             if (!inputValue.match(regEmail)) {

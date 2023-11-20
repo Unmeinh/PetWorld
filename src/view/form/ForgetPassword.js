@@ -24,7 +24,6 @@ export default function ForgetPassword({ navigation }) {
   const [isSelectEmail, setisSelectEmail] = useState(false);
   const [isShowPhoneSelect, setisShowPhoneSelect] = useState(false);
   const [widthPhoneSelect, setwidthPhoneSelect] = useState(0);
-  const [isDisableRequest, setisDisableRequest] = useState(false);
 
   function onSelectPhone() {
     if (isSelectPhone == false && isSelectEmail == false) {
@@ -88,23 +87,18 @@ export default function ForgetPassword({ navigation }) {
       })
       return;
     }
-    setisDisableRequest(true);
 
     if (isSelectPhone == true) {
       const response = await onSendOTPbyPhoneNumber(inputPhoneCountry + inputPhoneNumber);
-      if (response != undefined && response.success) {
+      if (response) {
         setTimeout(() => {
           navigation.navigate('ConfirmOTP', { navigate: "ChangePassword", typeVerify: 'phoneNumber', valueVerify: inputPhoneCountry + inputPhoneNumber, authConfirm: response.confirm })
         }, 500)
-      } else {
-        setisDisableRequest(false);
-      }
+      } 
     } else {
       const response = await onSendOTPbyEmail(inputEmail);
       if (response) {
         navigation.navigate('ConfirmOTP', { navigate: "ChangePassword", typeVerify: 'email', valueVerify: inputEmail, authConfirm: null })
-      } else {
-        setisDisableRequest(false);
       }
     }
   }
@@ -190,7 +184,7 @@ export default function ForgetPassword({ navigation }) {
           </View>
           <TouchableHighlight style={[styles.buttonConfirm, { marginTop: 75 }]}
             activeOpacity={0.5} underlayColor="#DC749C"
-            onPress={onContinue} disabled={isDisableRequest}>
+            onPress={onContinue}>
             <Text style={styles.textButtonConfirm}>Tiếp tục</Text>
           </TouchableHighlight>
         </View>

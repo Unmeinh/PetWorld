@@ -22,6 +22,9 @@ const userReducer = createSlice({
   name: 'users',
   initialState,
   reducers: {
+    setUserLogin: (state, action) => {
+      state.loginData = action.payload;
+    },
     changeStatusPending: (state, action) => {
       state.status = action.payload;
     },
@@ -157,5 +160,5 @@ export const fetchInfoUserNoMessage = createAsyncThunk(
     return res;
   },
 );
-export const {setMessageUser, setChangeData} = userReducer.actions;
+export const {setUserLogin,setMessageUser, setChangeData} = userReducer.actions;
 export default userReducer.reducer;
