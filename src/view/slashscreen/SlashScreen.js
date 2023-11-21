@@ -91,11 +91,11 @@ export default function SplashScreen() {
         }
       } else {
         storageMMKV.setValue('login.token', "");
-        setnextScreen('LoginScreen');
+        setnextScreen('OrboadScreen');
       }
     } else {
       storageMMKV.setValue('login.token', "");
-      setnextScreen('LoginScreen');
+      setnextScreen('OrboadScreen');
     }
   }
 
@@ -108,7 +108,7 @@ export default function SplashScreen() {
   React.useEffect(() => {
     if (isFinishedOneTime && nextScreen != '') {
       navigation.replace(nextScreen);
-      if (storageMMKV.checkKey('login.isFirstTime') && storageMMKV.getBoolean('login.isFirstTime')) {
+      if (!storageMMKV.checkKey('login.isFirstTime') || storageMMKV.getBoolean('login.isFirstTime')) {
         storageMMKV.setValue('login.isFirstTime', false);
       }
     }
