@@ -108,7 +108,7 @@ export default function SplashScreen() {
   React.useEffect(() => {
     if (isFinishedOneTime && nextScreen != '') {
       navigation.replace(nextScreen);
-      if (storageMMKV.checkKey('login.isFirstTime') && storageMMKV.getBoolean('login.isFirstTime')) {
+      if (!storageMMKV.checkKey('login.isFirstTime') || storageMMKV.getBoolean('login.isFirstTime')) {
         storageMMKV.setValue('login.isFirstTime', false);
       }
     }
