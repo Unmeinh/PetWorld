@@ -7,7 +7,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import {createShimmerPlaceholder} from 'react-native-shimmer-placeholder';
 import slideshow from '../../data/slideshow';
 const ShimmerPlaceHolder = createShimmerPlaceholder(LinearGradient);
- function Slider({isLoader}) {
+function Slider({isLoader, data}) {
   const [index, setindex] = useState(0);
   const scrollx = useRef(new Animated.Value(0)).current;
   const colorLoader = ['#f0e8d8', '#dbdbdb', '#f0e8d8'];
@@ -38,26 +38,33 @@ const ShimmerPlaceHolder = createShimmerPlaceholder(LinearGradient);
 
   return (
     <View style={{height: 220}}>
-      {(isLoader) ? <View style={{marginHorizontal:20}}>
-        <ShimmerPlaceHolder
-          style={{width: '100%', height: '95%',borderRadius:10}}
-          shimmerColors={colorLoader}></ShimmerPlaceHolder>
-      </View>: (<FlatList
-        horizontal
-        pagingEnabled
-        onScroll={handerOnScroll}
-        snapToAlignment="center"
-        showsHorizontalScrollIndicator={false}
-        data={slideshow}
-        renderItem={({item}) => <SilderItem item={item} />}
-        onViewableItemsChanged={handleOnViewItemChange}
-        viewabilityConfig={viewabilityConfig}
-      />
+      {isLoader ? (
+        <View style={{marginHorizontal: 20}}>
+          <ShimmerPlaceHolder
+            style={{width: '100%', height: '95%', borderRadius: 10}}
+            shimmerColors={colorLoader}></ShimmerPlaceHolder>
+        </View>
+      ) : (
+        <FlatList
+          horizontal
+          pagingEnabled
+          onScroll={handerOnScroll}
+          snapToAlignment="center"
+          showsHorizontalScrollIndicator={false}
+          data={data}
+          renderItem={({item}) => <SilderItem item={item} />}
+          onViewableItemsChanged={handleOnViewItemChange}
+          viewabilityConfig={viewabilityConfig}
+        />
       )}
-     
-      <Panigation data={slideshow} scrollx={scrollx} index={index} />
+
+      <Panigation
+        data={data}
+        scrollx={scrollx}
+        index={index}
+      />
     </View>
   );
 }
 
-export default Slider
+export default Slider;

@@ -70,3 +70,6 @@ export const GetDetailShop = id => Get({endPoint: `/shop/detail/${id}`});
 
 export const SeachProductForShop = (idShop, keyWords) =>
   Get({endPoint: `/search/shop/${keyWords}?idShop=${idShop}`});
+
+export const GetListBanner = () =>
+  Get({endPoint: `/server/listBanner`});
