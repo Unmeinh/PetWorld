@@ -1,11 +1,10 @@
 import {Animated, FlatList, StyleSheet, Text, View} from 'react-native';
 import React, {useRef, useState} from 'react';
-
 import SilderItem from './SilderItem';
 import Panigation from './Panigation';
 import LinearGradient from 'react-native-linear-gradient';
 import {createShimmerPlaceholder} from 'react-native-shimmer-placeholder';
-import slideshow from '../../data/slideshow';
+
 const ShimmerPlaceHolder = createShimmerPlaceholder(LinearGradient);
 function Slider({isLoader, data}) {
   const [index, setindex] = useState(0);
