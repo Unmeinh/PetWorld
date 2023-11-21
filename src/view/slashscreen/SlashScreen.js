@@ -91,11 +91,11 @@ export default function SplashScreen() {
         }
       } else {
         storageMMKV.setValue('login.token', "");
-        setnextScreen('LoginScreen');
+        setnextScreen('OrboadScreen');
       }
     } else {
       storageMMKV.setValue('login.token', "");
-      setnextScreen('LoginScreen');
+      setnextScreen('OrboadScreen');
     }
   }
 

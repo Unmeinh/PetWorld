@@ -54,6 +54,7 @@ const DetailAppointment = ({ route }) => {
     }
 
     function onMessagingShop() {
+        route.callBackHide();
         Toast.show({
             type: 'error',
             position: 'top',
