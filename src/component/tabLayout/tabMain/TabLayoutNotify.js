@@ -6,13 +6,11 @@ import { fetchNotices } from '../../../redux/reducers/notice/NoticeReducer';
 import { useSelector, useDispatch } from "react-redux";
 import { listNotice } from '../../../redux/selector';
 import NotifyAll from '../tabNotify/NotifyAll';
-import Tab2 from '../tabNotify/NotifyRemind';
-import Tab3 from '../tabNotify/NotifyRead';
-import Tab4 from '../tabNotify/NotifyUnRead';
+import NotifyRemind from '../tabNotify/NotifyRemind';
+import NotifyRead from '../tabNotify/NotifyRead';
+import NotifyUnRead from '../tabNotify/NotifyUnRead';
 
-
-
-const TabLayout = () => {
+const TabLayout = ({ scrollRef, onScrollView }) => {
 
   const [index, setIndex] = useState(0);
   const [routes] = useState([
@@ -23,10 +21,10 @@ const TabLayout = () => {
   ]);
 
   const renderScene = SceneMap({
-    first: NotifyAll,
-    second: Tab2,
-    third: Tab3,
-    fourth: Tab4,
+    first: () => <NotifyAll/>,
+    second: () => <NotifyRemind/>,
+    third: () => <NotifyRead/>,
+    fourth: () => <NotifyUnRead/>,
   });
 
   const renderTabBar = (props) => (

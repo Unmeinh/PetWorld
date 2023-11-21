@@ -122,7 +122,7 @@ export default StyleSheet.create({
     },
 
     viewHeaderAccount: {
-        height: '18%', width: '90%',
+        height: WindowHeight * 17.5 / 100, width: '90%',
         borderRadius: WindowWidth * 5 / 100,
         top: WindowHeight * 6.5 / 100,
         left: WindowWidth * 5 / 100,
@@ -244,7 +244,7 @@ export default StyleSheet.create({
         borderRadius: 15,
         fontFamily: 'ProductSans',
     },
-    
+
     togglePassword: {
         position: 'absolute',
         right: 10, top: '35%'
