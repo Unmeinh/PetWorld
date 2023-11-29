@@ -43,8 +43,6 @@ export default function HomeScreen({scrollRef, onScrollView, navigation}) {
     dispatch(fetchCart());
     dispatch(fetchBanner());
   }, []);
-
-  console.log('dataHome?.dataBanner',dataHome?.dataBanner)
   return (
     <>
       <ScrollView

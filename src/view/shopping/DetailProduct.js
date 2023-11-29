@@ -10,6 +10,7 @@ import {
   ToastAndroid,
   ActivityIndicator,
   Image,
+  FlatList,
 } from 'react-native';
 import React, {useEffect, useRef, useState} from 'react';
 import {
@@ -32,9 +33,11 @@ import {
 import ShimmerPlaceHolder from '../../component/layout/ShimmerPlaceHolder';
 import SetAppointment from '../../component/modals/SetAppointment';
 import Loading from '../../component/Loading';
-import {GetDetailProduct} from '../../api/RestApi';
+import {GetDetailProduct, GetRating} from '../../api/RestApi';
 import {AddFavorite, DeleteFavorite} from '../../api/RestApi';
 import {selectFavoriteByID} from '../../redux/actions/favoriteAction';
+import ReviewsItems from '../../component/detailProduct/ReviewsItem';
+import ImageView from 'react-native-image-viewing';
 const {width} = Dimensions.get('screen');
 
 function DetailProduct({navigation, route}) {
@@ -53,7 +56,11 @@ function DetailProduct({navigation, route}) {
   const [showDes, setShowDes] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
   const [isShowSetApm, setisShowSetApm] = useState(false);
-
+  const [page, setPage] = useState(1);
+  const [rate, setRate] = useState([]);
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
+  const [enableMore, setEnableMore] = useState(true);
+  const [listImageProduct, setListImageProduct] = useState([]);
   const listImage = product?.arrProduct
     ? product?.arrProduct
     : product?.imagesPet;
@@ -172,13 +179,38 @@ function DetailProduct({navigation, route}) {
       setStatus('idle');
     }
   };
+  const getRate = async (pramPage = page) => {
+    if (id || type) {
+      const res = await GetRating(id, pramPage);
+      const data = res.data;
+      if (data) {
+        
+        if (data.length > 0) {
+          setRate([...rate, ...res.data]);
+        } else{
+          setEnableMore(false);
+        }
+      }
+    }
+  };
 
   useEffect(() => {
     getDetailProduct();
+    getRate();
     return () => {
       setProduct({});
     };
   }, []);
+
+  const loadMoreData = async () => {
+    console.log(enableMore);
+    if (!isLoadingMore && enableMore) {
+      setIsLoadingMore(true);
+      await getRate(page + 1);
+      setPage(page + 1);
+      setIsLoadingMore(false);
+    }
+  };
   return (
     <>
       {product?.status !== 0 && status === 'idle' ? (
@@ -491,6 +523,27 @@ function DetailProduct({navigation, route}) {
                 />
               </View>
             </Animated.View>
+            <FlatList
+              data={rate}
+              renderItem={({item}) => (
+                <ReviewsItems
+                  item={item}
+                  setListImage={value => setListImageProduct(value)}
+                />
+              )}
+              ListFooterComponent={
+                isLoadingMore ? (
+                  <ActivityIndicator
+                    size="large"
+                    color={'#F582AE'}
+                    style={{marginBottom: 10}}
+                  />
+                ) : null
+              }
+              contentContainerStyle={{paddingBottom:10}}
+              onEndReached={loadMoreData}
+              onEndReachedThreshold={0.1}
+            />
           </ScrollView>
           {status === 'idle' ? (
             <View style={styles.bottomButton}>
@@ -562,6 +615,12 @@ function DetailProduct({navigation, route}) {
           )}
         </>
       )}
+      <ImageView
+        images={listImageProduct}
+        imageIndex={0}
+        visible={listImageProduct?.length > 0}
+        onRequestClose={() => setListImageProduct([])}
+      />
     </>
   );
 }

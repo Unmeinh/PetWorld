@@ -41,8 +41,12 @@ export const SearchProduct = key => Get({endPoint: `/search/${key}`});
 
 export const GetCategorys = () => Get({endPoint: `/category/list/all`});
 
-export const ListProductByCategory = id =>
-  Get({endPoint: `/category/list/product&pet/${id}`});
+export const ListProductByCategory = (id, page, sort) =>
+  Get({
+    endPoint: `/category/list/category/all/${id}?page=${page}${
+      sort ? `&sortBy=${sort}` : ''
+    }`,
+  });
 
 export const GetCountAllBill = () => Get({endPoint: `bill-product/getCount`});
 
@@ -71,5 +75,8 @@ export const GetDetailShop = id => Get({endPoint: `/shop/detail/${id}`});
 export const SeachProductForShop = (idShop, keyWords) =>
   Get({endPoint: `/search/shop/${keyWords}?idShop=${idShop}`});
 
-export const GetListBanner = () =>
-  Get({endPoint: `/server/listBanner`});
+export const GetListBanner = () => Get({endPoint: `/server/listBanner`});
+export const CreateRating = (data, header) =>
+  Post({endPoint: `/review/insert`, data: data, header: header});
+export const GetRating = (id, page = 1) =>
+  Get({endPoint: `/review/list/product/${id}?page=${page}`});

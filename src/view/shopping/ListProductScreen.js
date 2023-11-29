@@ -12,25 +12,46 @@ export default function ListProductScreen({navigation, route}) {
   const param = route.params;
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [page, setPage] = useState(1);
-  const [sort, setSort] = useState(null);
+  const [sort, setSort] = useState(0);
   const [result, setResult] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
   const [enableLoading, setEnableLoading] = useState(true);
 
+  const checkSort = () => {
+    if (sort === 1) {
+      return 'KhuyenMai';
+    }
+    if (sort === 2) {
+      return 'BanChay';
+    }
+    if (sort === 3) {
+      return 'Gia';
+    }
+  };
   const getFetch = () => {
     if (param.type === 1) {
       return GetProductsMulti(page, sort);
     } else if (param.type === 0) {
       return GetPets(page);
     } else if (param.type === 3) {
-      return ListProductByCategory(param.id);
+      return ListProductByCategory(param.id, page, checkSort());
     }
   };
-  const getList = async () => {
+  const getList = async (resetData = false) => {
     try {
+      if (resetData) {
+        setPage(1);
+        setResult([]);
+      }
+
       const res = await getFetch();
+
       if (res?.data?.length > 0) {
-        setResult([...result, ...res.data]);
+        if (sort || resetData) {
+          setResult(res.data);
+        } else {
+          setResult([...result, ...res.data]);
+        }
         setRefreshing(false);
         setIsLoadingMore(false);
       } else {
@@ -43,27 +64,33 @@ export default function ListProductScreen({navigation, route}) {
     }
   };
 
-  useEffect(() => {
-    if (enableLoading) {
-      if (page === 1) {
-        setRefreshing(true);
-      }
+  const handleRefresh = () => {
+    setSort(0);
+    setRefreshing(true);
+    setEnableLoading(true);
+    getList(true);
+  };
+
+  const loadMoreData = async () => {
+    if (enableLoading && !isLoadingMore) {
+      setIsLoadingMore(true);
+      await setPage(page + 1);
       getList();
     }
-  }, [page, enableLoading]);
-  const onRefresh = useCallback(() => {
-    setPage(1);
-    setResult([]);
-    setEnableLoading(true);
-  }, []);
-  const loadMoreData = async () => {
-    if (enableLoading) {
-      if (!isLoadingMore) {
-        setIsLoadingMore(true);
-        setPage(page + 1);
-      }
-    }
   };
+
+  useEffect(() => {
+    if (enableLoading) {
+      handleRefresh();
+    }
+  }, [enableLoading]);
+
+  useEffect(() => {
+    if (sort) {
+      handleRefresh();
+    }
+  }, [sort]);
+
   return (
     <View style={{backgroundColor: '#FEF6E4', flex: 1}}>
       <View
@@ -92,7 +119,7 @@ export default function ListProductScreen({navigation, route}) {
       </View>
       {/* fillter */}
       <View>
-        <FilterSelector />
+        <FilterSelector setSort={setSort} />
       </View>
       {/* showlisst */}
       <View
@@ -107,7 +134,7 @@ export default function ListProductScreen({navigation, route}) {
         <ListProductVertical
           data={result}
           isLoadingMore={isLoadingMore}
-          onRefresh={onRefresh}
+          onRefresh={handleRefresh}
           loadMoreData={loadMoreData}
           refreshing={refreshing}
         />
