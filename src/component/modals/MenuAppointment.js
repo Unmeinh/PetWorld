@@ -8,7 +8,7 @@ import { useDispatch } from 'react-redux';
 import { fetchDetailProduct } from '../../redux/reducers/filters/filtersReducer';
 import Modal from 'react-native-modal';
 import styles from "../../styles/appointment.style";
-import { onAxiosDelete, onAxiosPut } from "../../api/axios.function";
+import { onAxiosPut } from "../../api/axios.function";
 import Toast from "react-native-toast-message";
 
 const MenuAppointment = (route) => {
@@ -18,7 +18,7 @@ const MenuAppointment = (route) => {
 
     React.useEffect(() => {
         if (route.status) {
-            switch (route.status) {
+            switch (String(route.status)) {
                 case "-1":
                     setcanCancel(true)
                     break;
@@ -42,37 +42,32 @@ const MenuAppointment = (route) => {
 
     function onShowAlert() {
         route.callBackHide();
-        if (canCancel) {
-            Toast.show({
-                type: 'alert',
-                position: 'top',
-                text1: "Xác nhận hủy lịch hẹn?",
-                props: {
-                    cancel: () => Toast.hide(),
-                    confirm: onCancel
-                },
-                autoHide: false
-            })
-        } else {
-            Toast.show({
-                type: 'alert',
-                position: 'top',
-                text1: "Xác nhận xóa lịch hẹn?",
-                props: {
-                    cancel: () => Toast.hide(),
-                    confirm: onDelete
-                },
-                autoHide: false
-            })
-        }
+        Toast.show({
+            type: 'alert',
+            position: 'top',
+            text1: "Xác nhận hủy lịch hẹn?",
+            props: {
+                cancel: () => Toast.hide(),
+                confirm: onCancel
+            },
+            autoHide: false
+        })
     }
 
     function onOpenPet() {
         let type = 0;
-        let pet = {...route.pet};
+        let pet = { ...route.pet };
         pet.idShop = route.shop;
         dispatch(fetchDetailProduct({ id: route.pet._id, type }));
         navigation.push('DetailProduct', { type, item: pet });
+    }
+
+    function onMessagingShop() {
+        Toast.show({
+            type: 'error',
+            position: 'top',
+            text1: 'Tính năng này đang được phát triển!'
+        })
     }
 
     async function onCancel() {
@@ -86,26 +81,11 @@ const MenuAppointment = (route) => {
             let res = await onAxiosPut('appointment/update',
                 {
                     idAppt: route.idAppt,
-                    status: "3"
+                    status: 3
                 }, 'json', true)
             if (res) {
                 setcanCancel(false);
                 route.onCallbackCancel();
-            }
-        }
-    }
-
-    async function onDelete() {
-        if (!canCancel) {
-            Toast.show({
-                type: 'loading',
-                position: 'top',
-                text1: "Đang xóa lịch hẹn...",
-                autoHide: false
-            })
-            let res = await onAxiosDelete('appointment/delete/' + route.idAppt, true);
-            if (res) {
-                route.onCallbackDelete();
             }
         }
     }
@@ -134,8 +114,9 @@ const MenuAppointment = (route) => {
                             onPress={onOpenPet}>
                             <Text style={styles.textOptionMenu}>Xem thú cưng</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity style={{ width: '100%', alignItems: 'center', borderBottomColor: '#D9D9D9', borderBottomWidth: 1 }}>
-                            <Text style={styles.textOptionMenu}>Nhắn tin cho shop</Text>
+                        <TouchableOpacity style={{ width: '100%', alignItems: 'center', borderBottomColor: '#D9D9D9', borderBottomWidth: 1 }}
+                            onPress={onMessagingShop}>
+                            <Text style={styles.textOptionMenu}>Nhắn tin cho cửa hàng</Text>
                         </TouchableOpacity>
                         {
                             (canCancel)
@@ -144,11 +125,7 @@ const MenuAppointment = (route) => {
                                     onPress={onShowAlert}>
                                     <Text style={[styles.textOptionMenu, { color: '#EE3333' }]}>Hủy lịch hẹn</Text>
                                 </TouchableOpacity>
-                                :
-                                <TouchableOpacity style={{ width: '100%', alignItems: 'center' }}
-                                    onPress={onShowAlert}>
-                                    <Text style={[styles.textOptionMenu, { color: '#EE3333' }]}>Xóa lịch hẹn</Text>
-                                </TouchableOpacity>
+                                : ""
                         }
                     </Pressable>
                 </View>

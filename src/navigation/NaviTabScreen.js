@@ -3,24 +3,23 @@ import React, { useState, useEffect, useRef } from 'react'
 import {
     StyleSheet, Text,
     TouchableOpacity, View,
-    Image, Animated,Alert
+    Image, Animated, Alert
 } from 'react-native'
 import * as Animatable from 'react-native-animatable';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import HomeScreen from '../view/home/HomeScreen';
 import BlogScreen from '../view/blog/BlogScreen';
-// import NotifyScreen from '../view/notify/Notify';
 import NotifyScreen from '../view/notify/NotifyScreen';
 import AccountScreen from '../view/account/AccountScreen';
 import PetAISupport from '../component/layout/PetAISupport';
 import Chats from '../view/chat/Chats';
 
 const TabArr = [
-    { route: 'Home', label: 'Home', icon: 'home', component: HomeScreen, color: '#8BD3DD', alphaClr: '#F3D2C1' },
+    { route: 'Home', label: 'Trang chủ', icon: 'home', component: HomeScreen, color: '#8BD3DD', alphaClr: '#F3D2C1' },
     { route: 'Blog', label: 'Blog', icon: 'blog', component: BlogScreen, color: '#8BD3DD', alphaClr: '#F3D2C1' },
     // { route: 'Chat', label: 'Chat', icon: 'comment-alt', component: Chats, color: '#8BD3DD', alphaClr: '#F3D2C1' },
-    { route: 'Notify', label: 'Notify', icon: 'bell', component: NotifyScreen, color: '#8BD3DD', alphaClr: '#F3D2C1' },
-    { route: 'Account', label: 'Account', icon: 'id-badge', component: AccountScreen, color: '#8BD3DD', alphaClr: '#F3D2C1' },
+    { route: 'Notify', label: 'Thông báo', icon: 'bell', component: NotifyScreen, color: '#8BD3DD', alphaClr: '#F3D2C1' },
+    { route: 'Account', label: 'Tài khoản', icon: 'id-badge', component: AccountScreen, color: '#8BD3DD', alphaClr: '#F3D2C1' },
 ];
 
 const Tab = createBottomTabNavigator();
@@ -66,7 +65,7 @@ const TabButton = (props) => {
     )
 }
 
-export default function NaviTabScreen({navigation}) {
+export default function NaviTabScreen({ navigation }) {
     //animated AI
     const [offset, setoffset] = useState(0);
     const scrollRef = useRef(null);
@@ -106,13 +105,14 @@ export default function NaviTabScreen({navigation}) {
     React.useEffect(() => {
         const unsub = navigation.addListener('focus', () => {
             animatedOnFocus();
-        return () => {
+            return () => {
                 unsub.remove();
-              };
+            };
         });
 
         return unsub;
     }, [navigation]);
+
     return (
         <View style={{ flex: 1 }}>
             <Tab.Navigator
@@ -130,12 +130,12 @@ export default function NaviTabScreen({navigation}) {
                             {
                                 translateY: startValue,
                             },],
-                    }
-                }} >
+                    },
+                }}>
                 {TabArr.map((item, index) => {
                     return (
                         <Tab.Screen key={index} name={item.route}
-                            children={() => <item.component onScrollView={onScrollView} scrollRef={scrollRef} navigation={navigation}/>}
+                            children={() => <item.component onScrollView={onScrollView} scrollRef={scrollRef} navigation={navigation} />}
                             options={{
                                 tabBarShowLabel: false,
                                 tabBarButton: (props) => <TabButton {...props} item={item} />

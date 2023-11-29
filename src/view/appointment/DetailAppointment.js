@@ -53,6 +53,15 @@ const DetailAppointment = ({ route }) => {
         navigation.navigate('ShopScreen', { data: appointment.idShop });
     }
 
+    function onMessagingShop() {
+        route.callBackHide();
+        Toast.show({
+            type: 'error',
+            position: 'top',
+            text1: 'Tính năng này đang được phát triển!'
+        })
+    }
+
     function onShowAlert() {
         if (canCancel) {
             Toast.show({
@@ -65,18 +74,7 @@ const DetailAppointment = ({ route }) => {
                 },
                 autoHide: false
             })
-        } else {
-            Toast.show({
-                type: 'alert',
-                position: 'top',
-                text1: "Xác nhận xóa lịch hẹn?",
-                props: {
-                    cancel: () => Toast.hide(),
-                    confirm: onDelete
-                },
-                autoHide: false
-            })
-        }
+        } 
     }
 
     async function onCancel() {
@@ -90,29 +88,11 @@ const DetailAppointment = ({ route }) => {
             let res = await onAxiosPut('appointment/update',
                 {
                     idAppt: appointment._id,
-                    status: "3"
+                    status: 3
                 }, 'json', true)
             if (res) {
                 setcanCancel(false);
                 setstatusApm("Đã hủy hẹn")
-            }
-        }
-    }
-
-    async function onDelete() {
-        if (!canCancel) {
-            Toast.show({
-                type: 'loading',
-                position: 'top',
-                text1: "Đang xóa lịch hẹn...",
-                autoHide: false
-            })
-            let res = await onAxiosDelete('appointment/delete/' + appointment._id, true);
-            if (res) {
-                if (route.params.onCallbackDelete != undefined) {
-                    route.params.onCallbackDelete();
-                }
-                goBack();
             }
         }
     }
@@ -123,7 +103,7 @@ const DetailAppointment = ({ route }) => {
             if (appointment != "null") {
                 setsrcPet({ uri: String(appointment.idPet.imagesPet[0]) })
                 setsrcAvatar({ uri: String(appointment.idShop.avatarShop) })
-                switch (appointment.status) {
+                switch (String(appointment.status)) {
                     case "-1":
                         setcanCancel(true);
                         setstatusApm("Chờ xác nhận")
@@ -290,7 +270,7 @@ const DetailAppointment = ({ route }) => {
                                         <Text style={styles.textButtonItemShop}>Xem shop</Text>
                                     </TouchableOpacity>
                                     <TouchableOpacity style={styles.buttonItemShop}
-                                        onPress={() => setisShowSetApm(true)}>
+                                        onPress={onMessagingShop}>
                                         <Text style={styles.textButtonItemShop}>Nhắn tin</Text>
                                     </TouchableOpacity>
                                 </View>
@@ -300,7 +280,7 @@ const DetailAppointment = ({ route }) => {
                                 <TouchableHighlight style={[styles.buttonSave, { backgroundColor: '#8E8E8E' }]}
                                     activeOpacity={0.5} underlayColor="#6D6D6D"
                                     onPress={goBack}>
-                                    <Text style={styles.textButtonSave}>Quay lại</Text>
+                                    <Text style={styles.textButtonSave}> Quay lại  </Text>
                                 </TouchableHighlight>
                                 {
                                     (canCancel)
@@ -311,13 +291,7 @@ const DetailAppointment = ({ route }) => {
                                                 <Text style={styles.textButtonSave}>Hủy lịch hẹn</Text>
                                             </View>
                                         </TouchableHighlight>
-                                        : <TouchableHighlight style={[styles.buttonSave, { backgroundColor: '#F85555' }]}
-                                            activeOpacity={0.5} underlayColor="#EE3F3F"
-                                            onPress={onShowAlert}>
-                                            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                                <Text style={styles.textButtonSave}>Xóa lịch hẹn</Text>
-                                            </View>
-                                        </TouchableHighlight>
+                                        : ""
                                 }
                             </View>
                         </View>

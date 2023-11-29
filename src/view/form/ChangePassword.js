@@ -10,9 +10,9 @@ import styles from '../../styles/form.style';
 import HeaderTitle from '../../component/header/HeaderTitle';
 import Entypo from 'react-native-vector-icons/Entypo';
 import { useNavigation } from '@react-navigation/native';
-import { axiosJSON } from '../../api/axios.config';
 import Toast from 'react-native-toast-message';
 import { ToastLayout } from '../../component/layout/ToastLayout';
+import { onAxiosPut } from '../../api/axios.function';
 
 export default function ChangePassword({ route }) {
   const navigation = useNavigation();
@@ -40,16 +40,26 @@ export default function ChangePassword({ route }) {
   }
 
   function checkValidate() {
-    var regPass = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).{8,}/;
+    let regPass = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).{8,}/;
 
     if (!inputNewPassword.match(regPass)) {
-      ToastAndroid.show('Mật khẩu chưa đúng định dạng!', ToastAndroid.SHORT);
-      ToastAndroid.show('Mật khẩu phải dài ít nhất 8 ký tự và chứa ít nhất một số, chữ cái viết thường, chữ viết hoa và ký tự đặc biệt!', ToastAndroid.LONG);
+      Toast.show({
+        type: 'error',
+        text1: 'Mật khẩu cần dài ít nhất 8 ký tự và chứa ít nhất một số, một chữ viết thường và một chữ viết hoa!',
+        position: 'top',
+        props: {
+          isTextLong: true
+        }
+      })
       return false;
     }
 
     if (inputNewPassword != inputConfirmPassword) {
-      ToastAndroid.show('Mật khẩu nhập lại không trùng!', ToastAndroid.SHORT);
+      Toast.show({
+        type: 'error',
+        text1: 'Mật khẩu nhập lại không chính xác!',
+        position: 'top'
+      })
       return false;
     }
 
@@ -71,50 +81,12 @@ export default function ChangePassword({ route }) {
       type: 'loading',
       position: 'top',
       text1: "Đang cập nhật lại mật khẩu...",
-      bottomOffset: 20,
       autoHide: false
     });
-    var response = await axiosJSON.put('/user/changePassword', objData)
-      .catch((e) => {
-        Toast.show({
-          type: 'error',
-          position: 'top',
-          text1: String(e.response.data.message),
-          bottomOffset: 20
-        });
-
-      });
-    if (response != undefined) {
-      if (response.status == 200) {
-        var data = response.data;
-        try {
-          if (data.success) {
-            Toast.show({
-              type: 'success',
-              position: 'top',
-              text1: String(data.message),
-              bottomOffset: 20
-            });
-            setTimeout(() => 
-            navigation.navigate('LoginScreen'), 1000)
-          }
-        } catch (error) {
-          console.log(error);
-        }
-      } else {
-        var data = response.data;
-        try {
-          Toast.show({
-            type: 'error',
-            position: 'top',
-            text1: String(data.message),
-            bottomOffset: 20
-          });
-        } catch (error) {
-          console.log(error);
-        }
-        
-      }
+    var response = await onAxiosPut('/user/changePassword', objData, 'json', true)
+    if (response) {
+      setTimeout(() =>
+        navigation.navigate('LoginScreen'), 1000)
     }
   }
 
@@ -128,8 +100,8 @@ export default function ChangePassword({ route }) {
         <Text style={styles.textDetail}>
           Hãy nhập mật khẩu mới của bạn.{'\n'}
           Mật khẩu cần dài ít nhất 8 ký tự. {'\n'}
-          Bao gồm tối thiểu 1 chữ hoa,{'\n'}
-          1 chữ thường, 1 số và 1 ký tự đặc biệt.
+          Bao gồm tối thiểu 1 số,{'\n'}
+          1 chữ viết thường và 1 chữ viết hoa.
         </Text>
 
         <View style={{ marginTop: 15 }}>
@@ -186,7 +158,7 @@ export default function ChangePassword({ route }) {
           <Text style={styles.textButtonConfirm}>Xác nhận</Text>
         </TouchableHighlight>
       </View>
-      <ToastLayout/>
+      <ToastLayout />
     </View>
   )
 }

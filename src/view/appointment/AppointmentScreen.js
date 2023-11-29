@@ -15,6 +15,7 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { onAxiosGet } from '../../api/axios.function';
 import { getMonthVietnamese, getTimeDefault, getDateDefault } from '../../function/functionDate';
+import Toast from 'react-native-toast-message';
 
 const AppointmentScreen = () => {
     const navigation = useNavigation();
@@ -88,18 +89,18 @@ const AppointmentScreen = () => {
         let item = row.item;
         let apmMonth = getMonthVietnamese(new Date(item._id.year + "-" + item._id.month + "-15"));
 
-        function onDeleteItem(iItem) {
-            let cloneArr = [...arr_appointment];
-            let lApm = cloneArr[row.index];
-            if (item.appointments.length > 1) {
-                lApm.appointments.splice(iItem, 1);
-                cloneArr.splice(row.index, 1, lApm);
-                setarr_appointment(cloneArr);
-            } else {
-                cloneArr.splice(row.index, 1);
-                setarr_appointment(cloneArr);
-            }
-        }
+        // function onDeleteItem(iItem) {
+        //     let cloneArr = [...arr_appointment];
+        //     let lApm = cloneArr[row.index];
+        //     if (item.appointments.length > 1) {
+        //         lApm.appointments.splice(iItem, 1);
+        //         cloneArr.splice(row.index, 1, lApm);
+        //         setarr_appointment(cloneArr);
+        //     } else {
+        //         cloneArr.splice(row.index, 1);
+        //         setarr_appointment(cloneArr);
+        //     }
+        // }
 
         return (
             <View >
@@ -117,8 +118,7 @@ const AppointmentScreen = () => {
                 </View>
                 <FlatList data={item.appointments}
                     renderItem={({ item, index }) =>
-                        <ItemAppointment key={item._id} item={item} index={index}
-                            onDeleteItem={onDeleteItem} />}
+                        <ItemAppointment key={item._id} item={item} index={index}/>}
                     showsVerticalScrollIndicator={false}
                     keyExtractor={(item, index) => index.toString()}
                     style={{ paddingTop: 15 }} />
@@ -140,13 +140,20 @@ const AppointmentScreen = () => {
         const [isShowMenu, setisShowMenu] = useState(false);
         const [colorStatus, setcolorStatus] = useState("rgba(0, 24, 88, 0.55)");
         const [srcAvatar, setsrcAvatar] = useState(require('../../assets/images/loading.png'));
-        const [isDeleted, setisDeleted] = useState(false);
 
         function onViewDetail() {
-            navigation.navigate('DetailAppointment', {
-                idApm: item._id,
-                onCallbackDelete: () => onCallbackDelete()
-            });
+            if (pet) {
+                navigation.navigate('DetailAppointment', {
+                    idApm: item._id,
+                    onCallbackDelete: () => onCallbackDelete()
+                });
+            } else {
+                Toast.show({
+                    type: 'error',
+                    position: 'top',
+                    text1: 'Lịch hẹn bị lỗi dữ liệu!\nKhông thể xem chi tiết!'
+                })
+            }
         }
 
         function onCallbackCancel() {
@@ -154,14 +161,17 @@ const AppointmentScreen = () => {
             setcolorStatus("#rgba(0, 24, 88, 0.55)");
         }
 
-        function onCallbackDelete() {
-            setisDeleted(true);
-            row.onDeleteItem(row.index);
-        }
-
         function onShowMenu() {
             if (!isShowMenu) {
-                setisShowMenu(true);
+                if (pet) {
+                    setisShowMenu(true);
+                } else {
+                    Toast.show({
+                        type: 'error',
+                        position: 'top',
+                        text1: 'Lịch hẹn bị lỗi dữ liệu!\nKhông thể tương tác!'
+                    })
+                }
             }
         }
 
@@ -209,14 +219,14 @@ const AppointmentScreen = () => {
                             onError={() => setsrcAvatar(require('../../assets/images/error.png'))} />
                         <View style={{ marginLeft: 15 }}>
                             <Text style={styles.textNamePetItem} numberOfLines={1}>
-                                {pet.namePet}
+                                {(pet?.namePet) ? pet.namePet : "Lỗi dữ liệu"}
                             </Text>
                             <Text style={styles.textNameShopItem} numberOfLines={1}>
-                                {shop.nameShop}
+                                {(shop?.nameShop) ? shop.nameShop : "Lỗi dữ liệu"}
                             </Text>
                         </View>
                     </View>
-                    <TouchableOpacity onPress={onShowMenu} disabled={isDeleted}>
+                    <TouchableOpacity onPress={onShowMenu} >
                         <Entypo name='dots-three-vertical' size={20} color={'#001858'} />
                     </TouchableOpacity>
                 </View>
@@ -240,7 +250,7 @@ const AppointmentScreen = () => {
                 <View style={{ height: 15 }} />
                 <MenuAppointment isShow={isShowMenu} status={item.status}
                     idAppt={item._id} pet={pet} shop={shop} callBackHide={onCallbackHide}
-                    onCallbackCancel={onCallbackCancel} onCallbackDelete={onCallbackDelete} />
+                    onCallbackCancel={onCallbackCancel} />
             </View>
         )
     }

@@ -17,10 +17,10 @@ export default function UserTag({data, disabled}) {
         />
         <View style={styles.info}>
           <Text style={styles.textName}>
-            {data.fullName} ,{' '}
-            <Text style={styles.textPhone}>0{data.phoneNumber}</Text>
+            {data?.fullName} ,{' '}
+            <Text style={styles.textPhone}>0{data?.phoneNumber}</Text>
           </Text>
-          <Text style={styles.textLocation}>{data.location}</Text>
+          <Text style={styles.textLocation}>{data?.location}</Text>
         </View>
         <EvillCons
           name="chevron-right"

@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "1023319694229",
+    "firebase_url": "https://petworld-firebase-default-rtdb.firebaseio.com",
     "project_id": "petworld-firebase",
     "storage_bucket": "petworld-firebase.appspot.com"
   },
