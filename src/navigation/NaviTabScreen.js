@@ -1,9 +1,9 @@
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { createBottomTabNavigator, BottomTabBar } from '@react-navigation/bottom-tabs';
 import React, { useState, useEffect, useRef } from 'react'
 import {
     StyleSheet, Text,
     TouchableOpacity, View,
-    Image, Animated, Alert
+    Dimensions, Animated
 } from 'react-native'
 import * as Animatable from 'react-native-animatable';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
@@ -11,8 +11,8 @@ import HomeScreen from '../view/home/HomeScreen';
 import BlogScreen from '../view/blog/BlogScreen';
 import NotifyScreen from '../view/notify/NotifyScreen';
 import AccountScreen from '../view/account/AccountScreen';
-import PetAISupport from '../component/layout/PetAISupport';
-import Chats from '../view/chat/Chats';
+// import PetAISupport from '../component/layout/PetAISupport';
+// import Chats from '../view/chat/Chats';
 
 const TabArr = [
     { route: 'Home', label: 'Trang chủ', icon: 'home', component: HomeScreen, color: '#8BD3DD', alphaClr: '#F3D2C1' },
@@ -64,9 +64,12 @@ const TabButton = (props) => {
         </TouchableOpacity>
     )
 }
+let WindowWidth = Dimensions.get("window").width;
 
 export default function NaviTabScreen({ navigation }) {
     //animated AI
+    const [isCollapse, setisCollapse] = useState(false);
+    const [isCollapsing, setisCollapsing] = useState(true);
     const [offset, setoffset] = useState(0);
     const scrollRef = useRef(null);
     const startValue = useRef(new Animated.Value(90)).current;
@@ -121,21 +124,21 @@ export default function NaviTabScreen({ navigation }) {
                     tabBarStyle: {
                         backgroundColor: '#F3D2C1',
                         height: 60,
-                        position: 'absolute',
-                        marginLeft: 10, marginRight: 10,
-                        paddingHorizontal: 1,
-                        bottom: 15,
                         borderRadius: 15,
-                        transform: [
-                            {
-                                translateY: startValue,
-                            },],
+                        transform: [{ translateY: startValue, }]
                     },
-                }}>
+                }}
+                tabBar={(props,) => (
+                    <View style={[styles.viewTabBar, {
+                    }]}>
+                        <BottomTabBar {...props} />
+                    </View>
+                )}>
                 {TabArr.map((item, index) => {
                     return (
                         <Tab.Screen key={index} name={item.route}
                             children={() => <item.component onScrollView={onScrollView} scrollRef={scrollRef} navigation={navigation} />}
+                            // component={item.component}
                             options={{
                                 tabBarShowLabel: false,
                                 tabBarButton: (props) => <TabButton {...props} item={item} />
@@ -171,4 +174,32 @@ const styles = StyleSheet.create({
         paddingHorizontal: 15,
         borderRadius: 15,
     },
+
+    viewTabBar: {
+        backgroundColor: 'transparent',
+        position: 'absolute',
+        left: 0, bottom: 0, right: 0
+    },
+
+    buttonUncollapseTabBar: {
+        backgroundColor: '#F3D2C1',
+        position: 'absolute',
+        top: -(WindowWidth * 0.045 + 8),
+        right: WindowWidth * 0.045,
+        paddingVertical: 4,
+        paddingHorizontal: 3.5,
+        borderTopLeftRadius: 5,
+        borderTopRightRadius: 5,
+    },
+
+    buttonCollapseTabBar: {
+        backgroundColor: '#F3D2C1',
+        position: 'absolute',
+        top: -(WindowWidth * 0.045 + 8),
+        right: WindowWidth * 0.045,
+        paddingVertical: 4,
+        paddingHorizontal: 3.5,
+        borderTopLeftRadius: 5,
+        borderTopRightRadius: 5,
+    }
 })

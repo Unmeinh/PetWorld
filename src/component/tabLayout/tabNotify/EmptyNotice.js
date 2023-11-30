@@ -11,7 +11,7 @@ export default function EmptyNotice() {
         loop
         style={styles.containerEmpty}
       />
-      <Text style={styles.title}>Không có thông báo nào</Text>
+      <Text style={styles.title}>Không có thông báo nào..</Text>
     </View>
   );
 }
@@ -24,6 +24,8 @@ const styles = StyleSheet.create({
   title: {
     fontFamily: 'ProductSans',
     fontSize: 17,
+    color: 'rgba(0, 0, 0, 0.6)',
+    marginTop: 15
   },
   container: {flex: 1, justifyContent: 'center', alignItems: 'center'},
 });

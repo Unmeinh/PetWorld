@@ -54,7 +54,18 @@ const blogReducer = createSlice({
             })
             .addCase(fetchBlogs.fulfilled, (state, action) => {
                 if (action.payload.success === true) {
-                    state.data = action.payload.data;
+                    if (action.payload.data?.isPage != undefined) {
+                        console.log('====================================');
+                        console.log(action.payload.data?.isPage);
+                        console.log('====================================');
+                        if (action.payload.data?.isPage == 0) {
+                            state.data = action.payload.data.list;
+                        } else {
+                            state.data = [...state.data, ...action.payload.data.list];
+                        }
+                    } else {
+                        state.data = action.payload.data.list;
+                    }
                     state.status = 'being idle';
                 } else {
                     state.status = 'loading';
@@ -76,8 +87,13 @@ const blogReducer = createSlice({
 
 export const fetchBlogs = createAsyncThunk(
     'blog/list/all',
-    async () => {
-        const res = await onAxiosGet('/blog/list/all');
+    async (page) => {
+        let res = null;
+        if (page != undefined) {
+            res = await onAxiosGet('/blog/list/all?page=' + page);
+        } else {
+            res = await onAxiosGet('/blog/list/all');
+        }
         return res;
     },
 );

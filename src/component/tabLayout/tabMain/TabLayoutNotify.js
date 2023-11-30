@@ -10,7 +10,7 @@ import NotifyRemind from '../tabNotify/NotifyRemind';
 import NotifyRead from '../tabNotify/NotifyRead';
 import NotifyUnRead from '../tabNotify/NotifyUnRead';
 
-const TabLayout = ({ scrollRef, onScrollView }) => {
+const TabLayout = () => {
 
   const [index, setIndex] = useState(0);
   const [routes] = useState([
