@@ -32,12 +32,14 @@ const billSlice = createSlice({
     billDelivering: [],
     billDelivered: [],
     billCancel: [],
+    billReview: [],
     billLoading: {
       billUnsuccess: true,
       billSuccess: true,
       billDelivering: true,
       billDelivered: true,
       billCancel: true,
+      billReview: true,
     },
     countBill: {},
     successBill: false,
@@ -173,6 +175,15 @@ const billSlice = createSlice({
           state.countBill = action.payload.data;
         }
       })
+      .addCase(getBillReview.pending, (state, action) => {
+        state.billLoading.billReview = true;
+      })
+      .addCase(getBillReview.fulfilled, (state, action) => {
+        state.billLoading.billReview = false;
+        if (action.payload.success) {
+          state.billReview = action.payload.data;
+        }
+      })
       .addCase(cancelBill.pending, (state, action) => {
         state.status = true;
       })
@@ -226,11 +237,17 @@ export const getBillDelivering = createAsyncThunk(
 export const getBillDelivered = createAsyncThunk(
   'bill/getBillDelivered',
   async () => {
-    const res = await GetBills(3);
+    const res = await GetBills(3, true);
     return res;
   },
 );
-
+export const getBillReview = createAsyncThunk(
+  'bill/getBillReview',
+  async () => {
+    const res = await GetBills(3, false);
+    return res;
+  },
+);
 export const getBillCanncel = createAsyncThunk('bill/getCanncel', async () => {
   const res = await GetBills(-1);
   return res;

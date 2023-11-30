@@ -73,6 +73,30 @@ export default function ItemList({item}) {
           </Text>
         </Text>
       </View>
+      {item.deliveryStatus === 3 && item.statusReview === false ? (
+        <TouchableOpacity
+          style={{
+            borderRadius: 1,
+            borderWidth: 1,
+            padding: 3,
+            width: 80,
+            alignItems: 'center',
+            borderColor: '#F582AE',
+            justifyContent: 'flex-end',
+            alignContent: 'flex-end',
+          }}
+          onPress={() =>
+            navigation.navigate('CreateRate', {
+              idBill: item._id,
+              items: getData(),
+              type: type,
+            })
+          }>
+          <Text style={{fontFamily: 'ProductSans', color: '#F582AE'}}>
+            Đánh giá
+          </Text>
+        </TouchableOpacity>
+      ) : null}
     </TouchableOpacity>
   );
 }

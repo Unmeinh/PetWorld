@@ -1,38 +1,30 @@
 import React, {useEffect} from 'react';
-import {View, FlatList, StyleSheet, Text} from 'react-native';
-import ListItem from '../../list/ListItemOder';
+import {View, Text, FlatList, Image, StyleSheet} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
-import {
-  getBillCanncel,
-  getBillDelivering,
-  getBillUnSuccess,
-  setStatusChangeBill,
-} from '../../../redux/reducers/shop/billSlice';
 import {billSelector} from '../../../redux/selector';
+import {
+  getBillDelivered,
+  getBillReview,
+} from '../../../redux/reducers/shop/billSlice';
 import Loading from '../../Loading';
 import ItemList from './itemList';
 
-const CannelBill = ({index}) => {
+const NeedRate = ({index}) => {
   const dispatch = useDispatch();
 
-  const {billCancel, billLoading, statusChange} = useSelector(billSelector);
+  const {billReview, billLoading} = useSelector(billSelector);
 
   useEffect(() => {
-    if (index === 5 && billCancel.length === 0) {
-      dispatch(getBillCanncel());
+    if (index === 4 && billReview.length === 0) {
+      dispatch(getBillReview());
     }
   }, [index]);
-  useEffect(() => {
-    if (statusChange) {
-      dispatch(getBillUnSuccess());
-      dispatch(setStatusChangeBill(false));
-    }
-  }, [statusChange]);
+
   return (
     <View style={styles.container}>
-      {billLoading.billCancel ? null : (
+      {billLoading.billReview ? null : (
         <FlatList
-          data={billCancel}
+          data={billReview}
           showsVerticalScrollIndicator={false}
           renderItem={({item}) => <ItemList item={item} />}
           keyExtractor={item => item._id}
@@ -53,7 +45,7 @@ const CannelBill = ({index}) => {
           }}
         />
       )}
-      {billLoading.billCancel ? <Loading /> : null}
+      {billLoading.billReview ? <Loading /> : null}
     </View>
   );
 };
@@ -64,4 +56,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default CannelBill;
+export default NeedRate;

@@ -43,7 +43,6 @@ export default function LoginScreen() {
     messaging()
     .getToken()
     .then(async (token) => {
-      console.log('Device Token:', token);
       sendTokenToFirebase(token);
     })});
   function onCallBackChangeTab(userName) {

@@ -5,7 +5,7 @@ const { width } = Dimensions.get('screen')
 export default function Panigation({ data, scrollx, index }) {
   return (
     <View style={styles.container}>
-      {data.map((_, idx) => {
+      {data?.map((_, idx) => {
         const inputRange = [(idx - 1) * width, idx * width, (idx + 1) * width]
         const dotWidth = scrollx.interpolate({
           inputRange,
