@@ -1,10 +1,4 @@
-import {
-  Pressable,
-  ScrollView,
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native';
+import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import React, { useEffect } from 'react';
 import { SafeAreaView } from 'react-navigation';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -16,7 +10,7 @@ import {
   categoryStatusSelector,
   listStatusProductSelector,
   listStatusPetsSelector,
-  listCartSelector
+  listCartSelector,
 } from '../../redux/selector';
 import LinearGradient from 'react-native-linear-gradient';
 import { createShimmerPlaceholder } from 'react-native-shimmer-placeholder';
@@ -28,11 +22,11 @@ import { useDispatch } from 'react-redux';
 import { fetchProducts } from '../../redux/reducers/product/ProductReducer';
 import { fetchPets } from '../../redux/reducers/pet/PetReducer';
 import { fetchCart } from '../../redux/reducers/shop/CartReduces';
+import { fetchBanner } from '../../redux/Home/homeSlice';
 
 const ShimmerPlaceHolder = createShimmerPlaceholder(LinearGradient);
 export default function HomeScreen({ navigation }) {
-  ;
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
   const listPet = useSelector(listPetSelector);
   const listProduct = useSelector(listProductSelector);
   const listCategory = useSelector(categorySelector);
@@ -40,17 +34,21 @@ export default function HomeScreen({ navigation }) {
   const statusCategorys = useSelector(categoryStatusSelector);
   const statusProducts = useSelector(listStatusProductSelector);
   const statusPets = useSelector(listStatusPetsSelector);
+  const dataHome = useSelector(state => state.home);
   const colorLoader = ['#f0e8d8', '#dbdbdb', '#f0e8d8'];
   useEffect(() => {
-    dispatch(fetchCategorys())
-    dispatch(fetchPets())
-    dispatch(fetchProducts())
-    dispatch(fetchCart())
+    dispatch(fetchCategorys());
+    dispatch(fetchPets());
+    dispatch(fetchProducts());
+    dispatch(fetchCart());
+    dispatch(fetchBanner());
   }, []);
-
   return (
     <>
-      <ScrollView style={{ backgroundColor: "#FEF6E4" }}>
+      <ScrollView
+        ref={scrollRef}
+        onScroll={onScrollView}
+        style={{ backgroundColor: '#FEF6E4' }}>
         <View style={{ flex: 1, marginBottom: 60 }}>
           <SafeAreaView>
             <Pressable
@@ -74,7 +72,10 @@ export default function HomeScreen({ navigation }) {
             </Pressable>
           </SafeAreaView>
 
-          {(statusCategorys && statusPets && statusProducts) === 'loading' ? (
+          {(statusCategorys &&
+            statusPets &&
+            statusProducts &&
+            dataHome?.status) === 'loading' ? (
             <View style={styles.margin20}>
               <ShimmerPlaceHolder
                 shimmerStyle={styles.styleLoader}
@@ -96,15 +97,25 @@ export default function HomeScreen({ navigation }) {
             </Pressable>
           )}
           {/* slideshow */}
-          <Slider isLoader={false} />
+          <Slider isLoader={false} data={dataHome?.dataBanner} />
           {/* category */}
 
           <CategoryList data={listCategory} isLoader={statusCategorys} />
           {/* listpetnew */}
-          <ListHorizontal data={listPet} title="Thú cưng mới" isLoader={statusPets} type={0} />
+          <ListHorizontal
+            data={listPet}
+            title="Thú cưng mới"
+            isLoader={statusPets}
+            type={0}
+          />
           {/* listproductnew */}
           <View style={{ marginBottom: 20 }}>
-            <ListHorizontal data={listProduct} title="Sản phẩm mới" isLoader={statusProducts} type={1} />
+            <ListHorizontal
+              data={listProduct}
+              title="Sản phẩm mới"
+              isLoader={statusProducts}
+              type={1}
+            />
           </View>
         </View>
       </ScrollView>
