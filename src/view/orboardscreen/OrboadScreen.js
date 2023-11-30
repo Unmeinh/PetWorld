@@ -237,7 +237,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     justifyContent: 'center',
     alignSelf: 'center',
-    bottom: (height * 25) / 100,
+    bottom: (height * 30) / 100,
   },
   viewPager: {
     flex: 1,

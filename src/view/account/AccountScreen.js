@@ -16,12 +16,15 @@ import { useSelector, useDispatch } from "react-redux";
 import { userLoginSelector } from '../../redux/selectors/userSelector';
 import { fetchInfoLogin } from '../../redux/reducers/user/userReducer';
 import { getAllBillCount } from '../../redux/reducers/shop/billSlice';
+import ShimmerPlaceHolder from '../../component/layout/ShimmerPlaceHolder';
 
 const AccountScreen = ({ scrollRef, onScrollView }) => {
   var navigation = useNavigation();
   const dispatch = useDispatch();
   const [srcAvatar, setsrcAvatar] = useState(require("../../assets/images/loading.png"))
   const [isShowRevenue, setisShowRevenue] = useState(false);
+  const [isLoading, setisLoading] = useState(true);
+  const [isLoadingCount, setisLoadingCount] = useState(true);
   const { countBill, status } = useSelector(state => state.bill);
   const account = useSelector(userLoginSelector);
 
@@ -96,13 +99,26 @@ const AccountScreen = ({ scrollRef, onScrollView }) => {
   }
 
   React.useEffect(() => {
+    if (Object.keys(account).length > 0) {
+      setisLoading(false);
+    }
     if (account.avatarUser != undefined && account.avatarUser != "") {
       setsrcAvatar({ uri: String(account.avatarUser) })
     }
   }, [account]);
 
   React.useEffect(() => {
+    if (Object.keys(countBill).length > 0) {
+      setisLoadingCount(false);
+    }
+  }, [countBill]);
+
+  React.useEffect(() => {
     const unsub = navigation.addListener('focus', () => {
+      if (Object.keys(account).length <= 0) {
+        setisLoading(true);
+      }
+      setisLoadingCount(true);
       dispatch(fetchInfoLogin());
       dispatch(getAllBillCount());
       // setisLoader(true);
@@ -117,49 +133,70 @@ const AccountScreen = ({ scrollRef, onScrollView }) => {
   }, [navigation]);
 
   return (
-    <ScrollView style={styles.container} showsVerticalScrollIndicator={false}
-      ref={scrollRef} onScroll={onScrollView}>
-      <View style={[styles.container, { marginBottom: 100 }]}>
+    <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
+      <View style={[styles.container, { marginBottom: 65 }]}>
         <LinearGradient start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}
           colors={['#ace1e8', '#f582aecc']} locations={[0.6, 1]} useAngle={true} angle={0}
           style={[styles.bgHeaderAccount, styles.bgLighBlue, styles.positionAbsolute]}>
         </LinearGradient>
         <View style={[styles.viewHeaderAccount, styles.bgYellowWhite, styles.justifyBetween]}>
-          <View style={styles.flexRow}>
-            <Image source={srcAvatar} style={styles.avatarHeaderAccount} />
-            <View style={[{ marginLeft: 10, width: (WindowWidth * 90 / 100) - (WindowHeight * 9 / 100) - 30, }, styles.justifyBetween]}>
-              <Text style={[styles.textDarkBlue, { fontSize: 17, fontWeight: 'bold' }]}
-                numberOfLines={2}>
-                {account?.fullName}
-              </Text>
-              <View style={styles.flexRow}>
-                <Text style={[styles.textDarkBlue, { backgroundColor: '#ECEBF0', paddingVertical: 3, paddingHorizontal: 7, borderRadius: 15 }]}>
-                  Khách hàng
-                </Text>
-              </View>
-            </View>
-          </View>
-          <View style={[styles.flexRow, styles.justifyBetween, { height: WindowHeight * 5 / 100 }]}>
-            <TouchableOpacity style={[styles.viewDetailHeaderAccount, { backgroundColor: "#F7E9A3" }]}
-              onPress={onShowRevenue}>
-              <Text style={{ color: 'rgba(0, 24, 88, 0.65)', fontSize: 13 }}>Tổng tiền đã mua</Text>
-              {
-                (isShowRevenue)
-                  ? <>
-                    <Text style={[styles.textDarkBlue]}>{Number("10").toLocaleString()} đồng</Text>
-                    <MaterialCommunityIcons name='eye' color={'rgba(0, 24, 88, 0.80)'} size={15} style={[styles.positionAbsolute, { right: 5, top: 1 }]} />
-                  </>
-                  : <>
-                    <Text style={[styles.textDarkBlue]}>******* đồng</Text>
-                    <MaterialCommunityIcons name='eye-off' color={'rgba(0, 24, 88, 0.80)'} size={15} style={[styles.positionAbsolute, { right: 5, top: 1 }]} />
-                  </>
-              }
-            </TouchableOpacity>
-            <View style={[styles.viewDetailHeaderAccount, { backgroundColor: "#E6DECE", }]}>
-              <Text style={{ color: 'rgba(0, 24, 88, 0.65)', fontSize: 13 }}>Tổng đơn hàng</Text>
-              <Text style={[styles.textDarkBlue]}>10 đơn</Text>
-            </View>
-          </View>
+          {
+            (isLoading)
+              ? <>
+                <View style={styles.flexRow}>
+                  <ShimmerPlaceHolder shimmerStyle={styles.avatarHeaderAccount} />
+                  <View style={[{ marginLeft: 10, width: (WindowWidth * 90 / 100) - (WindowHeight * 9 / 100) - 30, }, styles.justifyBetween]}>
+                    <ShimmerPlaceHolder shimmerStyle={{ height: 16, width: '50%', marginTop: 3, borderRadius: 5 }} />
+                    <View style={styles.flexRow}>
+                      <Text style={[styles.textDarkBlue, { backgroundColor: '#ECEBF0', paddingVertical: 3, paddingHorizontal: 7, borderRadius: 15 }]}>
+                        Cửa hàng
+                      </Text>
+                    </View>
+                  </View>
+                </View>
+                <View style={[styles.flexRow, styles.justifyBetween, { height: WindowHeight * 5 / 100 }]}>
+                  <ShimmerPlaceHolder shimmerStyle={{ width: "48%", height: WindowHeight * 5 / 100, borderRadius: 5, }} />
+                  <ShimmerPlaceHolder shimmerStyle={{ width: "48%", height: WindowHeight * 5 / 100, borderRadius: 5, }} />
+                </View>
+              </>
+              : <>
+                <View style={styles.flexRow}>
+                  <Image source={srcAvatar} style={styles.avatarHeaderAccount} />
+                  <View style={[{ marginLeft: 10, width: (WindowWidth * 90 / 100) - (WindowHeight * 9 / 100) - 30, }, styles.justifyBetween]}>
+                    <Text style={[styles.textDarkBlue, { fontSize: 17, fontWeight: 'bold' }]}
+                      numberOfLines={2}>
+                      {account?.fullName}
+                    </Text>
+                    <View style={styles.flexRow}>
+                      <Text style={[styles.textDarkBlue, { backgroundColor: '#ECEBF0', paddingVertical: 3, paddingHorizontal: 7, borderRadius: 15 }]}>
+                        Khách hàng
+                      </Text>
+                    </View>
+                  </View>
+                </View>
+                <View style={[styles.flexRow, styles.justifyBetween, { height: WindowHeight * 5 / 100 }]}>
+                  <TouchableOpacity style={[styles.viewDetailHeaderAccount, { backgroundColor: "#F7E9A3" }]}
+                    onPress={onShowRevenue}>
+                    <Text style={{ color: 'rgba(0, 24, 88, 0.65)', fontSize: 13 }}>Tổng tiền đã mua</Text>
+                    {
+                      (isShowRevenue)
+                        ? <>
+                          <Text style={[styles.textDarkBlue]}>{Number("10").toLocaleString()} ₫</Text>
+                          <MaterialCommunityIcons name='eye' color={'rgba(0, 24, 88, 0.80)'} size={15} style={[styles.positionAbsolute, { right: 5, top: 1 }]} />
+                        </>
+                        : <>
+                          <Text style={[styles.textDarkBlue]}>******* ₫</Text>
+                          <MaterialCommunityIcons name='eye-off' color={'rgba(0, 24, 88, 0.80)'} size={15} style={[styles.positionAbsolute, { right: 5, top: 1 }]} />
+                        </>
+                    }
+                  </TouchableOpacity>
+                  <View style={[styles.viewDetailHeaderAccount, { backgroundColor: "#E6DECE", }]}>
+                    <Text style={{ color: 'rgba(0, 24, 88, 0.65)', fontSize: 13 }}>Tổng đơn hàng</Text>
+                    <Text style={[styles.textDarkBlue]}>{account?.billCount} đơn</Text>
+                  </View>
+                </View>
+              </>
+          }
         </View>
         <View style={styles.viewContainerAccount}>
           <View style={{ marginBottom: 20 }}>
@@ -179,11 +216,17 @@ const AccountScreen = ({ scrollRef, onScrollView }) => {
                     color={pinkLotus} size={25} />
                 </TouchableOpacity>
                 <Text style={styles.textDarkBlue}>Chờ xử lý</Text>
-                {countBill && countBill["0"] ? (
-                  <View style={{ position: 'absolute', right: (String(countBill["0"]).length == 1) ? 0 : String('-' + String(countBill["0"]).length * 4 + "%"), top: '-9%', backgroundColor: lighBlue, borderRadius: 50, paddingHorizontal: 3.5 }}>
-                    <Text style={{ color: darkBlue, fontSize: 13 }} >{countBill["0"]}</Text>
-                  </View>
-                ) : ""}
+                {
+                  (isLoadingCount)
+                    ? <ShimmerPlaceHolder shimmerStyle={{ position: 'absolute', right: 0, top: '-9%', height: 18, width: 13, borderRadius: 50, }} />
+                    : <>
+                      {countBill && countBill["0"] ? (
+                        <View style={{ position: 'absolute', right: (String(countBill["0"]).length == 1) ? 0 : String('-' + String(countBill["0"]).length * 4 + "%"), top: '-9%', backgroundColor: lighBlue, borderRadius: 50, paddingHorizontal: 3.5 }}>
+                          <Text style={{ color: darkBlue, fontSize: 13 }} >{countBill["0"]}</Text>
+                        </View>
+                      ) : ""}
+                    </>
+                }
               </View>
               <View style={{ width: '19%', alignItems: 'center' }}>
                 <TouchableOpacity style={[styles.viewItemBill, styles.justifyCenter, styles.itemsCenter]}
@@ -192,11 +235,17 @@ const AccountScreen = ({ scrollRef, onScrollView }) => {
                     color={pinkLotus} size={25} />
                 </TouchableOpacity>
                 <Text style={styles.textDarkBlue}>Đang giao</Text>
-                {countBill && countBill["1"] ? (
-                  <View style={{ position: 'absolute', right: (String(countBill["1"]).length == 1) ? 0 : String('-' + String(countBill["1"]).length * 4 + "%"), top: '-9%', backgroundColor: lighBlue, borderRadius: 50, paddingHorizontal: 3.5 }}>
-                    <Text style={{ color: darkBlue, fontSize: 13 }} >{countBill["1"]}</Text>
-                  </View>
-                ) : ""}
+                {
+                  (isLoadingCount)
+                    ? <ShimmerPlaceHolder shimmerStyle={{ position: 'absolute', right: 0, top: '-9%', height: 18, width: 13, borderRadius: 50, }} />
+                    : <>
+                      {countBill && countBill["1"] ? (
+                        <View style={{ position: 'absolute', right: (String(countBill["1"]).length == 1) ? 0 : String('-' + String(countBill["1"]).length * 4 + "%"), top: '-9%', backgroundColor: lighBlue, borderRadius: 50, paddingHorizontal: 3.5 }}>
+                          <Text style={{ color: darkBlue, fontSize: 13 }} >{countBill["1"]}</Text>
+                        </View>
+                      ) : ""}
+                    </>
+                }
               </View>
               <View style={{ width: '19%', alignItems: 'center' }}>
                 <TouchableOpacity style={[styles.viewItemBill, styles.justifyCenter, styles.itemsCenter]}
@@ -205,11 +254,17 @@ const AccountScreen = ({ scrollRef, onScrollView }) => {
                     color={pinkLotus} size={25} />
                 </TouchableOpacity>
                 <Text style={styles.textDarkBlue}>Đã giao</Text>
-                {countBill && countBill["2"] ? (
-                  <View style={{ position: 'absolute', right: (String(countBill["2"]).length == 1) ? 0 : String('-' + String(countBill["2"]).length * 4 + "%"), top: '-9%', backgroundColor: lighBlue, borderRadius: 50, paddingHorizontal: 3.5 }}>
-                    <Text style={{ color: darkBlue, fontSize: 13 }} >{countBill["2"]}</Text>
-                  </View>
-                ) : ""}
+                {
+                  (isLoadingCount)
+                    ? <ShimmerPlaceHolder shimmerStyle={{ position: 'absolute', right: 0, top: '-9%', height: 18, width: 13, borderRadius: 50, }} />
+                    : <>
+                      {countBill && countBill["2"] ? (
+                        <View style={{ position: 'absolute', right: (String(countBill["2"]).length == 1) ? 0 : String('-' + String(countBill["2"]).length * 4 + "%"), top: '-9%', backgroundColor: lighBlue, borderRadius: 50, paddingHorizontal: 3.5 }}>
+                          <Text style={{ color: darkBlue, fontSize: 13 }} >{countBill["2"]}</Text>
+                        </View>
+                      ) : ""}
+                    </>
+                }
               </View>
               <View style={{ width: '19%', alignItems: 'center' }}>
                 <TouchableOpacity style={[styles.viewItemBill, styles.justifyCenter, styles.itemsCenter]}
@@ -218,11 +273,17 @@ const AccountScreen = ({ scrollRef, onScrollView }) => {
                     color={pinkLotus} size={25} />
                 </TouchableOpacity>
                 <Text style={styles.textDarkBlue}>Đánh giá</Text>
-                {countBill && countBill["3"] ? (
-                  <View style={{ position: 'absolute', right: (String(countBill["3"]).length == 1) ? 0 : String('-' + String(countBill["3"]).length * 4 + "%"), top: '-9%', backgroundColor: lighBlue, borderRadius: 50, paddingHorizontal: 3.5 }}>
-                    <Text style={{ color: darkBlue, fontSize: 13 }} >{countBill["3"]}</Text>
-                  </View>
-                ) : ""}
+                {
+                  (isLoadingCount)
+                    ? <ShimmerPlaceHolder shimmerStyle={{ position: 'absolute', right: 0, top: '-9%', height: 18, width: 13, borderRadius: 50, }} />
+                    : <>
+                      {countBill && countBill["3"] ? (
+                        <View style={{ position: 'absolute', right: (String(countBill["3"]).length == 1) ? 0 : String('-' + String(countBill["3"]).length * 4 + "%"), top: '-9%', backgroundColor: lighBlue, borderRadius: 50, paddingHorizontal: 3.5 }}>
+                          <Text style={{ color: darkBlue, fontSize: 13 }} >{countBill["3"]}</Text>
+                        </View>
+                      ) : ""}
+                    </>
+                }
               </View>
             </View>
           </View>

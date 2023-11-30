@@ -5,10 +5,10 @@ import {
   Text,
   View,
 } from 'react-native';
-import React, {useEffect} from 'react';
-import {SafeAreaView} from 'react-navigation';
+import React, { useEffect } from 'react';
+import { SafeAreaView } from 'react-navigation';
 import Icon from 'react-native-vector-icons/Ionicons';
-import {useSelector} from 'react-redux';
+import { useSelector } from 'react-redux';
 import {
   listPetSelector,
   listProductSelector,
@@ -19,7 +19,7 @@ import {
   listCartSelector
 } from '../../redux/selector';
 import LinearGradient from 'react-native-linear-gradient';
-import {createShimmerPlaceholder} from 'react-native-shimmer-placeholder';
+import { createShimmerPlaceholder } from 'react-native-shimmer-placeholder';
 import Slider from '../../component/slideshow/Slider';
 import CategoryList from '../../component/list/CategoryList';
 import ListHorizontal from '../../component/list/ListHorizontal';
@@ -30,15 +30,16 @@ import { fetchPets } from '../../redux/reducers/pet/PetReducer';
 import { fetchCart } from '../../redux/reducers/shop/CartReduces';
 
 const ShimmerPlaceHolder = createShimmerPlaceholder(LinearGradient);
-export default function HomeScreen({scrollRef, onScrollView, navigation}) {;
+export default function HomeScreen({ navigation }) {
+  ;
   const dispatch = useDispatch()
   const listPet = useSelector(listPetSelector);
   const listProduct = useSelector(listProductSelector);
-  const listCategory = useSelector(categorySelector); 
+  const listCategory = useSelector(categorySelector);
   const result = useSelector(listCartSelector);
-  const statusCategorys = useSelector(categoryStatusSelector); 
-  const statusProducts = useSelector(listStatusProductSelector); 
-  const statusPets = useSelector(listStatusPetsSelector); 
+  const statusCategorys = useSelector(categoryStatusSelector);
+  const statusProducts = useSelector(listStatusProductSelector);
+  const statusPets = useSelector(listStatusPetsSelector);
   const colorLoader = ['#f0e8d8', '#dbdbdb', '#f0e8d8'];
   useEffect(() => {
     dispatch(fetchCategorys())
@@ -46,65 +47,66 @@ export default function HomeScreen({scrollRef, onScrollView, navigation}) {;
     dispatch(fetchProducts())
     dispatch(fetchCart())
   }, []);
- 
+
   return (
     <>
-      <ScrollView ref={scrollRef} onScroll={onScrollView} style={{backgroundColor:"#FEF6E4"}}>
-        <SafeAreaView>
-          <Pressable 
-          onPress={()=>navigation.navigate('CartScreen')}
-          style={{alignItems: 'flex-end', marginTop: 10, marginEnd: 20}}>
-            <Icon name="cart-outline" color="#F582AE" size={30} />
-            <View
-              style={{
-                width: 16,
-                height: 16,
-                position: 'absolute',
-                backgroundColor: '#F582AE',
-                borderRadius: 8,
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}>
-              <Text style={{fontSize: 12, fontFamily: 'ProductSans'}}>
-                {result?.length}
-              </Text>
+      <ScrollView style={{ backgroundColor: "#FEF6E4" }}>
+        <View style={{ flex: 1, marginBottom: 60 }}>
+          <SafeAreaView>
+            <Pressable
+              onPress={() => navigation.navigate('CartScreen')}
+              style={{ alignItems: 'flex-end', marginTop: 10, marginEnd: 20 }}>
+              <Icon name="cart-outline" color="#F582AE" size={30} />
+              <View
+                style={{
+                  width: 16,
+                  height: 16,
+                  position: 'absolute',
+                  backgroundColor: '#F582AE',
+                  borderRadius: 8,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}>
+                <Text style={{ fontSize: 12, fontFamily: 'ProductSans' }}>
+                  {result?.length}
+                </Text>
+              </View>
+            </Pressable>
+          </SafeAreaView>
+
+          {(statusCategorys && statusPets && statusProducts) === 'loading' ? (
+            <View style={styles.margin20}>
+              <ShimmerPlaceHolder
+                shimmerStyle={styles.styleLoader}
+                shimmerColors={colorLoader}
+              />
             </View>
-          </Pressable>
-        </SafeAreaView>
+          ) : (
+            <Pressable
+              onPress={() => navigation.navigate('SearchFilters')}
+              style={styles.search}>
+              <Icon
+                name="search"
+                color="#656565"
+                size={24}
+                style={{ marginLeft: 10 }}
+              />
 
-        {(statusCategorys && statusPets && statusProducts) === 'loading' ? (
-          <View style={styles.margin20}>
-            <ShimmerPlaceHolder
-              shimmerStyle={styles.styleLoader}
-              shimmerColors={colorLoader}
-            />
+              <Text style={{ flexGrow: 1 }}>Tìm kiếm</Text>
+            </Pressable>
+          )}
+          {/* slideshow */}
+          <Slider isLoader={false} />
+          {/* category */}
+
+          <CategoryList data={listCategory} isLoader={statusCategorys} />
+          {/* listpetnew */}
+          <ListHorizontal data={listPet} title="Thú cưng mới" isLoader={statusPets} type={0} />
+          {/* listproductnew */}
+          <View style={{ marginBottom: 20 }}>
+            <ListHorizontal data={listProduct} title="Sản phẩm mới" isLoader={statusProducts} type={1} />
           </View>
-        ) : (
-          <Pressable
-            onPress={() => navigation.navigate('SearchFilters')}
-            style={styles.search}>
-            <Icon
-              name="search"
-              color="#656565"
-              size={24}
-              style={{marginLeft: 10}}
-            />
-
-            <Text style={{flexGrow: 1}}>Tìm kiếm</Text>
-          </Pressable>
-        )}
-        {/* slideshow */}
-        <Slider isLoader={false} />
-        {/* category */}
-
-        <CategoryList data={listCategory} isLoader={statusCategorys}/>
-        {/* listpetnew */}
-        <ListHorizontal data={listPet} title="Thú cưng mới" isLoader={statusPets} type={0} />
-        {/* listproductnew */}
-        <View style={{marginBottom:20}}>
-        <ListHorizontal data={listProduct} title="Sản phẩm mới" isLoader={statusProducts} type={1}/>
         </View>
-       
       </ScrollView>
     </>
   );
@@ -126,5 +128,5 @@ const styles = StyleSheet.create({
   margin20: {
     margin: 20,
   },
-  styleLoader: {width: '100%', height: 40, borderRadius: 17},
+  styleLoader: { width: '100%', height: 40, borderRadius: 17 },
 });

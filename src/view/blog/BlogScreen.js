@@ -1,6 +1,6 @@
 import {
   ScrollView, Text,
-  View, Dimensions,
+  View, ActivityIndicator,
   SafeAreaView, TouchableOpacity,
   TouchableHighlight, Image, FlatList
 } from 'react-native'
@@ -20,7 +20,7 @@ import { fetchBlogs } from '../../redux/reducers/blog/blogReducer';
 import { RefreshControl } from "react-native-gesture-handler";
 import ShimmerPlaceHolder from '../../component/layout/ShimmerPlaceHolder';
 
-const BlogScreen = ({ scrollRef, onScrollView }) => {
+const BlogScreen = () => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const infoLogin = useSelector(selectUserLogin);
@@ -31,6 +31,9 @@ const BlogScreen = ({ scrollRef, onScrollView }) => {
   const [isRefreshing, setisRefreshing] = useState(false);
   const [srcAvatar, setsrcAvatar] = useState(require('../../assets/images/loading.png'));
   const [isLoader, setisLoader] = useState(true);
+  const [page, setpage] = useState(1);
+  const [canLoadingMore, setcanLoadingMore] = useState(false);
+  const [isLoadingMore, setisLoadingMore] = useState(false);
 
   useEffect(() => {
     if (isFocusBlog) {
@@ -44,11 +47,11 @@ const BlogScreen = ({ scrollRef, onScrollView }) => {
     if (isFocusBlog) {
       if (!blogs) {
         setisLoader(true);
-        dispatch(fetchBlogs());
+        dispatch(fetchBlogs(0));
       } else {
         if (blogs.length <= 0) {
           setisLoader(true);
-          dispatch(fetchBlogs());
+          dispatch(fetchBlogs(0));
         }
       }
     }
@@ -59,14 +62,18 @@ const BlogScreen = ({ scrollRef, onScrollView }) => {
       let clone = [...extraBlogs];
       clone = blogs;
       setextraBlogs(clone);
-      if (isRefreshing) {
-        setisRefreshing(false);
-      }
-      if (isLoader) {
-        setisLoader(false);
-      }
+      setisLoader(false);
+      setisRefreshing(false);
+      setcanLoadingMore(false);
+      setisLoadingMore(false);
     }
   }, [blogs]);
+
+  // useEffect(() => {
+  //   if (canLoadingMore) {
+  //     dispatch(fetchBlogs(page));
+  //   }
+  // }, [page, canLoadingMore]);
 
   useEffect(() => {
     const unsubFocus = navigation.addListener('focus', () => {
@@ -114,80 +121,106 @@ const BlogScreen = ({ scrollRef, onScrollView }) => {
     }
   }
 
+  function onLoadMore() {
+    if (!isLoadingMore) {
+      let pageMore = page + 1;
+      setcanLoadingMore(true);
+      setpage(pageMore);
+      dispatch(fetchBlogs(pageMore));
+      setisLoadingMore(true);
+    }
+  }
+
   const ReloadData = React.useCallback(() => {
     setisRefreshing(true);
-    dispatch(fetchBlogs());
+    setisLoadingMore(false);
+    setpage(1);
+    dispatch(fetchBlogs(0));
   }, []);
 
   return (
     <SafeAreaView style={{ backgroundColor: '#FEF6E4', flex: 1 }}>
-      <ScrollView style={{ width: '100%' }} ref={scrollRef}
-        onScroll={onScrollView}>
-        <View style={styles.container} key={"viewScrollView"}>
-          <View style={[styles.viewInfoHead, { shadowColor: '#000', elevation: 3 }]}>
-            {
-              (isLoader)
-                ?
-                <>
-                  <View style={{ flexDirection: 'row', alignItems: "center" }}>
-                    <ShimmerPlaceHolder
-                      shimmerStyle={styles.imageAvatar} />
-                    <ShimmerPlaceHolder
-                      shimmerStyle={styles.textHint} />
-                  </View>
-                  <ShimmerPlaceHolder
-                    shimmerStyle={{ width: 27, height: 27 }} />
-                </>
-                :
-                <>
-                  <View style={{ flexDirection: 'row', alignItems: "center" }}>
-                    <TouchableOpacity onPress={OpenAccount} activeOpacity={0.5}>
-                      <Image source={srcAvatar} onError={() => setsrcAvatar(require('../../assets/images/error.png'))}
-                        style={styles.imageAvatar} />
-                    </TouchableOpacity>
-                    <TouchableHighlight underlayColor={'rgba(0, 0, 0, 0.2)'} onPress={OpenNewBlog} activeOpacity={0.5}>
-                      <Text style={styles.textHint}>Bạn muốn chia sẻ điều gì?</Text>
-                    </TouchableHighlight>
-                  </View>
-                  <TouchableHighlight underlayColor={'#8BD3DD'} onPress={PickingImage} activeOpacity={0.5}>
-                    <Entypo name='folder-images' size={27} color={'#001858'} />
-                  </TouchableHighlight>
-                </>
-            }
-
-          </View>
+      <View style={styles.container}>
+        <View style={[styles.viewInfoHead, { shadowColor: '#000', elevation: 3 }]}>
           {
             (isLoader)
               ?
-              <View>
-                <ItemBlogLoader />
-                <ItemBlogLoader />
-              </View>
+              <>
+                <View style={{ flexDirection: 'row', alignItems: "center" }}>
+                  <ShimmerPlaceHolder
+                    shimmerStyle={styles.imageAvatar} />
+                  <ShimmerPlaceHolder
+                    shimmerStyle={styles.textHint} />
+                </View>
+                <ShimmerPlaceHolder
+                  shimmerStyle={{ width: 27, height: 27 }} />
+              </>
               :
-              <View>
-                {
-                  (blogs.length > 0)
-                    ?
-                    <FlatList data={blogs} scrollEnabled={false}
-                      extraData={extraBlogs}
-                      renderItem={({ item, index }) =>
-                        <ItemBlog key={index} blog={item}
-                          index={index} info={infoLogin} />}
-                      showsVerticalScrollIndicator={false}
-                      keyExtractor={(item, index) => index.toString()}
-                      refreshControl={
-                        <RefreshControl refreshing={isRefreshing} onRefresh={ReloadData} progressViewOffset={0} />
-                      } />
-                    :
-                    <View style={styles.viewOther}>
-                      <MaterialCommunityIcons name='post-outline' size={70} color={'rgba(0, 0, 0, 0.5)'} />
-                      <Text style={styles.textHint}>Không có bài viết nào..</Text>
-                    </View>
-                }
-              </View>
+              <>
+                <View style={{ flexDirection: 'row', alignItems: "center" }}>
+                  <TouchableOpacity onPress={OpenAccount} activeOpacity={0.5}>
+                    <Image source={srcAvatar} onError={() => setsrcAvatar(require('../../assets/images/error.png'))}
+                      style={styles.imageAvatar} />
+                  </TouchableOpacity>
+                  <TouchableHighlight underlayColor={'rgba(0, 0, 0, 0.2)'} onPress={OpenNewBlog} activeOpacity={0.5}>
+                    <Text style={styles.textHint}>Bạn muốn chia sẻ điều gì?</Text>
+                  </TouchableHighlight>
+                </View>
+                <TouchableHighlight underlayColor={'#8BD3DD'} onPress={PickingImage} activeOpacity={0.5}>
+                  <Entypo name='folder-images' size={27} color={'#001858'} />
+                </TouchableHighlight>
+              </>
           }
+
         </View>
-      </ScrollView>
+        {
+          (isLoader)
+            ?
+            <ScrollView>
+              <View style={{ marginBottom: 65 }}>
+                <ItemBlogLoader />
+                <ItemBlogLoader />
+              </View>
+            </ScrollView>
+            :
+            <View>
+              {
+                (blogs.length > 0)
+                  ?
+                  <FlatList data={blogs} scrollEnabled={true}
+                    extraData={extraBlogs}
+                    ListFooterComponent={
+                      canLoadingMore ? (
+                        <ActivityIndicator
+                          size="large"
+                          color={'#F582AE'}
+                          style={{ marginBottom: 145, marginTop: 10 }}
+                        />
+                      ) : null
+                    }
+                    onEndReachedThreshold={0.1}
+                    onEndReached={onLoadMore}
+                    initialNumToRender={5}
+                    removeClippedSubviews={true}
+                    maxToRenderPerBatch={5}
+                    windowSize={10}
+                    renderItem={({ item, index }) =>
+                      <ItemBlog key={index} blog={item}
+                        index={index} info={infoLogin} listLength={blogs.length} />}
+                    showsVerticalScrollIndicator={false}
+                    keyExtractor={(item, index) => index.toString()}
+                    refreshControl={
+                      <RefreshControl refreshing={isRefreshing} onRefresh={ReloadData} progressViewOffset={0} />
+                    } />
+                  :
+                  <View style={styles.viewOther}>
+                    <MaterialCommunityIcons name='post-outline' size={70} color={'rgba(0, 0, 0, 0.5)'} />
+                    <Text style={styles.textHint}>Không có bài viết nào..</Text>
+                  </View>
+              }
+            </View>
+        }
+      </View>
     </SafeAreaView>
   )
 }

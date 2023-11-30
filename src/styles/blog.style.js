@@ -18,7 +18,8 @@ export default StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
-        padding: 15, marginBottom: 3,
+        padding: 15,
+        marginBottom: 3,
         backgroundColor: yellowWhite,
     },
 
