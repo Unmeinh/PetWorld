@@ -16,16 +16,21 @@ import {openPicker} from '@baronha/react-native-multiple-image-picker';
 import {check, request, PERMISSIONS, RESULTS} from 'react-native-permissions';
 import Loading from '../../component/Loading';
 import {CreateRating} from '../../api/RestApi';
-
+import {useDispatch} from 'react-redux';
+import {
+  getBillDelivered,
+  getBillReview,
+} from '../../redux/reducers/shop/billSlice';
 const Rating = ({navigation, route}) => {
   const idProduct = route.params?.items;
   const type = route.params?.type;
-
+  const idBill = route.params?.idBill;
   const [rating, setRating] = useState([true, true, true, true, true]);
   const [feedback, setFeedback] = useState('Rất tốt');
   const [review, setReview] = useState('');
   const [listImage, setListImage] = useState([]);
   const [loading, setLoading] = useState(false);
+  const dispatch = useDispatch();
 
   const handleChangeText = text => {
     if (text.length <= 300) {
@@ -60,7 +65,6 @@ const Rating = ({navigation, route}) => {
     updateFeedback(newRating);
   };
   const converData = () => {
-    console.log(idProduct);
     if (type === 0) {
       return idProduct?.map(item => item[0]._id);
     } else {
@@ -157,11 +161,17 @@ const Rating = ({navigation, route}) => {
     for (const element of converData()) {
       formData.append('idProduct', element);
     }
-    const result = await CreateRating(formData, {
-      'Content-Type': 'multipart/form-data',
-    });
+    const result = await CreateRating(
+      formData,
+      {
+        'Content-Type': 'multipart/form-data',
+      },
+      idBill,
+    );
 
     if (result.success) {
+      dispatch(getBillDelivered());
+      dispatch(getBillReview());
       navigation.goBack();
     } else {
       console.log(result.message);
@@ -189,11 +199,7 @@ const Rating = ({navigation, route}) => {
 
   return (
     <View style={{backgroundColor: '#FEF6E4', flex: 1}}>
-      <HeaderTitle
-        nav={navigation}
-        colorHeader="#FEF6E4"
-        callback={() => navigation.pop(2)}
-      />
+      <HeaderTitle nav={navigation} colorHeader="#FEF6E4" />
       <View style={{padding: 16}}>
         <Text
           style={{

@@ -73,7 +73,7 @@ export default function ItemList({item}) {
           </Text>
         </Text>
       </View>
-      {item.deliveryStatus === 3 ? (
+      {item.deliveryStatus === 3 && item.statusReview === false ? (
         <TouchableOpacity
           style={{
             borderRadius: 1,
@@ -87,7 +87,7 @@ export default function ItemList({item}) {
           }}
           onPress={() =>
             navigation.navigate('CreateRate', {
-              idProduct: item._id,
+              idBill: item._id,
               items: getData(),
               type: type,
             })

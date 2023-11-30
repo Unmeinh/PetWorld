@@ -20,8 +20,12 @@ export const InsertBill = data =>
   Post({endPoint: `/bill-product/insert`, data: data});
 export const GetPayments = () => Get({endPoint: `/server/payments`});
 
-export const GetBills = id =>
-  Get({endPoint: `/bill-product/listBillProduct?idStatus=${id}`});
+export const GetBills = (id, statusReview) =>
+  Get({
+    endPoint: `/bill-product/listBillProduct?idStatus=${id}${
+      typeof statusReview !== 'undefined' ? `&review=${statusReview}` : ''
+    }`,
+  });
 
 export const GetCart = () => Get({endPoint: `/cart`});
 
@@ -76,7 +80,7 @@ export const SeachProductForShop = (idShop, keyWords) =>
   Get({endPoint: `/search/shop/${keyWords}?idShop=${idShop}`});
 
 export const GetListBanner = () => Get({endPoint: `/server/listBanner`});
-export const CreateRating = (data, header) =>
-  Post({endPoint: `/review/insert`, data: data, header: header});
+export const CreateRating = (data, header, idBill) =>
+  Post({endPoint: `/review/insert/${idBill}`, data: data, header: header});
 export const GetRating = (id, page = 1) =>
   Get({endPoint: `/review/list/product/${id}?page=${page}`});

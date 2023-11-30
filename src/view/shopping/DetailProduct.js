@@ -179,15 +179,14 @@ function DetailProduct({navigation, route}) {
       setStatus('idle');
     }
   };
-  const getRate = async (pramPage = page) => {
+  const getRate = async () => {
     if (id || type) {
-      const res = await GetRating(id, pramPage);
+      const res = await GetRating(id, page);
       const data = res.data;
       if (data) {
-        
         if (data.length > 0) {
           setRate([...rate, ...res.data]);
-        } else{
+        } else {
           setEnableMore(false);
         }
       }
@@ -202,11 +201,14 @@ function DetailProduct({navigation, route}) {
     };
   }, []);
 
+  useEffect(() => {
+    getRate();
+  }, [page]);
+
   const loadMoreData = async () => {
     console.log(enableMore);
     if (!isLoadingMore && enableMore) {
       setIsLoadingMore(true);
-      await getRate(page + 1);
       setPage(page + 1);
       setIsLoadingMore(false);
     }
@@ -523,6 +525,17 @@ function DetailProduct({navigation, route}) {
                 />
               </View>
             </Animated.View>
+            {rate ? (
+              <Text
+                style={{
+                  fontFamily: 'ProductSansBold',
+                  fontSize: 20,
+                  color: '#001858',
+                  marginLeft: 20,
+                }}>
+                Đánh giá
+              </Text>
+            ) : null}
             <FlatList
               data={rate}
               renderItem={({item}) => (
@@ -540,7 +553,7 @@ function DetailProduct({navigation, route}) {
                   />
                 ) : null
               }
-              contentContainerStyle={{paddingBottom:10}}
+              contentContainerStyle={{paddingBottom: 10}}
               onEndReached={loadMoreData}
               onEndReachedThreshold={0.1}
             />
