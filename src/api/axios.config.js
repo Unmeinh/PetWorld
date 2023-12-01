@@ -9,7 +9,7 @@ let axiosAPi = axios.create();
 
 const getToken = async () => {
   const token = await storageMMKV.getString('login.token');
-  return token != '' ? `Bearer ${token}` : undefined;s
+  return token != '' ? `Bearer ${token}` : undefined;
 };
 axiosAPi.defaults.baseURL = apiURL;
 (async () => {
@@ -32,6 +32,7 @@ const getAxiosInstance = () => {
       return response.data;
     },
     async error => {
+      console.error(error);
       return error.response.data;
 
       if (error.response) {

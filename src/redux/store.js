@@ -1,4 +1,4 @@
-import { configureStore } from '@reduxjs/toolkit';
+import {configureStore} from '@reduxjs/toolkit';
 import listPetReducer from './reducers/pet/PetReducer';
 import listProductReducer from './reducers/product/ProductReducer';
 import categoryReducer from './reducers/category/category';
@@ -11,6 +11,7 @@ import userReducer from './reducers/user/userReducer';
 import billSlice from './reducers/shop/billSlice';
 import noticeReducer from './reducers/notice/NoticeReducer';
 import favoriteReducer from './reducers/favorite/FavoriteReducer';
+import homeSlice from './Home/homeSlice';
 
 const store = configureStore({
   reducer: {
@@ -26,6 +27,7 @@ const store = configureStore({
     bill: billSlice,
     listNotice: noticeReducer,
     listFavorite: favoriteReducer,
+    home: homeSlice,
   },
 });
 

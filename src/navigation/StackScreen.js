@@ -46,6 +46,7 @@ import DetailBill from '../view/shopping/DetailBill';
 import MomoPayment from '../view/payment/MomoPayment';
 import Favorite from '../view/account/Favorite';
 import SearchFiltersShop from '../view/search/SearchFiltersShop';
+import CreateRate from '../view/shopping/CreateRate';
 const Stack = createStackNavigator();
 
 export default function StackScreen() {
@@ -260,6 +261,11 @@ export default function StackScreen() {
           name="SearchFiltersShop"
           options={animated}
           component={SearchFiltersShop}
+        />
+        <Stack.Screen
+          name="CreateRate"
+          options={animated}
+          component={CreateRate}
         />
       </Stack.Navigator>
     </NavigationContainer>
