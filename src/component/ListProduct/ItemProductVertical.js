@@ -41,6 +41,21 @@ export default function ItemProductVertical({item}) {
       );
     }
   };
+
+  const getRated = rating => {
+    const result = [];
+    for (let index = 0; index < rating; index++) {
+      result.push(
+        <Icon
+          key={index}
+          name={index < rating ? 'star' : 'star-o'}
+          size={15}
+          color={index < rating ? '#FFD700' : '#D3D3D3'}
+        />,
+      );
+    }
+    return result;
+  };
   return (
     <View>
       <TouchableHighlight
@@ -81,44 +96,8 @@ export default function ItemProductVertical({item}) {
             <View
               style={{
                 flexDirection: 'row',
-                justifyContent: 'center',
-                alignItems: 'center',
               }}>
-              <Text
-                style={{
-                  fontFamily: 'ProductSans',
-                  marginRight: 10,
-                }}>
-                20 phút
-              </Text>
-              <View
-                style={{
-                  width: 4,
-                  height: 4,
-                  backgroundColor: '#001858',
-                  marginRight: 8,
-                  borderRadius: 2,
-                }}
-              />
-              <Text
-                style={{
-                  fontFamily: 'ProductSans',
-                  marginRight: 10,
-                }}>
-                1.7 Km
-              </Text>
-              <View
-                style={{
-                  width: 4,
-                  height: 4,
-                  backgroundColor: '#001858',
-                  marginRight: 8,
-                  borderRadius: 2,
-                }}
-              />
-              <Icon name="star" size={14} color="#FFC20F" />
-
-              <Text style={{flexGrow: 1}}>{item?.rate}</Text>
+              {getRated(item?.rate)}
             </View>
             <View>
               {priceDiscount(

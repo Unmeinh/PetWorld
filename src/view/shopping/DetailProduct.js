@@ -206,7 +206,6 @@ function DetailProduct({navigation, route}) {
   }, [page]);
 
   const loadMoreData = async () => {
-    console.log(enableMore);
     if (!isLoadingMore && enableMore) {
       setIsLoadingMore(true);
       setPage(page + 1);
@@ -363,7 +362,7 @@ function DetailProduct({navigation, route}) {
                   <View style={{flexDirection: 'row'}}>
                     <Icon name="star-sharp" size={16} color="#fcba03" />
                     <Text style={{color: '#001858', marginLeft: 5}}>
-                      {product?.rate}/5
+                      {product?.avgProduct?.toFixed(1)}
                     </Text>
 
                     <Text
@@ -442,8 +441,7 @@ function DetailProduct({navigation, route}) {
                         flexDirection: 'column',
                       }}>
                       <Text style={styles.lineHeight}>
-                        Tên thú cưng:
-                        {product.namePet}
+                        Tên thú cưng: {product.namePet}
                         {'\n'}
                         Kích cỡ: {product.sizePet} {'\n'}Kích thước: rộng{' '}
                         {product.weightPet} cao {product.heightPet}
@@ -458,8 +456,7 @@ function DetailProduct({navigation, route}) {
                     </View>
                   ) : (
                     <Text style={styles.lineHeight}>
-                      Tên sản phẩm:
-                      {product?.nameProduct}
+                      Tên sản phẩm: {product?.nameProduct}
                       {'\n'}
                       {showDes ? (
                         <Text style={styles.lineHeight}>

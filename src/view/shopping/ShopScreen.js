@@ -221,10 +221,10 @@ export default function ShopScreen({navigation, route}) {
             <View style={[styles.flexRow, styles.content]}>
               <View style={[styles.flexRow, {marginRight: 10}]}>
                 <Icon name="star" size={16} color={'#FFC20F'} />
-                <Text>{data.rate}</Text>
+                <Text>{data?.avgRating?.toFixed(1)}</Text>
               </View>
               {listPet?.statusPetByIdShop === 'loading' &&
-              listProduct?.statusProductsShop === 'loading'  ? null : (
+              listProduct?.statusProductsShop === 'loading' ? null : (
                 <Text style={{fontFamily: 'ProductSans', color: '#001858'}}>
                   Đã bán: {quantitySold()}
                 </Text>

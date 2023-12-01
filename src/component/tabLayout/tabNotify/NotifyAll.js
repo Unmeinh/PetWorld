@@ -9,28 +9,20 @@ import {
   ScrollView,
   Image,
   TouchableOpacity,
-  Dimensions,
   RefreshControl,
 } from 'react-native';
-import {fetchNotices} from '../../../redux/reducers/notice/NoticeReducer';
-import {useSelector, useDispatch} from 'react-redux';
-import {listNotice} from '../../../redux/selector';
 import ListItem from '../../list/ListItemNotify';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Feather from 'react-native-vector-icons/Feather';
 import {GetAllNotice} from '../../../api/RestApi';
 import {getDateTimeVietnamese} from '../../../function/functionDate';
-const {width, height} = Dimensions.get('window');
-import LottieView from 'lottie-react-native';
 import EmptyNotice from './EmptyNotice';
 
-const NotifyAll = () => {
-  const notices = useSelector(listNotice);
+const NotifyAll = ({index, isFocused}) => {
   const [showModal, setShowModal] = useState(false);
   const [item, setItem] = useState({});
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [page, setPage] = useState(1);
-  const [sort, setSort] = useState(null);
   const [result, setResult] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
   const [enableLoading, setEnableLoading] = useState(true);
@@ -57,7 +49,7 @@ const NotifyAll = () => {
     }
   };
   useEffect(() => {
-    if (enableLoading) {
+    if (enableLoading && index === 0 && isFocused) {
       if (page === 1) {
         setRefreshing(true);
       }

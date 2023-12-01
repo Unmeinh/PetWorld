@@ -3,6 +3,8 @@ import React from 'react';
 import Icon from 'react-native-vector-icons/SimpleLineIcons';
 import ShimmerPlaceHolder from '../layout/ShimmerPlaceHolder';
 import {useNavigation} from '@react-navigation/native';
+import IconIcons from 'react-native-vector-icons/Ionicons';
+
 export default function ShopTag({data, isLoading}) {
   const navigation = useNavigation();
   return (
@@ -43,10 +45,15 @@ export default function ShopTag({data, isLoading}) {
       {isLoading === 'idle' ? (
         <View style={styles.desContainer}>
           <Text style={styles.textDes}>
-            {data?.quantity} <Text style={styles.textDes2}>Sản phẩm</Text>
+            {data?.quantity}{' '}
+            <Text style={styles.textDes2}>Sản phẩm {data?.count}</Text>
           </Text>
           <Text style={styles.textDes}>
-            {data?.rate} <Text style={styles.textDes2}>Đánh giá</Text>
+            {data?.rate}{' '}
+            <Text style={styles.textDes2}>
+              Đánh giá {data?.avgRating?.toFixed(1)}
+            </Text>
+            <IconIcons name="star-sharp" size={16} color="#fcba03" />
           </Text>
         </View>
       ) : (
@@ -92,8 +99,8 @@ const styles = StyleSheet.create({
     borderColor: '#F582AE',
     justifyContent: 'center',
     alignItems: 'center',
-    position:'absolute',
-    right:0
+    position: 'absolute',
+    right: 0,
   },
   titleButton: {
     fontFamily: 'ProductSans',
@@ -107,11 +114,14 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     marginLeft: 18,
     marginTop: -8,
+    alignItems: 'center',
   },
   textDes: {
     fontFamily: 'ProductSans',
     color: '#F582AE',
     marginRight: 8,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   textDes2: {
     color: '#3E3E3E',
