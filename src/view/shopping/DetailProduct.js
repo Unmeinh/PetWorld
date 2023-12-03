@@ -26,16 +26,13 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import ShopTag from '../../component/shop/ShopTag';
 import ListHorizontal from '../../component/list/ListHorizontal';
 import {
-  addCart,
   addProductToCart,
   setStatusMessageCart,
 } from '../../redux/reducers/shop/CartReduces';
 import ShimmerPlaceHolder from '../../component/layout/ShimmerPlaceHolder';
 import SetAppointment from '../../component/modals/SetAppointment';
 import Loading from '../../component/Loading';
-import {GetDetailProduct, GetRating} from '../../api/RestApi';
-import {AddFavorite, DeleteFavorite} from '../../api/RestApi';
-import {selectFavoriteByID} from '../../redux/actions/favoriteAction';
+import {GetDetailProduct, AddFavorite, DeleteFavorite} from '../../api/RestApi';
 import ReviewsItems from '../../component/detailProduct/ReviewsItem';
 import ImageView from 'react-native-image-viewing';
 const {width} = Dimensions.get('screen');
@@ -44,7 +41,6 @@ function DetailProduct({navigation, route}) {
   const {id, type} = route.params;
   const dispatch = useDispatch();
   const [product, setProduct] = useState({});
-
   const listProduct = useSelector(listProductSelector);
   const [status, setStatus] = useState('idle');
   const category = useSelector(selectFilterIdSelector);
@@ -55,31 +51,29 @@ function DetailProduct({navigation, route}) {
   const [like, setLike] = useState(false);
   const [showDes, setShowDes] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
-  const [isShowSetApm, setisShowSetApm] = useState(false);
+  const [isShowSetApm, setIsShowSetApm] = useState(false);
   const [page, setPage] = useState(1);
   const [rate, setRate] = useState([]);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [enableMore, setEnableMore] = useState(true);
   const [listImageProduct, setListImageProduct] = useState([]);
+
   const listImage = product?.arrProduct
     ? product?.arrProduct
     : product?.imagesPet;
 
   const AnimatedIcon = Animated.createAnimatedComponent(Icon);
   const AnimatedPressible = Animated.createAnimatedComponent(Pressable);
-  const iconlike = like ? 'heart-outline' : 'heart';
-  // const favoriteItem = useSelector(state =>
-  //   selectFavoriteByID(state, product?._id),
-  // );
-  const handleLike = async () => {
+  const iconlike = like ? 'heart' : 'heart-outline';
+
+  const handleLike = () => {
+    setLike(!like);
     try {
-      if (like) {
-        await dispatch(AddFavorite({idProduct: product?._id}));
-        // if (favoriteItem) {
-        //   await dispatch(DeleteFavorite(favoriteItem.id));
-        // }
+      if (!like) {
+        dispatch(AddFavorite({idProduct: product?._id}));
+      } else {
+        dispatch(DeleteFavorite({idProduct: product?._id}));
       }
-      setLike(!like);
     } catch (error) {
       console.error('Error handling like:', error);
     }
@@ -101,6 +95,7 @@ function DetailProduct({navigation, route}) {
       );
     }
   };
+
   const slideAnimation = useRef(new Animated.Value(0)).current;
   const opacityAnimation = useRef(new Animated.Value(0)).current;
   const scrollY = useRef(new Animated.Value(0)).current;
@@ -123,7 +118,7 @@ function DetailProduct({navigation, route}) {
   });
 
   const onOpenSetAppointment = () => {
-    setisShowSetApm(!isShowSetApm);
+    setIsShowSetApm(!isShowSetApm);
   };
 
   useEffect(() => {
@@ -175,6 +170,7 @@ function DetailProduct({navigation, route}) {
       const res = await GetDetailProduct({id, type});
       if (res) {
         setProduct(res.data);
+        setLike(res.data?.favorite);
       }
       setStatus('idle');
     }
@@ -360,15 +356,24 @@ function DetailProduct({navigation, route}) {
                     justifyContent: 'space-between',
                   }}>
                   <View style={{flexDirection: 'row'}}>
-                    <Icon name="star-sharp" size={16} color="#fcba03" />
-                    <Text style={{color: '#001858', marginLeft: 5}}>
-                      {product?.avgProduct?.toFixed(1)}
-                    </Text>
+                    {product?.avgProduct ? (
+                      <>
+                        <Icon name="star-sharp" size={16} color="#fcba03" />
+                        <Text style={{color: '#001858', marginLeft: 5}}>
+                          {product?.avgProduct?.toFixed(1)}
+                        </Text>
 
-                    <Text
-                      style={{marginLeft: 5, marginRight: 5, color: '#ccc'}}>
-                      |
-                    </Text>
+                        <Text
+                          style={{
+                            marginLeft: 5,
+                            marginRight: 5,
+                            color: '#ccc',
+                          }}>
+                          |
+                        </Text>
+                      </>
+                    ) : null}
+
                     <Text
                       style={{
                         marginLeft: 5,
@@ -535,6 +540,7 @@ function DetailProduct({navigation, route}) {
             ) : null}
             <FlatList
               data={rate}
+              scrollEnabled={false}
               renderItem={({item}) => (
                 <ReviewsItems
                   item={item}
