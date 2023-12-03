@@ -1,11 +1,5 @@
-import React, {useEffect, useState} from 'react';
-import {
-  Text,
-  View,
-  StyleSheet,
-  FlatList,
-  ActivityIndicator,
-} from 'react-native';
+import React, {useEffect} from 'react';
+import {Text, View, StyleSheet, FlatList} from 'react-native';
 import {useSelector, useDispatch} from 'react-redux';
 import {listFavorite} from '../../redux/selector';
 import {fetchFavorites} from '../../redux/reducers/favorite/FavoriteReducer';
