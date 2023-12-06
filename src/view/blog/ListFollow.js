@@ -17,6 +17,8 @@ import ViewAccountModal from "../../component/modals/ViewAccountModal";
 import ShimmerPlaceHolder from '../../component/layout/ShimmerPlaceHolder';
 import { changeBlogIsFollow } from "../../redux/reducers/blog/blogReducer";
 import { onAxiosGet, onAxiosPost } from '../../api/axios.function';
+import Toast from 'react-native-toast-message';
+import LottieView from 'lottie-react-native';
 
 const ListFollow = ({ route }) => {
     const navigation = useNavigation();
@@ -114,9 +116,10 @@ const ListFollow = ({ route }) => {
     const ItemUser = (row) => {
         let user = row.item.idFollow;
         const [srcAvatar, setsrcAvatar] = useState(require('../../assets/images/loading.png'));
-        const [typeFollow, settypeFollow] = useState((row.item.isFollowed) ? row.item.isFollowed : 0)
-        const [isFollowed, setisFollowed] = useState((row.item.isFollowed == 0) ? true : false);
+        const [typeFollow, settypeFollow] = useState((row?.item?.isFollowed) ? row?.item?.isFollowed : 0)
+        const [isFollowed, setisFollowed] = useState((row?.item?.isFollowed == 0) ? true : false);
         const [isShowAccount, setisShowAccount] = useState(false);
+        const [isLoadingFollow, setisLoadingFollow] = useState(false);
 
         function onCallbackFollow(isFl) {
             settypeFollow((isFl) ? 0 : 1);
@@ -124,15 +127,36 @@ const ListFollow = ({ route }) => {
             dispatch(changeBlogIsFollow([user._id, isFl]));
         }
 
+        function onOpenAccount() {
+            setisShowAccount(!isShowAccount);
+        }
+
+        function onErrorImage() {
+            setsrcAvatar(require('../../assets/images/error.png'));
+        }
+
+        //Function api
         async function OnFollow() {
-            let fl = isFollowed;
-            setisFollowed(!fl);
-            settypeFollow((!fl) ? 0 : 1);
-            let res = await onAxiosPost('follow/insert', { idFollow: user._id }, 'json', false);
-            if (res) {
-                dispatch(changeBlogIsFollow([user._id, !fl]));
+            if (!isLoadingFollow) {
+                let fl = isFollowed;
+                setisLoadingFollow(true);
+                setisFollowed(!fl);
+                settypeFollow((!fl) ? 0 : 1);
+                let res = await onAxiosPost('follow/insert', { idFollow: user._id, isFlw: !fl }, 'json', false);
+                if (res) {
+                    dispatch(changeBlogIsFollow([user._id, !fl]));
+                    setisLoadingFollow(false);
+                } else {
+                    isFollowed(fl);
+                    setisLoadingFollow(false);
+                }
             } else {
-                isFollowed(fl);
+                Toast.show({
+                    type: 'warning',
+                    position: 'top',
+                    text1: 'Thao tác của bạn quá nhanh!\nVui lòng thử lại sau giây lát.',
+                    // visibilityTime: 500,
+                })
             }
         }
 
@@ -143,14 +167,14 @@ const ListFollow = ({ route }) => {
         }, [user]);
 
         return (
-            <View style={{ paddingHorizontal: 10, paddingVertical: 10 }}>
+            <View style={{ paddingHorizontal: 10, paddingVertical: 7 }}>
                 <View style={{ flexDirection: 'row' }}>
-                    <TouchableOpacity onPress={() => setisShowAccount(true)}>
-                        <Image source={srcAvatar} onError={() => setsrcAvatar(require('../../assets/images/error.png'))}
+                    <TouchableOpacity onPress={onOpenAccount}>
+                        <Image source={srcAvatar} onError={onErrorImage}
                             style={{ height: 50, width: 50, borderRadius: 50 }} />
                     </TouchableOpacity>
                     <View style={{ marginLeft: 7 }}>
-                        <TouchableOpacity onPress={() => setisShowAccount(true)}>
+                        <TouchableOpacity onPress={onOpenAccount}>
                             <Text style={styles.followerTextName} numberOfLines={1}>
                                 {user.fullName}
                             </Text>
@@ -159,7 +183,8 @@ const ListFollow = ({ route }) => {
                             <View style={{ marginTop: 7, justifyContent: 'space-between', flexDirection: 'row' }}>
                                 <Text style={{ color: 'rgba(0, 0, 0, 0.70)', fontFamily: 'ProductSans', fontSize: 13, width: (typeFollow > -1) ? "60%" : "97%", marginLeft: 3 }}
                                     numberOfLines={2}>
-                                    {user.description}
+                                    {(user.description && user.description.trim() != "")
+                                        ? user.description : "Chưa có giới thiệu"}
                                 </Text>
                                 <View>
                                     {
@@ -168,7 +193,7 @@ const ListFollow = ({ route }) => {
                                             <>
                                                 {
                                                     (typeFollow == 0)
-                                                        ? <TouchableHighlight style={[styles.buttonFollow, { backgroundColor: '#8BD3DD' }]}
+                                                        ? <TouchableHighlight style={[styles.buttonFollow, { backgroundColor: '#8BD3DD', elevation: 5, top: -3 }]}
                                                             activeOpacity={0.5} underlayColor="#63AAB4"
                                                             onPress={OnFollow}>
                                                             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
@@ -176,7 +201,7 @@ const ListFollow = ({ route }) => {
                                                                 <Text style={styles.textButtonHeader}>Đang theo dõi</Text>
                                                             </View>
                                                         </TouchableHighlight>
-                                                        : <TouchableHighlight style={[styles.buttonFollow, { backgroundColor: '#F582AE' }]}
+                                                        : <TouchableHighlight style={[styles.buttonFollow, { backgroundColor: '#F582AE', elevation: 5, top: -3 }]}
                                                             activeOpacity={0.5} underlayColor="#DC749C"
                                                             onPress={OnFollow}>
                                                             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
@@ -195,7 +220,7 @@ const ListFollow = ({ route }) => {
                 </View>
                 {
                     (isShowAccount)
-                        ? <ViewAccountModal isShow={isShowAccount} isFollow={isFollowed} info={user} callBack={() => setisShowAccount(false)} callbackFollow={onCallbackFollow} />
+                        ? <ViewAccountModal isShow={isShowAccount} isFollow={isFollowed} info={user} isMe={(typeFollow > -1) ? false : true} callBack={onOpenAccount} callbackFollow={onCallbackFollow} />
                         : ""
                 }
             </View>
@@ -235,28 +260,36 @@ const ListFollow = ({ route }) => {
             <View style={{ flex: 1, paddingTop: 15 }}>
                 {
                     (isLoader)
-                        ?
-                        <View>
+                        ? <View>
                             <ItemUserLoader />
                             <ItemUserLoader />
                         </View>
-                        :
-                        <View>
+                        : <View>
                             {
-                                (follows.length > 0)
-                                    ?
-                                    <FlatList data={follows} scrollEnabled={false}
+                                (follows)
+                                    ? <FlatList data={follows} scrollEnabled={false}
                                         renderItem={({ item, index }) =>
                                             <ItemUser key={index} item={item} navigation={navigation} />}
                                         showsVerticalScrollIndicator={false}
                                         keyExtractor={(item, index) => index.toString()}
+                                        ListEmptyComponent={<View style={[styles.viewOther, { top: '-10%', }]}>
+                                            <LottieView
+                                                source={require('../../assets/girlHello.json')}
+                                                autoPlay loop
+                                                style={{ width: '100%', aspectRatio: 1 }}
+                                            />
+                                            <Text style={[styles.textHint, { top: '-15%' }]}>Danh sách {(route.params.typeFollow == "follower") ? 'người theo dõi' : 'đang theo dõi'} trống..</Text>
+                                        </View>}
                                         refreshControl={
                                             <RefreshControl refreshing={isRefreshing} onRefresh={ReloadData} progressViewOffset={0} />
                                         } />
-                                    :
-                                    <View style={styles.viewOther}>
-                                        <Feather name='user-x' size={70} color={'rgba(0, 0, 0, 0.5)'} />
-                                        <Text style={styles.textHint}>Danh sách theo dõi trống..</Text>
+                                    : <View style={[styles.viewOther, { top: '-10%', }]}>
+                                        <LottieView
+                                            source={require('../../assets/girlHello.json')}
+                                            autoPlay loop
+                                            style={{ width: '100%', aspectRatio: 1 }}
+                                        />
+                                        <Text style={[styles.textHint, { top: '-15%' }]}>Danh sách {(route.params.typeFollow == "follower") ? 'người theo dõi' : 'đang theo dõi'} trống..</Text>
                                     </View>
                             }
                         </View>

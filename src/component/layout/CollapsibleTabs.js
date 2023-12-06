@@ -1,11 +1,12 @@
-import React, { Component } from 'react';
+import React, { Component, useEffect } from 'react';
 import { View, Dimensions, Animated, ScrollView, Text } from 'react-native';
 import { map, min } from 'lodash';
 import PropTypes from 'prop-types';
 import Carousel from 'react-native-reanimated-carousel';
 import MaterialTabs from 'react-native-material-tabs';
 import DefaultHeader from './DefaultHeader';
-import {LogBox} from 'react-native';
+import { LogBox } from 'react-native';
+import { WindowWidth } from '../../styles/toast.style';
 LogBox.ignoreLogs(['It looks like you might be using shared value']);
 
 const headerCollapsedHeight = 46;
@@ -78,16 +79,23 @@ class CollapsibleTabs extends Component {
                     onSnapToItem={index => this.onChangePage(index)}
                     data={tabs}
                     width={screenWidth}
+                    // block lướt tab
                     panGestureHandlerProps={{
-                        activeOffsetX: [-10, 10],
+                        activeOffsetX: [-WindowWidth, WindowWidth],
                     }}
+                    // lướt tab
+                    // panGestureHandlerProps={{
+                    //     activeOffsetX: (selectedTab == 0) ? [-10, WindowWidth] : [-WindowWidth, 10],
+                    // }}
                     snapEnabled={false}
                     inactiveSlideScale={1}
+
                     renderItem={({ item: { component, isFlatList }, index }) => (
                         isFlatList
                             ? React.cloneElement(component, scrollProps(index))
                             : (
-                                <ScrollView {...scrollProps(index)}>
+                                <ScrollView {...scrollProps(index)} showsVerticalScrollIndicator={false} scrollEnabled={false}
+                                >
                                     {component}
                                 </ScrollView>
                             )
@@ -118,6 +126,7 @@ class CollapsibleTabs extends Component {
                             selectedIndex={selectedTab}
                             onChange={index => this.onChangePage(index)}
                         />
+                        <View style={{ height: 0.5, width: '100%', backgroundColor: '#FEF6E4', shadowColor: '#000', elevation: 3, zIndex: 100, marginBottom: 10 }} />
                     </View>
                 </Animated.View>
             </View>

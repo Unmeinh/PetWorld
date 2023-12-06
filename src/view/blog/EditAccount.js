@@ -9,16 +9,14 @@ import {
 import HeaderTitle from '../../component/header/HeaderTitle';
 import { useNavigation } from '@react-navigation/native';
 import styles from '../../styles/user.style';
-import LinearGradient from 'react-native-linear-gradient';
-import { createShimmerPlaceholder } from 'react-native-shimmer-placeholder';
-import { onAxiosDelete, onAxiosPut, onAxiosPost } from '../../api/axios.function';
+import { onAxiosDelete, onAxiosPut, onAxiosPost, onDismissKeyboard } from '../../api/axios.function';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { onSendOTPbyPhoneNumber } from '../../function/functionOTP';
 import Toast from 'react-native-toast-message';
 import PhoneSelect from '../../component/modals/PhoneSelect';
+import ShimmerPlaceHolder from '../../component/layout/ShimmerPlaceHolder';
 
-const ShimmerPlaceHolder = createShimmerPlaceholder(LinearGradient);
 const infoKeys = ["phoneNumber", "emailAddress"];
 const infoTypes = ["số điện thoại", "email"];
 const infoNames = ["Số điện thoại", "Email"];
@@ -49,32 +47,98 @@ const EditAccount = ({ route }) => {
         setinputValue(input);
     }
 
+    function onChangeAccount() {
+        setisChangeAccount(!isChangeAccount);
+    }
+    
+    //Function api
+    function onShowAlertVerify() {
+        Toast.show({
+            type: 'alert',
+            position: 'top',
+            text1: 'Xác nhận gửi lại link xác minh email?',
+            autoHide: false,
+            props: {
+                confirm: async () => onSendVerifyEmail(),
+                cancel: () => {
+                    Toast.hide();
+                }
+            }
+        })
+    }
+
     async function onSendVerifyEmail() {
-        let res = await onAxiosPost('user/sendVerifyEmail', { email: oldValueDisplay }, 'json');
-        if (res && res.success) {
+        Toast.show({
+            type: 'loading',
+            text1: 'Đang gửi link xác minh email...',
+            position: 'top',
+            autoHide: false
+        })
+        let res = await onAxiosPost('user/sendVerifyEmail', { email: oldValueDisplay }, 'json', true);
+        if (res && res?.success) {
             navigation.goBack();
         }
     }
 
-    function onChangeAccount() {
-        setisChangeAccount(!isChangeAccount);
+    function onShowAlertRemove() {
+        Toast.show({
+            type: 'alert',
+            position: 'top',
+            text1: 'Xác nhận hủy liên kết email?',
+            autoHide: false,
+            props: {
+                confirm: async () => onRemoveEmail(),
+                cancel: () => {
+                    Toast.hide();
+                }
+            }
+        })
     }
 
     async function onRemoveEmail() {
-        let res = await onAxiosDelete('user/deleteEmail');
-        if (res && res.success) {
+        onDismissKeyboard();
+        Toast.show({
+            type: 'loading',
+            text1: 'Đang hủy liên kết email...',
+            position: 'top',
+            autoHide: false
+        })
+        let res = await onAxiosDelete('user/deleteEmail', true);
+        if (res && res?.success) {
             navigation.goBack();
         }
     }
 
     async function updatePhoneNumber() {
-        let res = await onAxiosPut('user/updateAccount', { typeInfo: infoKeys[route.params.infoType], valueUpdate: inputPhoneCountry + inputValue }, 'json');
-        if (res && res.success) {
+        let res = await onAxiosPut('user/updateAccount', { typeInfo: infoKeys[route.params.infoType], valueUpdate: inputPhoneCountry + inputValue }, 'json', true);
+        if (res && res?.success) {
             navigation.navigate('InfoManager');
         }
     }
 
+    function onShowAlertUpdate() {
+        Toast.show({
+            type: 'alert',
+            position: 'top',
+            text1: 'Xác nhận thay đổi ' + infoTypes[route.params.infoType] + '?',
+            autoHide: false,
+            props: {
+                confirm: async () => onUpdateAccount(),
+                cancel: () => {
+                    Toast.hide();
+                }
+            }
+        })
+    }
+
     async function onUpdateAccount() {
+        onDismissKeyboard();
+        Toast.show({
+            type: 'loading',
+            text1: 'Đang cập nhật ' + infoTypes[route.params.infoType] + "...",
+            position: 'top',
+            autoHide: false
+        })
         if (route.params.infoType == 0) {
             var regPhone = /^\+([0-9]{9,})$/;
             if (!(inputPhoneCountry + inputValue).match(regPhone)) {
@@ -85,15 +149,15 @@ const EditAccount = ({ route }) => {
                 })
                 return;
             }
-
+            //check firebase
             const response = await onSendOTPbyPhoneNumber(inputPhoneCountry + inputValue);
             if (response && response.success) {
                 setTimeout(() => {
                     navigation.navigate('ConfirmOTP', { function: updatePhoneNumber, typeVerify: 'phoneNumber', valueVerify: inputPhoneCountry + inputValue, authConfirm: response.confirm })
                 }, 500)
-            } 
+            }
         } else {
-            var regEmail = /^(\w+@[a-zA-Z]+\.[a-zA-Z]{2,})$/;
+            var regEmail = /^(?=[A-Za-z]).*@[a-zA-Z]+.[a-zA-Z]{2,}$/;
             if (!inputValue.match(regEmail)) {
                 Toast.show({
                     type: 'error',
@@ -102,8 +166,8 @@ const EditAccount = ({ route }) => {
                 })
                 return;
             }
-            let res = await onAxiosPut('user/updateAccount', { typeInfo: infoKeys[route.params.infoType], valueUpdate: inputValue }, 'json');
-            if (res != undefined && res && res.success) {
+            let res = await onAxiosPut('user/updateAccount', { typeInfo: infoKeys[route.params.infoType], valueUpdate: inputValue }, 'json', true);
+            if (res && res?.success) {
                 navigation.goBack();
             }
         }
@@ -194,31 +258,44 @@ const EditAccount = ({ route }) => {
                                                 {infoNames[route.params.infoType]} hiện tại:
                                             </Text>
                                             {
-                                                (infoLogin.idAccount.emailAddress == "Chưa thiết lập")
-                                                    ? ""
-                                                    : <View>
-                                                        {
-                                                            (infoLogin.idAccount.isVerifyEmail == 0)
-                                                                ? <View style={styles.titleItemVerify}>
-                                                                    <Ionicons name='checkmark-circle' color={'#55B938'} size={13} />
-                                                                    <Text style={[styles.textItemEdit, { marginLeft: 2, marginTop: 0, fontSize: 13, color: '#55B938' }]}>
-                                                                        Đã xác minh
-                                                                    </Text>
-                                                                </View>
-                                                                : <View style={styles.titleItemVerify}>
-                                                                    <Ionicons name='close-circle' color={'#D65745'} size={13} />
-                                                                    <Text style={[styles.textItemEdit, { marginLeft: 2, marginTop: 0, fontSize: 13, color: '#D65745' }]}>
-                                                                        Chưa xác minh
-                                                                    </Text>
-                                                                </View>
-                                                        }
+                                                (route?.params?.infoType == 0)
+                                                    ? <View>
+                                                        <View style={styles.titleItemVerify}>
+                                                            <Ionicons name='checkmark-circle' color={'#55B938'} size={13} />
+                                                            <Text style={[styles.textItemEdit, { marginLeft: 2, marginTop: 0, fontSize: 13, color: '#55B938' }]}>
+                                                                Đã xác minh
+                                                            </Text>
+                                                        </View>
                                                     </View>
+                                                    : <>
+                                                        {
+                                                            (infoLogin?.idAccount?.emailAddress && infoLogin?.idAccount?.emailAddress.trim() != "")
+                                                                ? <View>
+                                                                    {
+                                                                        (infoLogin.idAccount.isVerifyEmail == 0)
+                                                                            ? <View style={styles.titleItemVerify}>
+                                                                                <Ionicons name='checkmark-circle' color={'#55B938'} size={13} />
+                                                                                <Text style={[styles.textItemEdit, { marginLeft: 2, marginTop: 0, fontSize: 13, color: '#55B938' }]}>
+                                                                                    Đã xác minh
+                                                                                </Text>
+                                                                            </View>
+                                                                            : <View style={styles.titleItemVerify}>
+                                                                                <Ionicons name='close-circle' color={'#D65745'} size={13} />
+                                                                                <Text style={[styles.textItemEdit, { marginLeft: 2, marginTop: 0, fontSize: 13, color: '#D65745' }]}>
+                                                                                    Chưa xác minh
+                                                                                </Text>
+                                                                            </View>
+                                                                    }
+                                                                </View>
+                                                                : <></>
+                                                        }
+                                                    </>
                                             }
                                         </View>
                                         <View style={{ flexDirection: 'row', marginLeft: 10, alignItems: 'center' }}>
                                             <Text style={[styles.textItemEdit, { fontSize: 18 }]}>{'> '}</Text>
                                             <Text style={[styles.textItemEdit, { marginLeft: 8 }]}>
-                                                {oldValueDisplay}
+                                                {(oldValueDisplay && oldValueDisplay.trim() != "") ? oldValueDisplay : "Chưa thiết lập"}
                                             </Text>
                                         </View>
                                     </View>
@@ -247,6 +324,7 @@ const EditAccount = ({ route }) => {
                                                                         </Pressable>
                                                                         <TextInput style={styles.inputPhoneValue} placeholder='Nhập dữ liệu...'
                                                                             keyboardType='number-pad' value={inputValue}
+                                                                            placeholderTextColor={'rgba(0, 0, 0, 0.35)'}
                                                                             onChangeText={onChangeInputValue}
                                                                         />
                                                                         <FontAwesome name='sort-down' style={styles.dropdownSelect}
@@ -260,11 +338,11 @@ const EditAccount = ({ route }) => {
                                                                 <Text style={[styles.textItemEdit, { fontSize: 18 }]}>{'>'}</Text>
                                                                 <TextInput style={styles.inputEdit} placeholder='Nhập dữ liệu...'
                                                                     value={inputValue} onChangeText={onChangeInputValue}
+                                                                    placeholderTextColor={'rgba(0, 0, 0, 0.35)'}
                                                                     inputMode={(route.params.infoType == 0) ? 'numeric' : 'email'}
                                                                     onLayout={onLayoutPhoneSelect} />
                                                             </View>
                                                     }
-
                                                 </View>
                                                 <View style={{ width: '100%', justifyContent: 'flex-end', flexDirection: 'row', marginTop: 25 }}>
                                                     <TouchableHighlight style={[styles.buttonSave, { backgroundColor: '#8E8E8E' }]}
@@ -274,7 +352,7 @@ const EditAccount = ({ route }) => {
                                                     </TouchableHighlight>
                                                     <TouchableHighlight style={[styles.buttonSave, { backgroundColor: '#F582AE' }]}
                                                         activeOpacity={0.5} underlayColor="#DC749C"
-                                                        onPress={onUpdateAccount}>
+                                                        onPress={onShowAlertUpdate}>
                                                         <Text style={[styles.textButtonFLModal, { fontSize: 13 }]}>Xác nhận</Text>
                                                     </TouchableHighlight>
                                                 </View>
@@ -293,10 +371,11 @@ const EditAccount = ({ route }) => {
                                                         :
                                                         <>
                                                             {
-                                                                (infoLogin.idAccount.isVerifyEmail == 1 && route.params.infoType == 1)
+                                                                (infoLogin?.idAccount?.emailAddress && String(infoLogin?.idAccount?.emailAddress).trim() != ""
+                                                                    && infoLogin?.idAccount?.isVerifyEmail == 1 && route?.params?.infoType == 1)
                                                                     ? <TouchableHighlight style={[styles.buttonEditAccount, { borderColor: '#55B938', marginTop: 20 }]}
                                                                         activeOpacity={0.5} underlayColor="#67CA4A"
-                                                                        onPress={onSendVerifyEmail}>
+                                                                        onPress={onShowAlertVerify}>
                                                                         <Text style={[styles.textButtonFLModal, { fontSize: 16, color: '#001858', fontWeight: 'normal' }]}>
                                                                             Gửi lại link xác minh email
                                                                         </Text>
@@ -307,16 +386,20 @@ const EditAccount = ({ route }) => {
                                                                 activeOpacity={0.5} underlayColor="#DC749C"
                                                                 onPress={onChangeAccount}>
                                                                 <Text style={[styles.textButtonFLModal, { fontSize: 16, color: '#001858', fontWeight: 'normal' }]}>
-                                                                    Thay đổi địa chỉ email mới
+                                                                    {(infoLogin?.idAccount?.emailAddress && String(infoLogin?.idAccount?.emailAddress).trim() != "") ? "Thay đổi" : "Thiết lập"} địa chỉ email mới
                                                                 </Text>
                                                             </TouchableHighlight>
-                                                            <TouchableHighlight style={[styles.buttonEditAccount, { borderColor: '#F85555' }]}
-                                                                activeOpacity={0.5} underlayColor="#EE3F3F"
-                                                                onPress={onRemoveEmail}>
-                                                                <Text style={[styles.textButtonFLModal, { fontSize: 16, color: '#001858', fontWeight: 'normal' }]}>
-                                                                    Hủy liên kết email hiện tại
-                                                                </Text>
-                                                            </TouchableHighlight>
+                                                            {
+                                                                (infoLogin?.idAccount?.emailAddress && String(infoLogin?.idAccount?.emailAddress).trim() != "")
+                                                                    ? <TouchableHighlight style={[styles.buttonEditAccount, { borderColor: '#F85555' }]}
+                                                                        activeOpacity={0.5} underlayColor="#EE3F3F"
+                                                                        onPress={onShowAlertRemove}>
+                                                                        <Text style={[styles.textButtonFLModal, { fontSize: 16, color: '#001858', fontWeight: 'normal' }]}>
+                                                                            Hủy liên kết email hiện tại
+                                                                        </Text>
+                                                                    </TouchableHighlight>
+                                                                    : ""
+                                                            }
                                                         </>
                                                 }
                                             </>

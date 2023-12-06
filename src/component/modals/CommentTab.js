@@ -23,39 +23,32 @@ import ShimmerPlaceHolder from "../layout/ShimmerPlaceHolder";
 import { onAxiosPost, onAxiosGet } from "../../api/axios.function";
 import { ToastLayout } from "../layout/ToastLayout";
 import Toast from "react-native-toast-message";
+import LottieView from 'lottie-react-native';
 
 const CommentTab = (route) => {
     const infoLogin = useSelector(userLoginSelector);
     let blog = route.blog;
-    let infoUser = blog.idUser;
+    let infoUser = blog?.idUser;
     const [comments, setcomments] = useState(undefined);
     const [srcAvatar, setsrcAvatar] = useState(require('../../assets/images/loading.png'));
     const [isLove, setisLove] = useState(route.isLove);
+    const [isLoadingLove, setisLoadingLove] = useState(false);
     const [isFollow, setisFollow] = useState(route.isFollow);
+    const [isLoadingFollow, setisLoadingFollow] = useState(false);
     const [inputComment, setinputComment] = useState('');
     const [isCollapsedContent, setisCollapsedContent] = useState(true);
     const [dateBlog, setdateBlog] = useState('');
     const [isUploading, setisUploading] = useState(false);
-    const [isLoader, setisLoader] = useState(false);
+    const [isLoader, setisLoader] = useState(true);
     const [bottomHeight, setbottomHeight] = useState(0);
     const [isEditing, setisEditing] = useState(false);
     const inputCommentRef = useRef(null);
     let fadeAnim = new Animated.Value(0.4);
     let springValue = new Animated.Value(0);
 
-    async function onReacting() {
-        let react = isLove;
-        setisLove(!isLove);
-        let res = await onAxiosPost('blog/interact/' + blog._id, {}, 'json', false);
-        if (res) {
-            route.onCallbackBlog(res.data);
-        } else {
-            setisLove(react);
-        }
-    }
-
-    async function onSharing() {
-        await onSharingBlog(blog._id);
+    //Function layout
+    function onFocusComment() {
+        inputCommentRef.current.focus();
     }
 
     function onChangeCommentInput(input) {
@@ -63,7 +56,8 @@ const CommentTab = (route) => {
             Toast.show({
                 type: 'error',
                 text1: 'Bạn chỉ có thể nhập tối đa 200 ký tự!',
-                position: 'top'
+                position: 'top',
+                topOffset: 10
             })
         } else {
             setinputComment(input);
@@ -74,18 +68,92 @@ const CommentTab = (route) => {
         setisCollapsedContent(!isCollapsedContent);
     }
 
+    function onErrorImage() {
+        setsrcAvatar(require('../../assets/images/error.png'));
+    }
+
+    //Function support
     function OpenAccount() {
 
     }
 
-    async function OnFollow() {
-        let fl = isFollow;
-        setisFollow(!fl);
-        let res = await onAxiosPost('follow/insert', { idFollow: infoUser._id }, 'json', false);
+    async function onSharing() {
+        await onSharingBlog(blog._id);
+    }
+
+    function callBackEdit(isE) {
+        setisEditing(isE);
+    }
+
+    function callBackDelete(indexC) {
+        let cloneCMT = [...comments];
+        cloneCMT.splice(indexC, 1);
+        setcomments(cloneCMT);
+        let clone = { ...blog };
+        clone.comments--;
+        route.onCallbackBlog(clone);
+    }
+
+    const onLayoutBottom = (event) => {
+        const { x, y, height, width } = event.nativeEvent.layout;
+        setbottomHeight(height);
+    }
+
+    //Function api
+    async function getComments() {
+        const res = await onAxiosGet('/comment/list/' + blog._id);
         if (res) {
-            route.callbackFollow(!fl);
+            setcomments(res.data);
         } else {
-            setisFollow(fl);
+            setcomments([]);
+        }
+    }
+
+    async function onReacting() {
+        if (isLoadingLove) {
+            Toast.show({
+                type: 'warning',
+                position: 'top',
+                text1: 'Thao tác của bạn quá nhanh!\nVui lòng thử lại sau giây lát.',
+                visibilityTime: 500,
+                topOffset: 10
+            })
+        } else {
+            let react = isLove;
+            setisLoadingLove(true);
+            setisLove(!isLove);
+            let res = await onAxiosPost('blog/interact/' + blog._id, {}, 'json', false);
+            if (res) {
+                route.onCallbackBlog(res.data);
+                setisLoadingLove(false);
+            } else {
+                setisLove(react);
+                setisLoadingLove(false);
+            }
+        }
+    }
+
+    async function OnFollow() {
+        if (isLoadingFollow) {
+            Toast.show({
+                type: 'warning',
+                position: 'top',
+                text1: 'Thao tác của bạn quá nhanh!\nVui lòng thử lại sau giây lát.',
+                visibilityTime: 500,
+                topOffset: 10
+            })
+        } else {
+            let fl = isFollow;
+            setisFollow(!fl);
+            setisLoadingFollow(true);
+            let res = await onAxiosPost('follow/insert', { idFollow: infoUser._id, isFlw: !fl }, 'json', false);
+            if (res) {
+                route.callbackFollow(!fl);
+                setisLoadingFollow(false);
+            } else {
+                setisFollow(fl);
+                setisLoadingFollow(false);
+            }
         }
     }
 
@@ -94,7 +162,8 @@ const CommentTab = (route) => {
             Toast.show({
                 type: 'error',
                 text1: 'Vui lòng chờ bình luận được đăng!',
-                position: 'top'
+                position: 'top',
+                topOffset: 10
             })
             return;
         }
@@ -102,7 +171,8 @@ const CommentTab = (route) => {
             Toast.show({
                 type: 'error',
                 text1: 'Hãy viết gì đó trước khi đăng nhé!',
-                position: 'top'
+                position: 'top',
+                topOffset: 10
             })
             return;
         }
@@ -110,7 +180,8 @@ const CommentTab = (route) => {
             Toast.show({
                 type: 'error',
                 text1: 'Bình luận chỉ có thể dài tối đa 200 ký tự!',
-                position: 'top'
+                position: 'top',
+                topOffset: 10
             })
             return;
         }
@@ -134,24 +205,7 @@ const CommentTab = (route) => {
         }
     }
 
-    function callBackEdit(isE) {
-        setisEditing(isE);
-    }
-
-    function callBackDelete(indexC) {
-        let cloneCMT = [...comments];
-        cloneCMT.splice(indexC, 1);
-        setcomments(cloneCMT);
-        let clone = { ...blog };
-        clone.comments--;
-        route.onCallbackBlog(clone);
-    }
-
-    const onLayoutBottom = (event) => {
-        const { x, y, height, width } = event.nativeEvent.layout;
-        setbottomHeight(height);
-    }
-
+    //Hook
     React.useEffect(() => {
         if (route.isShow && !isLoader) {
             setisLoader(true);
@@ -165,24 +219,22 @@ const CommentTab = (route) => {
     }, [comments]);
 
     React.useEffect(() => {
-        async function getComments() {
-            const res = await onAxiosGet('/comment/list/' + blog._id);
-            if (res) {
-                setcomments(res.data);
-            } else {
-                setcomments([]);
-            }
-        }
         if (blog) {
             if (infoUser) {
                 setsrcAvatar({ uri: String(infoUser.avatarUser) });
             }
             setdateBlog(getDateTimeVietnamese(blog.createdAt));
-            getComments();
+            if (isLoader) {
+                setTimeout(() => {
+                    getComments();
+                }, 400);
+            } else {
+                getComments();
+            }
         }
     }, [blog]);
 
-    useEffect(() => {
+    React.useEffect(() => {
         if (isUploading) {
             let fadeInAndOut = Animated.sequence([
                 Animated.timing(fadeAnim, {
@@ -216,6 +268,7 @@ const CommentTab = (route) => {
         }
     }, [isUploading])
 
+    //Component
     const ListCommentLoader = () => {
         return (
             <>
@@ -228,16 +281,21 @@ const CommentTab = (route) => {
                                         shimmerStyle={styles.imageAvatar}
                                     />
                                     <ShimmerPlaceHolder
-                                        shimmerStyle={[styles.textName, { width: "50%", }]}
+                                        shimmerStyle={[styles.textName, { width: "50%", borderRadius: 5 }]}
                                     />
                                 </View>
-
                                 {
-                                    (route.isMe)
+                                    (route?.isCanFollow != undefined && !route?.isCanFollow)
                                         ? ""
-                                        : <ShimmerPlaceHolder
-                                            shimmerStyle={[styles.textFollow, { width: "25%", }]}
-                                        />
+                                        : <>
+                                            {
+                                                (route.isMe)
+                                                    ? ""
+                                                    : <ShimmerPlaceHolder
+                                                        shimmerStyle={[styles.textFollow, { width: "25%", borderRadius: 5 }]}
+                                                    />
+                                            }
+                                        </>
                                 }
 
                             </View>
@@ -274,7 +332,7 @@ const CommentTab = (route) => {
                     </View>
                     <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
                         <ShimmerPlaceHolder
-                            shimmerStyle={[styles.inputComment, { height: 40 }]}
+                            shimmerStyle={[styles.inputComment, { height: 40, paddingVertical: 0, paddingHorizontal: 0, }]}
                         />
                         <ShimmerPlaceHolder
                             shimmerStyle={styles.buttonSend}
@@ -294,10 +352,8 @@ const CommentTab = (route) => {
             isVisible={route.isShow}
             swipeDirection="down"
             propagateSwipe={true}
-            onSwipeComplete={(e) => route.callBack()}
-            onBackButtonPress={() => {
-                route.callBack();
-            }}>
+            onSwipeComplete={route?.callBack}
+            onBackButtonPress={route?.callBack}>
             <View style={{ flex: 1 }}>
                 {
                     (isLoader)
@@ -307,14 +363,16 @@ const CommentTab = (route) => {
                                 <View style={styles.viewDialog}>
                                     <KeyboardAvoidingView behavior="padding" style={styles.viewTop}>
                                         <View style={styles.viewInfo}>
-                                            <View style={{ flexDirection: 'row', alignItems: "center" }}>
-
-                                                <TouchableOpacity onPress={OpenAccount} activeOpacity={0.5}>
-                                                    <Image source={srcAvatar} onError={() => setsrcAvatar(require('../../assets/images/error.png'))}
+                                            <View style={{ width: '100%', alignItems: 'center', position: 'absolute', top: 3, left: 20 }}>
+                                                <View style={styles.swipeControlModal} />
+                                            </View>
+                                            <View style={{ flexDirection: 'row', alignItems: "center", marginTop: 5 }}>
+                                                <View >
+                                                    <Image source={srcAvatar} onError={onErrorImage}
                                                         style={styles.imageAvatar} />
                                                     <View style={styles.viewContentOnline}>
                                                         {
-                                                            (infoUser.idAccount.online == 0)
+                                                            (infoUser?.idAccount?.online == 0)
                                                                 ? <View style={styles.contentOnline} />
                                                                 : <>
                                                                     <View style={styles.topOfline} />
@@ -322,33 +380,37 @@ const CommentTab = (route) => {
                                                                 </>
                                                         }
                                                     </View>
-                                                </TouchableOpacity>
+                                                </View>
                                                 <TouchableHighlight underlayColor={'rgba(0, 0, 0, 0.2)'} activeOpacity={0.5}>
                                                     <Text style={styles.textName}>{infoUser.fullName}</Text>
                                                 </TouchableHighlight>
                                             </View>
-
                                             {
-                                                (route.isMe)
+                                                (route?.isCanFollow != undefined && !route?.isCanFollow)
                                                     ? ""
-                                                    :
-                                                    <TouchableOpacity
-                                                        onPress={OnFollow}>
+                                                    : <>
                                                         {
-                                                            (isFollow)
-                                                                ? <Text style={styles.textUnFollow}>Hủy theo dõi</Text>
-                                                                : <Text style={styles.textFollow}>Theo dõi</Text>
+                                                            (route.isMe)
+                                                                ? ""
+                                                                :
+                                                                <TouchableOpacity
+                                                                    onPress={OnFollow}>
+                                                                    {
+                                                                        (isFollow)
+                                                                            ? <Text style={styles.textUnFollow}>Hủy theo dõi</Text>
+                                                                            : <Text style={styles.textFollow}>Theo dõi</Text>
+                                                                    }
+                                                                </TouchableOpacity>
                                                         }
-                                                    </TouchableOpacity>
+                                                    </>
                                             }
-
                                         </View>
 
                                         <ScrollView>
                                             <Pressable>
                                                 <View style={styles.viewComment}>
                                                     <TouchableOpacity onPress={OpenAccount} activeOpacity={0.5}>
-                                                        <Image source={srcAvatar} onError={() => setavatarUser(require('../../assets/images/error.png'))}
+                                                        <Image source={srcAvatar} onError={onErrorImage}
                                                             style={styles.avatarComment} />
                                                     </TouchableOpacity>
                                                     <View style={styles.viewContent}>
@@ -386,7 +448,7 @@ const CommentTab = (route) => {
                                                     (isUploading)
                                                         ? <Animated.View style={[styles.viewComment, { opacity: fadeAnim }]}>
                                                             <TouchableOpacity onPress={OpenAccount} activeOpacity={0.5}>
-                                                                <Image source={{ uri: String(infoLogin.avatarUser) }} onError={() => setavatarUser(require('../../assets/images/error.png'))}
+                                                                <Image source={{ uri: String(infoLogin.avatarUser) }}
                                                                     style={styles.avatarComment} />
                                                             </TouchableOpacity>
                                                             <View style={styles.viewContent}>
@@ -400,17 +462,29 @@ const CommentTab = (route) => {
                                                         : ''
                                                 }
 
-                                                <FlatList
-                                                    scrollEnabled={false}
-                                                    data={comments}
-                                                    removeClippedSubviews={true}
-                                                    maxToRenderPerBatch={5}
-                                                    windowSize={10}
-                                                    initialNumToRender={5}
-                                                    keyExtractor={(item, index) => index.toString()}
-                                                    renderItem={({ item, index }) => <ItemComment item={item} key={index} index={index}
-                                                        callBackEdit={callBackEdit} callBackDelete={callBackDelete} isEditing={isEditing} />}
-                                                />
+                                                {
+                                                    (comments)
+                                                        ? <FlatList
+                                                            scrollEnabled={false}
+                                                            data={comments}
+                                                            removeClippedSubviews={true}
+                                                            maxToRenderPerBatch={5}
+                                                            // windowSize={10}
+                                                            initialNumToRender={5}
+                                                            ListEmptyComponent={<View style={styles.viewOther}>
+                                                                <LottieView
+                                                                    source={require('../../assets/emptyComment.json')}
+                                                                    autoPlay loop
+                                                                    style={styles.lottieView}
+                                                                />
+                                                                <Text style={styles.textHint}>Không có bình luận nào..</Text>
+                                                            </View>}
+                                                            keyExtractor={(item, index) => index.toString()}
+                                                            renderItem={({ item, index }) => <ItemComment item={item} key={index} index={index}
+                                                                callBackEdit={callBackEdit} callBackDelete={callBackDelete} isEditing={isEditing} />}
+                                                        />
+                                                        : <></>
+                                                }
                                             </Pressable>
                                         </ScrollView>
                                     </KeyboardAvoidingView>
@@ -439,7 +513,7 @@ const CommentTab = (route) => {
                                             </View>
 
                                             <TouchableOpacity style={styles.iconInteract} disabled={isEditing}
-                                                onPress={() => inputCommentRef.current.focus()}>
+                                                onPress={onFocusComment}>
                                                 <Ionicons name="chatbubble-outline" size={25} color={'#001858'} />
                                             </TouchableOpacity>
                                         </View>
@@ -456,7 +530,8 @@ const CommentTab = (route) => {
                                     <TextInput placeholder="Bạn thấy sao về bài viết này?"
                                         style={[styles.inputComment, { maxHeight: 103 }]} ref={inputCommentRef}
                                         multiline={true} onChangeText={onChangeCommentInput}
-                                        value={inputComment} editable={!isEditing} />
+                                        value={inputComment} editable={!isEditing} maxLength={200}
+                                        placeholderTextColor={'rgba(0, 0, 0, 0.35)'} />
                                     <TouchableOpacity style={styles.buttonSend} onPress={onUploadComment}
                                         disabled={isEditing}>
                                         <Feather name="send" size={19} color={'#001858'} style={{ transform: [{ rotate: '45deg' }], marginRight: 3 }} />
@@ -470,6 +545,5 @@ const CommentTab = (route) => {
         </Modal >
     );
 };
-
 
 export default memo(CommentTab);

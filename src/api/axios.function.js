@@ -1,8 +1,14 @@
 import axiosAPi from "./axios.config";
 import Toast from "react-native-toast-message";
 import { storageMMKV } from "../storage/storageMMKV";
+import { Keyboard } from "react-native";
+
+export function onDismissKeyboard() {
+    Keyboard.dismiss();
+}
 
 export async function onAxiosGet(url, isFeedback) {
+    Keyboard.dismiss();
     let axios = axiosAPi;
     axios.defaults.headers = {
         "Authorization": (storageMMKV.getString('login.token') != "") ? `Bearer ${storageMMKV.getString('login.token')}` : undefined
@@ -86,6 +92,7 @@ export async function onAxiosGet(url, isFeedback) {
 }
 
 export async function onAxiosPost(url, body, typeBody, isFeedback) {
+    Keyboard.dismiss();
     let axios = axiosAPi;
     if (String(typeBody).toLocaleLowerCase() == 'json') {
         axios.defaults.headers = {
@@ -118,11 +125,19 @@ export async function onAxiosPost(url, body, typeBody, isFeedback) {
                 return false;
             }
             if (String(e).indexOf('Request failed with status code 500') >= 0) {
-                Toast.show({
-                    type: 'error',
-                    position: 'top',
-                    text1: "Máy chủ hoàn thành thao tác với lỗi!\nVui lòng thử lại sau!",
-                });
+                if (e.response.data.message) {
+                    Toast.show({
+                        type: 'error',
+                        position: 'top',
+                        text1: e.response.data.message,
+                    });
+                } else {
+                    Toast.show({
+                        type: 'error',
+                        position: 'top',
+                        text1: "Máy chủ hoàn thành thao tác với lỗi!\nVui lòng thử lại sau!",
+                    });
+                }
                 return false;
             }
             if (String(e).indexOf('Request failed with status code 404') >= 0) {
@@ -187,6 +202,7 @@ export async function onAxiosPost(url, body, typeBody, isFeedback) {
 }
 
 export async function onAxiosPut(url, body, typeBody, isFeedback) {
+    Keyboard.dismiss();
     let axios = axiosAPi;
     if (String(typeBody).toLocaleLowerCase() == 'json') {
         axios.defaults.headers = {
@@ -286,6 +302,7 @@ export async function onAxiosPut(url, body, typeBody, isFeedback) {
 }
 
 export async function onAxiosDelete(url, isFeedback) {
+    Keyboard.dismiss();
     let axios = axiosAPi;
     axios.defaults.headers = {
         "Authorization": (storageMMKV.getString('login.token') != "") ? `Bearer ${storageMMKV.getString('login.token')}` : undefined

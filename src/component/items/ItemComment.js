@@ -37,6 +37,36 @@ const ItemComment = (row) => {
     let fadeAnim = new Animated.Value(0.4);
     let springValue = new Animated.Value(0);
 
+    //Function layout
+    function onErrorImage() {
+        setavatarUser(require('../../assets/images/error.png'));
+    }
+    
+    function onShowAccount() {
+        setisShowAccount(!isShowAccount);
+    }
+
+    function onShowMenu() {
+        setisShowMenu(!isShowMenu);
+    }
+
+    function onChangeCommentInput(input) {
+        if (input.length > 200) {
+            Toast.show({
+                type: 'error',
+                text1: 'Bạn chỉ có thể nhập tối đa 200 ký tự!',
+                position: 'top'
+            })
+        } else {
+            setcommentEditing(input);
+        }
+    }
+
+    function onCollapsedContent() {
+        setisCollapsedContent(!isCollapsedContent);
+    }
+
+    //Fuction support
     function OpenAccount() {
         navigation.push('ViewPage', { idUser: user._id });
     }
@@ -49,15 +79,6 @@ const ItemComment = (row) => {
             text1: 'Đã sao chép vào bộ nhớ tạm.',
             position: 'top'
         })
-    }
-
-    function onReactingComment() {
-        setisShowMenu(false);
-        if (isLoveComment) {
-            setisLoveComment(false);
-        } else {
-            setisLoveComment(true);
-        }
     }
 
     function onEnterEditing() {
@@ -80,6 +101,41 @@ const ItemComment = (row) => {
         }
         setenterEditing(false);
         row.callBackEdit(false);
+    }
+
+    function onShowAlert() {
+        setisShowMenu(false);
+        Toast.show({
+            type: 'alert',
+            position: 'top',
+            text1: "Xác nhận xóa bình luận?",
+            props: {
+                cancel: () => Toast.hide(),
+                confirm: onDeleteComment
+            },
+            autoHide: false
+        })
+    }
+
+    const onTextLayout = React.useCallback((e) => {
+        if (e.nativeEvent.lines.length > 5) {
+            setisLongContent(true);
+        }
+    }, []);
+
+    //Fuction api
+    function onReactingComment() {
+        setisShowMenu(false);
+        // if (isLoveComment) {
+        //     setisLoveComment(false);
+        // } else {
+        //     setisLoveComment(true);
+        // }
+        Toast.show({
+            type: 'error',
+            position: 'top',
+            text1: 'Tính năng này đang được phát triển!'
+        })
     }
 
     async function onUploadComment() {
@@ -138,46 +194,7 @@ const ItemComment = (row) => {
         }
     }
 
-    function onShowAlert() {
-        setisShowMenu(false);
-        Toast.show({
-            type: 'alert',
-            position: 'top',
-            text1: "Xác nhận xóa bình luận?",
-            props: {
-                cancel: () => Toast.hide(),
-                confirm: onDeleteComment
-            },
-            autoHide: false
-        })
-    }
-
-    function onChangeCommentInput(input) {
-        if (input.length > 200) {
-            Toast.show({
-                type: 'error',
-                text1: 'Bạn chỉ có thể nhập tối đa 200 ký tự!',
-                position: 'top'
-            })
-        } else {
-            setcommentEditing(input);
-        }
-    }
-
-    function onShowMenu() {
-        setisShowMenu(!isShowMenu);
-    }
-
-    function onCollapsedContent() {
-        setisCollapsedContent(!isCollapsedContent);
-    }
-
-    const onTextLayout = React.useCallback((e) => {
-        if (e.nativeEvent.lines.length > 5) {
-            setisLongContent(true);
-        }
-    }, []);
-
+    //Hook
     React.useEffect(() => {
         if (user) {
             setavatarUser({ uri: String(user.avatarUser) })
@@ -236,9 +253,9 @@ const ItemComment = (row) => {
 
     return (
         <Animated.View style={[styles.viewComment, (isUploading) ? { opacity: fadeAnim } : {}]}>
-            <TouchableOpacity onPress={OpenAccount} activeOpacity={0.5}
+            <TouchableOpacity onPress={onShowAccount} activeOpacity={0.5}
                 disabled={isUploading}>
-                <Image source={avatarUser} onError={() => setavatarUser(require('../../assets/images/error.png'))}
+                <Image source={avatarUser} onError={onErrorImage}
                     style={styles.avatarComment} />
             </TouchableOpacity>
             {
@@ -250,7 +267,7 @@ const ItemComment = (row) => {
                             <AntDesign name="edit" size={19} color={'#DC143C'} />
                         </View>
                         <TextInput style={[styles.inputComment, { maxHeight: 103, marginBottom: 3 }]} multiline={true}
-                            value={commentEditing} onChangeText={onChangeCommentInput} />
+                            value={commentEditing} onChangeText={onChangeCommentInput} maxLength={200}/>
                         <View style={{ width: '100%', alignItems: 'flex-end', marginTop: 5 }}>
                             <View style={{ flexDirection: 'row' }}>
                                 <TouchableOpacity style={{ flexDirection: 'row', marginLeft: 15 }} onPress={onUploadComment}>
@@ -338,12 +355,12 @@ const ItemComment = (row) => {
             }
             {
                 (isShowAccount)
-                    ? <ViewAccountModal isShow={isShowAccount} info={user} isFollow={isFollowed} callBack={() => setisShowAccount(false)} callbackFollow={onCallbackFollow} />
+                    ? <ViewAccountModal isShow={isShowAccount} info={user} isMe={(String(user._id) == String(loginId)) ? true : false} callBack={onShowAccount} />
                     : ""
             }
             {
                 (isShowMenu)
-                    ? <MenuContext isShow={isShowMenu} arr_OptionName={menuNames} arr_OptionFunction={menuFunctions} callBack={() => setisShowMenu(false)} />
+                    ? <MenuContext isShow={isShowMenu} arr_OptionName={menuNames} arr_OptionFunction={menuFunctions} callBack={onShowMenu} />
                     : ""
             }
         </Animated.View>

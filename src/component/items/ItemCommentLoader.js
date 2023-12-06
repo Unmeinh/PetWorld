@@ -16,7 +16,7 @@ export default function ItemCommentLoader(row) {
             />
             <View style={styles.viewContent}>
                 <ShimmerPlaceHolder
-                    shimmerStyle={styles.contentComment}
+                    shimmerStyle={[styles.contentComment, { borderRadius: 5 }]}
                 />
                 <View style={{ flexDirection: 'row' }}>
                     <View style={styles.viewRowInteract}>
@@ -24,7 +24,7 @@ export default function ItemCommentLoader(row) {
                             shimmerStyle={styles.iconInteractComment}
                         />
                         <ShimmerPlaceHolder
-                            shimmerStyle={styles.textInteractComment}
+                            shimmerStyle={[styles.textInteractComment, { borderRadius: 5 }]}
                         />
                     </View>
                 </View>

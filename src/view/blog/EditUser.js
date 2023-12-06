@@ -9,15 +9,13 @@ import {
 import HeaderTitle from '../../component/header/HeaderTitle';
 import { useNavigation } from '@react-navigation/native';
 import styles from '../../styles/user.style';
-import LinearGradient from 'react-native-linear-gradient';
-import { createShimmerPlaceholder } from 'react-native-shimmer-placeholder';
-import { onAxiosPut } from '../../api/axios.function';
+import { onAxiosPut, onDismissKeyboard } from '../../api/axios.function';
 import RNMaterialDatetimePicker from "react-native-material-datetime-picker";
 import { AndroidPickerMode } from 'react-native-material-datetime-picker';
 import Moment from 'moment';
 import Toast from 'react-native-toast-message';
+import ShimmerPlaceHolder from '../../component/layout/ShimmerPlaceHolder';
 
-const ShimmerPlaceHolder = createShimmerPlaceholder(LinearGradient);
 const infoKeys = ["fullName", "nickName", "birthday", "locationUser", "description"];
 const infoTypes = ["họ và tên", "biệt danh", "sinh nhật", "địa chỉ", "giới thiệu"];
 const infoNames = ["Tên", "Biệt danh", "Sinh nhật", "Địa chỉ", "Giới thiệu"];
@@ -28,9 +26,8 @@ const EditInfo = ({ route }) => {
     const [inputValue, setinputValue] = useState("")
     const [oldValueDisplay, setoldValueDisplay] = useState("");
     const [isLoader, setisLoader] = useState(true);
-    const [inputDatePicker, setinputDatePicker] = useState(new Date());
+    const [inputDatePicker, setinputDatePicker] = useState(new Date(String((new Date().getFullYear() - 16) + "-" + (new Date().getMonth() + 1) + "-" + new Date().getDate())));
     const [isShowDatePicker, setisShowDatePicker] = useState(false);
-    const colorLoader = ['#f0e8d8', '#dbdbdb', '#f0e8d8'];
 
     function onChangeInputValue(input) {
         setinputValue(input);
@@ -46,20 +43,44 @@ const EditInfo = ({ route }) => {
         setisShowDatePicker(false);
     }
 
-    async function OnSave() {
+    function onShowAlert() {
+        if (inputValue.trim() == "") {
+            Toast.show({
+                type: 'error',
+                position: 'top',
+                text1: infoNames[route.params.infoType] + ' không được để trống!',
+            })
+            return;
+        }
+        Toast.show({
+            type: 'alert',
+            position: 'top',
+            text1: 'Xác nhận thay đổi ' + infoTypes[route.params.infoType] + '?',
+            autoHide: false,
+            props: {
+                confirm: async () => onSave(),
+                cancel: () => {
+                    Toast.hide();
+                }
+            }
+        })
+    }
+
+    async function onSave() {
+        onDismissKeyboard();
         let res = null;
         Toast.show({
             type: 'loading',
             text1: "Đang cập nhật " + infoTypes[route.params.infoType] + "...",
-            // autoHide: true,
+            autoHide: false,
             position: 'top'
         });
         if (route.params.infoType == 2) {
-            res = await onAxiosPut('user/updateUser', { typeInfo: infoKeys[route.params.infoType], valueUpdate: inputDatePicker }, 'json');
+            res = await onAxiosPut('user/updateUser', { typeInfo: infoKeys[route.params.infoType], valueUpdate: inputDatePicker }, 'json', true);
         } else {
-            res = await onAxiosPut('user/updateUser', { typeInfo: infoKeys[route.params.infoType], valueUpdate: inputValue }, 'json');
+            res = await onAxiosPut('user/updateUser', { typeInfo: infoKeys[route.params.infoType], valueUpdate: inputValue }, 'json', true);
         }
-        if (res && res.success) {
+        if (res && res?.success) {
             navigation.goBack();
         }
     }
@@ -123,32 +144,26 @@ const EditInfo = ({ route }) => {
                     <View style={{ paddingHorizontal: 20, paddingTop: 15 }}>
                         <View style={styles.itemEditInfo}>
                             <ShimmerPlaceHolder
-                                shimmerColors={colorLoader}
                                 shimmerStyle={[styles.titleItemEdit, { height: 22, width: '35%', borderRadius: 5 }]} />
                             <View style={{ flexDirection: 'row', marginLeft: 10, alignItems: 'center' }}>
                                 <Text style={[styles.textItemEdit, { fontSize: 18 }]}>{'> '}</Text>
                                 <ShimmerPlaceHolder
-                                    shimmerColors={colorLoader}
                                     shimmerStyle={[styles.textItemEdit, { height: 17, width: '30%', borderRadius: 5, marginLeft: 8 }]} />
                             </View>
                         </View>
                         <View style={styles.itemEditInfo}>
                             <ShimmerPlaceHolder
-                                shimmerColors={colorLoader}
                                 shimmerStyle={[styles.titleItemEdit, { height: 22, width: '35%', borderRadius: 5 }]} />
                             <View style={{ flexDirection: 'row', marginLeft: 10, alignItems: 'center' }}>
                                 <Text style={[styles.textItemEdit, { fontSize: 18 }]}>{'>'}</Text>
                                 <ShimmerPlaceHolder
-                                    shimmerColors={colorLoader}
                                     shimmerStyle={{ height: 20, width: '93%', borderRadius: 15, marginTop: 3, marginLeft: 10 }} />
                             </View>
                         </View>
                         <View style={{ width: '100%', justifyContent: 'flex-end', flexDirection: 'row', marginTop: 25 }}>
                             <ShimmerPlaceHolder
-                                shimmerColors={colorLoader}
                                 shimmerStyle={{ height: 27, width: 80, borderRadius: 10, marginLeft: 10 }} />
                             <ShimmerPlaceHolder
-                                shimmerColors={colorLoader}
                                 shimmerStyle={{ height: 27, width: 80, borderRadius: 10, marginLeft: 10 }} />
                         </View>
                     </View>
@@ -178,12 +193,14 @@ const EditInfo = ({ route }) => {
                                                     onPress={onShowPicker}>
                                                     <Text style={[styles.textItemEdit, { fontSize: 18 }]}>{'>'}</Text>
                                                     <TextInput style={styles.inputEdit} placeholder='Nhập dữ liệu...'
+                                                        placeholderTextColor={'rgba(0, 0, 0, 0.35)'}
                                                         value={inputValue} editable={false} />
                                                 </Pressable>
                                                 :
                                                 <View style={{ flexDirection: 'row', marginLeft: 10, alignItems: 'center' }}>
                                                     <Text style={[styles.textItemEdit, { fontSize: 18 }]}>{'>'}</Text>
                                                     <TextInput style={styles.inputEdit} placeholder='Nhập dữ liệu...'
+                                                        placeholderTextColor={'rgba(0, 0, 0, 0.35)'}
                                                         value={inputValue} onChangeText={onChangeInputValue} />
                                                 </View>
                                         }
@@ -192,12 +209,12 @@ const EditInfo = ({ route }) => {
                                         <TouchableHighlight style={[styles.buttonSave, { backgroundColor: '#8E8E8E' }]}
                                             activeOpacity={0.5} underlayColor="#6D6D6D"
                                             onPress={() => navigation.goBack()}>
-                                            <Text style={[styles.textButtonFLModal, {fontSize: 13}]}>Quay lại</Text>
+                                            <Text style={[styles.textButtonFLModal, { fontSize: 13 }]}>Quay lại</Text>
                                         </TouchableHighlight>
                                         <TouchableHighlight style={[styles.buttonSave, { backgroundColor: '#F582AE' }]}
                                             activeOpacity={0.5} underlayColor="#DC749C"
-                                            onPress={OnSave}>
-                                            <Text style={[styles.textButtonFLModal, {fontSize: 13}]}>Xác nhận</Text>
+                                            onPress={onShowAlert}>
+                                            <Text style={[styles.textButtonFLModal, { fontSize: 13 }]}>Xác nhận</Text>
                                         </TouchableHighlight>
                                     </View>
                                 </View>
@@ -209,8 +226,9 @@ const EditInfo = ({ route }) => {
                 <RNMaterialDatetimePicker
                     mode={AndroidPickerMode.DATE}
                     value={inputDatePicker}
+                    maximumDate={new Date(String((new Date().getFullYear() - 16) + "-" + (new Date().getMonth() + 1) + "-" + new Date().getDate()))}
                     minimumDate={new Date("1900-01-01")}
-                    onConfirm={(date) => onChangeInputDate(date)}
+                    onConfirm={onChangeInputDate}
                 />
             }
         </View>
