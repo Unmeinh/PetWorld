@@ -14,11 +14,13 @@ const Favorite = ({navigation}) => {
   }, []);
 
   const getData = () => {
-    if (favorites?.data) {
+    if (favorites?.data?.petInfo) {
       return [...favorites?.data?.petInfo, ...favorites?.data?.productInfo];
     }
+    return [];
   };
 
+  console.log(getData());
   return (
     <View style={{backgroundColor: '#FEF6E4', flex: 1}}>
       <HeaderMyFavorite

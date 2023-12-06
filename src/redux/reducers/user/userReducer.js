@@ -33,6 +33,7 @@ const userReducer = createSlice({
     },
     setChangeData: (state, action) => {
       state.setChangeData = action.payload;
+      state.message = '';
     },
   },
   extraReducers: builder => {
@@ -41,7 +42,6 @@ const userReducer = createSlice({
         state.status = 'loading';
       })
       .addCase(fetchInfoLogin.fulfilled, (state, action) => {
-   
         if (action.payload.success === true) {
           state.loginData = action.payload.data;
           state.status = 'being idle';
@@ -82,7 +82,6 @@ const userReducer = createSlice({
           state.data = action.payload.data;
           state.message = action.payload.message;
           state.status = 'being idle';
-          goBack();
         } else {
           state.status = 'loading';
         }
@@ -160,5 +159,6 @@ export const fetchInfoUserNoMessage = createAsyncThunk(
     return res;
   },
 );
-export const {setUserLogin,setMessageUser, setChangeData} = userReducer.actions;
+export const {setUserLogin, setMessageUser, setChangeData} =
+  userReducer.actions;
 export default userReducer.reducer;

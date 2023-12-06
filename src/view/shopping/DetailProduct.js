@@ -32,7 +32,12 @@ import {
 import ShimmerPlaceHolder from '../../component/layout/ShimmerPlaceHolder';
 import SetAppointment from '../../component/modals/SetAppointment';
 import Loading from '../../component/Loading';
-import {GetDetailProduct, AddFavorite, DeleteFavorite} from '../../api/RestApi';
+import {
+  GetDetailProduct,
+  AddFavorite,
+  DeleteFavorite,
+  GetRating,
+} from '../../api/RestApi';
 import ReviewsItems from '../../component/detailProduct/ReviewsItem';
 import ImageView from 'react-native-image-viewing';
 const {width} = Dimensions.get('screen');
@@ -191,7 +196,6 @@ function DetailProduct({navigation, route}) {
 
   useEffect(() => {
     getDetailProduct();
-    getRate();
     return () => {
       setProduct({});
     };
@@ -521,7 +525,7 @@ function DetailProduct({navigation, route}) {
               <View style={{marginBottom: 10}}>
                 <ListHorizontal
                   data={listProduct}
-                  title="Sản phẩm liên quan"
+                  title="Sản phẩm khác"
                   isLoader={status}
                   type={1}
                 />
