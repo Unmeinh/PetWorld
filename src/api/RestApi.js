@@ -72,7 +72,8 @@ export const GetAllNotice = (status, page) =>
 
 export const GetAllFavorite = () => Get({endPoint: `favorite/list`});
 export const AddFavorite = id => Post({endPoint: `favorite/insert`, data: id});
-export const DeleteFavorite = () => Get({endPoint: `favorite/delete`});
+export const DeleteFavorite = id =>
+  Post({endPoint: `favorite/delete`, data: id});
 
 export const GetDetailShop = id => Get({endPoint: `/shop/detail/${id}`});
 

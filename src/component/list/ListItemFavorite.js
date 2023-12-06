@@ -1,26 +1,10 @@
-import React, {useState} from 'react';
-import {useEffect} from 'react';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import Icon from 'react-native-vector-icons/Ionicons';
-import {
-  View,
-  Text,
-  Image,
-  Dimensions,
-  StyleSheet,
-  TouchableOpacity,
-  TouchableHighlight
-} from 'react-native';
-import Feather from 'react-native-vector-icons/Feather';
-import Modal from 'react-native-modal';
-import {getDateTimeVietnamese} from '../../function/functionDate';
+import {View, Text, Image, StyleSheet, TouchableHighlight} from 'react-native';
 import {SharedElement} from 'react-navigation-shared-element';
 import {useNavigation} from '@react-navigation/native';
-const {width, height} = Dimensions.get('window');
+
 const ListItem = ({item, callBack}) => {
   const navigation = useNavigation();
-  const [like, setLike] = useState(false);
-  const handleLike = like ? 'heart-outline' : 'heart';
   const priceDiscount = (price, discount) => {
     if (discount > 0) {
       return (
@@ -28,7 +12,7 @@ const ListItem = ({item, callBack}) => {
           <Text style={styles.price}>
             {(price - (price * discount) / 100).toLocaleString('vi-VN') + 'đ'}{' '}
             <Text style={styles.discount}>
-              {price.toLocaleString('vi-VN') + 'đ'}
+              {price?.toLocaleString('vi-VN') + 'đ'}
             </Text>
           </Text>
         </SharedElement>
@@ -42,14 +26,6 @@ const ListItem = ({item, callBack}) => {
         </SharedElement>
       );
     }
-  };
-  const { status, data: favoriteData } = useSelector((state) => state.listFavorite);
-
-  useEffect(() => {
-    dispatch(fetchFavorites());
-  }, []);
-  const handleDeleteFavorite = (favoriteId) => {
-    dispatch(deleteFavorite(favoriteId));
   };
   const discountShow = discount => {
     if (discount > 0) {
@@ -82,15 +58,14 @@ const ListItem = ({item, callBack}) => {
             flexDirection: 'row',
           }}>
           <Image
-            // source={{
-            //   uri: item?.imagesPet ? item?.imagesPet[0] : item?.arrProduct[0],
-            // }}
+            source={{
+              uri: item?.imagesPet ? item?.imagesPet[0] : item?.arrProduct[0],
+            }}
             style={{width: 90, height: 90, borderRadius: 10}}
           />
 
           <View style={{marginLeft: 12}}>
             {discountShow(item?.discount)}
-
             <Text
               numberOfLines={1}
               style={{
@@ -99,70 +74,21 @@ const ListItem = ({item, callBack}) => {
                 color: '#001858',
                 marginTop: 6,
               }}>
-                aaaaaaaaaa
               {item?.namePet ? item?.namePet : item?.nameProduct}
             </Text>
 
-            <View
-              style={{
-                flexDirection: 'row',
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}>
-              <Text
-                style={{
-                  fontFamily: 'ProductSans',
-                  marginRight: 10,
-                }}>
-                20 phút
-              </Text>
-              <View
-                style={{
-                  width: 4,
-                  height: 4,
-                  backgroundColor: '#001858',
-                  marginRight: 8,
-                  borderRadius: 2,
-                }}
-              />
-              <Text
-                style={{
-                  fontFamily: 'ProductSans',
-                  marginRight: 10,
-                }}>
-                1.7 Km
-              </Text>
-              <View
-                style={{
-                  width: 4,
-                  height: 4,
-                  backgroundColor: '#001858',
-                  marginRight: 8,
-                  borderRadius: 2,
-                }}
-              />
-              <AntDesign name="star" size={14} color="#FFC20F" />
-
-              <Text style={{flexGrow: 1}}>{item?.rate}</Text>
-            </View>
             <View>
               {priceDiscount(
                 item?.pricePet ? item?.pricePet : item?.priceProduct,
                 item?.discount,
               )}
             </View>
-            <Icon
-                onPress={() => handleDeleteFavorite(item.id)}
-                name={handleLike}
-                size={24}
-                color="#F582AE"
-              />
           </View>
         </View>
       </TouchableHighlight>
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   price: {
