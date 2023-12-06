@@ -12,14 +12,11 @@ import styles from '../../styles/user.style';
 import { useSelector, useDispatch } from "react-redux";
 import { selectUserLogin, userSelectStatus } from '../../redux/selectors/userSelector';
 import { fetchInfoLogin } from '../../redux/reducers/user/userReducer';
-import LinearGradient from 'react-native-linear-gradient';
-import { createShimmerPlaceholder } from 'react-native-shimmer-placeholder';
 import Moment from "moment";
 import { onAxiosPut } from '../../api/axios.function';
 import { openPicker } from '@baronha/react-native-multiple-image-picker';
 import Toast from 'react-native-toast-message';
-
-const ShimmerPlaceHolder = createShimmerPlaceholder(LinearGradient);
+import ShimmerPlaceHolder from '../../component/layout/ShimmerPlaceHolder';
 
 const InfoManager = () => {
     var navigation = useNavigation();
@@ -29,7 +26,6 @@ const InfoManager = () => {
     const [pickedImage, setpickedImage] = useState(null);
     const [srcAvatar, setsrcAvatar] = useState(require('../../assets/images/loading.png'))
     const [isLoader, setisLoader] = useState(true);
-    const colorLoader = ['#f0e8d8', '#dbdbdb', '#f0e8d8'];
 
     async function onAvatarPicked() {
         try {
@@ -40,9 +36,20 @@ const InfoManager = () => {
                 isCrop: true,
                 isCropCircle: true,
                 singleSelectedMode: true
-
             });
-            setpickedImage(response);
+            if (response.crop) {
+                let cropPath = "file://" + response.crop.path;
+                response.crop.path = cropPath;
+                response.crop.fileName = response.fileName;
+                setpickedImage(response.crop);
+                setsrcAvatar({ uri: cropPath });
+            } else {
+                if (response?.path.indexOf('file://') < 0 && response?.path.indexOf('content://') < 0) {
+                    response.path = 'file://' + res.path;
+                }
+                setpickedImage(response);
+                setsrcAvatar({ uri: response.path });
+            }
         } catch (error) {
             console.log(error);
         }
@@ -56,6 +63,30 @@ const InfoManager = () => {
         navigation.navigate('EditAccount', { infoType: type, user: infoLogin });
     }
 
+    async function onUpdateAvatar() {
+        Toast.show({
+            type: 'loading',
+            text1: "Đang cập nhật ảnh đại diện...",
+            autoHide: false,
+            position: 'top'
+        });
+        var dataImage = {
+            uri: Platform.OS === "android" ? pickedImage.path : pickedImage.path.replace("file://", ""),
+            name: pickedImage.fileName,
+            type: "multipart/form-data"
+        };
+        let formData = new FormData();
+        formData.append('uploadImages', dataImage);
+        let res = await onAxiosPut('user/updateAvatar', formData, 'formdata', true);
+        if (res && res?.success) {
+            setpickedImage(null);
+            dispatch(fetchInfoLogin());
+        } else {
+            setpickedImage(null);
+            setsrcAvatar({ uri: String(infoLogin?.avatarUser) });
+        }
+    }
+
     //Use effect    
     React.useEffect(() => {
         if (uSelectStatus == "being idle") {
@@ -65,28 +96,22 @@ const InfoManager = () => {
     }, [uSelectStatus]);
 
     React.useEffect(() => {
-        (async () => {
-            if (pickedImage != null) {
-                Toast.show({
-                    type: 'loading',
-                    text1: "Đang cập nhật ảnh đại diện...",
-                    // autoHide: true,
-                    position: 'top'
-                });
-                var dataImage = {
-                    uri: Platform.OS === "android" ? pickedImage.path : pickedImage.path.replace("file://", ""),
-                    name: pickedImage.fileName,
-                    type: "multipart/form-data"
-                };
-                let formData = new FormData();
-                formData.append('uploadImages', dataImage);
-                let res = await onAxiosPut('user/updateAvatar', formData, 'formdata');
-                if (res && res.success) {
-                    setpickedImage(null);
-                    dispatch(fetchInfoLogin());
+        if (pickedImage != null) {
+            Toast.show({
+                type: 'alert',
+                position: 'top',
+                text1: 'Xác nhận thay đổi ảnh đại diện?',
+                autoHide: false,
+                props: {
+                    confirm: async () => await onUpdateAvatar(),
+                    cancel: () => {
+                        Toast.hide();
+                        setpickedImage(null);
+                        setsrcAvatar({ uri: String(infoLogin?.avatarUser) });
+                    }
                 }
-            }
-        })();
+            })
+        }
     }, [pickedImage]);
 
     React.useEffect(() => {
@@ -114,55 +139,43 @@ const InfoManager = () => {
                         <View style={styles.viewItemManager}>
                             <View style={{ flexDirection: 'row', alignItems: 'flex-end' }}>
                                 <ShimmerPlaceHolder
-                                    shimmerColors={colorLoader}
                                     shimmerStyle={{ width: 23, height: 23, borderRadius: 5 }} />
                                 <View style={{ marginLeft: 8 }}>
                                     <ShimmerPlaceHolder
-                                        shimmerColors={colorLoader}
                                         shimmerStyle={[styles.titleItemManager, { width: '40%', height: 18, borderRadius: 5 }]} />
                                     <ShimmerPlaceHolder
-                                        shimmerColors={colorLoader}
                                         shimmerStyle={[styles.textItemManager, { width: '60%', height: 15, borderRadius: 5, marginTop: 7 }]} />
                                 </View>
                             </View>
                             <ShimmerPlaceHolder
-                                shimmerColors={colorLoader}
                                 shimmerStyle={{ width: 20, height: 22, borderRadius: 5 }} />
                         </View>
                         <View style={styles.viewItemManager}>
                             <View style={{ flexDirection: 'row', alignItems: 'flex-end' }}>
                                 <ShimmerPlaceHolder
-                                    shimmerColors={colorLoader}
                                     shimmerStyle={{ width: 23, height: 23, borderRadius: 5 }} />
                                 <View style={{ marginLeft: 8 }}>
                                     <ShimmerPlaceHolder
-                                        shimmerColors={colorLoader}
                                         shimmerStyle={[styles.titleItemManager, { width: '40%', height: 18, borderRadius: 5 }]} />
                                     <ShimmerPlaceHolder
-                                        shimmerColors={colorLoader}
                                         shimmerStyle={[styles.textItemManager, { width: '60%', height: 15, borderRadius: 5, marginTop: 7 }]} />
                                 </View>
                             </View>
                             <ShimmerPlaceHolder
-                                shimmerColors={colorLoader}
                                 shimmerStyle={{ width: 20, height: 22, borderRadius: 5 }} />
                         </View>
                         <View style={styles.viewItemManager}>
                             <View style={{ flexDirection: 'row', alignItems: 'flex-end' }}>
                                 <ShimmerPlaceHolder
-                                    shimmerColors={colorLoader}
                                     shimmerStyle={{ width: 23, height: 23, borderRadius: 5 }} />
                                 <View style={{ marginLeft: 8 }}>
                                     <ShimmerPlaceHolder
-                                        shimmerColors={colorLoader}
                                         shimmerStyle={[styles.titleItemManager, { width: '40%', height: 18, borderRadius: 5 }]} />
                                     <ShimmerPlaceHolder
-                                        shimmerColors={colorLoader}
                                         shimmerStyle={[styles.textItemManager, { width: '60%', height: 15, borderRadius: 5, marginTop: 7 }]} />
                                 </View>
                             </View>
                             <ShimmerPlaceHolder
-                                shimmerColors={colorLoader}
                                 shimmerStyle={{ width: 20, height: 22, borderRadius: 5 }} />
                         </View>
                     </View>
@@ -186,7 +199,8 @@ const InfoManager = () => {
                                             <View style={{ marginLeft: 8 }}>
                                                 <Text style={styles.titleItemManager}>Họ và tên</Text>
                                                 <Text style={styles.textItemManager} numberOfLines={1}>
-                                                    {(infoLogin.fullName != undefined) ? infoLogin.fullName : "Chưa có"}
+                                                    {(infoLogin.fullName != undefined && String(infoLogin?.fullName).trim() != "")
+                                                        ? infoLogin.fullName : "Không có dữ liệu"}
                                                 </Text>
                                             </View>
                                         </View>
@@ -201,7 +215,8 @@ const InfoManager = () => {
                                             <View style={{ marginLeft: 8 }}>
                                                 <Text style={styles.titleItemManager}>Biệt danh</Text>
                                                 <Text style={styles.textItemManager} numberOfLines={1}>
-                                                    {(infoLogin.nickName != undefined) ? infoLogin.nickName : "Chưa có"}
+                                                    {(infoLogin.nickName != undefined && String(infoLogin?.nickName).trim() != "")
+                                                        ? infoLogin.nickName : "Không có dữ liệu"}
                                                 </Text>
                                             </View>
                                         </View>
@@ -216,7 +231,8 @@ const InfoManager = () => {
                                             <View style={{ marginLeft: 8 }}>
                                                 <Text style={styles.titleItemManager}>Sinh nhật</Text>
                                                 <Text style={styles.textItemManager} numberOfLines={1}>
-                                                    {(infoLogin.birthday != undefined) ? Moment(infoLogin.birthday).format('DD/MM/YYYY') : "Chưa có"}
+                                                    {(infoLogin.birthday != undefined && String(infoLogin?.birthday).trim() != "")
+                                                        ? Moment(infoLogin.birthday).format('DD/MM/YYYY') : "Không có dữ liệu"}
                                                 </Text>
                                             </View>
                                         </View>
@@ -231,7 +247,8 @@ const InfoManager = () => {
                                             <View style={{ marginLeft: 8 }}>
                                                 <Text style={styles.titleItemManager}>Địa chỉ</Text>
                                                 <Text style={styles.textItemManager} numberOfLines={1}>
-                                                    {(infoLogin.locationUser != undefined) ? infoLogin.locationUser : "Chưa có"}
+                                                    {(infoLogin.locationUser != undefined && String(infoLogin?.locationUser).trim() != "")
+                                                        ? infoLogin.locationUser : "Không có dữ liệu"}
                                                 </Text>
                                             </View>
                                         </View>
@@ -246,7 +263,8 @@ const InfoManager = () => {
                                             <View style={{ marginLeft: 8 }}>
                                                 <Text style={styles.titleItemManager}>Giới thiệu</Text>
                                                 <Text style={styles.textItemManager} numberOfLines={1}>
-                                                    {(infoLogin.description != undefined) ? infoLogin.description : "Chưa có"}
+                                                    {(infoLogin.description != undefined && String(infoLogin?.description).trim() != "")
+                                                        ? infoLogin.description : "Không có dữ liệu"}
                                                 </Text>
                                             </View>
                                         </View>
@@ -261,7 +279,8 @@ const InfoManager = () => {
                                             <View style={{ marginLeft: 8 }}>
                                                 <Text style={styles.titleItemManager}>Số điện thoại</Text>
                                                 <Text style={styles.textItemManager} numberOfLines={1}>
-                                                    {(infoLogin.idAccount.phoneNumber != undefined) ? "+" + infoLogin.idAccount.phoneNumber : "Chưa có"}
+                                                    {(infoLogin?.idAccount?.phoneNumber != undefined && String(infoLogin?.idAccount?.phoneNumber).trim() != "")
+                                                        ? "+" + infoLogin.idAccount.phoneNumber : "Không có dữ liệu"}
                                                 </Text>
                                             </View>
                                         </View>
@@ -276,7 +295,8 @@ const InfoManager = () => {
                                             <View style={{ marginLeft: 8 }}>
                                                 <Text style={styles.titleItemManager}>Email</Text>
                                                 <Text style={styles.textItemManager} numberOfLines={1}>
-                                                    {(infoLogin.idAccount.emailAddress != undefined) ? infoLogin.idAccount.emailAddress : "Chưa có"}
+                                                    {(infoLogin?.idAccount?.emailAddress != undefined && infoLogin?.idAccount?.emailAddress.trim() != "")
+                                                        ? infoLogin.idAccount.emailAddress : "Không có dữ liệu"}
                                                 </Text>
                                             </View>
                                         </View>

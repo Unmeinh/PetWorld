@@ -21,7 +21,7 @@ import { selectUserLogin, userSelectStatus } from '../../redux/selectors/userSel
 import { useNavigation } from '@react-navigation/native';
 import Toast from "react-native-toast-message";
 import { addBlog } from "../../redux/reducers/blog/blogReducer";
-import { onAxiosPost } from '../../api/axios.function';
+import { onAxiosPost, onDismissKeyboard } from '../../api/axios.function';
 import ShimmerPlaceHolder from '../../component/layout/ShimmerPlaceHolder';
 
 const NewBlog = ({ route }) => {
@@ -38,13 +38,16 @@ const NewBlog = ({ route }) => {
     const [isShowModal, setisShowModal] = useState(false);
     const [isLoader, setisLoader] = useState(true);
 
+    function onErrorImage() {
+        setsrcAvatar(require('../../assets/images/error.png'))
+    }
+
     function checkValidate(newBlog) {
         if (newBlog.idUser == undefined) {
             Toast.show({
                 type: 'error',
                 position: 'top',
-                text1: "Không tìm thấy id người dùng!",
-                bottomOffset: 20
+                text1: "Không tìm thấy id người dùng!"
             });
             return false;
         }
@@ -53,14 +56,14 @@ const NewBlog = ({ route }) => {
             Toast.show({
                 type: 'error',
                 position: 'top',
-                text1: "Bạn hãy nhập gì đó trước khi đăng nhé!",
-                bottomOffset: 20
+                text1: "Bạn hãy nhập gì đó trước khi đăng nhé!"
             });
             return false;
         }
     }
 
     const UploadPost = async () => {
+        onDismissKeyboard();
         var newBlog = {
             idUser: infoLogin._id,
             contentBlog: inputContent
@@ -95,8 +98,8 @@ const NewBlog = ({ route }) => {
 
         let res = await onAxiosPost('blog/insert', formData, "formdata", true);
         if (res) {
-            if (route.params.fetchBlog != undefined) {
-                route.params.fetchBlog()
+            if (route?.params?.fetchBlog != undefined) {
+                route?.params?.fetchBlog()
             }
             dispatch(addBlog(res.data));
             navigation.goBack();
@@ -110,6 +113,13 @@ const NewBlog = ({ route }) => {
                 selectedAssets: 'Images',
                 doneTitle: 'Xong',
             });
+            for (let i = 0; i < response.length; i++) {
+                const res = response[i];
+                if (res?.path.indexOf('file://') < 0 && res?.path.indexOf('content://') < 0) {
+                    res.path = 'file://' + res.path;
+                    response.splice(i, 1, res);
+                }
+            } 
             setarr_Image([...arr_Image, ...response]);
         } catch (error) {
             console.log(error);
@@ -233,7 +243,7 @@ const NewBlog = ({ route }) => {
                             (infoLogin != undefined)
                                 ? <View style={[styles.viewInfoHead, { paddingTop: 15 }]}>
                                     <View style={styles.viewRowCenter}>
-                                        <Image source={srcAvatar} onError={() => setsrcAvatar(require('../../assets/images/error.png'))}
+                                        <Image source={srcAvatar} onError={onErrorImage}
                                             style={styles.imageAvatar} />
                                         <Text style={styles.textName}>{infoLogin.fullName}</Text>
                                     </View>
@@ -253,9 +263,10 @@ const NewBlog = ({ route }) => {
                                         <View>
                                             <TextInput style={[styles.textContentNewBlog,
                                             { fontFamily: (String(inputFont) == 'Default') ? "" : String(inputFont) }]}
-                                                multiline={true}
+                                                multiline={true} maxLength={1000}
+                                                placeholderTextColor={'rgba(0, 0, 0, 0.35)'}
                                                 placeholder='Bức ảnh này có gì?' value={inputContent}
-                                                onChangeText={(input) => { setinputContent(input) }} />
+                                                onChangeText={setinputContent} />
                                         </View>
                                         <View style={{ flex: 1 }}>
                                             <FlatList
@@ -271,9 +282,10 @@ const NewBlog = ({ route }) => {
                                     <View>
                                         <TextInput style={[styles.textContentNewBlog,
                                         { fontFamily: (String(inputFont) == 'Default') ? "" : String(inputFont), marginBottom: 50 }]}
-                                            multiline={true}
+                                            multiline={true} maxLength={1000}
+                                            placeholderTextColor={'rgba(0, 0, 0, 0.35)'}
                                             placeholder='Bạn muốn chia sẻ điều gì?' value={inputContent}
-                                            onChangeText={(input) => { setinputContent(input) }} />
+                                            onChangeText={setinputContent} />
                                     </View>
                             }
                         </ScrollView>

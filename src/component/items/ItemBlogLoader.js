@@ -1,15 +1,11 @@
 import {
-    View, Dimensions, 
+    View, Dimensions,
 } from "react-native";
 import React, { useState, useCallback } from "react";
 import styles from '../../styles/blog.style';
-import LinearGradient from 'react-native-linear-gradient';
-import { createShimmerPlaceholder } from 'react-native-shimmer-placeholder';
-
-const ShimmerPlaceHolder = createShimmerPlaceholder(LinearGradient);
+import ShimmerPlaceHolder from "../layout/ShimmerPlaceHolder";
 
 export default function ItemBlogLoader() {
-    const colorLoader = ['#f0e8d8', '#dbdbdb', '#f0e8d8'];
     var imageW = Dimensions.get('window').width;
     var imageH = imageW * 2 / 3;
 
@@ -20,23 +16,18 @@ export default function ItemBlogLoader() {
                     <View style={{ flexDirection: 'row', alignItems: "center" }}>
                         <ShimmerPlaceHolder
                             shimmerStyle={styles.imageAvatar}
-                            shimmerColors={colorLoader}
                         />
                         <ShimmerPlaceHolder
-                            shimmerStyle={styles.textName}
-                            shimmerColors={colorLoader}
+                            shimmerStyle={[styles.textName, { borderRadius: 5 }]}
                         />
                     </View>
 
                     <ShimmerPlaceHolder
-                        shimmerStyle={{ width: 25, height: 10 }}
-                        shimmerColors={colorLoader}
-                    />
+                        shimmerStyle={{ width: 25, height: 10, borderRadius: 5 }} />
                 </View>
 
                 <ShimmerPlaceHolder
                     shimmerStyle={{ width: imageW, height: imageH }}
-                    shimmerColors={colorLoader}
                 />
 
                 <View style={styles.viewBelowPost}>
@@ -45,41 +36,34 @@ export default function ItemBlogLoader() {
                             <View style={styles.viewRowInteract}>
                                 <ShimmerPlaceHolder
                                     shimmerStyle={{ width: 27, height: 27, borderRadius: 20 }}
-                                    shimmerColors={colorLoader}
                                 />
                                 <ShimmerPlaceHolder
-                                    shimmerStyle={[styles.textInteract, { width: 20, }]}
-                                    shimmerColors={colorLoader}
+                                    shimmerStyle={[styles.textInteract, { width: 20, borderRadius: 5 }]}
                                 />
                             </View>
 
                             <View style={styles.viewRowInteract}>
                                 <ShimmerPlaceHolder
                                     shimmerStyle={{ width: 27, height: 27, borderRadius: 20 }}
-                                    shimmerColors={colorLoader}
                                 />
                                 <ShimmerPlaceHolder
-                                    shimmerStyle={[styles.textInteract, { width: 20, }]}
-                                    shimmerColors={colorLoader}
+                                    shimmerStyle={[styles.textInteract, { width: 20, borderRadius: 5, }]}
                                 />
                             </View>
                         </View>
-                        <View style={styles.viewRowInteract}>
+                        <View style={[styles.viewRowInteract, { marginRight: 0 }]}>
                             <ShimmerPlaceHolder
                                 shimmerStyle={{ width: 27, height: 27, borderRadius: 20 }}
-                                shimmerColors={colorLoader}
                             />
                         </View>
                     </View>
                     <View style={{ marginVertical: 7 }}>
                         <ShimmerPlaceHolder
-                            shimmerStyle={[styles.textContent, { width: '30%', }]}
-                            shimmerColors={colorLoader}
+                            shimmerStyle={[styles.textContent, { width: '50%', borderRadius: 5 }]}
                         />
                     </View>
                     <ShimmerPlaceHolder
-                        shimmerStyle={[styles.textTime, { width: '30%', }]}
-                        shimmerColors={colorLoader}
+                        shimmerStyle={[{ width: '30%', height: 12, borderRadius: 5 }]}
                     />
                 </View>
 

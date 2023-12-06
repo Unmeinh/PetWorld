@@ -2,10 +2,10 @@ import {
     Animated,
     Dimensions,
     FlatList, View,
-    Image
+    Image,
+    Pressable
 } from 'react-native';
 import React, { useRef, useState } from 'react';
-import AutoHeightImage from 'react-native-auto-height-image';
 import PanigationBlog from './PanigationBlog';
 
 export default function BlogImageSlider({ array, aspectRatio }) {
@@ -38,11 +38,10 @@ export default function BlogImageSlider({ array, aspectRatio }) {
     }).current;
 
     const SliderItem = ({ item }) => {
-
         return (
-            <View style={{ width: Dimensions.get('window').width }}>
+            <Pressable style={{ width: Dimensions.get('window').width }}>
                 <Image source={{ uri: String(item) }} style={{ width: Dimensions.get('window').width, aspectRatio: aspectRatio }} />
-            </View>
+            </Pressable>
         );
     }
 

@@ -17,6 +17,14 @@ export default StyleSheet.create({
         backgroundColor: "rgba(0, 0, 0, 0.5)",
     },
 
+    swipeControlModal: {
+        width: '15%',
+        height: 4,
+        backgroundColor: '#C2C2C2',
+        marginVertical: 3,
+        borderRadius: 15
+    },
+
     viewDialog: {
         width: "100%",
         height: WindowHeight - 20,
@@ -97,6 +105,23 @@ export default StyleSheet.create({
         fontSize: 17,
         fontFamily: 'ProductSans',
         color: '#f00',
+    },
+
+    viewOther: {
+        flex: 1,
+        alignItems: 'center',
+        top: '-10%'
+    },
+
+    lottieView: {
+        width: WindowWidth,
+        height: WindowWidth
+    },
+
+    textHint: {
+        fontSize: 16,
+        fontFamily: 'ProductSans',
+        color: 'rgba(0, 0, 0, 0.6)',
     },
 
     //Comment Item

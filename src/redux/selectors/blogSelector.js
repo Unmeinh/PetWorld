@@ -4,6 +4,7 @@ export const listBlogUserSelector = state => state.listBlog.dataUser;
 export const userSelectId = state => state.listBlog.userId;
 export const blogSelectId = state => state.listBlog.selectId;
 export const blogSelectStatus = state => state.listBlog.status;
+export const blogCanLoadMore = state => state.listBlog.canLoadMore;
 export const userLoginId = state => state.listUser.loginData._id;
 
 export const selectBlogs = createSelector(

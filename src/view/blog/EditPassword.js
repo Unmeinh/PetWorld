@@ -101,7 +101,7 @@ const EditPassword = ({ route }) => {
             newPassword: inputNewPassword
         }
         let res = await onAxiosPut('user/updatePassword', data, 'json', true);
-        if (res && res.success) {
+        if (res && res?.success) {
             goBack();
         }
     }

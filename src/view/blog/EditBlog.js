@@ -20,8 +20,9 @@ import { fetchInfoLogin } from '../../redux/reducers/user/userReducer';
 import { selectUserLogin, userSelectStatus } from '../../redux/selectors/userSelector';
 import { useNavigation } from '@react-navigation/native';
 import Toast from "react-native-toast-message";
+import ShimmerPlaceHolder from '../../component/layout/ShimmerPlaceHolder';
 import { updateBlog } from '../../redux/reducers/blog/blogReducer';
-import { onAxiosPut } from '../../api/axios.function';
+import { onAxiosPut, onDismissKeyboard } from '../../api/axios.function';
 import { LogBox } from 'react-native';
 LogBox.ignoreLogs([
     'Non-serializable values were found in the navigation state',
@@ -65,6 +66,7 @@ const EditBlog = ({ route }) => {
     }
 
     const UploadPost = async () => {
+        onDismissKeyboard()
         var newBlog = {
             idUser: infoLogin._id,
             contentBlog: inputContent
@@ -105,8 +107,8 @@ const EditBlog = ({ route }) => {
 
         let res = await onAxiosPut('blog/update/' + oldBlog._id, formData, "formdata", true);
         if (res) {
-            if (route.params.fetchBlog != undefined) {
-                route.params.fetchBlog()
+            if (route?.params?.fetchBlog != undefined) {
+                route?.params?.fetchBlog()
             }
             dispatch(updateBlog([oldBlog._id, res.data]));
             navigation.goBack();
@@ -120,6 +122,13 @@ const EditBlog = ({ route }) => {
                 selectedAssets: 'Images',
                 doneTitle: 'Xong',
             });
+            for (let i = 0; i < response.length; i++) {
+                const res = response[i];
+                if (res?.path.indexOf('file://') < 0 && res?.path.indexOf('content://') < 0) {
+                    res.path = 'file://' + res.path;
+                    response.splice(i, 1, res);
+                }
+            } 
             setarr_Image([...arr_Image, ...response]);
         } catch (error) {
             console.log(error);

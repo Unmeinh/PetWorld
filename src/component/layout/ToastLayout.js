@@ -48,6 +48,23 @@ export function ToastLayout() {
             </View>
         ),
 
+        warning: ({ text1, props }) => (
+            <View style={styles.toastContainer}>
+                <Ionicons name='alert-circle' color={'#EAC645'} size={35} />
+                <Text style={styles.toastText}
+                    numberOfLines={3}>
+                    {text1}
+                </Text>
+                <View style={styles.viewToastType}>
+                    <LinearGradient start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}
+                        colors={['#EAC64559', '#FFFFFF00']}
+                        style={styles.circleToastType}>
+                        <Text> </Text>
+                    </LinearGradient>
+                </View>
+            </View>
+        ),
+
         loading: ({ text1, props }) => (
             <>
                 <View style={styles.toastContainer}>

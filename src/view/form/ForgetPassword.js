@@ -58,7 +58,7 @@ export default function ForgetPassword({ navigation }) {
   }
 
   async function onContinue() {
-    var regEmail = /^(\w+@[a-zA-Z]+\.[a-zA-Z]{2,})$/;
+    var regEmail = /^(?=[A-Za-z]).*@[a-zA-Z]+.[a-zA-Z]{2,}$/;
     var regPhone = /^(\+\d{9,})$/;
 
     if (isSelectPhone == false && isSelectEmail == false) {

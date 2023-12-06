@@ -36,7 +36,7 @@ export default StyleSheet.create({
     },
 
     textHint: {
-        fontSize: 15,
+        fontSize: 16,
         fontFamily: 'ProductSans',
         color: 'rgba(0, 0, 0, 0.6)',
         marginTop: 15

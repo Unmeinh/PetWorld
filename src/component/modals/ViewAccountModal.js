@@ -15,6 +15,8 @@ import { useSelector } from "react-redux";
 import { onAxiosPost } from "../../api/axios.function";
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import ShimmerPlaceHolder from "../layout/ShimmerPlaceHolder";
+import Toast from "react-native-toast-message";
+import { ToastLayout } from "../layout/ToastLayout";
 
 const ViewAccountModal = (route) => {
     const navigation = useNavigation();
@@ -26,9 +28,17 @@ const ViewAccountModal = (route) => {
     const [isLoader, setisLoader] = useState(false);
     const colorLoader = ['#f0e8d8', '#dbdbdb', '#f0e8d8'];
 
+    function onDeveloping() {
+        Toast.show({
+            type: 'error',
+            position: 'top',
+            text1: 'Tính năng này đang được phát triển!'
+        })
+    }
+
     function OpenAccount() {
         route.callBack();
-        if (loginId == infoUser._id)
+        if (loginId == infoUser._id || route?.isMe)
             navigation.push('MyPage');
         else {
             navigation.push('ViewPage', { idUser: infoUser._id });
@@ -46,9 +56,14 @@ const ViewAccountModal = (route) => {
         }
     }
 
-    function OpenListFollow(type) {
+    function OpenListFollowing() {
         route.callBack();
-        navigation.push('ListFollow', { idUser: infoUser._id, typeFollow: type });
+        navigation.push('ListFollow', { idUser: infoUser._id, typeFollow: 'following' });
+    }
+
+    function OpenListFollower() {
+        route.callBack();
+        navigation.push('ListFollow', { idUser: infoUser._id, typeFollow: 'follower' });
     }
 
     React.useEffect(() => {
@@ -71,7 +86,7 @@ const ViewAccountModal = (route) => {
                     <Image source={srcAvatar} style={styles.modalUserAvatar} />
                     <View style={styles.viewContentOnline}>
                         {
-                            (infoUser.idAccount.online == 0)
+                            (infoUser?.idAccount?.online == 0)
                                 ? <View style={styles.contentOnline} />
                                 : <>
                                     <View style={styles.topOfline} />
@@ -80,8 +95,9 @@ const ViewAccountModal = (route) => {
                         }
                     </View>
                 </View>
-                <Text style={styles.modalUserName} numberOfLines={1}>{infoUser.fullName}</Text>
-                {
+                <Text style={styles.modalUserName} numberOfLines={2}>{infoUser.fullName}</Text>
+                <View style={{width: '100%', height: 15,}}/>
+                {/* {
                     (isFollow)
                         ? <TouchableHighlight style={[styles.buttonFLModal, { backgroundColor: '#8BD3DD' }]}
                             activeOpacity={0.5} underlayColor="#63AAB4"
@@ -99,26 +115,26 @@ const ViewAccountModal = (route) => {
                                 <Text style={styles.textButtonFLModal}>Theo dõi</Text>
                             </View>
                         </TouchableHighlight>
-                }
+                } */}
                 <View style={styles.viewRowAroundModal}>
                     <View style={{ alignItems: 'center' }}>
                         <Text style={styles.textCountModal}>{infoUser.blogs}</Text>
                         <Text style={styles.detailCountModal}>Bài viết</Text>
                     </View>
                     <TouchableOpacity style={{ alignItems: 'center' }}
-                        onPress={() => OpenListFollow('following')}>
-                        <Text style={styles.textCountModal}>{infoUser.followings.length}</Text>
+                        onPress={OpenListFollowing}>
+                        <Text style={styles.textCountModal}>{infoUser?.followings.length}</Text>
                         <Text style={styles.detailCountModal}>Đang theo dõi</Text>
                     </TouchableOpacity>
                     <TouchableOpacity style={{ alignItems: 'center' }}
-                        onPress={() => OpenListFollow('follower')}>
-                        < Text style={styles.textCountModal} > {infoUser.followers.length}</Text>
+                        onPress={OpenListFollower}>
+                        < Text style={styles.textCountModal} > {infoUser?.followers.length}</Text>
                         <Text style={styles.detailCountModal}>Người theo dõi</Text>
                     </TouchableOpacity>
                 </View>
                 <Text style={styles.textDescModal} numberOfLines={4}>
                     {
-                        (infoUser.description != undefined)
+                        (infoUser?.description != undefined && infoUser?.description.trim() != '')
                             ? infoUser.description
                             : "Chưa có giới thiệu"
                     }
@@ -128,10 +144,15 @@ const ViewAccountModal = (route) => {
                     <Fontisto name="person" color={'#001858'} size={17} />
                     <Text style={styles.textOptionModal}>Xem trang cá nhân</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.viewOptionModal}>
-                    <MaterialCommunityIcons name="chat-plus" color={'#001858'} size={17} />
-                    <Text style={styles.textOptionModal}>Gửi tin nhắn</Text>
-                </TouchableOpacity>
+                {
+                    (route?.isMe)
+                    ? ""
+                    :<TouchableOpacity style={styles.viewOptionModal}
+                        onPress={onDeveloping}>
+                        <MaterialCommunityIcons name="chat-plus" color={'#001858'} size={17} />
+                        <Text style={styles.textOptionModal}>Gửi tin nhắn</Text>
+                    </TouchableOpacity>
+                }
             </View>
         )
     }
@@ -208,21 +229,16 @@ const ViewAccountModal = (route) => {
             isVisible={route.isShow}
             swipeDirection="right"
             propagateSwipe={true}
-            onSwipeComplete={() => {
-                route.callBack();
-            }}
-            onBackdropPress={() => {
-                route.callBack();
-            }}
-            onBackButtonPress={() => {
-                route.callBack();
-            }}>
+            onSwipeComplete={route.callBack}
+            onBackdropPress={route.callBack}
+            onBackButtonPress={route.callBack}>
             <View style={styles.modalUserContainer} >
                 {
                     (isLoader)
                         ? <ModalLoader />
                         : <ModalAccount />
                 }
+                <ToastLayout/>
             </View >
         </Modal >
     );
