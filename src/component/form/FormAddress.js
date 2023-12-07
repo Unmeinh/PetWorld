@@ -33,7 +33,7 @@ export default function FormAddress({action, value}) {
   const [phoneNumberForm, setPhoneNumber] = useState(
     '0' + phoneNumber.toString(),
   );
-  const [address, setAddress] = useState(location);
+  const [address, setAddress] = useState(getDataEdit()[0]);
   const status = useSelector(userSelectStatus);
   const message = useSelector(userMessage);
   const billdetail = useSelector(billSelector);
@@ -41,7 +41,6 @@ export default function FormAddress({action, value}) {
   const [valueProvince, setValueProvince] = useState(null);
   const [valueDistrict, setValueDistrict] = useState(null);
   const [valueWard, setValueWard] = useState(null);
-
   useEffect(() => {
     if (status !== 'loading' && message.length > 0) {
       ToastAndroid.show(message, ToastAndroid.SHORT);
@@ -53,38 +52,82 @@ export default function FormAddress({action, value}) {
       dispatch(getProvince());
     }
     if (valueProvince?.value) {
-      setValueDistrict(null)
-      setValueWard(null)
+      setValueDistrict(null);
+      setValueWard(null);
       dispatch(getDistrict(valueProvince.value));
     }
   }, [valueProvince]);
   useEffect(() => {
     if (valueDistrict?.value) {
-      setValueWard(null)
+      setValueWard(null);
       dispatch(getWards(valueDistrict.value));
     }
   }, [valueDistrict]);
+
+  function getDataEdit() {
+    if (value.data) {
+      const arrLocation = value.data.location.split(', ');
+      return arrLocation;
+    }
+    return [];
+  }
+
   const handleSave = () => {
     if (
       fullname.trim().length == 0 ||
       address.trim().length == 0 ||
-      phoneNumberForm.trim().length == 0 ||
-      valueProvince == null ||
-      valueDistrict == null ||
-      valueWard == null
+      phoneNumberForm.trim().length == 0
     ) {
-      ToastAndroid.show('Không được bỏ trống',ToastAndroid.SHORT);
+      ToastAndroid.show('Không được bỏ trống', ToastAndroid.SHORT);
+      return;
+    }
+    if (value.data) {
+      if (!valueWard && !valueDistrict && !valueProvince) {
+        return dispatch(
+          action({
+            fullName: fullname.trim(),
+            phoneNumber: phoneNumberForm.trim(),
+            location: `${address}, ${getDataEdit()[1]}, ${getDataEdit()[2]}, ${
+              getDataEdit()[3]
+            }`,
+            idLocation: _id,
+          }),
+        );
+      } else {
+        if (
+          valueProvince == null ||
+          valueDistrict == null ||
+          valueWard == null
+        ) {
+          ToastAndroid.show('Không được bỏ trống', ToastAndroid.SHORT);
+          return;
+        }
+        return dispatch(
+          action({
+            fullName: fullname.trim(),
+            phoneNumber: phoneNumberForm.trim(),
+            location: `${address}, ${valueWard?.label ?? getDataEdit()[1]}, ${
+              valueDistrict?.label ?? getDataEdit()[2]
+            }, ${valueProvince?.label ?? getDataEdit()[3]}`,
+            idLocation: _id,
+          }),
+        );
+      }
+    }
+
+    if (valueProvince == null || valueDistrict == null || valueWard == null) {
+      ToastAndroid.show('Không được bỏ trống', ToastAndroid.SHORT);
       return;
     }
     if (isNaN(phoneNumberForm)) {
-      ToastAndroid.show('Số điện thoại phải là số',ToastAndroid.SHORT);
+      ToastAndroid.show('Số điện thoại phải là số', ToastAndroid.SHORT);
       return;
     }
     if (
       phoneNumberForm.trim().length > 11 ||
       phoneNumberForm.trim().length < 9
     ) {
-      ToastAndroid.show('Số điện thoại phải từ 11-9 số',ToastAndroid.SHORT);
+      ToastAndroid.show('Số điện thoại phải từ 11-9 số', ToastAndroid.SHORT);
       return;
     }
 
@@ -93,27 +136,21 @@ export default function FormAddress({action, value}) {
         action({
           fullName: fullname.trim(),
           phoneNumber: phoneNumberForm.trim(),
-          location: `${address.trim()}, ${valueWard?.label}, ${valueDistrict?.label}, ${valueProvince?.label}`,
+          location: `${address.trim()}, ${valueWard?.label}, ${
+            valueDistrict?.label
+          }, ${valueProvince?.label}`,
           isSelected: false,
         }),
       );
       setAddress('');
       setPhoneNumber('');
       setFullName('');
-      setValueDistrict(null)
-      setValueProvince(null)
-      setValueWard(null)
-    } else {
-      dispatch(
-        action({
-          fullName: fullname.trim(),
-          phoneNumber: phoneNumberForm.trim(),
-          location: address.trim(),
-          idLocation: _id,
-        }),
-      );
+      setValueDistrict(null);
+      setValueProvince(null);
+      setValueWard(null);
     }
   };
+
   return (
     <>
       <ScrollView style={styles.container}>
@@ -147,7 +184,8 @@ export default function FormAddress({action, value}) {
           placeholderStyle={styles.textMedium}
           itemTextStyle={styles.textMedium}
           selectedTextStyle={styles.textMedium}
-          placeholder=""
+          placeholder={getDataEdit() ? getDataEdit()[3] : null}
+          selectedTextProps={getDataEdit() ? getDataEdit()[3] : null}
           data={billdetail.province}
           onChange={item => {
             setValueProvince(item);
@@ -162,7 +200,8 @@ export default function FormAddress({action, value}) {
           itemTextStyle={styles.textMedium}
           selectedTextStyle={styles.textMedium}
           style={styles.dropdown}
-          placeholder=""
+          placeholder={!valueProvince ? getDataEdit()[2] : ''}
+          selectedTextProps={!valueProvince ? getDataEdit()[2] : ''}
           data={billdetail.district}
           onChange={item => {
             setValueDistrict(item);
@@ -177,7 +216,8 @@ export default function FormAddress({action, value}) {
           itemTextStyle={styles.textMedium}
           selectedTextStyle={styles.textMedium}
           style={styles.dropdown}
-          placeholder=""
+          placeholder={!valueDistrict ? getDataEdit()[1] : ''}
+          selectedTextProps={!valueDistrict ? getDataEdit()[1] : ''}
           data={billdetail.wards}
           onChange={item => {
             setValueWard(item);
@@ -224,7 +264,7 @@ const styles = StyleSheet.create({
     borderColor: 'rgba(101, 101, 101,0.2)',
     fontFamily: 'ProductSans',
     fontSize: 17,
-    color:'rgba(101, 101, 101,0.5)'
+    color: 'rgba(101, 101, 101,0.5)',
   },
   title: {
     fontFamily: 'ProductSansBold',
@@ -247,7 +287,7 @@ const styles = StyleSheet.create({
   },
   textMedium: {
     fontFamily: 'ProductSans',
-    color:'#b3aaaa'
+    color: '#b3aaaa',
   },
   dropdown: {
     height: 50,

@@ -13,7 +13,6 @@ import {
 import React, {useState, useEffect} from 'react';
 import HeaderTitle from '../../component/header/HeaderTitle';
 import UserTag from '../../component/shop/UserTag';
-import ItemCartSummary from '../../component/ListProduct/ItemCartSummary';
 import {useSelector, useDispatch} from 'react-redux';
 import {billSelector, useLocationSeleted} from '../../redux/selector';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -30,7 +29,8 @@ import {
 import moment from 'moment';
 import Loading from '../../component/Loading';
 const {width} = Dimensions.get('screen');
-export default function SummaryBill({navigation, route}) {
+
+export default function BuyNowScreen({navigation, route}) {
   const item = route?.params?.item;
   const [user, district] = useSelector(useLocationSeleted);
   const statusUser = useSelector(userSelectStatus);
@@ -47,6 +47,17 @@ export default function SummaryBill({navigation, route}) {
     }
     return result.trim();
   };
+
+  const checkLocation = () => {
+    let result = false;
+    if (
+      districtProduct(item?.idShop?.locationShop) == districtProduct(district)
+    ) {
+      result = true;
+    }
+    return result;
+  };
+
   const showShip = () => {
     const money =
       districtProduct(item?.idShop?.locationShop) == districtProduct(district)
@@ -354,6 +365,12 @@ export default function SummaryBill({navigation, route}) {
           <Pressable
             style={styles.button}
             onPress={() => {
+              if (item.type === 0 && !checkLocation()) {
+                return ToastAndroid.show(
+                  'Mua thú cưng chỉ giới hạn trong nội thành',
+                  ToastAndroid.SHORT,
+                );
+              }
               if (checkValidate()) {
                 if (selectedId === 1) {
                   const code = generateRandomCode();
