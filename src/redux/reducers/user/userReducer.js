@@ -1,6 +1,6 @@
-import {createAsyncThunk, createSlice} from '@reduxjs/toolkit';
-import {onAxiosGet} from '../../../api/axios.function';
-import {goBack} from '../../../navigation/rootNavigation';
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { onAxiosGet } from '../../../api/axios.function';
+import { goBack } from '../../../navigation/rootNavigation';
 import axiosAPi from '../../../api/axios.config';
 import {
   AddLocationUser,
@@ -117,9 +117,12 @@ export const fetchUsers = createAsyncThunk('user/list/all', async () => {
   const res = await onAxiosGet('/user/list/all');
   return res;
 });
-export const fetchInfoLogin = createAsyncThunk('user/myDetail', async () => {
-  const res = await onAxiosGet('/user/myDetail');
-  return res;
+export const fetchInfoLogin = createAsyncThunk('user/myDetail', async (isReadBill) => {
+  if (isReadBill != undefined && isReadBill) {
+    return await onAxiosGet('/user/myDetail?isReadBill=true');
+  } else {
+    return await onAxiosGet('/user/myDetail');
+  }
 });
 export const fetchInfoUser = createAsyncThunk('user/userDetail', async id => {
   const res = await onAxiosGet('/user/userDetail/' + id);
@@ -159,6 +162,6 @@ export const fetchInfoUserNoMessage = createAsyncThunk(
     return res;
   },
 );
-export const {setUserLogin, setMessageUser, setChangeData} =
+export const { setUserLogin, setMessageUser, setChangeData } =
   userReducer.actions;
 export default userReducer.reducer;

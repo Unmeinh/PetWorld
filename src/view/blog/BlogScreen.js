@@ -3,7 +3,7 @@ import {
   View, FlatList,
   ActivityIndicator,
   SafeAreaView, TouchableOpacity,
-  TouchableHighlight, Image, 
+  TouchableHighlight, Image,
 } from 'react-native'
 import React, { useState, useEffect, memo } from 'react'
 import styles from '../../styles/blog.style';
@@ -74,11 +74,11 @@ const BlogScreen = () => {
         setisLoadingMore(true);
       }
     } else {
-      Toast.show({
-        type: 'warning',
-        position: 'top',
-        text1: 'Đã xem hết blog hiện có!'
-      })
+      // Toast.show({
+      //   type: 'warning',
+      //   position: 'top',
+      //   text1: 'Đã xem hết blog hiện có!'
+      // })
     }
   }
 
@@ -212,7 +212,9 @@ const BlogScreen = () => {
                           color={'#F582AE'}
                           style={{ marginBottom: 145, marginTop: 10 }}
                         />
-                      ) : <View style={{ marginBottom: 135 }} />
+                      ) : <View style={{ marginBottom: 135, alignItems: 'center' }} >
+                        <Text style={{ fontSize: 17, color: 'rgba(0, 0, 0, 0.5)' }}>•</Text>
+                      </View>
                     }
                     ListEmptyComponent={<View style={styles.viewOther}>
                       <LottieView

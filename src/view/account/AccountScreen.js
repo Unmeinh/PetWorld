@@ -119,7 +119,7 @@ const AccountScreen = ({ scrollRef, onScrollView }) => {
         setisLoading(true);
       }
       setisLoadingCount(true);
-      dispatch(fetchInfoLogin());
+      dispatch(fetchInfoLogin(true));
       dispatch(getAllBillCount());
       // setisLoader(true);
 
@@ -149,7 +149,7 @@ const AccountScreen = ({ scrollRef, onScrollView }) => {
                     <ShimmerPlaceHolder shimmerStyle={{ height: 16, width: '50%', marginTop: 3, borderRadius: 5 }} />
                     <View style={styles.flexRow}>
                       <Text style={[styles.textDarkBlue, { backgroundColor: '#ECEBF0', paddingVertical: 3, paddingHorizontal: 7, borderRadius: 15 }]}>
-                        Cửa hàng
+                        Khách hàng
                       </Text>
                     </View>
                   </View>
@@ -181,7 +181,7 @@ const AccountScreen = ({ scrollRef, onScrollView }) => {
                     {
                       (isShowRevenue)
                         ? <>
-                          <Text style={[styles.textDarkBlue]}>{Number("10").toLocaleString()} ₫</Text>
+                          <Text style={[styles.textDarkBlue]}>{(account?.totalPurchased) ? account?.totalPurchased : 0} ₫</Text>
                           <MaterialCommunityIcons name='eye' color={'rgba(0, 24, 88, 0.80)'} size={15} style={[styles.positionAbsolute, { right: 5, top: 1 }]} />
                         </>
                         : <>
@@ -192,7 +192,7 @@ const AccountScreen = ({ scrollRef, onScrollView }) => {
                   </TouchableOpacity>
                   <View style={[styles.viewDetailHeaderAccount, { backgroundColor: "#E6DECE", }]}>
                     <Text style={{ color: 'rgba(0, 24, 88, 0.65)', fontSize: 13 }}>Tổng đơn hàng</Text>
-                    <Text style={[styles.textDarkBlue]}>{account?.billCount} đơn</Text>
+                    <Text style={[styles.textDarkBlue]}>{(account?.billCount) ? account?.billCount : 0} đơn</Text>
                   </View>
                 </View>
               </>

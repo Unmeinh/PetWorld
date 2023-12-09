@@ -31,7 +31,6 @@ const EditAccount = ({ route }) => {
     const [inputPhoneCountry, setinputPhoneCountry] = useState('+84');
     const [isShowPhoneSelect, setisShowPhoneSelect] = useState(false);
     const [widthPhoneSelect, setwidthPhoneSelect] = useState(0);
-    const colorLoader = ['#f0e8d8', '#dbdbdb', '#f0e8d8'];
 
     const onLayoutPhoneSelect = (event) => {
         const { x, y, height, width } = event.nativeEvent.layout;
@@ -117,6 +116,35 @@ const EditAccount = ({ route }) => {
     }
 
     function onShowAlertUpdate() {
+        if (inputValue.trim() == "") {
+            Toast.show({
+                type: 'error',
+                position: 'top',
+                text1: infoNames[route.params.infoType] + ' không được để trống!',
+            })
+            return;
+        } 
+        if (route.params.infoType == 0) {
+            var regPhone = /^\+([0-9]{9,})$/;
+            if (!(inputPhoneCountry + inputValue).match(regPhone)) {
+                Toast.show({
+                    type: 'error',
+                    text1: 'Số điện thoại cần đúng định dạng!\nVí dụ: +123456789',
+                    position: 'top',
+                })
+                return;
+            }
+        } else {
+            var regEmail = /^(?=[A-Za-z]).*@[a-zA-Z]+.[a-zA-Z]{2,}$/;
+            if (!inputValue.match(regEmail)) {
+                Toast.show({
+                    type: 'error',
+                    text1: 'Email cần đúng định dạng!\nVí dụ: abc@def.xyz',
+                    position: 'top',
+                })
+                return;
+            }
+        }
         Toast.show({
             type: 'alert',
             position: 'top',
@@ -140,15 +168,6 @@ const EditAccount = ({ route }) => {
             autoHide: false
         })
         if (route.params.infoType == 0) {
-            var regPhone = /^\+([0-9]{9,})$/;
-            if (!(inputPhoneCountry + inputValue).match(regPhone)) {
-                Toast.show({
-                    type: 'error',
-                    text1: 'Số điện thoại cần đúng định dạng!\nVí dụ: +123456789',
-                    position: 'top',
-                })
-                return;
-            }
             //check firebase
             const response = await onSendOTPbyPhoneNumber(inputPhoneCountry + inputValue);
             if (response && response.success) {
@@ -157,15 +176,6 @@ const EditAccount = ({ route }) => {
                 }, 500)
             }
         } else {
-            var regEmail = /^(?=[A-Za-z]).*@[a-zA-Z]+.[a-zA-Z]{2,}$/;
-            if (!inputValue.match(regEmail)) {
-                Toast.show({
-                    type: 'error',
-                    text1: 'Email cần đúng định dạng!\nVí dụ: abc@def.xyz',
-                    position: 'top',
-                })
-                return;
-            }
             let res = await onAxiosPut('user/updateAccount', { typeInfo: infoKeys[route.params.infoType], valueUpdate: inputValue }, 'json', true);
             if (res && res?.success) {
                 navigation.goBack();
@@ -216,32 +226,26 @@ const EditAccount = ({ route }) => {
                     <View style={{ paddingHorizontal: 20, paddingTop: 15 }}>
                         <View style={styles.itemEditInfo}>
                             <ShimmerPlaceHolder
-                                shimmerColors={colorLoader}
                                 shimmerStyle={[styles.titleItemEdit, { height: 22, width: '35%', borderRadius: 5 }]} />
                             <View style={{ flexDirection: 'row', marginLeft: 10, alignItems: 'center' }}>
                                 <Text style={[styles.textItemEdit, { fontSize: 18 }]}>{'> '}</Text>
                                 <ShimmerPlaceHolder
-                                    shimmerColors={colorLoader}
                                     shimmerStyle={[styles.textItemEdit, { height: 17, width: '30%', borderRadius: 5, marginLeft: 8 }]} />
                             </View>
                         </View>
                         <View style={styles.itemEditInfo}>
                             <ShimmerPlaceHolder
-                                shimmerColors={colorLoader}
                                 shimmerStyle={[styles.titleItemEdit, { height: 22, width: '35%', borderRadius: 5 }]} />
                             <View style={{ flexDirection: 'row', marginLeft: 10, alignItems: 'center' }}>
                                 <Text style={[styles.textItemEdit, { fontSize: 18 }]}>{'>'}</Text>
                                 <ShimmerPlaceHolder
-                                    shimmerColors={colorLoader}
                                     shimmerStyle={{ height: 20, width: '93%', borderRadius: 15, marginTop: 3, marginLeft: 10 }} />
                             </View>
                         </View>
                         <View style={{ width: '100%', justifyContent: 'flex-end', flexDirection: 'row', marginTop: 25 }}>
                             <ShimmerPlaceHolder
-                                shimmerColors={colorLoader}
                                 shimmerStyle={{ height: 27, width: 80, borderRadius: 10, marginLeft: 10 }} />
                             <ShimmerPlaceHolder
-                                shimmerColors={colorLoader}
                                 shimmerStyle={{ height: 27, width: 80, borderRadius: 10, marginLeft: 10 }} />
                         </View>
                     </View>

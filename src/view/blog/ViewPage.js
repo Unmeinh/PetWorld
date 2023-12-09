@@ -406,12 +406,14 @@ const ViewPage = ({ route }) => {
                                     )
                                 }, {
                                     label: 'Thông tin',
+                                    isFlatList: true,
                                     component: (
-                                        <View style={{ flex: 1 }}>
-                                            <ScrollView showsVerticalScrollIndicator={false}>
-                                                <TabInfo user={infoUser} isLoader={isLoadingUser} />
-                                            </ScrollView>
-                                        </View>
+                                        <ScrollView showsVerticalScrollIndicator={false}
+                                            refreshControl={
+                                                <RefreshControl refreshing={isRefreshing} onRefresh={ReloadData} progressViewOffset={headerHeight + 30} />
+                                            }>
+                                            <TabInfo user={infoUser} isLoader={isLoadingUser} />
+                                        </ScrollView>
                                     )
                                 }]}
                             />
