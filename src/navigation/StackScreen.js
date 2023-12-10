@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import SlashScreen from '../view/slashscreen/SlashScreen';
 import OrboadScreen from '../view/orboardscreen/OrboadScreen';
@@ -47,6 +47,8 @@ import MomoPayment from '../view/payment/MomoPayment';
 import Favorite from '../view/account/Favorite';
 import SearchFiltersShop from '../view/search/SearchFiltersShop';
 import CreateRate from '../view/shopping/CreateRate';
+import pushNotification from '../services/pushNotification';
+import notifee, {EventType} from '@notifee/react-native';
 const Stack = createStackNavigator();
 
 export default function StackScreen() {
@@ -64,6 +66,21 @@ export default function StackScreen() {
       };
     },
   };
+
+  useEffect(() => {
+    pushNotification.notificationListenner();
+    return notifee.onForegroundEvent(({type, detail}) => {
+      switch (type) {
+        case EventType.DISMISSED:
+          console.log('User dismissed notification', detail.notification);
+          break;
+        case EventType.PRESS:
+          console.log('User pressed notification', detail.notification);
+          break;
+      }
+    });
+  }, []);
+
   return (
     <NavigationContainer ref={navigationRef}>
       <Stack.Navigator

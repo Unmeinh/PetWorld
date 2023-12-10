@@ -64,7 +64,7 @@ export default function MomoPayment({navigation, route}) {
   useEffect(() => {
     handlePayment();
   }, []);
-  
+
   useEffect(() => {
     if (currrentUrl?.url === 'https://test-payment.momo.vn/v2/gateway/action') {
     } else if (currrentUrl?.url === `${NOTIFY_URL}account/login`) {
@@ -72,14 +72,13 @@ export default function MomoPayment({navigation, route}) {
       navigation.goBack();
     }
   }, [currrentUrl.url]);
-  console.log("CurrentURL",currrentUrl);
   return (
     <>
       {loading ? (
         <Loading />
       ) : (
         <WebView
-          source={{uri: data?.payUrl}}
+          source={{uri: data?.applink}}
           style={{flex: 1}}
           startInLoadingState={true}
           onMessage={event => console.log(event)}
@@ -87,7 +86,7 @@ export default function MomoPayment({navigation, route}) {
           javaScriptEnabled={true}
           domStorageEnabled={true}
           automaticallyAdjustContentInsets={false}
-          onNavigationStateChange={(navstate) => setCurrrentUrl(navstate)}
+          onNavigationStateChange={navstate => setCurrrentUrl(navstate)}
           onLoadProgress={({nativeEvent}) => {
             if (nativeEvent.progress === 1) {
               setLoading(false);
