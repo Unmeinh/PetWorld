@@ -2,7 +2,8 @@ import {
     Image, Text, View,
     TouchableHighlight,
     TextInput, Pressable,
-    ToastAndroid
+    ToastAndroid,
+    Keyboard
 } from 'react-native';
 import React, { useState } from 'react';
 import styles from '../../styles/form.style';
@@ -60,6 +61,7 @@ export default function RegisterTab(route) {
     }
 
     async function onSignUp() {
+        Keyboard.dismiss();
         if (checkValidate() == false) {
             return;
         }

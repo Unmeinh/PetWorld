@@ -1,7 +1,6 @@
 import {
     View, Text,
-    Dimensions,
-    TouchableOpacity
+    TouchableOpacity,
 } from 'react-native';
 import React from 'react';
 import styles from '../../styles/toast.style';
@@ -12,7 +11,6 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import { WindowHeight, WindowWidth } from '../../styles/toast.style';
 
 export function ToastLayout() {
-
     const toastConfig = {
         success: ({ text1, props }) => (
             <View style={styles.toastContainer}>

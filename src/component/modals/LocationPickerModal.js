@@ -123,9 +123,6 @@ const LocationPickerModal = (route) => {
             animationOutTiming={350}
             animationInTiming={350}
             isVisible={route.isShow}
-            swipeDirection="right"
-            propagateSwipe={true}
-            onSwipeComplete={onClosingModal}
             onBackdropPress={onClosingModal}
             onBackButtonPress={onClosingModal}>
             <View style={{

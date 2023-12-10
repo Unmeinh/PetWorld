@@ -9,7 +9,7 @@ import Feather from 'react-native-vector-icons/Feather';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useNavigation } from '@react-navigation/native';
 import { useState } from 'react';
-export default function SettingNotify({ scrollRef, onScrollView }) {
+export default function SettingNotify({}) {
   const navigation = useNavigation();
   
   // Trạng thái mặc định là tắt (false)
@@ -27,8 +27,7 @@ export default function SettingNotify({ scrollRef, onScrollView }) {
 
   return (
     <View style={{ flex: 1 , backgroundColor:'rgba(254, 246, 228, 0.5)' }}>
-      <ScrollView ref={scrollRef}
-        onScroll={onScrollView} style={{ height: '100%', width: '100%' }}>
+      <ScrollView style={{ height: '100%', width: '100%' }}>
            
         <HeaderTitleAccount 
           nav={navigation} titleHeader="Cài đặt" colorHeader='rgba(245, 130, 174, 1)'
