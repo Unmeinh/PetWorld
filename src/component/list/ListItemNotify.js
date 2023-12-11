@@ -18,7 +18,7 @@ const ListItem = ({item, callBack}) => {
       <View style={styles.container}>
         <View style={styles.leftContainer}>
           <Image
-            source={item?.image[0] ?? require('../../assets/ic_launcher.png')}
+            source={require('../../assets/ic_launcher.png')}
             style={styles.image}
           />
         </View>

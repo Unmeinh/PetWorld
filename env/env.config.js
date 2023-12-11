@@ -1,4 +1,4 @@
-export const BASE_URL = 'http://192.168.191.26:3000/api';
+export const BASE_URL = 'http://10.0.2.2:3000/api';
 
 // payment momo
 export const PANENT_CODE_MOMO = 'MOMOBKUN20180529';
@@ -7,6 +7,14 @@ export const SECRET_KEY_MOMO = 'at67qH6mk8w5Y1nAyMoYKMWACiEi2bsa';
 export const URL_PAYMENT_MOMO = 'https://test-payment.momo.vn';
 export const EXTRA_DATA_MOMO =
   'ew0KImVtYWlsIjogImh1b25neGRAZ21haWwuY29tIg0KfQ==';
-export const NOTIFY_URL = 'http://192.168.191.26:3000/';
-export const RETURN_URL = 'http://192.168.191.26:3000/';
-export const ORDER_INFO_MOMO = 'http://192.168.191.26:3000/';
+export const NOTIFY_URL = 'http://10.0.2.2:3000';
+export const RETURN_URL = 'http://10.0.2.2:3000';
+export const ORDER_INFO_MOMO = 'http://10.0.2.2:3000';
+
+// payment zalopay
+
+export const ZALOPAY_KEY_1 = 'PcY41ZIKFCIdgZvA6UeMcMHHUbRLYjPL';
+export const ZALOPAY_USER_APP = 'demo';
+export const ZALOPAY_BANK_CODE = 'zalopayapp';
+export const ZALOPAY_APP_ID = '2553';
+export const ZALOPAY_URL = 'https://sb-openapi.zalopay.vn';

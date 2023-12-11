@@ -49,6 +49,7 @@ import SearchFiltersShop from '../view/search/SearchFiltersShop';
 import CreateRate from '../view/shopping/CreateRate';
 import pushNotification from '../services/pushNotification';
 import notifee, {EventType} from '@notifee/react-native';
+import ZaloPay from '../view/payment/ZaloPay';
 const Stack = createStackNavigator();
 
 export default function StackScreen() {
@@ -284,6 +285,7 @@ export default function StackScreen() {
           options={animated}
           component={CreateRate}
         />
+        <Stack.Screen name="ZaloPay" options={animated} component={ZaloPay} />
       </Stack.Navigator>
     </NavigationContainer>
   );

@@ -378,6 +378,13 @@ export default function BuyNowScreen({navigation, route}) {
                     code: code,
                     amount: showTotal(),
                   });
+                } else if (selectedId === 2) {
+                  const code = generateRandomCode();
+                  navigation.navigate('ZaloPay', {
+                    code: code,
+                    amount: showTotal(),
+                    content: 'Thanh toán đơn hàng cho OurPet',
+                  });
                 } else {
                   dispatch(
                     createBill({
