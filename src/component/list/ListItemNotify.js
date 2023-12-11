@@ -23,22 +23,22 @@ const ListItem = ({item, callBack}) => {
           />
         </View>
         <View style={styles.middleContainer}>
-          <View style={styles.header}>
-            <Text style={styles.title}>{item?.content}</Text>
-          </View>
-          <Text style={styles.content} numberOfLines={1}>
+          {/* <View style={styles.header}>
+          </View> */}
+            <Text style={styles.title} numberOfLines={1}>{item?.content}</Text>
+          <Text style={styles.content} numberOfLines={2}>
             {item?.detail}
           </Text>
           <View style={styles.timeContainer}>
-            <Feather name="clock" size={13} color={'#001858'} />
+            <Feather name="clock" size={13} color={'rgba(0, 0, 0, 0.65)'} />
             <Text style={styles.time} numberOfLines={1}>
-              {getDateTimeVietnamese(item?.createdAt)}
+              {getDateTimeVietnamese(item?.createdAt)} 
             </Text>
           </View>
         </View>
-        <View style={styles.rightContainer}>
+        {/* <View style={styles.rightContainer}>
           <Feather name="more-horizontal" size={30} color={'#001858'} />
-        </View>
+        </View> */}
       </View>
     </TouchableOpacity>
   );
@@ -76,10 +76,9 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 5,
   },
   title: {
-    fontSize: 15,
+    fontSize: 16,
     fontWeight: 'bold',
     color: 'black',
     marginRight: 5,
@@ -94,11 +93,11 @@ const styles = StyleSheet.create({
   time: {
     fontSize: 10,
     marginLeft: 4,
-    color: 'black',
-    color: '#001858',
+    color: 'rgba(0, 0, 0, 0.65)',
     fontFamily: 'ProductSans',
   },
   content: {
+    marginVertical: 3,
     fontSize: 14,
     color: 'black',
     color: '#001858',
