@@ -17,6 +17,7 @@ import { userLoginSelector } from '../../redux/selectors/userSelector';
 import { fetchInfoLogin } from '../../redux/reducers/user/userReducer';
 import { getAllBillCount } from '../../redux/reducers/shop/billSlice';
 import ShimmerPlaceHolder from '../../component/layout/ShimmerPlaceHolder';
+import { onAxiosGet } from '../../api/axios.function';
 
 const AccountScreen = ({ scrollRef, onScrollView }) => {
   var navigation = useNavigation();
@@ -92,10 +93,19 @@ const AccountScreen = ({ scrollRef, onScrollView }) => {
     navigate('EditPassword', { shop: account });
   }
 
-  function onLogout() {
-    storageMMKV.setValue('login.isLogin', false);
-    storageMMKV.setValue('login.token', "");
-    navigation.replace('LoginScreen')
+  async function onLogout() {
+    let res = await onAxiosGet('user/logout', true);
+    if (res) {
+      storageMMKV.setValue('login.isLogin', false);
+      storageMMKV.setValue('login.token', "");
+      navigation.replace('LoginScreen');
+    } else {
+      Toast.show({
+        type: 'error',
+        position: 'top',
+        text1: 'Có lỗi xảy ra khi đăng xuất!\nVui lòng thử lại sau!'
+      })
+    }
   }
 
   React.useEffect(() => {

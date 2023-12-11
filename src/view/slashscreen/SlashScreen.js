@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, StyleSheet, Dimensions, Image, Animated, Easing, Text } from 'react-native';
+import { View, StyleSheet, Dimensions, Image, Animated, Easing, Text, BackHandler } from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import Foundation from 'react-native-vector-icons/Foundation';
 import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
@@ -8,7 +8,9 @@ import { useNavigation } from '@react-navigation/native';
 import { onAxiosGet } from '../../api/axios.function';
 import { useDispatch } from 'react-redux';
 import { setUserLogin } from '../../redux/reducers/user/userReducer';
+import { PermissionsAndroid, Linking } from "react-native";
 import LottieView from 'lottie-react-native';
+import Toast from 'react-native-toast-message';
 
 export default function SplashScreen() {
   const navigation = useNavigation();
@@ -28,24 +30,28 @@ export default function SplashScreen() {
   const [pawPositions, setPawPositions] = useState([]);
   const [nameVisible, setNameVisible] = useState(false);
   const [isFinishedOneTime, setisFinishedOneTime] = useState(false);
+  const [isGrantedNotice, setisGrantedNotice] = useState('false');
   const [nextScreen, setnextScreen] = useState('');
+  const [isShowRN, setisShowRN] = useState(false);
 
   useEffect(() => {
-    const movePaw = () => {
-      Animated.timing(stepAnimation, {
-        toValue: totalSteps,
-        duration: 150,
-        easing: Easing.linear,
-        useNativeDriver: true,
-      }).start(({ finished }) => {
-        if (finished) {
-          setPawPositions([...pawPositions, pawPositions.length]);
-        }
-      });
-    };
+    if (!isShowRN) {
+      const movePaw = () => {
+        Animated.timing(stepAnimation, {
+          toValue: totalSteps,
+          duration: 150,
+          easing: Easing.linear,
+          useNativeDriver: true,
+        }).start(({ finished }) => {
+          if (finished) {
+            setPawPositions([...pawPositions, pawPositions.length]);
+          }
+        });
+      };
 
-    movePaw();
-  }, [pawPositions]);
+      movePaw();
+    }
+  }, [pawPositions, isShowRN]);
 
   function onLayoutPaw(event) {
     const { x, y, height, width } = event.nativeEvent.layout;
@@ -105,17 +111,64 @@ export default function SplashScreen() {
     }, 500);
   };
 
+  async function requestPostNotification() {
+    let result = await PermissionsAndroid.request(
+      PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS,
+      // {
+      //   title: "Cool Photo App Camera Permission",
+      //   message:
+      //     "Cool Photo App needs access to your camera " +
+      //     "so you can take awesome pictures.",
+      //   buttonNeutral: "Ask Me Later",
+      //   buttonNegative: "Cancel",
+      //   buttonPositive: "OK"
+      // }
+    )
+    // if (result == 'denied') {
+    //   BackHandler.exitApp();
+    // }
+    setisGrantedNotice(result);
+  }
+
   React.useEffect(() => {
-    if (isFinishedOneTime && nextScreen != '') {
-      navigation.replace(nextScreen);
+    if (isFinishedOneTime && nextScreen != '' && isGrantedNotice != 'false') {
+      if (isGrantedNotice == 'granted') {
+        navigation.replace(nextScreen);
+      }
+      if (isGrantedNotice == 'denied') {
+        Toast.show({
+          type: 'alert',
+          text1: 'OurPet cần bạn cho phép quyền thông báo để sử dụng ứng dụng.\nCho phép bật quyền thông báo?',
+          position: 'top',
+          autoHide: false,
+          props: {
+            confirm: () => { Toast.hide(); requestPostNotification(); },
+            cancel: () => { Toast.hide(); BackHandler.exitApp(); }
+          }
+        })
+      }
+      if (isGrantedNotice == 'never_ask_again') {
+        Toast.show({
+          type: 'alert',
+          text1: 'OurPet cần bạn cho phép quyền thông báo để sử dụng ứng dụng.\nĐi đến cài đặt để cho phép?',
+          position: 'top',
+          autoHide: false,
+          props: {
+            confirm: () => { Toast.hide(); Linking.openSettings(); },
+            cancel: () => { Toast.hide(); BackHandler.exitApp(); }
+          }
+        })
+        // Linking.openSettings();
+      }
       if (!storageMMKV.checkKey('login.isFirstTime') || storageMMKV.getBoolean('login.isFirstTime')) {
         storageMMKV.setValue('login.isFirstTime', false);
       }
     }
-  }, [isFinishedOneTime, nextScreen]);
+  }, [isFinishedOneTime, nextScreen, isGrantedNotice]);
 
   React.useEffect(() => {
     const unsub = navigation.addListener('focus', () => {
+      requestPostNotification();
       getNavigate();
       showNameApp();
       return () => {
