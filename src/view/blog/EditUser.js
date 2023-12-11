@@ -12,6 +12,7 @@ import styles from '../../styles/user.style';
 import { onAxiosPut, onDismissKeyboard } from '../../api/axios.function';
 import RNMaterialDatetimePicker from "react-native-material-datetime-picker";
 import { AndroidPickerMode } from 'react-native-material-datetime-picker';
+import LocationPickerModal from '../../component/modals/LocationPickerModal';
 import Moment from 'moment';
 import Toast from 'react-native-toast-message';
 import ShimmerPlaceHolder from '../../component/layout/ShimmerPlaceHolder';
@@ -23,11 +24,14 @@ const infoNames = ["Tên", "Biệt danh", "Sinh nhật", "Địa chỉ", "Giới
 const EditInfo = ({ route }) => {
     var navigation = useNavigation();
     const infoLogin = route.params.user;
-    const [inputValue, setinputValue] = useState("")
+    const [inputValue, setinputValue] = useState("");
+    const [inputLocation, setinputLocation] = useState("");
     const [oldValueDisplay, setoldValueDisplay] = useState("");
     const [isLoader, setisLoader] = useState(true);
     const [inputDatePicker, setinputDatePicker] = useState(new Date(String((new Date().getFullYear() - 16) + "-" + (new Date().getMonth() + 1) + "-" + new Date().getDate())));
     const [isShowDatePicker, setisShowDatePicker] = useState(false);
+    const [isShowLocationPicker, setisShowLocationPicker] = useState(false);
+    const [numberLocationPicked, setnumberLocationPicked] = useState(0);
 
     function onChangeInputValue(input) {
         setinputValue(input);
@@ -37,6 +41,10 @@ const EditInfo = ({ route }) => {
         setisShowDatePicker(!isShowDatePicker);
     }
 
+    function onShowLocationPicker() {
+        setisShowLocationPicker(!isShowLocationPicker);
+    }
+
     function onChangeInputDate(date) {
         setinputDatePicker(date);
         setinputValue(Moment(date).format('DD/MM/YYYY'));
@@ -44,13 +52,31 @@ const EditInfo = ({ route }) => {
     }
 
     function onShowAlert() {
-        if (inputValue.trim() == "") {
+        if (route.params.infoType == 3 && (numberLocationPicked < 3 || inputLocation == ""
+            || (numberLocationPicked < 3 && inputLocation == ""))) {
             Toast.show({
                 type: 'error',
                 position: 'top',
-                text1: infoNames[route.params.infoType] + ' không được để trống!',
+                text1: 'Địa chỉ cần được chọn đầy đủ!',
             })
             return;
+        }
+        if (inputValue.trim() == "") {
+            if (route.params.infoType == 3) {
+                Toast.show({
+                    type: 'error',
+                    position: 'top',
+                    text1: 'Địa chỉ chi tiết không được để trống!',
+                })
+                return;
+            } else {
+                Toast.show({
+                    type: 'error',
+                    position: 'top',
+                    text1: infoNames[route.params.infoType] + ' không được để trống!',
+                })
+                return;
+            }
         }
         Toast.show({
             type: 'alert',
@@ -77,6 +103,8 @@ const EditInfo = ({ route }) => {
         });
         if (route.params.infoType == 2) {
             res = await onAxiosPut('user/updateUser', { typeInfo: infoKeys[route.params.infoType], valueUpdate: inputDatePicker }, 'json', true);
+        } else if (route.params.infoType == 3) {
+            res = await onAxiosPut('user/updateUser', { typeInfo: infoKeys[route.params.infoType], valueUpdate: inputValue + ", " + inputLocation }, 'json', true);
         } else {
             res = await onAxiosPut('user/updateUser', { typeInfo: infoKeys[route.params.infoType], valueUpdate: inputValue }, 'json', true);
         }
@@ -188,21 +216,42 @@ const EditInfo = ({ route }) => {
                                         </Text>
                                         {
                                             (route.params.infoType == 2)
-                                                ?
-                                                <Pressable style={{ flexDirection: 'row', marginLeft: 10, alignItems: 'center' }}
+                                                ? <Pressable style={{ flexDirection: 'row', marginLeft: 10, alignItems: 'center' }}
                                                     onPress={onShowPicker}>
                                                     <Text style={[styles.textItemEdit, { fontSize: 18 }]}>{'>'}</Text>
                                                     <TextInput style={styles.inputEdit} placeholder='Nhập dữ liệu...'
                                                         placeholderTextColor={'rgba(0, 0, 0, 0.35)'}
                                                         value={inputValue} editable={false} />
                                                 </Pressable>
-                                                :
-                                                <View style={{ flexDirection: 'row', marginLeft: 10, alignItems: 'center' }}>
-                                                    <Text style={[styles.textItemEdit, { fontSize: 18 }]}>{'>'}</Text>
-                                                    <TextInput style={styles.inputEdit} placeholder='Nhập dữ liệu...'
-                                                        placeholderTextColor={'rgba(0, 0, 0, 0.35)'}
-                                                        value={inputValue} onChangeText={onChangeInputValue} />
-                                                </View>
+                                                : <>
+                                                    {
+                                                        (route.params.infoType == 3)
+                                                            ? <>
+                                                                <Pressable style={{ flexDirection: 'row', marginLeft: 10, alignItems: 'center' }}
+                                                                    onPress={onShowLocationPicker}>
+                                                                    <Text style={[styles.textItemEdit, { fontSize: 18 }]}>{'>'}</Text>
+                                                                    <TextInput style={styles.inputEdit}
+                                                                        multiline placeholder='Chọn địa chỉ...'
+                                                                        placeholderTextColor={'rgba(0, 0, 0, 0.35)'}
+                                                                        value={inputLocation} editable={false} />
+                                                                </Pressable>
+                                                                <View style={{ flexDirection: 'row', marginLeft: 10, marginTop: 10, alignItems: 'center' }}>
+                                                                    <Text style={[styles.textItemEdit, { fontSize: 18 }]}>{'>'}</Text>
+                                                                    <TextInput style={styles.inputEdit} placeholder='Nhập địa chỉ chi tiết...'
+                                                                        placeholderTextColor={'rgba(0, 0, 0, 0.35)'}
+                                                                        value={inputValue} onChangeText={onChangeInputValue} />
+                                                                </View>
+                                                            </>
+                                                            : <>
+                                                                <View style={{ flexDirection: 'row', marginLeft: 10, alignItems: 'center' }}>
+                                                                    <Text style={[styles.textItemEdit, { fontSize: 18 }]}>{'>'}</Text>
+                                                                    <TextInput style={styles.inputEdit} placeholder='Nhập dữ liệu...'
+                                                                        placeholderTextColor={'rgba(0, 0, 0, 0.35)'}
+                                                                        value={inputValue} onChangeText={onChangeInputValue} />
+                                                                </View>
+                                                            </>
+                                                    }
+                                                </>
                                         }
                                     </View>
                                     <View style={{ width: '100%', justifyContent: 'flex-end', flexDirection: 'row', marginTop: 25 }}>
@@ -230,6 +279,9 @@ const EditInfo = ({ route }) => {
                     minimumDate={new Date("1900-01-01")}
                     onConfirm={onChangeInputDate}
                 />
+            }
+            {isShowLocationPicker &&
+                <LocationPickerModal isShow={isShowLocationPicker} callBack={onShowLocationPicker} callBackSetLocation={setinputLocation} onCallBackNumberPicked={setnumberLocationPicked} />
             }
         </View>
     );

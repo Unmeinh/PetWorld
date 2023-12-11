@@ -109,38 +109,30 @@ const NotifyRemind = ({index, isFocused}) => {
             showModalAndSetItem({}, false);
           }}>
           <View style={styles.modalContainer}>
-            <ScrollView style={{flex: 1}} contentContainerStyle={{flex: 1}}>
+            <ScrollView style={{ flex: 1 }} contentContainerStyle={{ flex: 1 }}>
               <Icon
                 onPress={() => showModalAndSetItem({}, false)}
                 name="close"
                 size={26}
-                color="#999793"
+                color='#001858'
               />
               <View style={styles.middleContainer}>
                 <View style={styles.header}>
-                  <Text style={styles.titleModal}>{item?.title}</Text>
+                  <Text style={styles.titleModal}></Text>
                   <View style={styles.timeModal}>
-                    <Feather name="clock" size={24} color={'#001858'} />
+                    <Feather name="clock" size={16} color={'rgba(0, 0, 0, 0.65)'} />
                     <Text style={styles.modalTime}>
-                      {getDateTimeVietnamese(item?.createdAt)}
+                      Thời gian: {getDateTimeVietnamese(item?.createdAt)}
                     </Text>
                   </View>
                 </View>
+                <Image
+                  source={(item?.image && item?.image.length > 0) ? item?.image[0] : require('../../../assets/ic_launcher.png')}
+                  style={styles.modalImage}
+                />
                 <Text style={styles.modalContent}>{item?.content}</Text>
               </View>
               <Text style={styles.modalDetail}>{item?.detail}</Text>
-              <Image
-                source={require('../../../assets/ic_launcher.png')}
-                style={styles.modalImage}
-              />
-              <Text
-                style={{
-                  color: '#001858',
-                  fontFamily: 'ProductSans',
-                }}>
-                From OurPet with love 😘
-              </Text>
-
               <TouchableOpacity
                 onPress={() => showModalAndSetItem(item, false)}
                 style={styles.closeButton}>
@@ -237,14 +229,15 @@ const styles = StyleSheet.create({
     marginLeft: 5,
   },
   modalContent: {
-    fontSize: 18,
+    fontSize: 20,
+    fontWeight: 'bold',
     margin: 5,
     color: '#001858',
     fontFamily: 'ProductSans',
   },
   modalDetail: {
-    fontSize: 15,
-    margin: 5,
+    fontSize: 17,
+    marginHorizontal: 5,
     color: '#001858',
     fontFamily: 'ProductSans',
   },
@@ -255,9 +248,9 @@ const styles = StyleSheet.create({
   },
 
   modalTime: {
-    fontSize: 17,
-    marginLeft: 10,
-    color: '#001858',
+    fontSize: 15,
+    marginLeft: 5,
+    color: 'rgba(0, 0, 0, 0.65)',
     fontFamily: 'ProductSans',
     alignItems: 'center',
     alignContent: 'center',
@@ -274,14 +267,21 @@ const styles = StyleSheet.create({
     backgroundColor: '#F582AE',
     borderRadius: 8,
     position: 'absolute',
-    bottom: 10,
+    bottom: 0,
     justifyContent: 'center',
     alignItems: 'center',
   },
   closeButtonText: {
     color: '#001858',
     fontSize: 16,
+    fontWeight: 'bold',
     fontFamily: 'ProductSans',
+  },
+  containerEmpty: {
+    backgroundColor: '#FEF6E4',
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 

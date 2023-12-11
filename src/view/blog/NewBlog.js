@@ -9,7 +9,6 @@ import {
 } from 'react-native';
 import React, { useState, useEffect, useRef } from "react";
 import styles from '../../styles/blog.style';
-
 import HeaderTitle from '../../component/header/HeaderTitle';
 import FontModal from '../../component/modals/FontModal';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';

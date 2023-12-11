@@ -6,6 +6,7 @@ import {
   TextInput,
   TouchableOpacity,
   ToastAndroid,
+  Keyboard,
 } from 'react-native';
 import React, { useState } from 'react';
 import styles from '../../styles/form.style';
@@ -68,6 +69,7 @@ export default function LoginTab(route) {
   }
 
   async function onSignIn() {
+    Keyboard.dismiss();
     var newUser = {
       userName: inputUsername,
       passWord: inputPassword,

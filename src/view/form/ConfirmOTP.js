@@ -1,9 +1,8 @@
 import {
     Text, View,
-    ToastAndroid,
     TouchableHighlight,
     TouchableOpacity,
-    TextInput
+    Keyboard
 } from 'react-native'
 import React, { useState, useEffect, useRef } from 'react'
 import styles from '../../styles/form.style';
@@ -56,6 +55,7 @@ export default function ConfirmOTP({ route }) {
     }
 
     async function onContinue() {
+        Keyboard.dismiss();
         if (inputOTP == '') {
             Toast.show({
                 type: 'error',

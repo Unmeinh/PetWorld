@@ -3,7 +3,8 @@ import {
   TouchableOpacity,
   TextInput,
   TouchableHighlight,
-  ToastAndroid
+  ToastAndroid,
+  Keyboard
 } from 'react-native'
 import React, { useState } from 'react'
 import styles from '../../styles/form.style';
@@ -67,6 +68,7 @@ export default function ChangePassword({ route }) {
   }
 
   async function onChangePass() {
+    Keyboard.dismiss();
     if (checkValidate() == false) {
       return;
     }

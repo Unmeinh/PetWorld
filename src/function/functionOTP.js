@@ -1,9 +1,10 @@
 import Toast from 'react-native-toast-message';
 import auth from '@react-native-firebase/auth';
-import { onAxiosPost } from '../api/axios.function';
+import { onAxiosPost, onDismissKeyboard } from '../api/axios.function';
 
 async function onSendOTPbyPhoneNumber(phone) {
     try {
+        onDismissKeyboard();
         Toast.show({
             type: 'loading',
             position: 'top',
@@ -45,6 +46,7 @@ async function onSendOTPbyPhoneNumber(phone) {
 }
 
 async function onSendOTPbyEmail(email) {
+    onDismissKeyboard();
     Toast.show({
         type: 'loading',
         position: 'top',
@@ -61,6 +63,7 @@ async function onSendOTPbyEmail(email) {
 }
 
 async function onVerifyOTPbyEmail(email, otp) {
+    onDismissKeyboard();
     var response = await onAxiosPost('user/verifyResetPasswordCode', { email: email, otp: otp }, 'json', true)
     if (response) {
         return true;

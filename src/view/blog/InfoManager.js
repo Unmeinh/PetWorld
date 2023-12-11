@@ -194,7 +194,7 @@ const InfoManager = () => {
                                     </View>
                                     <TouchableOpacity style={[styles.viewItemManager, { borderTopColor: '#D9D9D9', borderTopWidth: 1, marginTop: 15 }]}
                                         onPress={() => OpenEditUser(0)}>
-                                        <View style={{ flexDirection: 'row', alignItems: 'flex-end' }}>
+                                        <View style={styles.itemManager}>
                                             <MaterialCommunityIcons name='card-account-details-outline' color={'#001858'} size={23} />
                                             <View style={{ marginLeft: 8 }}>
                                                 <Text style={styles.titleItemManager}>Họ và tên</Text>
@@ -210,7 +210,7 @@ const InfoManager = () => {
                                     </TouchableOpacity>
                                     <TouchableOpacity style={styles.viewItemManager}
                                         onPress={() => OpenEditUser(1)}>
-                                        <View style={{ flexDirection: 'row', alignItems: 'flex-end' }}>
+                                        <View style={styles.itemManager}>
                                             <MaterialIcons name='drive-file-rename-outline' color={'#001858'} size={23} />
                                             <View style={{ marginLeft: 8 }}>
                                                 <Text style={styles.titleItemManager}>Biệt danh</Text>
@@ -226,7 +226,7 @@ const InfoManager = () => {
                                     </TouchableOpacity>
                                     <TouchableOpacity style={styles.viewItemManager}
                                         onPress={() => OpenEditUser(2)}>
-                                        <View style={{ flexDirection: 'row', alignItems: 'flex-end' }}>
+                                        <View style={styles.itemManager}>
                                             <MaterialCommunityIcons name='cake' color={'#001858'} size={23} />
                                             <View style={{ marginLeft: 8 }}>
                                                 <Text style={styles.titleItemManager}>Sinh nhật</Text>
@@ -242,7 +242,7 @@ const InfoManager = () => {
                                     </TouchableOpacity>
                                     <TouchableOpacity style={styles.viewItemManager}
                                         onPress={() => OpenEditUser(3)}>
-                                        <View style={{ flexDirection: 'row', alignItems: 'flex-end' }}>
+                                        <View style={styles.itemManager}>
                                             <MaterialCommunityIcons name='map-marker' color={'#001858'} size={23} />
                                             <View style={{ marginLeft: 8 }}>
                                                 <Text style={styles.titleItemManager}>Địa chỉ</Text>
@@ -274,7 +274,7 @@ const InfoManager = () => {
                                     </TouchableOpacity>
                                     <TouchableOpacity style={styles.viewItemManager}
                                         onPress={() => OpenEditAccount(0)}>
-                                        <View style={{ flexDirection: 'row', alignItems: 'flex-end' }}>
+                                        <View style={styles.itemManager}>
                                             <MaterialCommunityIcons name='phone-outline' color={'#001858'} size={23} />
                                             <View style={{ marginLeft: 8 }}>
                                                 <Text style={styles.titleItemManager}>Số điện thoại</Text>
@@ -290,7 +290,7 @@ const InfoManager = () => {
                                     </TouchableOpacity>
                                     <TouchableOpacity style={styles.viewItemManager}
                                         onPress={() => OpenEditAccount(1)}>
-                                        <View style={{ flexDirection: 'row', alignItems: 'flex-end' }}>
+                                        <View style={styles.itemManager}>
                                             <MaterialCommunityIcons name='email-outline' color={'#001858'} size={23} />
                                             <View style={{ marginLeft: 8 }}>
                                                 <Text style={styles.titleItemManager}>Email</Text>

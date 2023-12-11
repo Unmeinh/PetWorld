@@ -3,7 +3,8 @@ import {
   TouchableOpacity,
   TextInput,
   TouchableHighlight,
-  ToastAndroid
+  ToastAndroid,
+  Keyboard
 } from 'react-native'
 import React, { useState } from 'react'
 import styles from '../../styles/form.style';
@@ -41,13 +42,23 @@ export default function RegisterPassword({ route }) {
     var regPass = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).{8,}/;
 
     if (!inputNewPassword.match(regPass)) {
-      ToastAndroid.show('Mật khẩu chưa đúng định dạng!', ToastAndroid.SHORT);
-      ToastAndroid.show('Mật khẩu phải dài ít nhất 8 ký tự và chứa ít nhất một số, chữ cái viết thường, chữ viết hoa và ký tự đặc biệt!', ToastAndroid.LONG);
+      Toast.show({
+        type: 'error',
+        text1: 'Mật khẩu mới cần dài ít nhất 8 ký tự và chứa ít nhất một số, một chữ viết thường và một chữ viết hoa!',
+        position: 'top',
+        props: {
+          isTextLong: true
+        }
+      })
       return false;
     }
 
     if (inputNewPassword != inputConfirmPassword) {
-      ToastAndroid.show('Mật khẩu nhập lại không trùng!', ToastAndroid.SHORT);
+      Toast.show({
+        type: 'error',
+        text1: 'Mật khẩu nhập lại không chính xác!',
+        position: 'top'
+      })
       return false;
     }
 
@@ -55,6 +66,7 @@ export default function RegisterPassword({ route }) {
   }
 
   async function onChangePass() {
+    Keyboard.dismiss();
     if (checkValidate() == false) {
       return;
     }

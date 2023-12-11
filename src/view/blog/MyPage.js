@@ -3,7 +3,7 @@ import {
     Text, Image,
     FlatList, View,
     SafeAreaView,
-    ScrollView, 
+    ScrollView,
     TouchableOpacity,
     ActivityIndicator
 } from 'react-native';
@@ -92,7 +92,7 @@ const MyPage = () => {
     }
 
     function onCallBackDelete(index) {
-        let cloneU = {...infoLogin};
+        let cloneU = { ...infoLogin };
         cloneU.blogs = cloneU.blogs - 1;
         setinfoLogin(cloneU);
         let cloneB = [...blogs];
@@ -119,7 +119,7 @@ const MyPage = () => {
     }
 
     async function fetchUser() {
-        const res = await onAxiosGet('/user/myDetail');
+        const res = await onAxiosGet('/user/myDetail?isCalculator=true');
         if (res) {
             setinfoLogin(res.data);
         } else {
@@ -327,7 +327,7 @@ const MyPage = () => {
                                         : <FlatList data={blogs} scrollEnabled={true}
                                             renderItem={({ item, index }) =>
                                                 <ItemBlog key={index} blog={item} index={index}
-                                                 canOpenAccount={false} isCanFollow={false} callBackDelete={onCallBackDelete}/>}
+                                                    canOpenAccount={false} isCanFollow={false} callBackDelete={onCallBackDelete} />}
                                             ListFooterComponent={
                                                 (canLoadingMore && blogs.length > 0) ? (
                                                     <ActivityIndicator
@@ -356,17 +356,19 @@ const MyPage = () => {
                                             showsVerticalScrollIndicator={false}
                                             keyExtractor={(item, index) => index.toString()}
                                             refreshControl={
-                                                <RefreshControl refreshing={isRefreshing} onRefresh={ReloadData} progressViewOffset={headerHeight + 30} style={{ position: 'absolute', bottom: 50 }} />
+                                                <RefreshControl refreshing={isRefreshing} onRefresh={ReloadData} progressViewOffset={headerHeight + 30} />
                                             } />
                                     )
                                 }, {
                                     label: 'Thông tin',
+                                    isFlatList: true,
                                     component: (
-                                        <View style={{ flex: 1 }}>
-                                            <ScrollView showsVerticalScrollIndicator={false}>
-                                                <TabInfo user={infoLogin} isLoader={isLoadingUser} />
-                                            </ScrollView>
-                                        </View>
+                                        <ScrollView showsVerticalScrollIndicator={false}
+                                            refreshControl={
+                                                <RefreshControl refreshing={isRefreshing} onRefresh={ReloadData} progressViewOffset={headerHeight + 30} />
+                                            }>
+                                            <TabInfo user={infoLogin} isLoader={isLoadingUser} />
+                                        </ScrollView>
                                     )
                                 }]}
                             />
