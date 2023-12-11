@@ -216,7 +216,7 @@ export default function SummaryBill({navigation, route}) {
         const code = generateRandomCode();
         navigation.navigate('ZaloPay', {
           code: code,
-          amount: showTotal(),
+          amount: priceTotal + moneyShip(),
           content: 'Thanh toán đơn hàng cho OurPet',
         });
       } else {
