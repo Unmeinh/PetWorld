@@ -32,26 +32,23 @@ export default function SplashScreen() {
   const [isFinishedOneTime, setisFinishedOneTime] = useState(false);
   const [isGrantedNotice, setisGrantedNotice] = useState('false');
   const [nextScreen, setnextScreen] = useState('');
-  const [isShowRN, setisShowRN] = useState(false);
 
   useEffect(() => {
-    if (!isShowRN) {
-      const movePaw = () => {
-        Animated.timing(stepAnimation, {
-          toValue: totalSteps,
-          duration: 150,
-          easing: Easing.linear,
-          useNativeDriver: true,
-        }).start(({ finished }) => {
-          if (finished) {
-            setPawPositions([...pawPositions, pawPositions.length]);
-          }
-        });
-      };
+    const movePaw = () => {
+      Animated.timing(stepAnimation, {
+        toValue: totalSteps,
+        duration: 150,
+        easing: Easing.linear,
+        useNativeDriver: true,
+      }).start(({ finished }) => {
+        if (finished) {
+          setPawPositions([...pawPositions, pawPositions.length]);
+        }
+      });
+    };
 
-      movePaw();
-    }
-  }, [pawPositions, isShowRN]);
+    movePaw();
+  }, [pawPositions]);
 
   function onLayoutPaw(event) {
     const { x, y, height, width } = event.nativeEvent.layout;
@@ -142,8 +139,13 @@ export default function SplashScreen() {
           position: 'top',
           autoHide: false,
           props: {
-            confirm: () => { Toast.hide(); requestPostNotification(); },
-            cancel: () => { Toast.hide(); BackHandler.exitApp(); }
+            confirm: () => { Toast.hide(); setisGrantedNotice('false'); },
+            cancel: () => {
+              BackHandler.exitApp();
+              setTimeout(() => {
+                Toast.hide(); setisGrantedNotice('false');
+              }, 500);
+            }
           }
         })
       }
@@ -154,8 +156,18 @@ export default function SplashScreen() {
           position: 'top',
           autoHide: false,
           props: {
-            confirm: () => { Toast.hide(); Linking.openSettings(); },
-            cancel: () => { Toast.hide(); BackHandler.exitApp(); }
+            confirm: () => {
+              Linking.openSettings();
+              setTimeout(() => {
+                Toast.hide(); setisGrantedNotice('false');
+              }, 500);
+            },
+            cancel: () => {
+              BackHandler.exitApp();
+              setTimeout(() => {
+                Toast.hide(); setisGrantedNotice('false');
+              }, 500);
+            }
           }
         })
         // Linking.openSettings();
@@ -167,8 +179,13 @@ export default function SplashScreen() {
   }, [isFinishedOneTime, nextScreen, isGrantedNotice]);
 
   React.useEffect(() => {
-    const unsub = navigation.addListener('focus', () => {
+    if (isGrantedNotice == 'false') {
       requestPostNotification();
+    }
+  }, [isGrantedNotice]);
+
+  React.useEffect(() => {
+    const unsub = navigation.addListener('focus', () => {
       getNavigate();
       showNameApp();
       return () => {
