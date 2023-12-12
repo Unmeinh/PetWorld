@@ -81,9 +81,11 @@ export default function LoginTab(route) {
       autoHide: false
     });
 
-    let onSendDeviceToken = await requestNotificationPermission();
-    if (onSendDeviceToken && onSendDeviceToken == "") {
-      return;
+    if (rememberMe) {
+      let onSendDeviceToken = await requestNotificationPermission();
+      if (onSendDeviceToken && onSendDeviceToken == "") {
+        return;
+      }
     }
 
     const response = await onAxiosPost('user/login', {
