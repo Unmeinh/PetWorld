@@ -34,12 +34,13 @@ export default function ConfirmOTP({ route }) {
     const [isReadedMessage, setisReadedMessage] = useState(false);
 
     async function onSendAgain() {
-        if (auth().currentUser !== null) {
+        if (auth().currentUser) {
             await auth().signOut();
         }
+        setconfirm(null);
         setuserAuth(null);
         setinputOTP('');
-        if (otpRef != null) {
+        if (otpRef) {
             otpRef.setValue('');
         }
         setcdSendAgain(30);
