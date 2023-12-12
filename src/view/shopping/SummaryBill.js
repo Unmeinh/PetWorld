@@ -151,7 +151,7 @@ export default function SummaryBill({navigation, route}) {
     if (successBill) {
       dispatch(
         createBill({
-          paymentMethods: selectedId,
+          paymentMethod: selectedId,
           deliveryStatus: 0,
           locationDetail: {
             fullName: user.fullName,
@@ -222,7 +222,7 @@ export default function SummaryBill({navigation, route}) {
       } else {
         dispatch(
           createBill({
-            paymentMethods: selectedId,
+            paymentMethod: selectedId,
             deliveryStatus: 0,
             locationDetail: {
               fullName: user.fullName,

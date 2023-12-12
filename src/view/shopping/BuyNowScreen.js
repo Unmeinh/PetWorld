@@ -182,7 +182,6 @@ export default function BuyNowScreen({navigation, route}) {
     dispatch(getPayments());
     dispatch(fetchInfoUserNoMessage());
   }, []);
-
   useEffect(() => {
     if (successBill) {
       dispatch(
