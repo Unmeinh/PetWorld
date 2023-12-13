@@ -378,6 +378,7 @@ export default StyleSheet.create({
         fontSize: 17,
         padding: 0,
         width: '95%',
+        marginLeft: 5,
         marginTop: 3,
         paddingVertical: 5,
         paddingHorizontal: 13,

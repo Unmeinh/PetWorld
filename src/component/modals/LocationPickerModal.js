@@ -4,13 +4,8 @@ import {
     TouchableHighlight
 } from "react-native";
 import React, { useState, useRef, memo } from "react";
-import { useNavigation } from "@react-navigation/native";
 import Modal from 'react-native-modal';
-import styles from "../../styles/user.style";
-import { ToastLayout } from "../layout/ToastLayout";
-import { onAxiosGet } from "../../api/axios.function";
 import axios from "axios";
-import Toast from "react-native-toast-message";
 import ShimmerPlaceHolder from "../layout/ShimmerPlaceHolder";
 
 const LocationPickerModal = (route) => {
