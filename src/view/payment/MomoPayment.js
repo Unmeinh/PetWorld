@@ -24,7 +24,7 @@ export default function MomoPayment({navigation, route}) {
   var orderId = date + code;
   var requestType = 'captureWallet';
   var orderInfo = 'Thanh toán qua ví MoMo';
-  var autoCapture = true;
+  var autoCapture = false;
   const [data, setData] = useState({});
   const [loading, setLoading] = useState(false);
   const [currrentUrl, setCurrrentUrl] = useState('');
@@ -78,7 +78,7 @@ export default function MomoPayment({navigation, route}) {
         <Loading />
       ) : (
         <WebView
-          source={{uri: data?.applink}}
+          source={{uri: data?.payUrl}}
           style={{flex: 1}}
           startInLoadingState={true}
           onMessage={event => console.log(event)}

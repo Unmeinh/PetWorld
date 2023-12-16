@@ -151,7 +151,7 @@ export default function SummaryBill({navigation, route}) {
     if (successBill) {
       dispatch(
         createBill({
-          paymentMethods: selectedId,
+          paymentMethod: selectedId,
           deliveryStatus: 0,
           locationDetail: {
             fullName: user.fullName,
@@ -212,10 +212,17 @@ export default function SummaryBill({navigation, route}) {
           code: code,
           amount: priceTotal + moneyShip(),
         });
+      } else if (selectedId === 2) {
+        const code = generateRandomCode();
+        navigation.navigate('ZaloPay', {
+          code: code,
+          amount: priceTotal + moneyShip(),
+          content: 'Thanh toán đơn hàng cho OurPet',
+        });
       } else {
         dispatch(
           createBill({
-            paymentMethods: selectedId,
+            paymentMethod: selectedId,
             deliveryStatus: 0,
             locationDetail: {
               fullName: user.fullName,

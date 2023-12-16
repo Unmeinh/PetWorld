@@ -1,14 +1,12 @@
-import {
-  View
-} from 'react-native';
-import React, {useEffect, useState } from 'react';
+import {View} from 'react-native';
+import React, {useEffect, useState} from 'react';
 import LoginTab from './LoginTab';
 import RegisterTab from './RegisterTab';
 
 export default function LoginScreen() {
   const [selectedTab, setselectedTab] = useState(0);
-  const [inputUsername, setinputUsername] = useState("");
-  
+  const [inputUsername, setinputUsername] = useState('');
+
   function onCallBackChangeTab(userName) {
     setinputUsername(userName);
     if (selectedTab == 0) {
@@ -19,13 +17,12 @@ export default function LoginScreen() {
   }
 
   return (
-    <View style={{ flex: 1 }}>
-      {
-        (selectedTab == 0)
-          ? <LoginTab callback={onCallBackChangeTab} user={inputUsername} />
-          : <RegisterTab callback={onCallBackChangeTab} user={inputUsername}/>
-      }
-
+    <View style={{flex: 1}}>
+      {selectedTab == 0 ? (
+        <LoginTab callback={onCallBackChangeTab} user={inputUsername} />
+      ) : (
+        <RegisterTab callback={onCallBackChangeTab} user={inputUsername} />
+      )}
     </View>
   );
 }
