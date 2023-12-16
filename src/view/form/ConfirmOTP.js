@@ -9,30 +9,53 @@ import styles from '../../styles/form.style';
 import HeaderTitle from '../../component/header/HeaderTitle';
 import OTPTextInput from 'react-native-otp-textinput';
 import Toast from 'react-native-toast-message';
-import { ToastLayout } from '../../component/layout/ToastLayout';
 import auth from '@react-native-firebase/auth';
 import { startOtpListener } from 'react-native-otp-verify';
 import { useNavigation } from '@react-navigation/native';
 import { onSendOTPbyPhoneNumber, onSendOTPbyEmail, onVerifyOTPbyEmail } from '../../function/functionOTP';
 import { LogBox } from 'react-native';
+import ReadMessageModal from '../../component/modals/ReadMessageModal';
 
 LogBox.ignoreLogs([
-  'Non-serializable values were found in the navigation state',
+    'Non-serializable values were found in the navigation state',
 ]);
 
 export default function ConfirmOTP({ route }) {
     const navigation = useNavigation();
-    const [inputOTP, setinputOTP] = useState('');
-    let otpRef = useRef(null);
     const inputTypeVerify = route.params.typeVerify;
     const inputValueVerify = route.params.valueVerify;
-    const [userAuth, setuserAuth] = useState(null);
-    const [phoneNumberDisplay, setphoneNumberDisplay] = useState('');
-    const [emailDisplay, setemailDisplay] = useState('');
     const [confirm, setconfirm] = useState(route.params.authConfirm);
+    const [userAuth, setuserAuth] = useState(null);
+    const [emailDisplay, setemailDisplay] = useState('');
+    const [phoneNumberDisplay, setphoneNumberDisplay] = useState('');
     const [cdSendAgain, setcdSendAgain] = useState(30);
     const [isReadedMessage, setisReadedMessage] = useState(false);
+    const [readedOTP, setreadedOTP] = useState('');
+    const [isLoginAuth, setisLoginAuth] = useState(false);
+    const [inputOTP, setinputOTP] = useState('');
+    const [isShowModelReadMes, setisShowModelReadMes] = useState(false);
+    const [messageOTP, setmessageOTP] = useState('');
+    let otpRef = useRef(null);
 
+    //Function layout
+    function onChangeOTPInput(input) {
+        if (otpRef != null) {
+            if (input.length < inputOTP.length) {
+                otpRef.setValue(input);
+            }
+        }
+        setinputOTP(input);
+    }
+
+    function onHideModalReadMes() {
+        setisShowModelReadMes(false);
+        setmessageOTP("");
+        setisReadedMessage(false);
+        const otp = /(\d{6})/g.exec(messageOTP)[1];
+        setreadedOTP(otp);
+    }
+
+    //Function api
     async function onSendAgain() {
         if (auth().currentUser) {
             await auth().signOut();
@@ -40,17 +63,22 @@ export default function ConfirmOTP({ route }) {
         setconfirm(null);
         setuserAuth(null);
         setinputOTP('');
+        setreadedOTP('');
+        setisReadedMessage(false);
+        setisLoginAuth(false);
         if (otpRef) {
             otpRef.setValue('');
+        } else {
+            return;
         }
-        setcdSendAgain(30);
         if (inputTypeVerify == "phoneNumber") {
-            const response = await onSendOTPbyPhoneNumber(inputValueVerify);
-            if (response && response.success) {
+            setcdSendAgain(30);
+            const response = await onSendOTPbyPhoneNumber(String(inputValueVerify));
+            if (response != undefined && response.success) {
                 setconfirm(response.confirm);
-                setisReadedMessage(false);
             }
         } else {
+            setcdSendAgain(30);
             await onSendOTPbyEmail(inputValueVerify);
         }
     }
@@ -87,20 +115,23 @@ export default function ConfirmOTP({ route }) {
         if (inputTypeVerify == 'phoneNumber') {
             try {
                 await confirm.confirm(inputOTP);
-                Toast.show({
-                    type: 'success',
-                    position: 'top',
-                    text1: 'Thành công',
-                    bottomOffset: 20
-                });
-                setTimeout(() => {
-                    if (route.params.navigate == "RegisterPassword") {
-                        navigation.navigate(route.params.navigate, { objUser: route.params.objUser, typeVerify: inputTypeVerify, valueVerify: inputValueVerify });
-                    } else {
-                        navigation.navigate(route.params.navigate, { typeVerify: inputTypeVerify, valueVerify: inputValueVerify });
-                    }
-                }, 500)
+                onReadyContinue();
             } catch (error) {
+                console.log(error);
+                if (isReadedMessage && readedOTP != ''
+                    && String(error).indexOf('[auth/session-expired]') >= 0) {
+                    if (readedOTP == inputOTP) {
+                        onReadyContinue();
+                        return;
+                    }
+                }
+                if (!isReadedMessage && readedOTP != '' && isLoginAuth
+                    && String(error).indexOf('[auth/session-expired]') >= 0) {
+                    if (readedOTP == inputOTP) {
+                        onReadyContinue();
+                        return;
+                    }
+                }
                 Toast.show({
                     type: 'error',
                     position: 'top',
@@ -118,13 +149,15 @@ export default function ConfirmOTP({ route }) {
                         navigation.navigate(route.params.navigate, { typeVerify: inputTypeVerify, valueVerify: inputValueVerify });
                     }
                 }, 500)
-            } 
+            }
         }
     }
 
+    //Function support
     function onAuthStateChanged(user) {
         if (user) {
             setuserAuth(user);
+            setisLoginAuth(true);
             // Some Android devices can automatically process the verification code (OTP) message, and the user would NOT need to enter the code.
             // Actually, if he/she tries to enter it, he/she will get an error message because the code was already used in the background.
             // In this function, make sure you hide the component(s) for entering the code and/or navigate away from this screen.
@@ -132,15 +165,43 @@ export default function ConfirmOTP({ route }) {
         }
     }
 
-    function onChangeOTPInput(input) {
-        if (otpRef != null) {
-            if (input.length < inputOTP.length) {
-                otpRef.setValue(input);
-            }
+    function onAllowReadMes() {
+        setisShowModelReadMes(false);
+        setmessageOTP("");
+        const otp = /(\d{6})/g.exec(messageOTP)[1];
+        setinputOTP(otp);
+        setisReadedMessage(true);
+        setreadedOTP(otp);
+        if (otpRef) {
+            otpRef.setValue(otp);
         }
-        setinputOTP(input);
     }
 
+    function onDenyReadMes() {
+        setisShowModelReadMes(false);
+        setmessageOTP("");
+        setisReadedMessage(false);
+        const otp = /(\d{6})/g.exec(messageOTP)[1];
+        setreadedOTP(otp);
+    }
+
+    function onReadyContinue() {
+        Toast.show({
+            type: 'success',
+            position: 'top',
+            text1: 'Xác minh thành công.',
+            bottomOffset: 20
+        });
+        setTimeout(() => {
+            if (route.params.navigate == "RegisterPassword") {
+                navigation.navigate(route.params.navigate, { objUser: route.params.objUser, typeVerify: inputTypeVerify, valueVerify: inputValueVerify });
+            } else {
+                navigation.navigate(route.params.navigate, { typeVerify: inputTypeVerify, valueVerify: inputValueVerify });
+            }
+        }, 500)
+    }
+
+    //Hook
     useEffect(() => {
         (async () => {
             if (inputTypeVerify == "phoneNumber") {
@@ -149,10 +210,11 @@ export default function ConfirmOTP({ route }) {
                     await startOtpListener(message => {
                         if (message != null) {
                             try {
-                                const otp = /(\d{6})/g.exec(message)[1];
-                                console.log(otp);
-                                setinputOTP(otp);
-                                setisReadedMessage(true);
+                                if (message.indexOf('Firebase App verification code is') >= 0
+                                    || message.indexOf('Firebase App code is') >= 0) {
+                                    setmessageOTP(message);
+                                    setisShowModelReadMes(true);
+                                }
                             } catch (error) {
                                 console.log(error)
                             }
@@ -164,7 +226,7 @@ export default function ConfirmOTP({ route }) {
         })();
     }, []);
 
-    React.useEffect(() => {
+    useEffect(() => {
         const unsub = navigation.addListener('focus', () => {
             if (inputTypeVerify == 'phoneNumber') {
                 var cencorLength = inputValueVerify.substring(1, (inputValueVerify.length - 3)).length;
@@ -176,11 +238,9 @@ export default function ConfirmOTP({ route }) {
 
                 setphoneNumberDisplay(phoneNumberCensored);
             } else {
-                var cencorLength = inputValueVerify.substring(0, (inputValueVerify.indexOf('@') - 1)).length;
-                var cencorValue = '';
-                for (let i = 0; i < cencorLength; i++) {
-                    cencorValue += "*";
-                }
+                var cencorTextFirst = inputValueVerify.substring(0, 1);
+                var cencorTextLast = inputValueVerify.substring((inputValueVerify.indexOf('@') - 1), (inputValueVerify.indexOf('@')));
+                var cencorValue = cencorTextFirst + "*****" + cencorTextLast;
                 var emailCensored = cencorValue + inputValueVerify.substring(inputValueVerify.indexOf('@'));
                 setemailDisplay(emailCensored);
             }
@@ -200,32 +260,6 @@ export default function ConfirmOTP({ route }) {
             }, 1000)
         }
     }, [cdSendAgain]);
-
-    useEffect(() => {
-        if (otpRef != null) {
-            if (userAuth != null && isReadedMessage) {
-                otpRef.setValue(inputOTP);
-                Toast.show({
-                    type: 'success',
-                    position: 'top',
-                    text1: 'Thành công',
-                    bottomOffset: 20
-                });
-                setTimeout(() => {
-                    if (route.params.function) {
-                        route.params.function();
-                    }
-                    if (route.params.navigate) {
-                        if (route.params.navigate == "RegisterPassword") {
-                            navigation.navigate(route.params.navigate, { objUser: route.params.objUser, typeVerify: inputTypeVerify, valueVerify: inputValueVerify });
-                        } else {
-                            navigation.navigate(route.params.navigate, { typeVerify: inputTypeVerify, valueVerify: inputValueVerify });
-                        }
-                    }
-                }, 500)
-            }
-        }
-    }, [userAuth, isReadedMessage]);
 
     return (
         <View style={{ backgroundColor: '#FEF6E4', flex: 1 }}>
@@ -255,7 +289,7 @@ export default function ConfirmOTP({ route }) {
                 </View>
 
                 <View style={{ marginTop: 15 }}>
-                    <OTPTextInput ref={e => (otpRef = e)} handleTextChange={(input) => onChangeOTPInput(input)}
+                    <OTPTextInput ref={e => (otpRef = e)} handleTextChange={onChangeOTPInput}
                         inputCount={6} defaultValue=''
                         tintColor={'#8BD3DD'}
                         textInputStyle={styles.inputOTP}
@@ -268,7 +302,11 @@ export default function ConfirmOTP({ route }) {
                     <Text style={styles.textButtonConfirm}>Tiếp tục</Text>
                 </TouchableHighlight>
             </View>
-            <ToastLayout />
+            {isShowModelReadMes &&
+                <ReadMessageModal isShow={isShowModelReadMes}
+                    callBackHide={onHideModalReadMes} massage={messageOTP}
+                    onAllow={onAllowReadMes} onDeny={onDenyReadMes} />
+            }
         </View>
     )
 }
