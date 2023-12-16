@@ -3,8 +3,7 @@ import {
   Text, View,
   TouchableHighlight,
   TouchableOpacity,
-  ToastAndroid,
-  Dimensions,
+  Keyboard,
   Pressable
 } from 'react-native'
 import React, { useState } from 'react'
@@ -58,6 +57,7 @@ export default function ForgetPassword({ navigation }) {
   }
 
   async function onContinue() {
+    Keyboard.dismiss();
     var regEmail = /^(?=[A-Za-z]).*@[a-zA-Z]+.[a-zA-Z]{2,}$/;
     var regPhone = /^(\+\d{9,})$/;
 
