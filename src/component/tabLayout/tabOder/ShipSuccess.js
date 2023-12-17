@@ -2,26 +2,26 @@ import React, {useEffect} from 'react';
 import {View, Text, FlatList, Image, StyleSheet} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import {billSelector} from '../../../redux/selector';
-import {getBillDelivered} from '../../../redux/reducers/shop/billSlice';
+import {getBillShipSuccess} from '../../../redux/reducers/shop/billSlice';
 import Loading from '../../Loading';
 import ItemList from './itemList';
 
-const Delivered = ({index}) => {
+const ShipSuccess = ({index}) => {
   const dispatch = useDispatch();
 
-  const {billDelivered, billLoading} = useSelector(billSelector);
+  const {billShipSuccess, billLoading} = useSelector(billSelector);
 
   useEffect(() => {
-    if (index === 4 && billDelivered.length === 0) {
-      dispatch(getBillDelivered());
+    if (index === 3 && billShipSuccess.length === 0) {
+      dispatch(getBillShipSuccess());
     }
   }, [index]);
 
   return (
     <View style={styles.container}>
-      {billLoading.billDelivered ? null : (
+      {billLoading.billShipSuccess ? null : (
         <FlatList
-          data={billDelivered}
+          data={billShipSuccess}
           showsVerticalScrollIndicator={false}
           renderItem={({item}) => <ItemList item={item} />}
           keyExtractor={item => item._id}
@@ -42,7 +42,8 @@ const Delivered = ({index}) => {
           }}
         />
       )}
-      {billLoading.billDelivered ? <Loading /> : null}
+      {billLoading.billShipSuccess ? <Loading /> : null}
+      {billLoading.confirmBill ? <Loading /> : null}
     </View>
   );
 };
@@ -53,4 +54,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Delivered;
+export default ShipSuccess;

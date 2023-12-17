@@ -25,14 +25,17 @@ export default function ListProductScreen({navigation, route}) {
       return 'BanChay';
     }
     if (sort === 3) {
-      return 'Gia';
+      return 'GiaGiamDan';
+    }
+    if (sort === 3) {
+      return 'GiaTangDan';
     }
   };
   const getFetch = () => {
     if (param.type === 1) {
-      return GetProductsMulti(page, sort);
+      return GetProductsMulti(page, checkSort());
     } else if (param.type === 0) {
-      return GetPets(page);
+      return GetPets(page, checkSort());
     } else if (param.type === 3) {
       return ListProductByCategory(param.id, page, checkSort());
     }
@@ -88,6 +91,7 @@ export default function ListProductScreen({navigation, route}) {
   useEffect(() => {
     if (sort) {
       handleRefresh();
+      setPage(1);
     }
   }, [sort]);
 
