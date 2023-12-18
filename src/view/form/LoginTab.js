@@ -14,7 +14,6 @@ import { useNavigation } from '@react-navigation/native';
 import { onAxiosPost } from '../../api/axios.function';
 import messaging from '@react-native-firebase/messaging';
 import database from '@react-native-firebase/database';
-import { request, check, PERMISSIONS, RESULTS } from 'react-native-permissions';
 import { storageMMKV } from '../../storage/storageMMKV';
 import Toast from 'react-native-toast-message';
 
@@ -107,34 +106,23 @@ export default function LoginTab(route) {
 
   const requestNotificationPermission = async () => {
     try {
-      const result = await request(PERMISSIONS.ANDROID.POST_NOTIFICATIONS)
-      if (result === RESULTS.GRANTED) {
-        let token = await messaging().getToken();
-        if (token) {
-          const hasSentToken = storageMMKV.getBoolean('hasSentToken');
-          const tokenDevice = storageMMKV.getString('tokenDevice');
-          if (!hasSentToken) {
-            sendTokenToFirebase(token);
-          } else {
-            if (String(tokenDevice) != String(token)) {
-              sendTokenToFirebase(token);
-            }
-          }
-          return token;
+      let token = await messaging().getToken();
+      if (token) {
+        const hasSentToken = storageMMKV.getBoolean('hasSentToken');
+        const tokenDevice = storageMMKV.getString('tokenDevice');
+        if (!hasSentToken) {
+          sendTokenToFirebase(token);
         } else {
-          Toast.show({
-            type: 'error',
-            position: 'top',
-            text1: 'Có lỗi xảy ra trong lúc gửi yêu cầu!\nVui lòng thử lại sau!'
-          })
-          return "";
+          if (String(tokenDevice) != String(token)) {
+            sendTokenToFirebase(token);
+          }
         }
+        return token;
       } else {
-        console.log(result);
         Toast.show({
           type: 'error',
           position: 'top',
-          text1: 'Vui lòng bật thông báo ứng dụng để tiếp tục!'
+          text1: 'Có lỗi xảy ra trong lúc gửi yêu cầu!\nVui lòng thử lại sau!'
         })
         return "";
       }

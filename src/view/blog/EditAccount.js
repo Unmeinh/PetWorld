@@ -172,7 +172,7 @@ const EditAccount = ({ route }) => {
             const response = await onSendOTPbyPhoneNumber(inputPhoneCountry + inputValue);
             if (response && response.success) {
                 setTimeout(() => {
-                    navigation.navigate('ConfirmOTP', { function: updatePhoneNumber, typeVerify: 'phoneNumber', valueVerify: inputPhoneCountry + inputValue, authConfirm: response.confirm })
+                    navigation.navigate('ConfirmOTP', { function: updatePhoneNumber, typeVerify: 'phoneNumber', valueVerify: inputPhoneCountry + inputValue, authConfirm: (code) => response.confirm.confirm(code) })
                 }, 500)
             }
         } else {

@@ -242,6 +242,11 @@ const ItemBlog = (row) => {
                 // } 
                 setblog(row.blog);
             }
+            if (user && loginId) {
+                if (user._id == loginId && !isMe) {
+                    setisMe(true);
+                }
+            }
         }
     }, [row.blog]);
 

@@ -11,14 +11,14 @@ const TabLayout = ({isFocused}) => {
   const [routes] = useState([
     {key: '1', title: 'Tất cả'},
     {key: '2', title: 'Nhắc nhở'},
-    {key: '3', title: 'Đã đọc'},
-    {key: '4', title: 'Chưa đọc'},
+    {key: '3', title: 'Chưa đọc'},
+    {key: '4', title: 'Đã đọc'},
   ]);
   const renderScene = SceneMap({
     1: () => <NotifyAll index={index} isFocused={isFocused} />,
     2: () => <NotifyRemind index={index} isFocused={isFocused} />,
-    3: () => <NotifyRead index={index} isFocused={isFocused} />,
-    4: () => <NotifyUnRead index={index} isFocused={isFocused} />,
+    3: () => <NotifyUnRead index={index} isFocused={isFocused} />,
+    4: () => <NotifyRead index={index} isFocused={isFocused} />,
   });
 
   const renderTabBar = props => (

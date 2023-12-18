@@ -12,9 +12,10 @@ import Feather from 'react-native-vector-icons/Feather';
 import Modal from 'react-native-modal';
 import {getDateTimeVietnamese} from '../../function/functionDate';
 const {width, height} = Dimensions.get('window');
-const ListItem = ({item, callBack}) => {
+const ListItem = ({index, item, callBack}) => {
   return (
-    <TouchableOpacity onPress={() => callBack(item, true)}>
+    <TouchableOpacity onPress={() => callBack(index, item, true)}
+    style={{ opacity: (item?.status && item?.status == 2) ? 0.65 : 1 }}>
       <View style={styles.container}>
         <View style={styles.leftContainer}>
           <Image
@@ -25,7 +26,7 @@ const ListItem = ({item, callBack}) => {
         <View style={styles.middleContainer}>
           {/* <View style={styles.header}>
           </View> */}
-            <Text style={styles.title} numberOfLines={1}>{item?.content}</Text>
+            <Text style={styles.title} numberOfLines={1}>{item?.content}{(item?.status && item?.status == 2) ? "" : " •"}</Text>
           <Text style={styles.content} numberOfLines={2}>
             {item?.detail}
           </Text>

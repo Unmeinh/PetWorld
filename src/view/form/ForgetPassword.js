@@ -14,6 +14,7 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import PhoneSelect from '../../component/modals/PhoneSelect';
 import { ToastLayout } from '../../component/layout/ToastLayout';
 import { onSendOTPbyPhoneNumber, onSendOTPbyEmail } from '../../function/functionOTP';
+import { onAxiosPut } from '../../api/axios.function';
 
 export default function ForgetPassword({ navigation }) {
   const [inputPhoneCountry, setinputPhoneCountry] = useState('+84');
@@ -89,12 +90,15 @@ export default function ForgetPassword({ navigation }) {
     }
 
     if (isSelectPhone == true) {
-      const response = await onSendOTPbyPhoneNumber(inputPhoneCountry + inputPhoneNumber);
-      if (response) {
-        setTimeout(() => {
-          navigation.navigate('ConfirmOTP', { navigate: "ChangePassword", typeVerify: 'phoneNumber', valueVerify: inputPhoneCountry + inputPhoneNumber, authConfirm: response.confirm })
-        }, 500)
-      } 
+      let res = await onAxiosPut('user/checkPhoneNumber', { phoneNumber: inputPhoneCountry.substring(1) + inputPhoneNumber }, 'json');
+      if (res && res.success) {
+        const response = await onSendOTPbyPhoneNumber(inputPhoneCountry + inputPhoneNumber);
+        if (response) {
+          setTimeout(() => {
+            navigation.navigate('ConfirmOTP', { navigate: "ChangePassword", typeVerify: 'phoneNumber', valueVerify: inputPhoneCountry + inputPhoneNumber, authConfirm: (code) => response.confirm.confirm(code) })
+          }, 500)
+        }
+      }
     } else {
       const response = await onSendOTPbyEmail(inputEmail);
       if (response) {

@@ -24,7 +24,7 @@ export default function ConfirmOTP({ route }) {
     const navigation = useNavigation();
     const inputTypeVerify = route.params.typeVerify;
     const inputValueVerify = route.params.valueVerify;
-    const [confirm, setconfirm] = useState(route.params.authConfirm);
+    const [confirm, setconfirm] = useState(null);
     const [userAuth, setuserAuth] = useState(null);
     const [emailDisplay, setemailDisplay] = useState('');
     const [phoneNumberDisplay, setphoneNumberDisplay] = useState('');
@@ -114,8 +114,13 @@ export default function ConfirmOTP({ route }) {
 
         if (inputTypeVerify == 'phoneNumber') {
             try {
-                await confirm.confirm(inputOTP);
-                onReadyContinue();
+                if (!confirm && route.params.authConfirm) {
+                    await route.params.authConfirm(inputOTP);
+                    onReadyContinue();
+                } else {
+                    await confirm.confirm(inputOTP);
+                    onReadyContinue();
+                }
             } catch (error) {
                 console.log(error);
                 if (isReadedMessage && readedOTP != ''

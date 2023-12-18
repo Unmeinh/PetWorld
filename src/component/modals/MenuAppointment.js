@@ -59,15 +59,11 @@ const MenuAppointment = (route) => {
         let pet = { ...route.pet };
         pet.idShop = route.shop;
         dispatch(fetchDetailProduct({ id: route.pet._id, type }));
-        navigation.push('DetailProduct', { type, item: pet });
+        navigation.push('DetailProduct', { id: route.pet._id, type });
     }
 
     function onMessagingShop() {
-        Toast.show({
-            type: 'error',
-            position: 'top',
-            text1: 'Tính năng này đang được phát triển!'
-        })
+        navigation.push('ShopScreen', { data: route.shop });
     }
 
     async function onCancel() {
@@ -116,7 +112,7 @@ const MenuAppointment = (route) => {
                         </TouchableOpacity>
                         <TouchableOpacity style={{ width: '100%', alignItems: 'center', borderBottomColor: '#D9D9D9', borderBottomWidth: 1 }}
                             onPress={onMessagingShop}>
-                            <Text style={styles.textOptionMenu}>Nhắn tin cho cửa hàng</Text>
+                            <Text style={styles.textOptionMenu}>Xem cửa hàng</Text>
                         </TouchableOpacity>
                         {
                             (canCancel)
