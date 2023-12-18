@@ -15,7 +15,7 @@ const NeedRate = ({index}) => {
   const {billReview, billLoading} = useSelector(billSelector);
 
   useEffect(() => {
-    if (index === 4 && billReview.length === 0) {
+    if (index === 5 && billReview.length === 0) {
       dispatch(getBillReview());
     }
   }, [index]);

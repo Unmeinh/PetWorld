@@ -25,26 +25,29 @@ export default function ListProductScreen({navigation, route}) {
       return 'BanChay';
     }
     if (sort === 3) {
-      return 'Gia';
+      return 'GiaGiamDan';
+    }
+    if (sort === 3) {
+      return 'GiaTangDan';
     }
   };
-  const getFetch = () => {
+  const getFetch = (page = 1) => {
     if (param.type === 1) {
-      return GetProductsMulti(page, sort);
+      return GetProductsMulti(page, checkSort());
     } else if (param.type === 0) {
-      return GetPets(page);
+      return GetPets(page, checkSort());
     } else if (param.type === 3) {
       return ListProductByCategory(param.id, page, checkSort());
     }
   };
-  const getList = async (resetData = false) => {
+  const getList = async (resetData = false, page) => {
     try {
       if (resetData) {
         setPage(1);
         setResult([]);
       }
 
-      const res = await getFetch();
+      const res = await getFetch(page);
 
       if (res?.data?.length > 0) {
         if (sort || resetData) {
@@ -74,8 +77,9 @@ export default function ListProductScreen({navigation, route}) {
   const loadMoreData = async () => {
     if (enableLoading && !isLoadingMore) {
       setIsLoadingMore(true);
-      await setPage(page + 1);
-      getList();
+      setPage(page + 1);
+      console.log('Chạy vào đây');
+      getList(false, page + 1);
     }
   };
 
@@ -88,6 +92,7 @@ export default function ListProductScreen({navigation, route}) {
   useEffect(() => {
     if (sort) {
       handleRefresh();
+      setPage(1);
     }
   }, [sort]);
 

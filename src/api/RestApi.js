@@ -5,11 +5,11 @@ export const GetProducts = idPage =>
 
 export const GetProductsMulti = (idPage, sort) =>
   Get({
-    endPoint: `/product/list/all?page=${idPage}${sort ? '?day=' + sort : ''}`,
+    endPoint: `/product/list/all?page=${idPage}${sort ? '&' + sort : ''}`,
   });
 
-export const GetPets = idPage =>
-  Get({endPoint: `/pet/list/all?page=${idPage}`});
+export const GetPets = (idPage, sort) =>
+  Get({endPoint: `/pet/list/all?page=${idPage}${sort ? '&' + sort : ''}`});
 
 export const GetProductsByIdShop = id =>
   Get({endPoint: `/product/list/shop/${id}`});
@@ -85,3 +85,6 @@ export const CreateRating = (data, header, idBill) =>
   Post({endPoint: `/review/insert/${idBill}`, data: data, header: header});
 export const GetRating = (id, page = 1) =>
   Get({endPoint: `/review/list/product/${id}?page=${page}`});
+
+export const ConfirmBill = id =>
+  Get({endPoint: `/bill-product/comfirmBill/${id}`});

@@ -3,6 +3,7 @@ import api from '../../../api/axios.config';
 import axios from 'axios';
 import {
   CancelBill,
+  ConfirmBill,
   GetBills,
   GetCountAllBill,
   GetPayments,
@@ -33,6 +34,7 @@ const billSlice = createSlice({
     billDelivered: [],
     billCancel: [],
     billReview: [],
+    billShipSuccess: [],
     billLoading: {
       billUnsuccess: true,
       billSuccess: true,
@@ -40,6 +42,8 @@ const billSlice = createSlice({
       billDelivered: true,
       billCancel: true,
       billReview: true,
+      billShipSuccess: true,
+      confirmBill: false,
     },
     countBill: {},
     successBill: false,
@@ -157,6 +161,15 @@ const billSlice = createSlice({
           state.billDelivered = action.payload.data;
         }
       })
+      .addCase(getBillShipSuccess.pending, (state, action) => {
+        state.billLoading.billShipSuccess = true;
+      })
+      .addCase(getBillShipSuccess.fulfilled, (state, action) => {
+        state.billLoading.billShipSuccess = false;
+        if (action.payload.success) {
+          state.billShipSuccess = action.payload.data;
+        }
+      })
       .addCase(getBillCanncel.pending, (state, action) => {
         state.billLoading.billCancel = true;
       })
@@ -183,6 +196,12 @@ const billSlice = createSlice({
         if (action.payload.success) {
           state.billReview = action.payload.data;
         }
+      })
+      .addCase(confirmBill.pending, (state, action) => {
+        state.billLoading.confirmBill = true;
+      })
+      .addCase(confirmBill.fulfilled, (state, action) => {
+        state.billLoading.confirmBill = false;
       })
       .addCase(cancelBill.pending, (state, action) => {
         state.status = true;
@@ -234,17 +253,36 @@ export const getBillDelivering = createAsyncThunk(
     return res;
   },
 );
-export const getBillDelivered = createAsyncThunk(
-  'bill/getBillDelivered',
-  async () => {
-    const res = await GetBills(3, true);
+export const confirmBill = createAsyncThunk(
+  'bill/confirmBill',
+  async (id, {dispatch}) => {
+    const res = await ConfirmBill(id);
+    dispatch(getBillShipSuccess());
+    dispatch(getBillReview());
+    dispatch(getBillDelivered());
     return res;
   },
 );
+export const getBillDelivered = createAsyncThunk(
+  'bill/getBillDelivered',
+  async () => {
+    const res = await GetBills(4);
+    return res;
+  },
+);
+
+export const getBillShipSuccess = createAsyncThunk(
+  'bill/getBillShipSuccess',
+  async () => {
+    const res = await GetBills(3);
+    return res;
+  },
+);
+
 export const getBillReview = createAsyncThunk(
   'bill/getBillReview',
   async () => {
-    const res = await GetBills(3, false);
+    const res = await GetBills(4, false);
     return res;
   },
 );

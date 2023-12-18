@@ -11,8 +11,11 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import ItemProduct from './ItemProduct';
 import ItemPet from './ItemPet';
 import {useNavigation} from '@react-navigation/native';
+import {useDispatch} from 'react-redux';
+import {confirmBill} from '../../../redux/reducers/shop/billSlice';
 export default function ItemList({item}) {
   const navigation = useNavigation();
+  const dispatch = useDispatch();
   const shop = item?.shopInfo[0];
   const type = item?.petInfo?.length > 0 ? 1 : 0;
   const getData = () => {
@@ -31,9 +34,14 @@ export default function ItemList({item}) {
       return 'Đang giao';
     } else if (item.deliveryStatus === 3) {
       return 'Giao hàng thành công';
+    } else if (item.deliveryStatus === 4) {
+      return 'Đã nhận';
     } else if (item.deliveryStatus === -1) {
       return 'Đã hủy';
     }
+  };
+  const handleConfirmBill = () => {
+    dispatch(confirmBill(item._id));
   };
   return (
     <TouchableOpacity
@@ -73,7 +81,7 @@ export default function ItemList({item}) {
           </Text>
         </Text>
       </View>
-      {item.deliveryStatus === 3 && item.statusReview === false ? (
+      {item.deliveryStatus === 4 && item.statusReview === false ? (
         <TouchableOpacity
           style={{
             borderRadius: 1,
@@ -94,6 +102,24 @@ export default function ItemList({item}) {
           }>
           <Text style={{fontFamily: 'ProductSans', color: '#F582AE'}}>
             Đánh giá
+          </Text>
+        </TouchableOpacity>
+      ) : null}
+      {item.deliveryStatus === 3 ? (
+        <TouchableOpacity
+          style={{
+            borderRadius: 1,
+            borderWidth: 1,
+            padding: 3,
+            width: 80,
+            alignItems: 'center',
+            borderColor: '#F582AE',
+            justifyContent: 'flex-end',
+            alignContent: 'flex-end',
+          }}
+          onPress={handleConfirmBill}>
+          <Text style={{fontFamily: 'ProductSans', color: '#F582AE'}}>
+            Đã nhận
           </Text>
         </TouchableOpacity>
       ) : null}

@@ -18,7 +18,7 @@ const CannelBill = ({index}) => {
   const {billCancel, billLoading, statusChange} = useSelector(billSelector);
 
   useEffect(() => {
-    if (index === 5 && billCancel.length === 0) {
+    if (index === 6 && billCancel.length === 0) {
       dispatch(getBillCanncel());
     }
   }, [index]);
