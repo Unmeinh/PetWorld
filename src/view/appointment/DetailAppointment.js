@@ -43,18 +43,17 @@ const DetailAppointment = ({ route }) => {
 
     function onOpenPet() {
         let type = 0;
-        let pet = {...appointment.idPet};
-        pet.idShop = appointment.idShop;
-        dispatch(fetchDetailProduct({ id: appointment.idPet._id, type }));
-        navigation.push('DetailProduct', { type, item: pet });
+        let pet = {...appointment?.idPet};
+        pet.idShop = appointment?.idShop;
+        dispatch(fetchDetailProduct({ id: appointment?.idPet?._id, type }));
+        navigation.push('DetailProduct', { id: appointment?.idPet?._id, type });
     }
 
     function onOpenShop() {
-        navigation.navigate('ShopScreen', { data: appointment.idShop });
+        navigation.push('ShopScreen', { data: appointment?.idShop });
     }
 
     function onMessagingShop() {
-        route.callBackHide();
         Toast.show({
             type: 'error',
             position: 'top',
@@ -101,8 +100,8 @@ const DetailAppointment = ({ route }) => {
         if (isFocusScreen && appointment != undefined) {
             setisLoader(false);
             if (appointment != "null") {
-                setsrcPet({ uri: String(appointment.idPet.imagesPet[0]) })
-                setsrcAvatar({ uri: String(appointment.idShop.avatarShop) })
+                setsrcPet({ uri: String(appointment?.idPet?.imagesPet[0]) })
+                setsrcAvatar({ uri: String(appointment?.idShop?.avatarShop) })
                 switch (String(appointment.status)) {
                     case "-1":
                         setcanCancel(true);
@@ -177,10 +176,10 @@ const DetailAppointment = ({ route }) => {
                                         onError={() => setsrcPet(require('../../assets/images/error.png'))} />
                                     <View style={{ marginLeft: 15 }}>
                                         <Text style={styles.textNamePetItem} numberOfLines={1}>
-                                            {appointment.idPet.namePet}
+                                            {appointment?.idPet?.namePet}
                                         </Text>
                                         <Text style={styles.textPricePet} numberOfLines={1}>
-                                            {Number(appointment.idPet.pricePet).toLocaleString()} đồng
+                                            {Number(appointment?.idPet?.pricePet).toLocaleString()} đồng
                                         </Text>
                                     </View>
                                     <TouchableOpacity onPress={onOpenPet}>
@@ -243,24 +242,24 @@ const DetailAppointment = ({ route }) => {
                                             onError={() => setsrcAvatar(require('../../assets/images/error.png'))} />
                                         <View style={{ marginLeft: 10 }}>
                                             <Text style={styles.textNameShop} numberOfLines={1}>
-                                                {appointment.idShop.nameShop}
+                                                {appointment?.idShop?.nameShop}
                                             </Text>
                                             <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 9 }}>
                                                 <View style={{ width: 12, marginLeft: 3 }}>
                                                     <MaterialCommunityIcons name='map-marker' size={12} />
                                                 </View>
                                                 <Text style={styles.textLocationShop} numberOfLines={1}>
-                                                    {appointment.idShop.locationShop}
+                                                    {appointment?.idShop?.locationShop}
                                                 </Text>
                                             </View>
                                         </View>
                                     </View>
                                     <View style={{ flexDirection: 'row', marginTop: 10 }}>
                                         <Text style={styles.textInfoShop}>
-                                            <Text style={{ color: '#F582AE' }}>{appointment.idShop.followers}</Text> người theo dõi
+                                            <Text style={{ color: '#F582AE' }}>{appointment?.idShop?.followers}</Text> người theo dõi
                                         </Text>
                                         <Text style={[styles.textInfoShop, { marginLeft: 9 }]}>
-                                            <Text style={{ color: '#F582AE' }}>{(appointment.idShop.rating) ? appointment.idShop.rating : "?.0"}</Text> đánh giá
+                                            <Text style={{ color: '#F582AE' }}>{(appointment?.idShop?.rating) ? appointment?.idShop?.rating : "?.0"}</Text> đánh giá
                                         </Text>
                                     </View>
                                 </View>

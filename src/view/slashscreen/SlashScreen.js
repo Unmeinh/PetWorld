@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   StyleSheet,
@@ -7,18 +7,19 @@ import {
   Easing,
   Text,
   BackHandler,
+  Platform,
 } from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import Foundation from 'react-native-vector-icons/Foundation';
 import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
-import {storageMMKV} from '../../storage/storageMMKV';
-import {useNavigation} from '@react-navigation/native';
-import {onAxiosPost} from '../../api/axios.function';
-import {useDispatch} from 'react-redux';
-import {setUserLogin} from '../../redux/reducers/user/userReducer';
+import { storageMMKV } from '../../storage/storageMMKV';
+import { useNavigation } from '@react-navigation/native';
+import { onAxiosPost } from '../../api/axios.function';
+import { useDispatch } from 'react-redux';
+import { setUserLogin } from '../../redux/reducers/user/userReducer';
 import messaging from '@react-native-firebase/messaging';
 import database from '@react-native-firebase/database';
-import {PermissionsAndroid, Linking} from 'react-native';
+import { PermissionsAndroid, Linking } from 'react-native';
 import LottieView from 'lottie-react-native';
 import Toast from 'react-native-toast-message';
 
@@ -52,7 +53,7 @@ export default function SplashScreen() {
         duration: 150,
         easing: Easing.linear,
         useNativeDriver: true,
-      }).start(({finished}) => {
+      }).start(({ finished }) => {
         if (finished) {
           setPawPositions([...pawPositions, pawPositions.length]);
         }
@@ -63,7 +64,7 @@ export default function SplashScreen() {
   }, [pawPositions]);
 
   function onLayoutPaw(event) {
-    const {x, y, height, width} = event.nativeEvent.layout;
+    const { x, y, height, width } = event.nativeEvent.layout;
     if (x >= Dimensions.get('window').width) {
       if (!isFinishedOneTime) {
         setisFinishedOneTime(true);
@@ -80,6 +81,7 @@ export default function SplashScreen() {
           if (storageMMKV.getBoolean('login.isLogin')) {
             if (storageMMKV.checkKey('login.token')) {
               if (storageMMKV.getString('login.token')) {
+                setnextScreen('waiting');
                 await onCheckTokenDevice();
               } else {
                 storageMMKV.setValue('login.token', '');
@@ -141,27 +143,27 @@ export default function SplashScreen() {
 
   const sendTokenToFirebase = async newToken => {
     try {
-      const databaseRef = database().ref('/tokens');
-      const tokenData = {
-        token: newToken,
-      };
-      await databaseRef.push(tokenData);
-      storageMMKV.setValue('hasSentToken', true);
-      storageMMKV.setValue('tokenDevice', newToken);
-      let res = await onAxiosPost(
-        '/user/autoLogin',
-        {
-          tokenDevice: newToken,
-        },
-        'json',
-        true,
-      );
-      if (res) {
-        dispatch(setUserLogin(res.data));
-        setnextScreen('NaviTabScreen');
-      } else {
-        storageMMKV.setValue('login.token', '');
-        setnextScreen('LoginScreen');
+      if (nextScreen == "waiting") {
+        const databaseRef = database().ref('/tokens');
+        const tokenData = {
+          token: newToken,
+        };
+        await databaseRef.push(tokenData);
+        storageMMKV.setValue('hasSentToken', true);
+        storageMMKV.setValue('tokenDevice', newToken);
+        if (storageMMKV.getString('login.token')) {
+          let res = await onAxiosPost(
+            '/user/autoLogin', { tokenDevice: newToken, },
+            'json', true,
+          );
+          if (res) {
+            dispatch(setUserLogin(res.data));
+            setnextScreen('NaviTabScreen');
+          } else {
+            storageMMKV.setValue('login.token', '');
+            setnextScreen('LoginScreen');
+          }
+        }
       }
     } catch (error) {
       console.error('Lỗi khi gửi token đến Firebase:', error);
@@ -169,7 +171,7 @@ export default function SplashScreen() {
   };
 
   React.useEffect(() => {
-    if (isFinishedOneTime && nextScreen != '' && isGrantedNotice != 'false') {
+    if (isFinishedOneTime && nextScreen != '' && nextScreen != 'waiting' && isGrantedNotice != 'false') {
       if (isGrantedNotice == 'granted') {
         navigation.replace(nextScreen);
       }
@@ -232,7 +234,11 @@ export default function SplashScreen() {
 
   React.useEffect(() => {
     if (isGrantedNotice == 'false') {
-      requestPostNotification();
+      if (Platform.constants['Version'] < 33) {
+        setisGrantedNotice('granted');
+      } else {
+        requestPostNotification();
+      }
     }
     async function onDoing() {
       await onCheckTokenDevice();
@@ -256,20 +262,20 @@ export default function SplashScreen() {
     <View
       style={[
         styles.container,
-        {justifyContent: 'center', alignItems: 'center'},
+        { justifyContent: 'center', alignItems: 'center' },
       ]}>
       <LottieView
         source={require('../../assets/logo.json')}
         loop={true}
         autoPlay={true}
-        style={{width: '100%', aspectRatio: 1, marginBottom: '65%'}}
+        style={{ width: '100%', aspectRatio: 1, marginBottom: '65%' }}
       />
       {nameVisible && (
         <Animatable.View
           animation="zoomIn"
           duration={2000}
-          style={{position: 'absolute', top: '57%'}}>
-          <View style={{flexDirection: 'row', alignItems: 'center'}}>
+          style={{ position: 'absolute', top: '57%' }}>
+          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
             {/* <Text style={{ fontSize: 45, color: '#001858', fontWeight: '500' }}>PETW</Text> */}
             <View
               style={{
@@ -281,7 +287,7 @@ export default function SplashScreen() {
                 alignItems: 'center',
                 padding: 5,
               }}>
-              <View style={{width: 40, height: 45}}>
+              <View style={{ width: 40, height: 45 }}>
                 <FontAwesome6
                   name="dog"
                   size={35}
@@ -292,11 +298,11 @@ export default function SplashScreen() {
                   name="cat"
                   size={20}
                   color={'#8BD3DD'}
-                  style={{position: 'absolute', bottom: 10, left: 6}}
+                  style={{ position: 'absolute', bottom: 10, left: 6 }}
                 />
               </View>
             </View>
-            <Text style={{fontSize: 45, color: '#001858', fontWeight: '500'}}>
+            <Text style={{ fontSize: 45, color: '#001858', fontWeight: '500' }}>
               URPET
             </Text>
           </View>
@@ -319,7 +325,7 @@ export default function SplashScreen() {
               bottom: index % 2 === 0 ? bottomPosition1 : bottomPosition2,
               height: 25,
               width: 25,
-              transform: [{rotate: '90deg'}],
+              transform: [{ rotate: '90deg' }],
             }}
           />
         </View>

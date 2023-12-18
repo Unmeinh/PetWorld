@@ -145,7 +145,6 @@ const AppointmentScreen = () => {
             if (pet) {
                 navigation.navigate('DetailAppointment', {
                     idApm: item._id,
-                    onCallbackDelete: () => onCallbackDelete()
                 });
             } else {
                 Toast.show({
