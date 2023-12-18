@@ -17,6 +17,7 @@ import Feather from 'react-native-vector-icons/Feather';
 import {GetAllNotice} from '../../../api/RestApi';
 import {getDateTimeVietnamese} from '../../../function/functionDate';
 import EmptyNotice from './EmptyNotice';
+import { onAxiosPost } from '../../../api/axios.function';
 
 const NotifyAll = ({index, isFocused}) => {
   const [showModal, setShowModal] = useState(false);
@@ -27,16 +28,32 @@ const NotifyAll = ({index, isFocused}) => {
   const [refreshing, setRefreshing] = useState(false);
   const [enableLoading, setEnableLoading] = useState(true);
 
-  const showModalAndSetItem = (item, show) => {
+  const showModalAndSetItem = async (index, item, show) => {
     setItem(item);
     setShowModal(show);
+    if (show && item?.status != 2) {
+      let clone = {...item};
+      clone.status = 2;
+      let res = await onAxiosPost('notice/reading', {
+        idNotice: item?._id
+      }, 'json')
+      if (res) {
+        let cloneRes = [...result];
+        cloneRes.splice(index, 1, clone);
+        setResult(cloneRes);
+      } 
+    }
   };
 
   const getList = async () => {
     try {
       const res = await GetAllNotice(0, page);
       if (res?.data?.length > 0) {
-        setResult([...result, ...res.data]);
+        if (result.length <= 0 || refreshing || page == 1) {
+          setResult(res.data);
+        } else {
+          setResult([...result, ...res.data]);
+        }
         setRefreshing(false);
         setIsLoadingMore(false);
       } else {
@@ -58,14 +75,16 @@ const NotifyAll = ({index, isFocused}) => {
   }, [page, enableLoading]);
   const onRefresh = useCallback(() => {
     setPage(1);
-    setResult([]);
+    setRefreshing(true);
+    getList();
     setEnableLoading(true);
   }, []);
   const loadMoreData = async () => {
-    if (enableLoading) {
+    if (enableLoading && !refreshing) {
       if (!isLoadingMore) {
         setIsLoadingMore(true);
         setPage(page + 1);
+        getList();
       }
     }
   };
@@ -73,8 +92,8 @@ const NotifyAll = ({index, isFocused}) => {
     <View style={styles.container}>
       <FlatList
         data={result}
-        renderItem={({item}) => (
-          <ListItem item={item} callBack={showModalAndSetItem} />
+        renderItem={({item, index}) => (
+          <ListItem index={index} item={item} callBack={showModalAndSetItem} />
         )}
         keyExtractor={item => item._id}
         showsVerticalScrollIndicator={false}

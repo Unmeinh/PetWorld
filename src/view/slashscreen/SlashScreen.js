@@ -131,7 +131,7 @@ export default function SplashScreen() {
 
   const sendTokenToFirebase = async (newToken) => {
     try {
-      const databaseRef = database().ref('/sellerTokens');
+      const databaseRef = database().ref('/tokens');
       const tokenData = {
         token: newToken,
       };
