@@ -80,12 +80,12 @@ export default function RegisterTab(route) {
             phoneNumber: phoneCountry + inputPhoneNumber,
         }
 
-        var res = await onAxiosPost('/user/checkPhoneNumber', { phoneNumber: newUser.phoneNumber }, 'json', true);
+        var res = await onAxiosPost('/user/checkPhoneNumber', { userName: newUser.userName, phoneNumber: newUser.phoneNumber }, 'json', true);
         if (res && res?.success) {
             const response = await onSendOTPbyPhoneNumber(inputPhoneCountry + inputPhoneNumber);
             if (response && response.success) {
                 setTimeout(() => {
-                    navigation.navigate('ConfirmOTP', { navigate: "RegisterPassword", objUser: newUser, typeVerify: 'phoneNumber', valueVerify: inputPhoneCountry + inputPhoneNumber, authConfirm: response.confirm })
+                    navigation.navigate('ConfirmOTP', { navigate: "RegisterPassword", objUser: newUser, typeVerify: 'phoneNumber', valueVerify: inputPhoneCountry + inputPhoneNumber, authConfirm: (code) => response.confirm.confirm(code) })
                 }, 500)
             } 
         }

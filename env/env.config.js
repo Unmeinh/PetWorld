@@ -1,4 +1,4 @@
-export const BASE_URL = 'https://fdf7-2402-800-61c4-98fb-9d16-54e1-75a7-d149.ngrok-free.app/api';
+export const BASE_URL = 'http://10.0.2.2:3000/api';
 
 // payment momo
 export const PANENT_CODE_MOMO = 'MOMOBKUN20180529';
@@ -7,9 +7,9 @@ export const SECRET_KEY_MOMO = 'at67qH6mk8w5Y1nAyMoYKMWACiEi2bsa';
 export const URL_PAYMENT_MOMO = 'https://test-payment.momo.vn';
 export const EXTRA_DATA_MOMO =
   'ew0KImVtYWlsIjogImh1b25neGRAZ21haWwuY29tIg0KfQ==';
-export const NOTIFY_URL = 'https://fdf7-2402-800-61c4-98fb-9d16-54e1-75a7-d149.ngrok-free.app';
-export const RETURN_URL = 'https://fdf7-2402-800-61c4-98fb-9d16-54e1-75a7-d149.ngrok-free.app';
-export const ORDER_INFO_MOMO = 'https://fdf7-2402-800-61c4-98fb-9d16-54e1-75a7-d149.ngrok-free.app';
+export const NOTIFY_URL = 'http://10.0.2.2:3000';
+export const RETURN_URL = 'http://10.0.2.2:3000';
+export const ORDER_INFO_MOMO = 'http://10.0.2.2:3000';
 
 // payment zalopay
 
