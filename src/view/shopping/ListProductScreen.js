@@ -116,7 +116,7 @@ export default function ListProductScreen({navigation, route}) {
             color: '#001858',
             marginLeft: 20,
           }}>
-          Gần tôi
+          {''}
         </Text>
         <TouchableOpacity onPress={() => navigation.navigate('SearchFilters')}>
           <Icon name="search" size={30} color="#001858" />

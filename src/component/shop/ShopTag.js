@@ -19,7 +19,7 @@ export default function ShopTag({data, isLoading}) {
           <ShimmerPlaceHolder shimmerStyle={styles.img} />
         )}
         {isLoading === 'idle' ? (
-          <Text style={styles.title}>
+          <Text style={[styles.title, {width: 100}]}>
             {data?.nameShop}
             {'\n'}
             <Text style={styles.titleDes}>
@@ -48,13 +48,15 @@ export default function ShopTag({data, isLoading}) {
             {data?.quantity}{' '}
             <Text style={styles.textDes2}>Sản phẩm {data?.count}</Text>
           </Text>
-          <Text style={styles.textDes}>
-            {data?.rate}{' '}
-            <Text style={styles.textDes2}>
-              Đánh giá {data?.avgRating?.toFixed(1)}
+          {data?.rate && (
+            <Text style={styles.textDes}>
+              {data?.rate}{' '}
+              <Text style={styles.textDes2}>
+                Đánh giá {data?.avgRating?.toFixed(1)}
+              </Text>
+              <IconIcons name="star-sharp" size={16} color="#fcba03" />
             </Text>
-            <IconIcons name="star-sharp" size={16} color="#fcba03" />
-          </Text>
+          )}
         </View>
       ) : (
         <ShimmerPlaceHolder shimmerStyle={styles.title} />

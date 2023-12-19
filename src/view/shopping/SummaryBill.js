@@ -205,6 +205,12 @@ export default function SummaryBill({navigation, route}) {
   // console.log(randomCode);
 
   const handleSaveBill = () => {
+    if (!user) {
+      return ToastAndroid.show(
+        'Bạn chưa thêm địa chỉ giao hàng',
+        ToastAndroid.SHORT,
+      );
+    }
     if (checkValidate()) {
       if (selectedId === 1) {
         const code = generateRandomCode();

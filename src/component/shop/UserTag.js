@@ -4,6 +4,7 @@ import EvillCons from 'react-native-vector-icons/EvilIcons';
 import {useNavigation} from '@react-navigation/native';
 export default function UserTag({data, disabled}) {
   const navigation = useNavigation();
+
   return (
     <Pressable
       disabled={disabled ? disabled : false}
@@ -15,22 +16,30 @@ export default function UserTag({data, disabled}) {
           color="#001858"
           style={styles.iconLocation}
         />
-        <View style={styles.info}>
-          <Text style={styles.textName}>
-            {data?.fullName} ,{' '}
-            <Text style={styles.textPhone}>0{data?.phoneNumber}</Text>
+        {data ? (
+          <>
+            <View style={styles.info}>
+              <Text style={styles.textName}>
+                {data?.fullName} ,{' '}
+                <Text style={styles.textPhone}>0{data?.phoneNumber}</Text>
+              </Text>
+              <Text style={styles.textLocation}>{data?.location}</Text>
+            </View>
+            <EvillCons
+              name="chevron-right"
+              size={35}
+              color="#001858"
+              style={{
+                position: 'absolute',
+                right: 20,
+              }}
+            />
+          </>
+        ) : (
+          <Text style={[{flexGrow: 1, marginTop: 5}, styles.textPhone]}>
+            Thêm địa chỉ giao hàng
           </Text>
-          <Text style={styles.textLocation}>{data?.location}</Text>
-        </View>
-        <EvillCons
-          name="chevron-right"
-          size={35}
-          color="#001858"
-          style={{
-            position: 'absolute',
-            right: 20,
-          }}
-        />
+        )}
       </View>
       <View style={styles.line}>
         <Image source={require('../../assets/images/lineSummary.png')} />

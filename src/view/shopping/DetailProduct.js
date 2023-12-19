@@ -452,8 +452,16 @@ function DetailProduct({navigation, route}) {
                       <Text style={styles.lineHeight}>
                         Tên thú cưng: {product.namePet}
                         {'\n'}
-                        Kích cỡ: {product.sizePet} {'\n'}Kích thước: rộng{' '}
-                        {product.weightPet} cao {product.heightPet}
+                        Kích cỡ:{' '}
+                        {product.sizePet === 1
+                          ? 'Nhỏ'
+                          : product.sizePet === 2
+                          ? 'Vừa'
+                          : product.sizePet === 3
+                          ? 'Lớn'
+                          : product.sizePet}{' '}
+                        {'\n'}Kích thước: Cân nặng {product.weightPet} chiều cao{' '}
+                        {product.heightPet}
                       </Text>
                       {showDes ? (
                         <Text style={styles.lineHeight}>
@@ -531,7 +539,7 @@ function DetailProduct({navigation, route}) {
                 />
               </View>
             </Animated.View>
-            {rate ? (
+            {rate?.length > 0 ? (
               <Text
                 style={{
                   fontFamily: 'ProductSansBold',

@@ -182,6 +182,7 @@ export default function BuyNowScreen({navigation, route}) {
     dispatch(getPayments());
     dispatch(fetchInfoUserNoMessage());
   }, []);
+
   useEffect(() => {
     if (successBill) {
       dispatch(
@@ -364,6 +365,12 @@ export default function BuyNowScreen({navigation, route}) {
           <Pressable
             style={styles.button}
             onPress={() => {
+              if (!user) {
+                return ToastAndroid.show(
+                  'Bạn chưa thêm địa chỉ giao hàng',
+                  ToastAndroid.SHORT,
+                );
+              }
               if (item.type === 0 && !checkLocation()) {
                 return ToastAndroid.show(
                   'Mua thú cưng chỉ giới hạn trong nội thành',
